@@ -82,6 +82,13 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -148,7 +155,11 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>6</em></summary><ol class="traps"><li><b>Weight loss (red X)</b> — "Weight loss is consistent with IBS" → wrong; it is an alarm feature mandating investigation.</li><li><b>Nocturnal pain (red X)</b> — "Nocturnal pain fits IBS" → wrong; night-waking pain is a red flag for organic disease.</li><li><b>Nocturnal diarrhea (red X)</b> — "Nocturnal diarrhea is typical of IBS" → wrong; it is an alarm feature requiring workup.</li><li><b>New onset in older age (red X)</b> — "New IBS commonly starts in the elderly" → wrong; new onset in older age mandates workup for organic disease.</li><li><b>Steatorrhea (red X)</b> — "Steatorrhea is part of IBS-D" → wrong; it indicates malabsorption and needs investigation.</li><li><b>'Switching is rare' agitator (red X)</b> — "Switching between diarrhea and constipation is rare" → wrong; ~75% of patients switch subtype within a year.</li></ol></details><details class="panel"><summary>📖 Read-through — all 10 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. IBS city gate / relapsing line</div><div class="rte">IBS runs a relapsing-remitting course — symptoms come and go over years. A waxing/waning pattern SUPPORTS functional disease rather than a progressive organic process. Long, fluctuating history is reassuring.</div></div><div class="rt"><div class="rtl">2. 'Comes and goes' suitcase (gold star)</div><div class="rte">Relapsing-remitting symptoms are a positive supportive feature of IBS. Gold star = correct/reassuring. Contrast with steadily progressive symptoms, which raise concern for organic disease.</div></div><div class="rt"><div class="rtl">3. Small volume / no blood (gold star)</div><div class="rte">IBS-D produces SMALL-volume diarrhea WITHOUT blood. Large-volume or bloody/nocturnal diarrhea is NOT IBS. Absence of blood and small stool volume are supportive features.</div></div><div class="rt"><div class="rtl">4. Honest gate guard 75%/year</div><div class="rte">About 75% of IBS patients switch subtype (IBS-D ↔ IBS-C ↔ IBS-M) within a single year — so subtype switching is COMMON, not rare. Tested as a distractor against the 'switching is rare' claim.</div></div><div class="rt"><div class="rtl">5. Weight loss (red X)</div><div class="rte">Unintentional weight loss is a RED FLAG arguing against IBS — mandates workup for malignancy, IBD, or malabsorption. Functional IBS does not cause weight loss.</div><div class="rtt">⚠️ "Weight loss is consistent with IBS" → wrong; it is an alarm feature mandating investigation.</div></div><div class="rt"><div class="rtl">6. Nocturnal pain (red X)</div><div class="rte">Pain that wakes the patient at night is an organic red flag — functional IBS pain typically does not disrupt sleep. Nocturnal symptoms mandate evaluation (colonoscopy, calprotectin, celiac serology).</div><div class="rtt">⚠️ "Nocturnal pain fits IBS" → wrong; night-waking pain is a red flag for organic disease.</div></div><div class="rt"><div class="rtl">7. Nocturnal diarrhea (red X)</div><div class="rte">Diarrhea that wakes the patient from sleep (nocturnal diarrhea) is a red flag pointing to organic disease such as IBD or infection. IBS-D does not characteristically occur at night.</div><div class="rtt">⚠️ "Nocturnal diarrhea is typical of IBS" → wrong; it is an alarm feature requiring workup.</div></div><div class="rt"><div class="rtl">8. New onset in older age (red X)</div><div class="rte">New-onset symptoms in an older patient (e.g., &gt;50) are a red flag — colorectal cancer and other organic disease rise with age, mandating colonoscopy. IBS usually presents in younger adults.</div><div class="rtt">⚠️ "New IBS commonly starts in the elderly" → wrong; new onset in older age mandates workup for organic disease.</div></div><div class="rt"><div class="rtl">9. Steatorrhea (red X)</div><div class="rte">Steatorrhea (fatty, floating, foul stool) signals fat malabsorption — celiac, pancreatic insufficiency, or small-bowel disease — not IBS. A red flag mandating malabsorption workup.</div><div class="rtt">⚠️ "Steatorrhea is part of IBS-D" → wrong; it indicates malabsorption and needs investigation.</div></div><div class="rt"><div class="rtl">10. 'Switching is rare' agitator (red X)</div><div class="rte">FALSE claim: subtype switching is rare. In reality ~75% of patients switch subtype within a year, so switching is COMMON. This is the explicit board trap on this scene.</div><div class="rtt">⚠️ "Switching between diarrhea and constipation is rare" → wrong; ~75% of patients switch subtype within a year.</div></div></div></details></div>
@@ -169,6 +180,7 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +251,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -271,6 +284,55 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  const txt = (e.label ? e.label + '. ' : '') + (e.encodes || e.see || '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,7 +367,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="gastro_gib_varices_mw_obscure.html" title="GI Bleed — Varices, Mallory-Weiss &amp; Obscure">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="gastro_ibs_diagnosis.html" title="IBS — Rome IV Diagnosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,13 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -148,7 +155,11 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>2</em></summary><ol class="traps"><li><b>Erythema nodosum (X)</b> — "Erythema nodosum is a stigma of chronic liver disease" → wrong; it signals IBD/sarcoidosis, not cirrhosis.</li><li><b>HRS — stop diuretics + albumin</b> — "Treat hepatorenal syndrome with more diuretics/furosemide" → wrong; STOP diuretics, give albumin challenge, then vasoconstrictors. Diuretics worsen the prerenal physiology.</li></ol></details><details class="panel"><summary>📖 Read-through — all 11 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Erythema nodosum (X)</div><div class="rte">Erythema nodosum (tender red shin nodules) is NOT a stigma of cirrhosis — it points to IBD, sarcoidosis, infection (strep, TB), or drugs. Don't pick it as a liver sign. The true cirrhosis stigmata come from hyperestrogenism and portal hypertension.</div><div class="rtt">⚠️ "Erythema nodosum is a stigma of chronic liver disease" → wrong; it signals IBD/sarcoidosis, not cirrhosis.</div></div><div class="rt"><div class="rtl">2. Jaundice</div><div class="rte">Jaundice (scleral icterus when bilirubin &gt;2-3 mg/dL) reflects impaired bilirubin conjugation/excretion in advanced liver disease. A component of Child-Pugh scoring. Worsening jaundice signals decompensation.</div></div><div class="rt"><div class="rtl">3. Spider angiomata</div><div class="rte">Spider angiomata (central arteriole with radiating vessels, blanch with pressure) result from hyperestrogenemia; numerous/large lesions correlate with severity and variceal risk. Found in the SVC distribution (face, upper chest, arms).</div></div><div class="rt"><div class="rtl">4. Palmar erythema</div><div class="rte">Palmar erythema (red thenar/hypothenar eminences) is another hyperestrogenism sign. Non-specific (also pregnancy, hyperthyroidism, RA) but supports chronic liver disease in context.</div></div><div class="rt"><div class="rtl">5. Gynecomastia</div><div class="rte">Gynecomastia, testicular atrophy, and loss of body hair stem from altered estrogen/androgen balance (reduced hepatic clearance of estrogens). Spironolactone used for ascites can worsen gynecomastia.</div></div><div class="rt"><div class="rtl">6. Caput medusae</div><div class="rte">Caput medusae = dilated periumbilical veins from portal hypertension recanalizing the umbilical vein. A portosystemic collateral, like esophageal varices and rectal varices. Reflects elevated portal pressure.</div></div><div class="rt"><div class="rtl">7. Dupuytren contracture</div><div class="rte">Dupuytren contracture (palmar fascia thickening flexing the ring/little fingers) is associated with alcoholic liver disease (also diabetes, manual labor). Part of the stigmata cluster on exam.</div></div><div class="rt"><div class="rtl">8. HRS — stop diuretics + albumin</div><div class="rte">Hepatorenal syndrome is a DIAGNOSIS OF EXCLUSION: AKI with intense renal vasoconstriction, bland urine (no protein/casts), no improvement after stopping diuretics and a 48h albumin challenge (1 g/kg/day). Rule out hypovolemia, ATN, obstruction first. The reflex must be STOP diuretics + give albumin, never more diuretics.</div><div class="rtt">⚠️ "Treat hepatorenal syndrome with more diuretics/furosemide" → wrong; STOP diuretics, give albumin challenge, then vasoconstrictors. Diuretics worsen the prerenal physiology.</div></div><div class="rt"><div class="rtl">9. Terlipressin + albumin</div><div class="rte">After albumin, treat HRS with a vasoconstrictor + albumin: terlipressin (preferred, watch for ischemia/respiratory failure) or noradrenaline (ICU) or midodrine + octreotide where terlipressin unavailable. These reverse splanchnic vasodilation and improve renal perfusion as a bridge.</div></div><div class="rt"><div class="rtl">10. Transplant best (gold star)</div><div class="rte">Liver transplantation is the DEFINITIVE and best treatment for hepatorenal syndrome (gold star) — pharmacotherapy is only a bridge. HRS portends very poor survival without transplant. Renal function often recovers post-transplant.</div></div><div class="rt"><div class="rtl">11. Hepatopulmonary — platypnea</div><div class="rte">Hepatopulmonary syndrome = triad of liver disease + hypoxemia + intrapulmonary vascular dilations. Hallmark is PLATYPNEA-ORTHODEOXIA: dyspnea/desaturation WORSE when UPRIGHT (dilations are basal, more shunting standing). Diagnose with contrast (bubble) echocardiography showing delayed left-heart opacification. Definitive treatment is transplant.</div></div></div></details></div>
@@ -169,6 +180,7 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +251,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -271,6 +284,55 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  const txt = (e.label ? e.label + '. ' : '') + (e.encodes || e.see || '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,7 +367,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="gastro_cirr_sbp_ascites.html" title="Cirrhosis — SBP &amp; Ascites">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="gastro_cirr_varices.html" title="Cirrhosis — Variceal Bleeding">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>
