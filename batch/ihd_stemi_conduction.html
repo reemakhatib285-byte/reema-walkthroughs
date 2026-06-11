@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD / STEMI — conduction blocks &amp; QRS width</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Inferior ECG fence (II/III/aVF)</b> — Board says: 'Anterior MI (V1–V4) is the territory that produces AV nodal block.' WRONG. Discriminator: AV NODAL block goes with INFERIOR MI (II/III/aVF, RCA); anterior MI (LAD) damages the His-Purkinje system → infranodal block (bundle branch/fascicular blocks).</li><li><b>RCA crocodile</b> — Board says: 'The LAD supplies the AV node.' WRONG. Discriminator: the AV nodal artery arises from the RCA (right-dominant, ~90%) or rarely the LCx (left-dominant) — NOT the LAD. The LAD supplies the His-Purkinje conduction system (infranodal), not the AV node.</li><li><b>Narrow skates (narrow QRS)</b> — Board says: 'AV nodal block produces a wide QRS escape.' WRONG. Discriminator: nodal block = narrow QRS (junctional escape, His-Purkinje intact); WIDE QRS escape signals an INFRANODAL block (anterior MI), which is unstable.</li><li><b>Vagal / adenosine monk</b> — Board says: 'Nodal-level AV block after an inferior MI needs an immediate permanent pacemaker.' WRONG. Discriminator: nodal block is usually transient and vagally mediated — first-line is atropine; temporary pacing only if symptomatic and refractory. Permanent pacing is rarely needed (contrast with infranodal block).</li><li><b>Slow clock + RESOLVES</b> — Board says: 'AV block from an inferior MI is permanent.' WRONG. Discriminator: inferior-MI (nodal) block usually RESOLVES; it is the ANTERIOR-MI infranodal block that is often permanent and needs a permanent pacemaker.</li><li><b>Better prognosis ribbon</b> — Board says: 'Narrow-complex (nodal) block carries the WORSE prognosis.' WRONG. Discriminator: narrow-complex nodal block = better prognosis (small inferior infarct, reliable escape); WIDE-complex infranodal block = worse prognosis (large anterior infarct).</li><li><b>Treat if symptomatic / atropine</b> — Board says: 'All inferior-MI AV blocks require a permanent pacemaker.' WRONG. Discriminator: only SYMPTOMATIC/refractory cases need pacing, and usually only temporary; most resolve with observation ± atropine. Routine permanent pacing for nodal block is over-treatment.</li><li><b>Anterior ECG fence (V1–V4)</b> — Board says: 'Inferior MI causes infranodal (His-Purkinje) block.' WRONG. Discriminator: infranodal block goes with ANTERIOR MI (V1–V4, LAD); inferior MI (II/III/aVF, RCA) causes NODAL block. Swapping the two territories is the classic trap.</li><li><b>LAD</b> — Board says: 'RCA occlusion causes infranodal (His-Purkinje) block.' WRONG. Discriminator: the LAD supplies the His-Purkinje system, so infranodal block follows ANTERIOR (LAD) MI; the RCA supplies the AV node → nodal block in inferior MI.</li><li><b>His-Purkinje bridge breaking</b> — Board says: 'Infranodal block sits at the AV node.' WRONG. Discriminator: infranodal block is BELOW the His bundle (His-Purkinje), not at the AV node — that's why its escape is wide, slow, and unstable, unlike a nodal block.</li><li><b>Wide skates (wide QRS infranodal)</b> — Board says: 'Infranodal block produces a narrow QRS.' WRONG. Discriminator: infranodal block = WIDE QRS (slow, unreliable ventricular escape); narrow QRS indicates a NODAL block with intact His-Purkinje, which is the more benign scenario.</li><li><b>Temporary pacemaker</b> — Board says: 'Atropine reliably restores conduction in infranodal block.' WRONG. Discriminator: atropine works on the vagally mediated AV NODE, not on His-Purkinje tissue — it is ineffective (and can worsen) infranodal block. The answer is pacing, not atropine.</li><li><b>Worse prognosis / large territory</b> — Board says: 'Infranodal block after an anterior MI is benign.' WRONG. Discriminator: infranodal/wide-complex block signals a large anterior infarct and carries a WORSE prognosis (higher mortality), unlike the benign, self-limited nodal block of inferior MI.</li><li><b>Stone drummer (often permanent)</b> — Board says: 'Infranodal block always resolves with time.' WRONG. Discriminator: infranodal block is often PERMANENT (structural His-Purkinje damage) and needs a permanent pacemaker; it is the NODAL block (inferior MI) that typically resolves.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Inferior ECG fence (II/III/aVF)</div><div class="rte">Inferior MI is identified by ST elevation in the inferior leads II, III, and aVF, and it is the territory associated with AV NODAL block (1st degree, Mobitz I/Wenckebach, and even complete heart block at the nodal level). The mechanism combines ischemia of the RCA-supplied AV node and increased vagal tone (Bezold–Jarisch reflex) from the inferior wall. Mnemonic: 'inferior leads (II, III, aVF) → AV node trouble.'</div><div class="rtt">⚠️ Board says: 'Anterior MI (V1–V4) is the territory that produces AV nodal block.' WRONG. Discriminator: AV NODAL block goes with INFERIOR MI (II/III/aVF, RCA); anterior MI (LAD) damages the His-Purkinje system → infranodal block (bundle branch/fascicular blocks).</div></div><div class="rt"><div class="rtl">2. RCA crocodile</div><div class="rte">The right coronary artery (RCA) supplies the inferior wall AND, in ~90% of people (right-dominant circulation), the AV node (via the AV nodal branch) and the SA node. Therefore an inferior MI from RCA occlusion produces AV nodal block and sinus bradycardia. The RCA also supplies the RV, linking inferior MI to RV infarction. Mnemonic: 'RCA feeds the inferior wall and the AV node — block both when it clogs.'</div><div class="rtt">⚠️ Board says: 'The LAD supplies the AV node.' WRONG. Discriminator: the AV nodal artery arises from the RCA (right-dominant, ~90%) or rarely the LCx (left-dominant) — NOT the LAD. The LAD supplies the His-Purkinje conduction system (infranodal), not the AV node.</div></div><div class="rt"><div class="rtl">3. Narrow skates (narrow QRS)</div><div class="rte">AV NODAL block produces a NARROW QRS escape rhythm because the block is above the His bundle, so the His-Purkinje system is intact and the junctional escape pacemaker (rate ~40–60) conducts normally to both ventricles. A narrow escape is fast and reliable, hence the better prognosis. Mnemonic: 'block at the node, but the wires below are fine → narrow QRS, dependable escape.'</div><div class="rtt">⚠️ Board says: 'AV nodal block produces a wide QRS escape.' WRONG. Discriminator: nodal block = narrow QRS (junctional escape, His-Purkinje intact); WIDE QRS escape signals an INFRANODAL block (anterior MI), which is unstable.</div></div><div class="rt"><div class="rtl">4. Vagal / adenosine monk</div><div class="rte">The AV node is richly innervated by the vagus nerve and is adenosine-sensitive. Inferior-MI AV block is often mediated by increased vagal tone (Bezold–Jarisch reflex) and is therefore frequently reversible and responsive to ATROPINE (an anticholinergic). Because the substrate is functional rather than structural, the block usually resolves over hours to days. Mnemonic: 'vagal node responds to atropine and resolves.'</div><div class="rtt">⚠️ Board says: 'Nodal-level AV block after an inferior MI needs an immediate permanent pacemaker.' WRONG. Discriminator: nodal block is usually transient and vagally mediated — first-line is atropine; temporary pacing only if symptomatic and refractory. Permanent pacing is rarely needed (contrast with infranodal block).</div></div><div class="rt"><div class="rtl">5. Slow clock + RESOLVES</div><div class="rte">AV nodal block complicating inferior MI is typically TRANSIENT, resolving within hours to a few days as ischemia/vagal tone abates and reperfusion takes effect. Because it resolves and the escape rhythm is reliable, it carries a better prognosis and seldom requires permanent pacing. Mnemonic: 'inferior-MI block: slow but self-resolving.'</div><div class="rtt">⚠️ Board says: 'AV block from an inferior MI is permanent.' WRONG. Discriminator: inferior-MI (nodal) block usually RESOLVES; it is the ANTERIOR-MI infranodal block that is often permanent and needs a permanent pacemaker.</div></div><div class="rt"><div class="rtl">6. Better prognosis ribbon</div><div class="rte">A narrow-complex (nodal) AV block after MI carries a BETTER prognosis: it reflects a smaller, RCA-territory infarct, has a reliable junctional escape, and tends to resolve. The contrast is with wide-complex infranodal block (anterior MI), which implies a large infarct and worse outcomes. Mnemonic: 'narrow &amp; nodal = nicer prognosis.'</div><div class="rtt">⚠️ Board says: 'Narrow-complex (nodal) block carries the WORSE prognosis.' WRONG. Discriminator: narrow-complex nodal block = better prognosis (small inferior infarct, reliable escape); WIDE-complex infranodal block = worse prognosis (large anterior infarct).</div></div><div class="rt"><div class="rtl">7. Treat if symptomatic / atropine</div><div class="rte">Manage inferior-MI/nodal AV block based on SYMPTOMS and hemodynamics: if asymptomatic and stable, observe (it usually resolves). If symptomatic (hypotension, syncope, ischemic symptoms from bradycardia), give ATROPINE 0.5 mg IV (repeat to max 3 mg) first-line; if refractory, use transcutaneous/temporary transvenous pacing. Permanent pacemaker is rarely required. Mnemonic: 'treat the patient, not the rhythm — atropine for symptoms.'</div><div class="rtt">⚠️ Board says: 'All inferior-MI AV blocks require a permanent pacemaker.' WRONG. Discriminator: only SYMPTOMATIC/refractory cases need pacing, and usually only temporary; most resolve with observation ± atropine. Routine permanent pacing for nodal block is over-treatment.</div></div><div class="rt"><div class="rtl">8. Anterior ECG fence (V1–V4)</div><div class="rte">Anterior MI is identified by ST elevation in precordial leads V1–V4 and is the territory of INFRANODAL (His-Purkinje) block: new bundle branch blocks (especially RBBB), bifascicular block, and high-grade infranodal AV block. These reflect damage to the conduction tissue below the AV node. Mnemonic: 'anterior precordial leads (V1–V4) → wires below the node fail.'</div><div class="rtt">⚠️ Board says: 'Inferior MI causes infranodal (His-Purkinje) block.' WRONG. Discriminator: infranodal block goes with ANTERIOR MI (V1–V4, LAD); inferior MI (II/III/aVF, RCA) causes NODAL block. Swapping the two territories is the classic trap.</div></div><div class="rt"><div class="rtl">9. LAD</div><div class="rte">The left anterior descending (LAD) artery supplies the anterior wall, the interventricular septum, and the His-Purkinje conduction system (bundle branches and fascicles). LAD occlusion → anterior MI → damage to infranodal conduction → new bundle branch/fascicular blocks and unstable high-grade AV block. Mnemonic: 'LAD = anterior wall + the conduction wires (His-Purkinje).'</div><div class="rtt">⚠️ Board says: 'RCA occlusion causes infranodal (His-Purkinje) block.' WRONG. Discriminator: the LAD supplies the His-Purkinje system, so infranodal block follows ANTERIOR (LAD) MI; the RCA supplies the AV node → nodal block in inferior MI.</div></div><div class="rt"><div class="rtl">10. His-Purkinje bridge breaking</div><div class="rte">Infranodal block means the conduction failure is BELOW the His bundle (in the bundle branches/fascicles). The escape pacemaker arising distal to the block is slow (~20–40/min) and unreliable, so it predisposes to asystole and syncope. This contrasts with nodal block, where the junctional escape above/at the His is faster and dependable. Mnemonic: 'broken bridge below the His → low, unreliable escape.'</div><div class="rtt">⚠️ Board says: 'Infranodal block sits at the AV node.' WRONG. Discriminator: infranodal block is BELOW the His bundle (His-Purkinje), not at the AV node — that's why its escape is wide, slow, and unstable, unlike a nodal block.</div></div><div class="rt"><div class="rtl">11. Wide skates (wide QRS infranodal)</div><div class="rte">Infranodal block produces a WIDE QRS escape rhythm because the block is below the His bundle, so ventricular activation is slow and abnormal (escape rate ~20–40/min). This wide, slow escape is unreliable and can deteriorate to asystole — hence temporary then often permanent pacing is needed. Mnemonic: 'wide QRS = wires below failed = wobbly escape.'</div><div class="rtt">⚠️ Board says: 'Infranodal block produces a narrow QRS.' WRONG. Discriminator: infranodal block = WIDE QRS (slow, unreliable ventricular escape); narrow QRS indicates a NODAL block with intact His-Purkinje, which is the more benign scenario.</div></div><div class="rt"><div class="rtl">12. Temporary pacemaker</div><div class="rte">Anterior-MI infranodal block (new bifascicular block, alternating BBB, Mobitz II, or high-grade/complete AV block with wide escape) warrants TEMPORARY pacing (transcutaneous → transvenous) because the escape rhythm is unreliable. Many of these patients go on to need a PERMANENT pacemaker because the block is structural and persistent. Mnemonic: 'anterior infranodal block: pace temporarily now, often permanently later.'</div><div class="rtt">⚠️ Board says: 'Atropine reliably restores conduction in infranodal block.' WRONG. Discriminator: atropine works on the vagally mediated AV NODE, not on His-Purkinje tissue — it is ineffective (and can worsen) infranodal block. The answer is pacing, not atropine.</div></div><div class="rt"><div class="rtl">13. Worse prognosis / large territory</div><div class="rte">A wide-complex infranodal block reflects a LARGE anterior infarct (extensive LAD territory damaging the conduction system), so it carries a markedly WORSE prognosis with higher rates of heart failure, cardiogenic shock, and death. The conduction abnormality is a marker of infarct size, not just an electrical nuisance. Mnemonic: 'wide-complex block = wide infarct = worse outcome.'</div><div class="rtt">⚠️ Board says: 'Infranodal block after an anterior MI is benign.' WRONG. Discriminator: infranodal/wide-complex block signals a large anterior infarct and carries a WORSE prognosis (higher mortality), unlike the benign, self-limited nodal block of inferior MI.</div></div><div class="rt"><div class="rtl">14. Stone drummer (often permanent)</div><div class="rte">Infranodal block from anterior MI is frequently PERMANENT because it results from structural necrosis of the His-Purkinje conduction tissue rather than reversible ischemia/vagal tone. These patients commonly require a PERMANENT pacemaker (e.g., persistent high-grade AV block, alternating BBB, or symptomatic bradycardia). Mnemonic: 'set in stone = structural &amp; permanent → permanent pacer.'</div><div class="rtt">⚠️ Board says: 'Infranodal block always resolves with time.' WRONG. Discriminator: infranodal block is often PERMANENT (structural His-Purkinje damage) and needs a permanent pacemaker; it is the NODAL block (inferior MI) that typically resolves.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_stemi_arrhythmia_icd.html" title="IHD / STEMI — arrhythmia, VF &amp; ICD timing">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_stemi_complications.html" title="IHD / STEMI — mechanical complications, RV &amp; pericarditis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

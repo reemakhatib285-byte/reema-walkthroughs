@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Thyroid — Diagnostic Algorithm</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>TSH FIRST, ALWAYS</b> — Ordering free T4 or T3 first as the screen — wrong because TSH is more sensitive (amplified) and a normal free T4 with an abnormal TSH would be missed; the board answer is always 'check TSH first.' Exception to remember: if central (pituitary/hypothalamic) disease is suspected, TSH alone is unreliable and you must order free T4 with it.</li><li><b>High TSH branch</b> — Treating with levothyroxine on a high TSH alone — wrong because you cannot tell overt from subclinical (or a transient post-illness rebound / recovering thyroiditis) without the free T4, and many subclinical TSH 4.5–10 cases do not need treatment.</li><li><b>High TSH + low FT4</b> — Mistaking overt hypothyroidism for the subclinical pattern and withholding treatment — overt (low FT4) is always treated.</li><li><b>High TSH + normal FT4</b> — Calling this overt disease or treating every subclinical case — wrong because mild subclinical (TSH 4.5–10) is often transient and may resolve; the threshold to treat unconditionally is TSH ≥10.</li><li><b>Low/normal TSH branch</b> — Stopping at a suppressed TSH without an uptake scan — wrong because high-uptake (treat with ATD/RAI) vs low-uptake (self-limited thyroiditis, treated only with beta-blockers) have opposite management.</li><li><b>Central hypothyroidism</b> — Using a normal TSH to rule out central hypothyroidism — wrong because the pituitary defect blunts the TSH response, so a 'normal' TSH with low free T4 is itself the abnormal finding.</li><li><b>Sick euthyroid syndrome</b> — Treating sick euthyroid with levothyroxine — wrong and potentially harmful; it is a self-resolving adaptation. The board move is to NOT treat and recheck TFTs after the patient recovers.</li><li><b>Repeat TFTs after recovery</b> — Acting on TFTs drawn during acute illness or during the recovery TSH rebound rather than waiting for the patient to recover and repeating.</li><li><b>Pituitary target range</b> — Titrating central hypothyroidism by TSH — wrong because TSH is already low/inappropriate from the pituitary lesion and will mislead dosing; follow free T4 instead.</li><li><b>TRb mutation / resistance</b> — Treating it as Graves'/primary hyperthyroidism and giving antithyroid drugs or RAI — wrong; the suppressed-TSH rule for hyperthyroidism does not apply because TSH is non-suppressed. Distinguish from TSHoma (which needs an MRI and is a tumor).</li><li><b>TSHoma</b> — Diagnosing primary hyperthyroidism and ablating the thyroid — wrong because the lesion is the pituitary; the unsuppressed TSH is the tip-off that separates TSHoma/resistance from Graves'. Differentiate TSHoma (MRI mass, ↑alpha-subunit) from TRβ resistance (genetic, no mass).</li><li><b>TBG binding cabinet</b> — Treating an abnormal TOTAL T4 caused purely by a TBG shift (e.g., starting estrogen) — wrong; the free hormone and TSH are normal, so the patient is euthyroid and needs no treatment.</li><li><b>Drugs that suppress TSH</b> — Diagnosing hyperthyroidism from a low TSH in a patient on dopamine/steroids/octreotide — wrong; the suppression is drug-induced. Recheck off the drug rather than starting antithyroid therapy.</li><li><b>Goiter + ADHD red herrings</b> — Chasing the mixed clinical picture and labeling it primary hyper- or hypothyroidism instead of recognizing the inappropriate-TSH lab pattern of resistance.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. TSH FIRST, ALWAYS</div><div class="rte">TSH is the single best initial screening test for thyroid dysfunction because the pituitary–thyroid axis is a log-linear feedback loop: a small change in free T4 produces a large, amplified change in TSH, so TSH becomes abnormal before free T4 leaves the reference range. Normal TSH (≈0.4–4.0 mIU/L) in an outpatient with an intact axis effectively excludes primary thyroid disease. Always pair an abnormal TSH with a free T4 to stage the disorder.</div><div class="rtt">⚠️ Ordering free T4 or T3 first as the screen — wrong because TSH is more sensitive (amplified) and a normal free T4 with an abnormal TSH would be missed; the board answer is always 'check TSH first.' Exception to remember: if central (pituitary/hypothalamic) disease is suspected, TSH alone is unreliable and you must order free T4 with it.</div></div><div class="rt"><div class="rtl">2. High TSH branch</div><div class="rte">A high TSH points to primary hypothyroidism (failing gland → loss of negative feedback → pituitary drives TSH up). The mandatory next step is a free T4 to separate overt from subclinical disease — never act on TSH alone.</div><div class="rtt">⚠️ Treating with levothyroxine on a high TSH alone — wrong because you cannot tell overt from subclinical (or a transient post-illness rebound / recovering thyroiditis) without the free T4, and many subclinical TSH 4.5–10 cases do not need treatment.</div></div><div class="rt"><div class="rtl">3. High TSH + low FT4</div><div class="rte">↑TSH with ↓free T4 = overt primary hypothyroidism. This is the pattern that always warrants levothyroxine replacement regardless of symptoms. Confirm cause (anti-TPO for Hashimoto's in iodine-sufficient areas) but do not delay treatment.</div><div class="rtt">⚠️ Mistaking overt hypothyroidism for the subclinical pattern and withholding treatment — overt (low FT4) is always treated.</div></div><div class="rt"><div class="rtl">4. High TSH + normal FT4</div><div class="rte">↑TSH with a normal free T4 = subclinical hypothyroidism. Confirm by repeating in 2–3 months (transient causes: recovering thyroiditis, non-adherence rebound, lab variation). Treat when TSH ≥10, or for TSH 4.5–10 if pregnant/planning pregnancy, anti-TPO positive, symptomatic, or goiter/CV risk.</div><div class="rtt">⚠️ Calling this overt disease or treating every subclinical case — wrong because mild subclinical (TSH 4.5–10) is often transient and may resolve; the threshold to treat unconditionally is TSH ≥10.</div></div><div class="rt"><div class="rtl">5. Low/normal TSH branch</div><div class="rte">A low (suppressed) TSH triggers the hyperthyroidism workup: confirm with free T4 and, if free T4 is normal, free T3 (T3 toxicosis). Once thyrotoxicosis is biochemically confirmed, radioactive iodine uptake (RAIU) sorts the cause — high uptake = Graves'/toxic nodule/MNG (gland overproducing) vs low/absent uptake = thyroiditis, exogenous T4, or iodine load (no new synthesis).</div><div class="rtt">⚠️ Stopping at a suppressed TSH without an uptake scan — wrong because high-uptake (treat with ATD/RAI) vs low-uptake (self-limited thyroiditis, treated only with beta-blockers) have opposite management.</div></div><div class="rt"><div class="rtl">6. Central hypothyroidism</div><div class="rte">Central (secondary/tertiary) hypothyroidism gives a low free T4 with a TSH that is low OR inappropriately normal (the failing pituitary cannot mount an appropriate TSH rise). TSH alone cannot exclude it — always order free T4 when pituitary disease is suspected, and screen the rest of the anterior pituitary axis (cortisol/ACTH). Replace cortisol BEFORE thyroid hormone to avoid precipitating adrenal crisis.</div><div class="rtt">⚠️ Using a normal TSH to rule out central hypothyroidism — wrong because the pituitary defect blunts the TSH response, so a 'normal' TSH with low free T4 is itself the abnormal finding.</div></div><div class="rt"><div class="rtl">7. Sick euthyroid syndrome</div><div class="rte">Non-thyroidal illness (sick euthyroid / low-T3 syndrome): acute illness and cytokines (IL-6) impair peripheral 5'-deiodination, shunting T4 to inactive reverse T3 → low total/free T3 with normal or low TSH and often low T4 in severe cases. It is an adaptive response, not true thyroid disease. Do NOT screen TFTs in the acutely ill unless thyroid disease is strongly suspected.</div><div class="rtt">⚠️ Treating sick euthyroid with levothyroxine — wrong and potentially harmful; it is a self-resolving adaptation. The board move is to NOT treat and recheck TFTs after the patient recovers.</div></div><div class="rt"><div class="rtl">8. Repeat TFTs after recovery</div><div class="rte">After acute illness resolves, repeat the thyroid panel to confirm true baseline status — transient sick-euthyroid and post-illness TSH rebound (TSH can briefly overshoot during recovery) both normalize without treatment.</div><div class="rtt">⚠️ Acting on TFTs drawn during acute illness or during the recovery TSH rebound rather than waiting for the patient to recover and repeating.</div></div><div class="rt"><div class="rtl">9. Pituitary target range</div><div class="rte">When treating central hypothyroidism, titrate levothyroxine to a free T4 in the upper half of the reference range — you cannot use TSH because the broken pituitary axis makes TSH uninterpretable. Confirm adrenal sufficiency / give glucocorticoid first.</div><div class="rtt">⚠️ Titrating central hypothyroidism by TSH — wrong because TSH is already low/inappropriate from the pituitary lesion and will mislead dosing; follow free T4 instead.</div></div><div class="rt"><div class="rtl">10. TRb mutation / resistance</div><div class="rte">Resistance to thyroid hormone (THRB / TRβ dominant-negative mutation): high free T4 and free T3 with a TSH that is non-suppressed (normal or even high) — the classic 'inappropriate TSH' pattern shared with TSHoma. Generalized resistance is usually euthyroid clinically and is generally NOT treated; pituitary-predominant resistance can be thyrotoxic.</div><div class="rtt">⚠️ Treating it as Graves'/primary hyperthyroidism and giving antithyroid drugs or RAI — wrong; the suppressed-TSH rule for hyperthyroidism does not apply because TSH is non-suppressed. Distinguish from TSHoma (which needs an MRI and is a tumor).</div></div><div class="rt"><div class="rtl">11. TSHoma</div><div class="rte">TSH-secreting pituitary adenoma: high free T4/T3 with an inappropriately normal or high TSH (TSH not suppressed despite high hormones). Order pituitary MRI; supportive clues are an elevated alpha-subunit and high SHBG. Treat the tumor (surgery ± somatostatin analog), not the thyroid.</div><div class="rtt">⚠️ Diagnosing primary hyperthyroidism and ablating the thyroid — wrong because the lesion is the pituitary; the unsuppressed TSH is the tip-off that separates TSHoma/resistance from Graves'. Differentiate TSHoma (MRI mass, ↑alpha-subunit) from TRβ resistance (genetic, no mass).</div></div><div class="rt"><div class="rtl">12. TBG binding cabinet</div><div class="rte">Thyroxine-binding globulin (TBG) changes alter TOTAL T4/T3 but leave FREE hormone (and TSH) normal — the patient is euthyroid. ↑TBG: estrogen/OCP/pregnancy, tamoxifen, acute hepatitis. ↓TBG: androgens, glucocorticoids, nephrotic syndrome, severe illness. Always order FREE hormone levels to bypass binding-protein artifact.</div><div class="rtt">⚠️ Treating an abnormal TOTAL T4 caused purely by a TBG shift (e.g., starting estrogen) — wrong; the free hormone and TSH are normal, so the patient is euthyroid and needs no treatment.</div></div><div class="rt"><div class="rtl">13. Drugs that suppress TSH</div><div class="rte">Dopamine (and dobutamine), high-dose glucocorticoids, and somatostatin analogs directly suppress pituitary TSH secretion without causing thyrotoxicosis — a common ICU pitfall. Free T4 is normal and the patient is clinically euthyroid.</div><div class="rtt">⚠️ Diagnosing hyperthyroidism from a low TSH in a patient on dopamine/steroids/octreotide — wrong; the suppression is drug-induced. Recheck off the drug rather than starting antithyroid therapy.</div></div><div class="rt"><div class="rtl">14. Goiter + ADHD red herrings</div><div class="rte">Generalized thyroid hormone resistance can present with a mixed clinical picture — goiter, tachycardia, attention/hyperactivity (ADHD-like) features — because different tissues vary in residual receptor sensitivity, so some look hyper and some hypo. The biochemical signature (high FT4/FT3 with non-suppressed TSH) is what reveals it.</div><div class="rtt">⚠️ Chasing the mixed clinical picture and labeling it primary hyper- or hypothyroidism instead of recognizing the inappropriate-TSH lab pattern of resistance.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="thy_bethesda.html" title="Thyroid — Bethesda Cytology &amp; FNA">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="thy_hyperthyroid.html" title="Thyroid — Hyperthyroidism &amp; Graves&#x27;">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

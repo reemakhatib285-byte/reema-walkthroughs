@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">COPD — Oxygen, NIPPV &amp; Exacerbations</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>11</em></summary><ol class="traps"><li><b>Target SpO2 88–92%</b> — Aiming for 94-100% ‘to be safe’ is WRONG — over-oxygenation worsens V/Q matching (loss of hypoxic vasoconstriction), blunts respiratory drive, and via the Haldane effect raises PaCO2, risking hypercapnic encephalopathy.</li><li><b>Too high → V/Q worsens (95%)</b> — More oxygen is NOT always better in COPD — over-shooting SpO2 to 95-100% can precipitate hypercapnic respiratory failure.</li><li><b>Too low → tissue death (85%)</b> — Permissive hypoxia is wrong — don’t let a COPD patient ride at 85% out of CO2-retention fear; treat the hypoxemia and titrate to 88-92%.</li><li><b>‘Withhold O2 / fear CO2’ = MYTH</b> — Withholding oxygen from a hypoxic COPD patient is the wrong, dangerous answer; the right move is controlled, titrated O2 (88-92%).</li><li><b>Haldane effect (CO2 gargoyle)</b> — O2-induced hypercapnia is NOT simply ‘knocking out respiratory drive’ — the Haldane effect and V/Q redistribution are the dominant mechanisms (the loss of drive is the smaller contributor).</li><li><b>NIPPV ventilator</b> — Jumping straight to intubation is wrong when NIPPV is appropriate — NIPPV is the first ventilatory step in hypercapnic COPD exacerbation unless contraindicated.</li><li><b>NIPPV contraindications (4 red doors)</b> — Forcing NIPPV on an obtunded, vomiting, or hemodynamically unstable patient is the wrong choice — these patients need intubation, not BiPAP.</li><li><b>Systemic steroids</b> — A long steroid taper is the wrong answer for a short (~5-day) exacerbation course; extending steroids only adds hyperglycemia and other side effects without benefit.</li><li><b>Bronchodilators</b> — Don't rely on long-acting maintenance inhalers for acute relief — SABA +/- SAMA is the rescue regimen in an exacerbation.</li><li><b>WANTED: exacerbation predictors</b> — FEV1 alone is NOT the strongest predictor of exacerbations — prior exacerbation history is. And an 'exacerbation' that doesn't fit (no infection, unilateral pleuritic pain) should prompt evaluation for PE.</li><li><b>Long-term O2 criteria (SpO2 ≤88%)</b> — Exercise-induced or isolated nocturnal desaturation alone does NOT qualify for mortality-benefit LTOT — only resting hypoxemia meeting the thresholds does.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Target SpO2 88–92%</div><div class="rte">The oxygen saturation TARGET in COPD is 88-92% (PaO2 ~60-70 mmHg) — deliberately below normal. Titrate flow to stay within this window, typically via nasal cannula or controlled-FiO2 (Venturi) mask. This balances adequate tissue oxygenation against the risk of CO2 retention.</div><div class="rtt">⚠️ Aiming for 94-100% ‘to be safe’ is WRONG — over-oxygenation worsens V/Q matching (loss of hypoxic vasoconstriction), blunts respiratory drive, and via the Haldane effect raises PaCO2, risking hypercapnic encephalopathy.</div></div><div class="rt"><div class="rtl">2. Too high → V/Q worsens (95%)</div><div class="rte">Excess O2 RELEASES compensatory hypoxic pulmonary vasoconstriction, redistributing blood to poorly ventilated alveoli and increasing dead-space ventilation → worsened V/Q mismatch and rising PaCO2. It also reduces hypoxic respiratory drive. These mechanisms, plus the Haldane effect, explain O2-induced hypercapnia.</div><div class="rtt">⚠️ More oxygen is NOT always better in COPD — over-shooting SpO2 to 95-100% can precipitate hypercapnic respiratory failure.</div></div><div class="rt"><div class="rtl">3. Too low → tissue death (85%)</div><div class="rte">Under-oxygenating below the 88% floor causes tissue hypoxia, lactic acidosis, arrhythmia, and end-organ injury. The therapeutic window is bounded on BOTH sides — give enough O2 to clear hypoxemia, but no more than needed.</div><div class="rtt">⚠️ Permissive hypoxia is wrong — don’t let a COPD patient ride at 85% out of CO2-retention fear; treat the hypoxemia and titrate to 88-92%.</div></div><div class="rt"><div class="rtl">4. ‘Withhold O2 / fear CO2’ = MYTH</div><div class="rte">Never WITHHOLD needed oxygen from a hypoxic COPD patient out of fear of CO2 retention — hypoxia kills faster than hypercapnia. The correct approach is to GIVE oxygen and TITRATE to 88-92%, monitoring with serial ABGs for rising CO2.</div><div class="rtt">⚠️ Withholding oxygen from a hypoxic COPD patient is the wrong, dangerous answer; the right move is controlled, titrated O2 (88-92%).</div></div><div class="rt"><div class="rtl">5. Haldane effect (CO2 gargoyle)</div><div class="rte">The Haldane effect: oxygenated hemoglobin has LOWER affinity for CO2, so giving excess O2 displaces CO2 off hemoglobin into plasma → rising PaCO2. This acts together with loss of hypoxic vasoconstriction (worse V/Q) and reduced respiratory drive to produce O2-induced hypercapnia.</div><div class="rtt">⚠️ O2-induced hypercapnia is NOT simply ‘knocking out respiratory drive’ — the Haldane effect and V/Q redistribution are the dominant mechanisms (the loss of drive is the smaller contributor).</div></div><div class="rt"><div class="rtl">6. NIPPV ventilator</div><div class="rte">Non-invasive positive pressure ventilation (BiPAP) is FIRST-LINE for a COPD exacerbation with respiratory acidosis (pH &lt;7.35 with PaCO2 &gt;45). It unloads respiratory muscles, improves alveolar ventilation, and reduces intubation, length of stay, and mortality.</div><div class="rtt">⚠️ Jumping straight to intubation is wrong when NIPPV is appropriate — NIPPV is the first ventilatory step in hypercapnic COPD exacerbation unless contraindicated.</div></div><div class="rt"><div class="rtl">7. NIPPV contraindications (4 red doors)</div><div class="rte">NIPPV fails or is contraindicated with: hemodynamic instability/shock, impaired mental status/obtundation, inability to cooperate or protect the airway, copious secretions, facial trauma/surgery, or respiratory arrest. In these situations proceed to INVASIVE mechanical ventilation.</div><div class="rtt">⚠️ Forcing NIPPV on an obtunded, vomiting, or hemodynamically unstable patient is the wrong choice — these patients need intubation, not BiPAP.</div></div><div class="rt"><div class="rtl">8. Systemic steroids</div><div class="rte">Systemic corticosteroids (prednisone ~40 mg/day for 5 days) shorten recovery, improve FEV1 and oxygenation, and reduce treatment failure/relapse in COPD exacerbations. Oral is as effective as IV in most patients. A short fixed course needs NO taper.</div><div class="rtt">⚠️ A long steroid taper is the wrong answer for a short (~5-day) exacerbation course; extending steroids only adds hyperglycemia and other side effects without benefit.</div></div><div class="rt"><div class="rtl">9. Bronchodilators</div><div class="rte">Short-acting bronchodilators are the backbone of acute symptom control: SABA (albuterol) +/- SAMA (ipratropium), delivered by MDI-with-spacer or nebulizer. They provide rapid relief of bronchospasm during an exacerbation.</div><div class="rtt">⚠️ Don't rely on long-acting maintenance inhalers for acute relief — SABA +/- SAMA is the rescue regimen in an exacerbation.</div></div><div class="rt"><div class="rtl">10. WANTED: exacerbation predictors</div><div class="rte">The single STRONGEST predictor of a future exacerbation is a PRIOR exacerbation ('frequent exacerbator' phenotype). Most exacerbations are infectious (&gt;50%), often from acquisition of a new bacterial strain. Always consider PULMONARY EMBOLISM as a 'don't-miss' mimic of an unexplained exacerbation.</div><div class="rtt">⚠️ FEV1 alone is NOT the strongest predictor of exacerbations — prior exacerbation history is. And an 'exacerbation' that doesn't fit (no infection, unilateral pleuritic pain) should prompt evaluation for PE.</div></div><div class="rt"><div class="rtl">11. Long-term O2 criteria (SpO2 ≤88%)</div><div class="rte">Long-term oxygen therapy (&gt;=15 h/day) gives a MORTALITY benefit only when resting hypoxemia criteria are met: PaO2 &lt;=55 mmHg or SpO2 &lt;=88%, OR PaO2 56-59 / SpO2 89% WITH cor pulmonale, right heart failure, or erythrocytosis (Hct &gt;55%). Reassess after the patient is clinically stable, not during an acute exacerbation.</div><div class="rtt">⚠️ Exercise-induced or isolated nocturnal desaturation alone does NOT qualify for mortality-benefit LTOT — only resting hypoxemia meeting the thresholds does.</div></div><div class="rt"><div class="rtl">12. Oxygen — last resort, 17–49% mortality</div><div class="rte">Severe exacerbations requiring maximal support (ICU, invasive ventilation) carry high in-hospital mortality (~17-49% depending on severity and need for mechanical ventilation). This underscores escalating care appropriately and addressing goals of care in advanced disease.</div></div><div class="rt"><div class="rtl">13. Outside / ambient air</div><div class="rte">Patients who fail NIPPV or meet contraindications move 'outside' the non-invasive pathway to invasive mechanical ventilation. Decisions to escalate should weigh reversibility of the exacerbation against the patient's baseline function and advance directives.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="batch/copd_3.html" title="COPD — Armory (GOLD ABE Treatment Ladder, Alpha-1 &amp; Complications)">‹ Prev sketch</a><a class="xall" href="index.html" title="All sketches">☰ All</a><a class="xnext" href="batch/copd_sketchy_pharma.html" title="COPD — Sketchy Pharma (The Hockey Rink)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

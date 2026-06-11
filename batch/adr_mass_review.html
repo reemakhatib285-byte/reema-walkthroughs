@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Adrenal — Mass Review: Imaging &amp; Surgical Decision Tree</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>10</em></summary><ol class="traps"><li><b>Unenhanced CT first</b> — ≤10 HU is the benign value; the reversal trap is reading high HU as reassuring — &gt;20 HU is the worrying one.</li><li><b>Lipid-rich benign → home</b> — Don't over-image or biopsy a clearly lipid-rich (≤10 HU) lesion — additional imaging adds nothing once HU confirms benign.</li><li><b>Hormonal workup — all patients</b> — Hormonal screening is universal — skipping the workup on a 'small benign-looking' mass misses subclinical/autonomous cortisol secretion and pheo.</li><li><b>1mg DST overnight</b> — Suppression to ≤1.8 µg/dL excludes autonomous cortisol; a value above this is NOT normal — failure to suppress is the abnormal/positive screen, not the reassuring one.</li><li><b>Plasma/urine metanephrines (pheo)</b> — Never give a beta-blocker first in pheo (unopposed alpha → hypertensive crisis) — alpha-block before beta-block.</li><li><b>Renin/aldosterone if HTN</b> — Stopping interfering drugs matters — MRAs (spironolactone/eplerenone) and other agents alter the ARR; also a unilateral mass on CT may not be the aldosterone source, so AVS lateralization is needed before surgery.</li><li><b>Androgen / DHEAS panel</b> — New virilization with high DHEAS + a large adrenal mass = ACC until proven otherwise — don't write it off as a benign androgen-secreting adenoma or PCOS.</li><li><b>Biopsy only after excluding pheo &amp; known cancer</b> — Never biopsy before excluding pheochromocytoma; never biopsy a suspected ACC at all.</li><li><b>Lap vs open adrenalectomy</b> — Don't take a suspected ACC laparoscopically — capsule violation/spillage seeds tumor and ruins the only curative chance; go open.</li><li><b>Post-op adrenal insufficiency risk</b> — Don't forget post-resection adrenal insufficiency in a patient who had autonomous cortisol secretion — stopping steroids abruptly can precipitate adrenal crisis.</li></ol></details><details class="panel"><summary>📖 Read-through — all 16 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Two questions always</div><div class="rte">For every adrenal incidentaloma ask two questions in PARALLEL: (1) is it FUNCTIONAL (autonomous hormone secretion)? and (2) is it MALIGNANT (imaging phenotype + size)? Imaging and biochemistry are done together, and either a functional or a suspicious result pushes toward surgery.</div></div><div class="rt"><div class="rtl">2. Unenhanced CT first</div><div class="rte">Non-contrast CT attenuation is the first-line malignancy discriminator: ≤10 HU = lipid-rich benign adenoma (no further imaging); 10–20 HU indeterminate (use washout or MRI chemical-shift); &gt;20 HU or heterogeneous = suspicious. On a washout study an adenoma shows absolute washout &gt;60% or relative washout &gt;40%.</div><div class="rtt">⚠️ ≤10 HU is the benign value; the reversal trap is reading high HU as reassuring — &gt;20 HU is the worrying one.</div></div><div class="rt"><div class="rtl">3. Size &gt;4cm</div><div class="rte">Size raises malignancy probability: &lt;4 cm usually benign; &gt;4 cm is a surgical threshold trigger; &gt;6 cm carries high ACC risk and is generally resected outright. Interval growth &gt;0.8–1 cm on follow-up is also a red flag.</div></div><div class="rt"><div class="rtl">4. Lipid-rich benign → home</div><div class="rte">A lipid-rich adenoma (non-contrast ≤10 HU), if non-functional, needs NO further imaging characterization — the low attenuation is specific enough for benignity. (It still gets the one-time hormonal screen.)</div><div class="rtt">⚠️ Don't over-image or biopsy a clearly lipid-rich (≤10 HU) lesion — additional imaging adds nothing once HU confirms benign.</div></div><div class="rt"><div class="rtl">5. &gt;4cm + HU&gt;20/heterogeneous → MDT</div><div class="rte">&gt;4 cm with HU &gt;20, heterogeneity, irregular margins, or invasion = suspicious for ACC → refer to a multidisciplinary team and lean toward RESECTION (open adrenalectomy if ACC suspected). FDG-PET/MRI may further characterize before surgery.</div></div><div class="rt"><div class="rtl">6. Hormonal workup — all patients</div><div class="rte">Every adrenal mass — regardless of size — gets a biochemical screen for autonomous hormone excess: cortisol (1 mg overnight DST), pheochromocytoma (metanephrines), and, if hypertensive/hypokalemic, aldosterone:renin ratio. Add adrenal androgens (DHEAS) when virilization/ACC is suspected.</div><div class="rtt">⚠️ Hormonal screening is universal — skipping the workup on a 'small benign-looking' mass misses subclinical/autonomous cortisol secretion and pheo.</div></div><div class="rt"><div class="rtl">7. 1mg DST overnight</div><div class="rte">The 1 mg overnight dexamethasone suppression test is universal: give 1 mg dexamethasone at 11 pm–midnight, measure 8 am cortisol. Failure to suppress to ≤1.8 µg/dL (50 nmol/L) indicates possible autonomous cortisol secretion (MACS/subclinical Cushing); &gt;5 µg/dL is more definite. Confirm with ACTH (low/suppressed) and late-night salivary cortisol / 24-h urinary free cortisol.</div><div class="rtt">⚠️ Suppression to ≤1.8 µg/dL excludes autonomous cortisol; a value above this is NOT normal — failure to suppress is the abnormal/positive screen, not the reassuring one.</div></div><div class="rt"><div class="rtl">8. Plasma/urine metanephrines (pheo)</div><div class="rte">Screen for pheochromocytoma with plasma free metanephrines or 24-h urinary fractionated metanephrines (high sensitivity). This is mandatory before any biopsy or surgery; a positive screen mandates preoperative alpha-blockade (phenoxybenzamine/doxazosin) THEN beta-blockade, with volume/salt loading.</div><div class="rtt">⚠️ Never give a beta-blocker first in pheo (unopposed alpha → hypertensive crisis) — alpha-block before beta-block.</div></div><div class="rt"><div class="rtl">9. Renin/aldosterone if HTN</div><div class="rte">In patients with hypertension and/or hypokalemia, screen for primary aldosteronism with the aldosterone:renin ratio (ARR) — high aldosterone with suppressed renin. Confirm with a saline/captopril suppression test, then lateralize with adrenal vein sampling before unilateral adrenalectomy.</div><div class="rtt">⚠️ Stopping interfering drugs matters — MRAs (spironolactone/eplerenone) and other agents alter the ARR; also a unilateral mass on CT may not be the aldosterone source, so AVS lateralization is needed before surgery.</div></div><div class="rt"><div class="rtl">10. Androgen / DHEAS panel</div><div class="rte">Measure adrenal androgens (DHEAS, testosterone, 17-OH-progesterone) when there is virilization, rapid hirsutism, or a large/suspicious mass. Markedly elevated DHEAS/androgens with a large heterogeneous mass strongly suggest adrenocortical carcinoma (or, with high 17-OHP, congenital adrenal hyperplasia).</div><div class="rtt">⚠️ New virilization with high DHEAS + a large adrenal mass = ACC until proven otherwise — don't write it off as a benign androgen-secreting adenoma or PCOS.</div></div><div class="rt"><div class="rtl">11. Functional or suspicious → surgery</div><div class="rte">Surgical indications for an incidentaloma: overt hormone excess (functional — Cushing, pheo, aldosteronoma, virilizing ACC), size &gt;4 cm, or imaging-suspicious for malignancy. Adrenalectomy is then the treatment; correct the hormonal milieu and pretreat pheo before the OR.</div></div><div class="rt"><div class="rtl">12. FDG-PET / advanced imaging</div><div class="rte">For indeterminate lesions (10–20 HU, equivocal washout), use MRI chemical-shift (signal drop-out on out-of-phase = lipid = adenoma) or FDG-PET (avid = malignant/ACC/metastasis). PET also helps stage ACC and find metastases.</div></div><div class="rt"><div class="rtl">13. Biopsy only after excluding pheo &amp; known cancer</div><div class="rte">Biopsy is almost never indicated: it cannot diagnose ACC (needs whole-specimen Weiss score) and risks needle-track seeding/capsule violation, and it can trigger crisis in pheo. The ONLY legitimate scenario is a suspected metastasis in a patient with a known extra-adrenal cancer — and only after pheo is biochemically excluded.</div><div class="rtt">⚠️ Never biopsy before excluding pheochromocytoma; never biopsy a suspected ACC at all.</div></div><div class="rt"><div class="rtl">14. Lap vs open adrenalectomy</div><div class="rte">Laparoscopic adrenalectomy is preferred for benign/functioning lesions and small masses. OPEN adrenalectomy is mandated for suspected ACC or any mass with local/vascular invasion — to achieve en-bloc R0 resection and avoid capsule rupture/tumor spillage that worsens prognosis.</div><div class="rtt">⚠️ Don't take a suspected ACC laparoscopically — capsule violation/spillage seeds tumor and ruins the only curative chance; go open.</div></div><div class="rt"><div class="rtl">15. Observation lounge</div><div class="rte">A benign-appearing (≤10 HU, &lt;4 cm, homogeneous), non-functional adenoma can be reassured with minimal or no routine follow-up per current guidelines. If any feature is indeterminate or borderline-functional, individualized repeat imaging/hormone testing is reasonable.</div></div><div class="rt"><div class="rtl">16. Post-op adrenal insufficiency risk</div><div class="rte">After unilateral adrenalectomy for a cortisol-secreting (or autonomously secreting) adenoma, the chronically suppressed contralateral gland/HPA axis may not immediately resume output → transient secondary adrenal insufficiency. Cover with perioperative glucocorticoids and taper slowly with morning cortisol/ACTH-stimulation guidance over months.</div><div class="rtt">⚠️ Don't forget post-resection adrenal insufficiency in a patient who had autonomous cortisol secretion — stopping steroids abruptly can precipitate adrenal crisis.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="adr_imaging.html" title="Adrenal — Imaging War Room &amp; Pathology Lab">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="adr_surgery.html" title="Adrenal — Surgical Armory &amp; Mitotane Apothecary">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

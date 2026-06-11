@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Meningitis — Management Order, Empiric Antibiotics &amp; Dexamethasone</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Triage: act within 60 min</b> — WRONG: withholding antibiotics until after CT and LP are completed. Every hour of delay increases death and disability — give empiric therapy immediately after blood cultures; CSF Gram stain/culture yield drops only modestly in the first few hours, so the patient's life takes priority over a perfect culture.</li><li><b>Decision fork: who needs CT first</b> — WRONG: getting a CT on every suspected meningitis patient 'to be safe.' Universal pre-LP CT delays diagnosis and treatment in low-risk patients who can be tapped immediately; reserve CT for those with the specific IDSA risk features, and never let CT delay antibiotics.</li><li><b>Left path: direct LP</b> — WRONG: assuming a normal neuro exam means you can safely delay antibiotics while arranging the LP. Even in the direct-LP path, if there is any hold-up obtaining CSF, give antibiotics immediately after blood cultures — do not let a 'simple' tap delay treatment.</li><li><b>Right path: CT then LP</b> — WRONG ordering: CT → LP → then antibiotics. The correct sequence when CT is indicated is blood cultures + steroids + antibiotics → CT → LP. Reversing it (waiting for imaging before treating) is the classic exam error and worsens outcomes.</li><li><b>Empiric: ceftriaxone + vancomycin + acyclovir</b> — WRONG: ceftriaxone monotherapy. Up to ~25% of pneumococci have reduced cephalosporin susceptibility, so vancomycin is mandatory in empiric coverage until susceptibilities return — dropping vancomycin risks under-treating resistant pneumococcus.</li><li><b>Add ampicillin &gt;50 / immunocompromised</b> — WRONG: relying on ceftriaxone + vancomycin alone in a 65-year-old or immunosuppressed patient. Cephalosporins do not cover Listeria, so omitting ampicillin in a Listeria-risk host leaves a fatal gap — the discriminator is age &gt;50 or impaired cell-mediated immunity.</li><li><b>Penicillin allergy: TMP-SMX</b> — WRONG: substituting another cephalosporin (e.g., cefepime) for ampicillin in a penicillin-allergic, Listeria-risk patient. No cephalosporin covers Listeria — the correct swap is TMP-SMX or meropenem, not another beta-lactam in the cephalosporin class.</li><li><b>Nosocomial / post-neurosurgery</b> — WRONG: using community-acquired ceftriaxone-based therapy after neurosurgery or in a shunt infection. Ceftriaxone does NOT cover Pseudomonas and under-covers staph — the discriminator is the healthcare-associated setting, which mandates antipseudomonal + anti-staph (MRSA) coverage.</li><li><b>Dexamethasone BEFORE antibiotics</b> — WRONG: giving dexamethasone after antibiotics have already been running. Once bacteriolysis and the cytokine cascade are underway, late steroid provides little benefit — but the converse trap is also wrong: do NOT delay antibiotics to obtain steroid. Give them together if steroid isn't immediately ready.</li><li><b>Dexamethasone dose</b> — WRONG: continuing the full 4-day steroid course regardless of the organism. If cultures reveal a non-pneumococcal pathogen in an adult (e.g., meningococcus, Listeria) or a viral cause, the benefit is unproven/absent — stop dexamethasone rather than completing the course reflexively.</li><li><b>Dexamethasone benefit: pneumococcus</b> — WRONG: assuming steroids help all-comers equally. The strongest evidence is pneumococcus (adults) and Hib (kids); for meningococcal, Listeria, gram-negative, or viral meningitis the benefit is not demonstrated, so steroids should be stopped once those are confirmed.</li><li><b>Mechanism: reduces inflammation</b> — WRONG: thinking the steroid is treating the infection. Dexamethasone is purely anti-inflammatory adjunct — it does nothing to the organism, so it must always accompany (never replace) appropriate antibiotics.</li><li><b>Dexa improves vancomycin penetration</b> — WRONG: giving vancomycin intrathecally to overcome poor CSF penetration. The correct fix is to RAISE the IV vancomycin dose and follow troughs (or add rifampin); routine intrathecal vancomycin is not standard for community-acquired meningitis and carries toxicity risk.</li><li><b>Add acyclovir / ganciclovir</b> — WRONG: using acyclovir for CMV encephalitis. Acyclovir has essentially no activity against CMV — the correct agent is ganciclovir (or foscarnet). Conversely, do not reach for ganciclovir for HSV; matching drug to virus is the tested distinction.</li><li><b>Repeat LP / treatment duration</b> — WRONG: applying a single fixed antibiotic course to every organism. Duration is pathogen-specific — Listeria and gram-negative bacilli need ≥3 weeks, far longer than meningococcus (7 days); under-treating Listeria leads to relapse.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Triage: act within 60 min</div><div class="rte">Sequence: draw blood cultures (2 sets) → give dexamethasone with/just before the first antibiotic → give empiric antibiotics, all within 60 minutes of presentation (door-to-antibiotic time drives mortality). If LP can be done immediately and no CT is indicated, tap first; otherwise antibiotics must NOT wait. Blood cultures are positive in ~50-70% and preserve a microbiologic diagnosis even when CSF is sterilized by antibiotics.</div><div class="rtt">⚠️ WRONG: withholding antibiotics until after CT and LP are completed. Every hour of delay increases death and disability — give empiric therapy immediately after blood cultures; CSF Gram stain/culture yield drops only modestly in the first few hours, so the patient's life takes priority over a perfect culture.</div></div><div class="rt"><div class="rtl">2. Decision fork: who needs CT first</div><div class="rte">Obtain CT head BEFORE LP only if any IDSA red flag is present: focal neurologic deficit, papilledema, new-onset seizure (within 1 week), moderate-to-severe altered consciousness (GCS drop), immunocompromise (HIV, transplant, immunosuppressants), or history of CNS disease/mass. These features raise concern for a mass lesion and cerebral herniation risk from LP.</div><div class="rtt">⚠️ WRONG: getting a CT on every suspected meningitis patient 'to be safe.' Universal pre-LP CT delays diagnosis and treatment in low-risk patients who can be tapped immediately; reserve CT for those with the specific IDSA risk features, and never let CT delay antibiotics.</div></div><div class="rt"><div class="rtl">3. Left path: direct LP</div><div class="rte">Immunocompetent patient with normal mentation and no focal deficits, no papilledema, no recent seizure → proceed DIRECTLY to LP without CT, then start dexamethasone + empiric antibiotics. Sending CSF before antibiotics (when feasible without delay) maximizes Gram stain and culture yield.</div><div class="rtt">⚠️ WRONG: assuming a normal neuro exam means you can safely delay antibiotics while arranging the LP. Even in the direct-LP path, if there is any hold-up obtaining CSF, give antibiotics immediately after blood cultures — do not let a 'simple' tap delay treatment.</div></div><div class="rt"><div class="rtl">4. Right path: CT then LP</div><div class="rte">Concerning features → blood cultures + dexamethasone + empiric antibiotics FIRST, THEN CT to exclude a mass/herniation risk, THEN LP if CT is clear. The antibiotics-before-CT order is the high-yield point: imaging must never push back the first antibiotic dose.</div><div class="rtt">⚠️ WRONG ordering: CT → LP → then antibiotics. The correct sequence when CT is indicated is blood cultures + steroids + antibiotics → CT → LP. Reversing it (waiting for imaging before treating) is the classic exam error and worsens outcomes.</div></div><div class="rt"><div class="rtl">5. Empiric: ceftriaxone + vancomycin + acyclovir</div><div class="rte">Standard empiric regimen for immunocompetent adults: ceftriaxone 2 g IV q12h (covers S. pneumoniae, N. meningitidis, H. influenzae) PLUS vancomycin 15-20 mg/kg IV q8-12h (covers ceftriaxone-resistant pneumococcus). Add acyclovir 10 mg/kg IV q8h if HSV encephalitis is on the differential (altered mentation, temporal-lobe signs, seizures).</div><div class="rtt">⚠️ WRONG: ceftriaxone monotherapy. Up to ~25% of pneumococci have reduced cephalosporin susceptibility, so vancomycin is mandatory in empiric coverage until susceptibilities return — dropping vancomycin risks under-treating resistant pneumococcus.</div></div><div class="rt"><div class="rtl">6. Add ampicillin &gt;50 / immunocompromised</div><div class="rte">Add AMPICILLIN 2 g IV q4h for Listeria monocytogenes coverage in age &gt;50, neonates, pregnancy, alcoholism, and immunocompromise (steroids, transplant, HIV, malignancy). Cephalosporins have NO Listeria activity, so ampicillin (or penicillin G) is the dedicated agent for this gram-positive rod.</div><div class="rtt">⚠️ WRONG: relying on ceftriaxone + vancomycin alone in a 65-year-old or immunosuppressed patient. Cephalosporins do not cover Listeria, so omitting ampicillin in a Listeria-risk host leaves a fatal gap — the discriminator is age &gt;50 or impaired cell-mediated immunity.</div></div><div class="rt"><div class="rtl">7. Penicillin allergy: TMP-SMX</div><div class="rte">For Listeria coverage in a true penicillin-allergic patient, use TMP-SMX (trimethoprim-sulfamethoxazole) IV; meropenem is an alternative that also covers Listeria plus gram-negatives. Note meropenem (a carbapenem) can usually be given to penicillin-allergic patients with low cross-reactivity except in severe/anaphylactic histories.</div><div class="rtt">⚠️ WRONG: substituting another cephalosporin (e.g., cefepime) for ampicillin in a penicillin-allergic, Listeria-risk patient. No cephalosporin covers Listeria — the correct swap is TMP-SMX or meropenem, not another beta-lactam in the cephalosporin class.</div></div><div class="rt"><div class="rtl">8. Nosocomial / post-neurosurgery</div><div class="rte">Healthcare-associated meningitis (post-neurosurgery, CSF shunt/drain, penetrating head trauma, neutropenic) needs vancomycin (MRSA, coagulase-negative staph) PLUS an antipseudomonal beta-lactam: cefepime, ceftazidime, or meropenem. These hosts harbor staphylococci, Pseudomonas, and other gram-negatives not covered by ceftriaxone.</div><div class="rtt">⚠️ WRONG: using community-acquired ceftriaxone-based therapy after neurosurgery or in a shunt infection. Ceftriaxone does NOT cover Pseudomonas and under-covers staph — the discriminator is the healthcare-associated setting, which mandates antipseudomonal + anti-staph (MRSA) coverage.</div></div><div class="rt"><div class="rtl">9. Dexamethasone BEFORE antibiotics</div><div class="rte">Give dexamethasone 10 mg IV 15-20 minutes BEFORE, or concurrently with, the first antibiotic dose in suspected bacterial meningitis. Antibiotics lyse bacteria and release cell-wall fragments that trigger a cytokine surge; pre-dosing steroid blunts this inflammatory storm and reduces death and neurologic sequelae (notably in pneumococcal disease).</div><div class="rtt">⚠️ WRONG: giving dexamethasone after antibiotics have already been running. Once bacteriolysis and the cytokine cascade are underway, late steroid provides little benefit — but the converse trap is also wrong: do NOT delay antibiotics to obtain steroid. Give them together if steroid isn't immediately ready.</div></div><div class="rt"><div class="rtl">10. Dexamethasone dose</div><div class="rte">Dexamethasone dosing: 10 mg IV every 6 hours for 4 days (pediatric: 0.15 mg/kg q6h x4 days). Continue only if CSF/cultures confirm S. pneumoniae (adults) or H. influenzae (children); discontinue if another organism or a non-bacterial cause is identified.</div><div class="rtt">⚠️ WRONG: continuing the full 4-day steroid course regardless of the organism. If cultures reveal a non-pneumococcal pathogen in an adult (e.g., meningococcus, Listeria) or a viral cause, the benefit is unproven/absent — stop dexamethasone rather than completing the course reflexively.</div></div><div class="rt"><div class="rtl">11. Dexamethasone benefit: pneumococcus</div><div class="rte">Dexamethasone's proven mortality benefit is greatest in PNEUMOCOCCAL meningitis in adults; in children it reduces sensorineural HEARING LOSS in H. influenzae type b meningitis. Benefit is established mainly in high-income settings; data in resource-limited settings and in non-pneumococcal organisms are weak.</div><div class="rtt">⚠️ WRONG: assuming steroids help all-comers equally. The strongest evidence is pneumococcus (adults) and Hib (kids); for meningococcal, Listeria, gram-negative, or viral meningitis the benefit is not demonstrated, so steroids should be stopped once those are confirmed.</div></div><div class="rt"><div class="rtl">12. Mechanism: reduces inflammation</div><div class="rte">Mechanism: antibiotics rapidly kill bacteria, releasing cell-wall components (pneumococcal peptidoglycan, LPS) that activate macrophages/microglia to release TNF-alpha and IL-1beta. This cytokine surge drives meningeal inflammation, cerebral edema, vasculitis, and raised ICP. Dexamethasone suppresses this host inflammatory response, limiting secondary CNS injury.</div><div class="rtt">⚠️ WRONG: thinking the steroid is treating the infection. Dexamethasone is purely anti-inflammatory adjunct — it does nothing to the organism, so it must always accompany (never replace) appropriate antibiotics.</div></div><div class="rt"><div class="rtl">13. Dexa improves vancomycin penetration</div><div class="rte">Dexamethasone reduces meningeal inflammation and thereby decreases blood-brain-barrier permeability, lowering vancomycin penetration into CSF. When giving dexamethasone WITH vancomycin for resistant pneumococcus, use higher vancomycin dosing (target trough 15-20, ~45-60 mg/kg/day) and consider adding rifampin if response is poor.</div><div class="rtt">⚠️ WRONG: giving vancomycin intrathecally to overcome poor CSF penetration. The correct fix is to RAISE the IV vancomycin dose and follow troughs (or add rifampin); routine intrathecal vancomycin is not standard for community-acquired meningitis and carries toxicity risk.</div></div><div class="rt"><div class="rtl">14. Add acyclovir / ganciclovir</div><div class="rte">Add acyclovir 10 mg/kg IV q8h empirically when HSV (or VZV) encephalitis is suspected — fever with altered mentation, focal/temporal-lobe signs, seizures, or CSF lymphocytosis with RBCs. Acyclovir covers HSV-1/2 and VZV; CMV requires ganciclovir/foscarnet instead. Maintain hydration to prevent acyclovir crystalline nephropathy.</div><div class="rtt">⚠️ WRONG: using acyclovir for CMV encephalitis. Acyclovir has essentially no activity against CMV — the correct agent is ganciclovir (or foscarnet). Conversely, do not reach for ganciclovir for HSV; matching drug to virus is the tested distinction.</div></div><div class="rt"><div class="rtl">15. Repeat LP / treatment duration</div><div class="rte">Added clinical anchor: typical treatment durations are N. meningitidis 7 days, H. influenzae 7 days, S. pneumoniae 10-14 days, Listeria ≥21 days, gram-negative bacilli 21 days. Repeat LP is indicated if there is no clinical improvement at 48h, for resistant pneumococcus on steroids, gram-negative bacillary meningitis, or neonates.</div><div class="rtt">⚠️ WRONG: applying a single fixed antibiotic course to every organism. Duration is pathogen-specific — Listeria and gram-negative bacilli need ≥3 weeks, far longer than meningococcus (7 days); under-treating Listeria leads to relapse.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="mening_csf.html" title="Meningitis — CSF Profiles (Bacterial vs Viral vs TB/Fungal)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="mening_prophylaxis.html" title="Meningitis — Meningococcal Prophylaxis &amp; Viral Causes">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

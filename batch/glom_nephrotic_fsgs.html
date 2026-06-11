@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Glomerular (Nephrotic) — Focal Segmental Glomerulosclerosis (FSGS)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>#1 cause adult ESKD nephrotic</b> — WRONG ANSWER: 'membranous nephropathy is the most common primary cause of nephrotic syndrome / ESKD in adults.' Discriminator: membranous is the classic cause in OLDER white adults, but FSGS is overall the most common primary glomerular disease progressing to ESKD in the US and the leading nephrotic pattern in Black adults. Match the demographic: Black adult with nephrotic syndrome → FSGS, not membranous.</li><li><b>African ancestry 50%</b> — WRONG ANSWER: 'FSGS is most common in elderly white patients.' Discriminator: elderly white = think membranous; FSGS skews toward younger and Black patients via APOL1 risk variants. Picking 'elderly white' confuses FSGS with membranous nephropathy.</li><li><b>Histologic variants</b> — WRONG ANSWER: 'FSGS is a single uniform histologic pattern.' Discriminator: FSGS is a heterogeneous family of five Columbia variants with very different prognoses (tip best, collapsing worst). A stem that treats all FSGS identically is wrong — the variant (and primary vs secondary etiology) drives both prognosis and whether to immunosuppress.</li><li><b>Collapsing = worst</b> — WRONG ANSWER: 'the tip lesion variant carries the worst prognosis.' Discriminator: it's the reverse — the TIP lesion has the BEST prognosis (often steroid-responsive), while the COLLAPSING variant has the worst. If a stem describes an HIV-positive patient with rapid renal decline, expect collapsing FSGS, not tip lesion.</li><li><b>Foot process effacement</b> — WRONG ANSWER: 'subendothelial immune-complex deposits drive FSGS' (i.e., picking an immune-complex/MPGN or lupus mechanism). Discriminator: FSGS is a non-immune-complex podocytopathy — EM shows foot process effacement, and IF is negative or only shows nonspecific IgM/C3 trapping in sclerotic segments. Subendothelial deposits point to MPGN or class IV lupus nephritis, not FSGS.</li><li><b>Primary = permeability factor</b> — WRONG ANSWER: 'primary FSGS is caused by glomerular hyperfiltration/adaptive injury.' Discriminator: hyperfiltration/reduced nephron mass is the mechanism of SECONDARY FSGS. Primary FSGS is the circulating-permeability-factor podocytopathy with abrupt full-blown nephrotic syndrome and diffuse foot process effacement — and only primary FSGS warrants immunosuppression.</li><li><b>Secondary: adaptive/hyperfiltration</b> — WRONG ANSWER: 'secondary FSGS always presents with full nephrotic syndrome (heavy edema + hypoalbuminemia).' Discriminator: secondary/adaptive FSGS usually causes sub-nephrotic proteinuria with NORMAL serum albumin and minimal edema because protein loss develops gradually — full nephrotic syndrome with hypoalbuminemia favors PRIMARY FSGS. Mislabeling secondary as primary leads to inappropriate immunosuppression.</li><li><b>Genetic FSGS</b> — WRONG ANSWER: 'genetic FSGS responds well to corticosteroids.' Discriminator: monogenic podocyte-gene FSGS is characteristically STEROID-RESISTANT (the defect is structural, not a circulating factor), and immunosuppression is generally avoided. Steroid resistance plus young age or family history should trigger genetic testing rather than escalating immunosuppression.</li><li><b>Steroids 1st line (primary)</b> — WRONG ANSWER: 'immunosuppression is never indicated in FSGS' OR 'immunosuppress every FSGS patient.' Discriminator: the answer is conditional — immunosuppress PRIMARY FSGS (prolonged steroids first line, CNI for steroid resistance), but do NOT immunosuppress secondary or genetic FSGS. The board point is matching therapy to etiology, not a blanket yes/no.</li><li><b>Don't immunosuppress secondary</b> — WRONG ANSWER: 'immunosuppress all FSGS regardless of cause.' Discriminator: in secondary FSGS the podocyte injury is from hyperfiltration, so immunosuppression adds toxicity without benefit — RAAS blockade and treating the underlying cause are correct. Reflexively giving steroids to an obese patient with sub-nephrotic FSGS is the classic trap.</li><li><b>RAAS + SGLT2i all types</b> — WRONG ANSWER: 'RAAS blockade is contraindicated in heavy proteinuria.' Discriminator: the opposite is true — ACEi/ARB are first-line antiproteinuric agents and reduce progression in proteinuric glomerular disease; they are cornerstone therapy in FSGS (watch potassium/creatinine, but a modest creatinine rise is acceptable). SGLT2 inhibitors are an additive, not contraindicated, therapy.</li><li><b>Secondary → treat underlying</b> — WRONG ANSWER: 'treat secondary FSGS with high-dose corticosteroids.' Discriminator: secondary FSGS has no immune target — steroids are ineffective and harmful; you remove the driver (lose weight, stop the drug) plus give RAAS blockade. Only PRIMARY FSGS gets steroids.</li><li><b>Recurs after transplant</b> — WRONG ANSWER: 'FSGS never recurs after kidney transplant' (or 'genetic FSGS recurs at high rates'). Discriminator: PRIMARY FSGS recurs frequently post-transplant (circulating factor), treated with plasma exchange; GENETIC FSGS rarely recurs because there's no circulating factor — the recipient's transplanted podocytes have normal genes. Match recurrence risk to the primary-vs-genetic mechanism.</li><li><b>~50% ESKD in 10 yrs</b> — WRONG ANSWER: 'FSGS rarely progresses to kidney failure / has a benign course.' Discriminator: FSGS is a leading cause of ESKD precisely because refractory nephrotic FSGS commonly progresses (~50% to ESKD in a decade if proteinuria persists). Calling it benign ignores its status as the #1 primary glomerular cause of ESKD in the US.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. #1 cause adult ESKD nephrotic</div><div class="rte">FSGS is the most common primary glomerular disease causing end-stage kidney disease (ESKD) in the US and accounts for roughly one-third of adult nephrotic syndrome cases (the single most common cause of nephrotic syndrome in Black adults). 'Focal' = some glomeruli affected; 'segmental' = only part of each affected tuft is sclerosed — so sampling matters and a biopsy can miss it. Light microscopy shows segmental capillary collapse with hyalinosis; IF is usually negative or nonspecific (IgM/C3 trapping).</div><div class="rtt">⚠️ WRONG ANSWER: 'membranous nephropathy is the most common primary cause of nephrotic syndrome / ESKD in adults.' Discriminator: membranous is the classic cause in OLDER white adults, but FSGS is overall the most common primary glomerular disease progressing to ESKD in the US and the leading nephrotic pattern in Black adults. Match the demographic: Black adult with nephrotic syndrome → FSGS, not membranous.</div></div><div class="rt"><div class="rtl">2. African ancestry 50%</div><div class="rte">Strong predilection for patients of African ancestry, driven largely by APOL1 high-risk variants (G1/G2) on chromosome 22; two risk alleles markedly raise lifetime risk of FSGS, HIVAN, and hypertensive nephrosclerosis. This explains the higher incidence and faster progression of FSGS in Black patients. The same APOL1 biology underlies the high-risk donor-kidney concept in transplant.</div><div class="rtt">⚠️ WRONG ANSWER: 'FSGS is most common in elderly white patients.' Discriminator: elderly white = think membranous; FSGS skews toward younger and Black patients via APOL1 risk variants. Picking 'elderly white' confuses FSGS with membranous nephropathy.</div></div><div class="rt"><div class="rtl">3. Histologic variants</div><div class="rte">The Columbia classification recognizes five morphologic variants: NOS (not otherwise specified, most common), perihilar (typical of secondary/adaptive forms), cellular, tip lesion (best prognosis, often steroid-responsive), and collapsing (worst prognosis, seen in HIVAN and APOL1/drug-related disease). Variant predicts prognosis and treatment response, so the pathology read matters clinically.</div><div class="rtt">⚠️ WRONG ANSWER: 'FSGS is a single uniform histologic pattern.' Discriminator: FSGS is a heterogeneous family of five Columbia variants with very different prognoses (tip best, collapsing worst). A stem that treats all FSGS identically is wrong — the variant (and primary vs secondary etiology) drives both prognosis and whether to immunosuppress.</div></div><div class="rt"><div class="rtl">4. Collapsing = worst</div><div class="rte">The collapsing variant shows global/segmental capillary tuft collapse with overlying podocyte hyperplasia and is the most aggressive form, with the worst prognosis and rapid progression to ESKD. It is the hallmark of HIVAN and is also seen with APOL1 risk variants, interferon therapy, pamidronate, and parvovirus B19.</div><div class="rtt">⚠️ WRONG ANSWER: 'the tip lesion variant carries the worst prognosis.' Discriminator: it's the reverse — the TIP lesion has the BEST prognosis (often steroid-responsive), while the COLLAPSING variant has the worst. If a stem describes an HIV-positive patient with rapid renal decline, expect collapsing FSGS, not tip lesion.</div></div><div class="rt"><div class="rtl">5. Foot process effacement</div><div class="rte">FSGS is fundamentally a PODOCYTOPATHY: electron microscopy shows diffuse podocyte foot process effacement (extensive in primary, more focal/partial in secondary adaptive forms). Like minimal change disease it is a podocyte injury disease, but FSGS adds segmental scarring on LM — many consider MCD and primary FSGS a spectrum.</div><div class="rtt">⚠️ WRONG ANSWER: 'subendothelial immune-complex deposits drive FSGS' (i.e., picking an immune-complex/MPGN or lupus mechanism). Discriminator: FSGS is a non-immune-complex podocytopathy — EM shows foot process effacement, and IF is negative or only shows nonspecific IgM/C3 trapping in sclerotic segments. Subendothelial deposits point to MPGN or class IV lupus nephritis, not FSGS.</div></div><div class="rt"><div class="rtl">6. Primary = permeability factor</div><div class="rte">Primary (idiopathic) FSGS is thought to be driven by a circulating permeability factor (candidates include suPAR and anti-nephrin/CD40 antibodies) that injures podocytes diffusely. It presents abruptly with the FULL nephrotic syndrome — heavy proteinuria (often &gt;3.5 g/day, can be massive), hypoalbuminemia, edema, and diffuse foot process effacement on EM. This abrupt nephrotic onset with diffuse effacement is what marks it as primary and immunosuppression-responsive.</div><div class="rtt">⚠️ WRONG ANSWER: 'primary FSGS is caused by glomerular hyperfiltration/adaptive injury.' Discriminator: hyperfiltration/reduced nephron mass is the mechanism of SECONDARY FSGS. Primary FSGS is the circulating-permeability-factor podocytopathy with abrupt full-blown nephrotic syndrome and diffuse foot process effacement — and only primary FSGS warrants immunosuppression.</div></div><div class="rt"><div class="rtl">7. Secondary: adaptive/hyperfiltration</div><div class="rte">Secondary FSGS results from adaptive glomerular hyperfiltration or reduced nephron mass: obesity, vesicoureteral reflux, prior nephrectomy/oligonephronia, sickle cell disease, chronic hypertension, and healed prior GN. It typically presents with slowly rising, often SUB-nephrotic proteinuria, preserved serum albumin, and only segmental (not diffuse) foot process effacement on EM. Drug- and virus-associated forms (heroin, pamidronate, anabolic steroids, interferon) also fall under non-primary FSGS.</div><div class="rtt">⚠️ WRONG ANSWER: 'secondary FSGS always presents with full nephrotic syndrome (heavy edema + hypoalbuminemia).' Discriminator: secondary/adaptive FSGS usually causes sub-nephrotic proteinuria with NORMAL serum albumin and minimal edema because protein loss develops gradually — full nephrotic syndrome with hypoalbuminemia favors PRIMARY FSGS. Mislabeling secondary as primary leads to inappropriate immunosuppression.</div></div><div class="rt"><div class="rtl">8. Genetic FSGS</div><div class="rte">Genetic/familial FSGS arises from mutations in podocyte structural/slit-diaphragm genes: NPHS1 (nephrin, congenital nephrotic syndrome of the Finnish type), NPHS2 (podocin), ACTN4 (alpha-actinin-4), TRPC6, WT1, INF2. Suspect it in congenital/childhood onset, positive family history, syndromic features, or steroid resistance — genetic testing changes management and avoids futile immunosuppression.</div><div class="rtt">⚠️ WRONG ANSWER: 'genetic FSGS responds well to corticosteroids.' Discriminator: monogenic podocyte-gene FSGS is characteristically STEROID-RESISTANT (the defect is structural, not a circulating factor), and immunosuppression is generally avoided. Steroid resistance plus young age or family history should trigger genetic testing rather than escalating immunosuppression.</div></div><div class="rt"><div class="rtl">9. Steroids 1st line (primary)</div><div class="rte">For PRIMARY FSGS, prolonged high-dose corticosteroids are first line — e.g., prednisone ~1 mg/kg/day (max ~80 mg) often continued for up to 4–6 months because remission is slow; steroid-resistant cases get calcineurin inhibitors (cyclosporine or tacrolimus) as the main second-line, with adjunctive RAAS blockade throughout.</div><div class="rtt">⚠️ WRONG ANSWER: 'immunosuppression is never indicated in FSGS' OR 'immunosuppress every FSGS patient.' Discriminator: the answer is conditional — immunosuppress PRIMARY FSGS (prolonged steroids first line, CNI for steroid resistance), but do NOT immunosuppress secondary or genetic FSGS. The board point is matching therapy to etiology, not a blanket yes/no.</div></div><div class="rt"><div class="rtl">10. Don't immunosuppress secondary</div><div class="rte">Secondary (adaptive/maladaptive) FSGS should NOT be treated with steroids/immunosuppression — there is no circulating immune driver. Management is conservative/antiproteinuric: maximal RAAS blockade (ACEi or ARB), blood-pressure and sodium control, weight loss for obesity-related disease, and stopping the offending drug.</div><div class="rtt">⚠️ WRONG ANSWER: 'immunosuppress all FSGS regardless of cause.' Discriminator: in secondary FSGS the podocyte injury is from hyperfiltration, so immunosuppression adds toxicity without benefit — RAAS blockade and treating the underlying cause are correct. Reflexively giving steroids to an obese patient with sub-nephrotic FSGS is the classic trap.</div></div><div class="rt"><div class="rtl">11. RAAS + SGLT2i all types</div><div class="rte">Foundational antiproteinuric therapy applies to ALL FSGS regardless of cause: ACEi or ARB to lower intraglomerular pressure and proteinuria, now paired with an SGLT2 inhibitor (e.g., dapagliflozin), which reduces proteinuria and slows CKD progression in proteinuric kidney disease. Add BP control and dietary sodium restriction; these are background therapy on top of (or instead of) immunosuppression depending on etiology.</div><div class="rtt">⚠️ WRONG ANSWER: 'RAAS blockade is contraindicated in heavy proteinuria.' Discriminator: the opposite is true — ACEi/ARB are first-line antiproteinuric agents and reduce progression in proteinuric glomerular disease; they are cornerstone therapy in FSGS (watch potassium/creatinine, but a modest creatinine rise is acceptable). SGLT2 inhibitors are an additive, not contraindicated, therapy.</div></div><div class="rt"><div class="rtl">12. Secondary → treat underlying</div><div class="rte">For secondary FSGS, treat the root cause: weight loss/bariatric measures for obesity-related FSGS, correct reflux, discontinue the offending drug (pamidronate, anabolic steroids, interferon, heroin), control hypertension, and optimize sickle cell disease — alongside RAAS/SGLT2i. Etiology-directed therapy, not immunosuppression, is the answer.</div><div class="rtt">⚠️ WRONG ANSWER: 'treat secondary FSGS with high-dose corticosteroids.' Discriminator: secondary FSGS has no immune target — steroids are ineffective and harmful; you remove the driver (lose weight, stop the drug) plus give RAAS blockade. Only PRIMARY FSGS gets steroids.</div></div><div class="rt"><div class="rtl">13. Recurs after transplant</div><div class="rte">Primary FSGS recurs in the renal allograft in roughly 30–40% of cases (higher with prior recurrence, rapid native progression, younger age), often within days to weeks because of the circulating permeability factor. Treatment of recurrence is plasmapheresis/plasma exchange (to remove the factor) ± rituximab and intensified immunosuppression — the 'washing machine.'</div><div class="rtt">⚠️ WRONG ANSWER: 'FSGS never recurs after kidney transplant' (or 'genetic FSGS recurs at high rates'). Discriminator: PRIMARY FSGS recurs frequently post-transplant (circulating factor), treated with plasma exchange; GENETIC FSGS rarely recurs because there's no circulating factor — the recipient's transplanted podocytes have normal genes. Match recurrence risk to the primary-vs-genetic mechanism.</div></div><div class="rt"><div class="rtl">14. ~50% ESKD in 10 yrs</div><div class="rte">Prognosis hinges on remission: untreated or steroid-resistant primary FSGS with persistent nephrotic-range proteinuria progresses to ESKD in roughly 50% of patients within ~10 years, whereas achieving complete/partial remission dramatically improves renal survival. Degree of proteinuria and remission status are the key prognostic determinants.</div><div class="rtt">⚠️ WRONG ANSWER: 'FSGS rarely progresses to kidney failure / has a benign course.' Discriminator: FSGS is a leading cause of ESKD precisely because refractory nephrotic FSGS commonly progresses (~50% to ESKD in a decade if proteinuria persists). Calling it benign ignores its status as the #1 primary glomerular cause of ESKD in the US.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="glom_nephrotic_fabry.html" title="Glomerular (Nephrotic) — Fabry&#x27;s Disease">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="glom_nephrotic_deposition.html" title="Glomerular (Nephrotic) — Glomerular Deposition Diseases (Amyloid / MIDD)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

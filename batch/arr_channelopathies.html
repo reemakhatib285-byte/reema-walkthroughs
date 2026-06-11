@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Arrhythmias — Inherited Channelopathies (LQTS, Brugada, CPVT, Short QT)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>LQTS1 — exertion/swimming</b> — Attributing a swimming-related drowning/syncope in a young person to a simple accident is the trap — exertional or swimming-triggered syncope/arrest should raise LQTS-1; beta-blockers are highly protective here, and competitive swimming may need restriction.</li><li><b>LQTS2 — auditory/startle</b> — Dismissing syncope provoked by a startling noise as vasovagal is the trap — auditory/startle-triggered syncope points to LQTS-2; postpartum is also a high-risk window for LQTS-2 events.</li><li><b>LQTS3 — sleep/rest</b> — Assuming beta-blockers fully protect every LQTS patient is the trap — LQTS-3 (rest/sleep events) responds less to beta-blockade and benefits from mexiletine; the same SCN5A gene causes Brugada when it is loss-of-function, so direction of the mutation matters.</li><li><b>QTc &gt;500 = high risk</b> — Relying on a single 'normal' QTc to exclude LQTS is the trap — QTc varies and genotype-positive patients can have intermittently normal QT; a borderline value plus syncope or family history of SCD still warrants treatment and genetic evaluation.</li><li><b>Avoid all QT-prolonging drugs</b> — Giving ondansetron, azithromycin, or haloperidol to a known LQTS patient because the baseline QT 'looks fine' is the trap — these can precipitate torsades even in genotype-positive patients with normal resting QT; check the QT-prolonging drug list first.</li><li><b>Beta-blocker first-line (LQTS)</b> — Choosing a pacemaker as first-line for LQTS is the trap — beta-blockade is first-line; pacing has only a niche role (e.g., pause-dependent LQTS-3 with bradycardia), and an ICD, not a pacemaker, is what protects against SCD in high-risk cases.</li><li><b>ICD if arrest/refractory</b> — Implanting an ICD as the first step in every newly diagnosed asymptomatic LQTS patient is the trap — most are managed with beta-blockers and lifestyle/drug avoidance; the ICD is reserved for aborted arrest or beta-blocker-refractory events.</li><li><b>Brugada — SCN5A</b> — Confusing the Brugada type-1 ST elevation in V1-V2 with an anteroseptal STEMI is the trap — Brugada has a coved 'shark-fin' morphology without reciprocal changes or troponin rise, in a stable patient; misreading it as MI sends them to the cath lab instead of EP evaluation.</li><li><b>Fever/drugs unmask Brugada</b> — Treating a Brugada VF storm with a class IC drug like flecainide is the trap — class IC sodium blockers WORSEN Brugada (they are used to unmask it); the correct storm therapy is isoproterenol acutely and quinidine, not a sodium-channel blocker.</li><li><b>CPVT — exercise/emotion</b> — Calling a normal resting ECG reassuring and missing CPVT is the trap — CPVT has a normal baseline ECG and normal echo, so exertional syncope with bidirectional/polymorphic VT on an exercise stress test (not resting ECG) makes the diagnosis; digoxin toxicity is the other classic cause of bidirectional VT.</li><li><b>CPVT → catecholamines → death</b> — Relying on ICD shocks ALONE to control CPVT is the trap — the pain/stress of a shock releases more catecholamines, triggering further VT and a vicious storm cycle; an ICD must always be paired with beta-blockade (± flecainide/sympathetic denervation), never used as monotherapy. Also note flecainide is good here, opposite to Brugada.</li><li><b>Short QT</b> — Reading a very short QT as a benign normal variant is the trap — a markedly short QTc, especially with unexplained AF in a young person or a family history of SCD, signals short-QT syndrome and warrants ICD/EP evaluation, not reassurance.</li><li><b>Pause/long-short → torsades</b> — Reflexively shocking every torsades or reaching only for amiodarone is the trap — for torsades with a long QT, IV magnesium sulfate 1-2 g is first-line, and overdrive pacing or isoproterenol shortens the QT and abolishes pauses; QT-prolonging antiarrhythmics like amiodarone/sotalol can worsen it (defibrillate only if pulseless/sustained).</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. LQTS1 — exertion/swimming</div><div class="rte">Long QT syndrome type 1 is caused by a loss-of-function mutation in KCNQ1 (Kv7.1), reducing the slow delayed-rectifier potassium current IKs, which is needed to shorten the QT during sympathetic/exertional drive. It is the most common LQTS subtype (~30-35%), and events are triggered by exertion — classically SWIMMING/diving. The torsades risk rises because repolarization fails to keep pace with faster heart rates. Mnemonic: LQT-1 = 'one lap in the pool.'</div><div class="rtt">⚠️ Attributing a swimming-related drowning/syncope in a young person to a simple accident is the trap — exertional or swimming-triggered syncope/arrest should raise LQTS-1; beta-blockers are highly protective here, and competitive swimming may need restriction.</div></div><div class="rt"><div class="rtl">2. LQTS2 — auditory/startle</div><div class="rte">LQTS type 2 results from loss-of-function in KCNH2 (hERG), reducing the rapid delayed-rectifier potassium current IKr. It is the second most common subtype (~25-30%) and events are triggered by sudden AUDITORY/emotional startle — alarm clock, telephone ringing, doorbell. IKr is also the channel blocked by most drug-induced (acquired) long QT, so LQTS-2 carriers are exquisitely sensitive to QT-prolonging drugs. Mnemonic: LQT-2 = 'too loud' (auditory).</div><div class="rtt">⚠️ Dismissing syncope provoked by a startling noise as vasovagal is the trap — auditory/startle-triggered syncope points to LQTS-2; postpartum is also a high-risk window for LQTS-2 events.</div></div><div class="rt"><div class="rtl">3. LQTS3 — sleep/rest</div><div class="rte">LQTS type 3 is a GAIN-of-function mutation in SCN5A, causing persistent (late) inward sodium current INa that prolongs repolarization. Events occur at REST or during SLEEP (bradycardia-dependent) and it carries the worst prognosis per event. Because the defect is excess sodium current, late-sodium-current blockers like mexiletine are particularly useful adjuncts, and beta-blockers are less protective than in LQTS 1/2. Note SCN5A LOSS of function instead causes Brugada — same gene, opposite direction.</div><div class="rtt">⚠️ Assuming beta-blockers fully protect every LQTS patient is the trap — LQTS-3 (rest/sleep events) responds less to beta-blockade and benefits from mexiletine; the same SCN5A gene causes Brugada when it is loss-of-function, so direction of the mutation matters.</div></div><div class="rt"><div class="rtl">4. QTc &gt;500 = high risk</div><div class="rte">Markers of high sudden-cardiac-death risk in LQTS: QTc &gt;500 ms (and especially &gt;550 ms), prior syncope or aborted cardiac arrest, female sex (post-puberty), and breakthrough events despite beta-blockade. QTc is calculated by Bazett (QT/√RR); normal upper limits are ~450 ms (men) and ~470 ms (women). These features push toward ICD implantation.</div><div class="rtt">⚠️ Relying on a single 'normal' QTc to exclude LQTS is the trap — QTc varies and genotype-positive patients can have intermittently normal QT; a borderline value plus syncope or family history of SCD still warrants treatment and genetic evaluation.</div></div><div class="rt"><div class="rtl">5. Avoid all QT-prolonging drugs</div><div class="rte">All LQTS patients — including silent genotype-positive carriers with a normal resting QT — must avoid QT-prolonging drugs and correct hypokalemia/hypomagnesemia/hypocalcemia. Common offenders: antiarrhythmics (sotalol, dofetilide), macrolides/fluoroquinolones, azole antifungals, ondansetron, methadone, antipsychotics (haloperidol), and TCAs (see crediblemeds.org). Many act by blocking IKr (the hERG/KCNH2 channel).</div><div class="rtt">⚠️ Giving ondansetron, azithromycin, or haloperidol to a known LQTS patient because the baseline QT 'looks fine' is the trap — these can precipitate torsades even in genotype-positive patients with normal resting QT; check the QT-prolonging drug list first.</div></div><div class="rt"><div class="rtl">6. Beta-blocker first-line (LQTS)</div><div class="rte">Beta-blockers are first-line therapy for LQTS, blunting the sympathetic surge that triggers torsades; non-selective long-acting agents NADOLOL and PROPRANOLOL are preferred over metoprolol. They are MOST effective in LQTS-1 and LQTS-2 (adrenergically triggered). Left cardiac sympathetic denervation (LCSD) is an option for those with breakthrough events or who cannot tolerate beta-blockers.</div><div class="rtt">⚠️ Choosing a pacemaker as first-line for LQTS is the trap — beta-blockade is first-line; pacing has only a niche role (e.g., pause-dependent LQTS-3 with bradycardia), and an ICD, not a pacemaker, is what protects against SCD in high-risk cases.</div></div><div class="rt"><div class="rtl">7. ICD if arrest/refractory</div><div class="rte">An ICD is indicated in LQTS for survivors of aborted sudden cardiac death (secondary prevention, a Class I indication) and for patients with recurrent syncope or sustained ventricular arrhythmias despite adequate beta-blockade. Beta-blockers are continued alongside the ICD to reduce shock frequency.</div><div class="rtt">⚠️ Implanting an ICD as the first step in every newly diagnosed asymptomatic LQTS patient is the trap — most are managed with beta-blockers and lifestyle/drug avoidance; the ICD is reserved for aborted arrest or beta-blocker-refractory events.</div></div><div class="rt"><div class="rtl">8. Brugada — SCN5A</div><div class="rte">Brugada syndrome is most often a LOSS-of-function mutation in SCN5A (reduced sodium current INa), producing the type-1 pattern: coved ST-segment elevation ≥2 mm with T-wave inversion in right precordial leads V1-V2. VF/sudden death occurs at REST or during SLEEP and is more common in men of Southeast Asian descent (a cause of SUNDS — sudden unexpected nocturnal death). Same gene as LQTS-3 but opposite direction.</div><div class="rtt">⚠️ Confusing the Brugada type-1 ST elevation in V1-V2 with an anteroseptal STEMI is the trap — Brugada has a coved 'shark-fin' morphology without reciprocal changes or troponin rise, in a stable patient; misreading it as MI sends them to the cath lab instead of EP evaluation.</div></div><div class="rt"><div class="rtl">9. Fever/drugs unmask Brugada</div><div class="rte">Fever, sodium-channel-blocking drugs, vagal tone, and large meals/alcohol unmask or accentuate the type-1 Brugada ECG; a sodium-channel blocker (ajmaline, flecainide, or procainamide) challenge is used diagnostically to provoke the pattern. Therapy: aggressive fever control (antipyretics), ICD for those with prior arrest or syncope plus spontaneous type-1 pattern, and QUINIDINE (blocks transient outward current Ito) for electrical storm or as an ICD adjunct.</div><div class="rtt">⚠️ Treating a Brugada VF storm with a class IC drug like flecainide is the trap — class IC sodium blockers WORSEN Brugada (they are used to unmask it); the correct storm therapy is isoproterenol acutely and quinidine, not a sodium-channel blocker.</div></div><div class="rt"><div class="rtl">10. CPVT — exercise/emotion</div><div class="rte">Catecholaminergic polymorphic VT (CPVT) is usually an autosomal-dominant gain-of-function mutation in the cardiac ryanodine receptor RyR2 (or recessive CASQ2), causing pathologic diastolic calcium leak from the sarcoplasmic reticulum under adrenergic stimulation. It presents in children/young adults with exercise- or emotion-induced syncope and a structurally normal heart with a NORMAL resting ECG. The hallmark arrhythmia is bidirectional VT (beat-to-beat 180° QRS axis alternation), which is essentially pathognomonic.</div><div class="rtt">⚠️ Calling a normal resting ECG reassuring and missing CPVT is the trap — CPVT has a normal baseline ECG and normal echo, so exertional syncope with bidirectional/polymorphic VT on an exercise stress test (not resting ECG) makes the diagnosis; digoxin toxicity is the other classic cause of bidirectional VT.</div></div><div class="rt"><div class="rtl">11. CPVT → catecholamines → death</div><div class="rte">In CPVT, catecholamine surges directly drive the VT, so treatment is high-dose beta-blockers (NADOLOL preferred) often combined with FLECAINIDE (which here blocks RyR2-mediated calcium release and is beneficial), plus strict avoidance of competitive/strenuous sports. An ICD is added for survivors of arrest or breakthrough events — but always WITH a beta-blocker.</div><div class="rtt">⚠️ Relying on ICD shocks ALONE to control CPVT is the trap — the pain/stress of a shock releases more catecholamines, triggering further VT and a vicious storm cycle; an ICD must always be paired with beta-blockade (± flecainide/sympathetic denervation), never used as monotherapy. Also note flecainide is good here, opposite to Brugada.</div></div><div class="rt"><div class="rtl">12. Short QT</div><div class="rte">Short-QT syndrome is a rare gain-of-function mutation in potassium channels (KCNH2/KCNQ1/KCNJ2) that accelerates repolarization, giving a QTc &lt;360 ms (often &lt;330) with tall peaked T waves. The abbreviated refractory period predisposes to atrial fibrillation (often in young patients), polymorphic VT, and sudden cardiac death. Quinidine can prolong the QT/refractory period; an ICD is the mainstay for those at high risk.</div><div class="rtt">⚠️ Reading a very short QT as a benign normal variant is the trap — a markedly short QTc, especially with unexplained AF in a young person or a family history of SCD, signals short-QT syndrome and warrants ICD/EP evaluation, not reassurance.</div></div><div class="rt"><div class="rtl">13. Pause/long-short → torsades</div><div class="rte">Torsades de pointes in long-QT physiology is classically pause-dependent and initiated by a 'long-short' sequence: a PVC, a compensatory pause that further prolongs the QT, then a second beat falling on the prolonged T wave (R-on-T) that triggers polymorphic VT twisting around the baseline. This is why pacing or magnesium (which stabilize and prevent pauses/EADs) help in acquired long QT.</div><div class="rtt">⚠️ Reflexively shocking every torsades or reaching only for amiodarone is the trap — for torsades with a long QT, IV magnesium sulfate 1-2 g is first-line, and overdrive pacing or isoproterenol shortens the QT and abolishes pauses; QT-prolonging antiarrhythmics like amiodarone/sotalol can worsen it (defibrillate only if pulseless/sustained).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="arr_vt_idiopathic.html" title="Arrhythmias — Idiopathic VT (RVOT &amp; Fascicular)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="arr_vt_monomorphic.html" title="Arrhythmias — Monomorphic VT (Scar / Structural Disease)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Iron / Microcytic — iron metabolism &amp; hepcidin control</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Smelting floor / absorption</b> — WRONG: thinking iron is absorbed in the stomach or ileum. The duodenum is the site — which is exactly why celiac disease (duodenal villous atrophy) and gastric bypass (which bypasses the duodenum) cause iron deficiency. B12 is the one absorbed in the terminal ileum; do not swap them.</li><li><b>Ferritin minecarts (stores)</b> — WRONG: treating ferritin as a transport protein. Ferritin STORES iron inside cells; TRANSFERRIN transports it in plasma. Also remember ferritin is an acute-phase reactant — it rises in inflammation/malignancy/liver disease and can mask coexisting iron deficiency, so a 'normal' ferritin in a sick patient does not rule out IDA.</li><li><b>1–2 mg daily intake</b> — WRONG: assuming the body excretes excess iron. There is no active excretion route — this is precisely why transfusion-dependent patients and hereditary hemochromatosis develop iron OVERLOAD, and why overload is treated with phlebotomy or chelators, not by 'flushing it out.'</li><li><b>Body map distribution</b> — WRONG: thinking the plasma/transferrin pool is large. Only ~3 mg of iron is circulating on transferrin at any moment — the bulk is locked in hemoglobin. This is why daily turnover depends overwhelmingly on macrophage RECYCLING of old RBCs, not on the small transit pool or diet.</li><li><b>Transferrin truck</b> — WRONG: confusing transferrin with ferritin's role — transferrin does NOT store iron, it transports. Also: TIBC moves OPPOSITELY to ferritin/iron in IDA (iron low, TIBC high). A high TIBC with low TSAT points to true deficiency, whereas low TIBC suggests ACD.</li><li><b>Vitamin C / absorption aid</b> — WRONG: telling a patient to take iron with food, milk, or their morning coffee/tea to 'avoid stomach upset.' These all blunt absorption; chronic PPI use is a frequently missed cause of refractory oral-iron failure. Best is empty stomach + vitamin C, spacing from antacids/coffee.</li><li><b>20–25 recycled banner</b> — WRONG: assuming most daily iron comes from the diet. Recycling dwarfs intake (~20–25 mg vs ~1–2 mg). This is why blocking macrophage iron release (high hepcidin in inflammation) rapidly starves erythropoiesis and causes anemia of chronic disease despite full stores.</li><li><b>Macrophage workers / FPN</b> — WRONG: thinking iron leaves cells passively or through DMT1. DMT1 imports iron INTO cells; ferroportin is the sole EXPORTER. The hepcidin–ferroportin axis is the single regulated step in human iron homeostasis — knock it out (low hepcidin) and you get hemochromatosis-like overload.</li><li><b>Hepcidin control tower (HAMP)</b> — WRONG: thinking hepcidin RAISES serum iron. Hepcidin LOWERS circulating iron. Hereditary hemochromatosis is fundamentally a hepcidin-DEFICIENCY state (HFE mutation → inappropriately low hepcidin → unchecked ferroportin → iron overload), the mirror image of inflammatory anemia.</li><li><b>IL-6 raises hepcidin</b> — WRONG: in a chronically inflamed patient, calling a low serum iron 'iron deficiency' and giving oral iron. High hepcidin blocks duodenal absorption, so oral iron WON'T work in inflammatory anemia — IV iron (which bypasses absorption) is needed if true coexisting deficiency is confirmed.</li><li><b>HIF-2α lowers hepcidin</b> — WRONG: thinking hepcidin RISES in iron deficiency. In true iron deficiency hepcidin is appropriately LOW to maximize absorption. A high hepcidin in an anemic patient signals inflammation/ACD, not iron deficiency — the two are opposite hepcidin states.</li><li><b>DCYTB / DMT1 uptake</b> — WRONG: thinking ferric (Fe3+) iron is absorbed directly. Non-heme iron must be REDUCED to Fe2+ (by DCYTB / acid / vitamin C) before DMT1 can take it up — which is why gastric acid and vitamin C aid absorption and PPIs/antacids impair it.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Smelting floor / absorption</div><div class="rte">Dietary iron is absorbed in the DUODENUM (and proximal jejunum). Ferrous Fe2+ is absorbed via DMT1 on the enterocyte apical membrane; ferric Fe3+ must first be reduced by duodenal cytochrome B (DCYTB). Heme iron (from meat) enters separately and is absorbed more efficiently than non-heme iron.</div><div class="rtt">⚠️ WRONG: thinking iron is absorbed in the stomach or ileum. The duodenum is the site — which is exactly why celiac disease (duodenal villous atrophy) and gastric bypass (which bypasses the duodenum) cause iron deficiency. B12 is the one absorbed in the terminal ileum; do not swap them.</div></div><div class="rt"><div class="rtl">2. Ferritin minecarts (stores)</div><div class="rte">Ferritin is the intracellular iron STORAGE protein (a hollow shell holding up to ~4500 Fe atoms). Serum ferritin correlates with total body iron stores: roughly 1 ng/mL ferritin ≈ 8–10 mg stored iron. Low ferritin = depleted stores; ferritin &lt;30 is specific for iron deficiency.</div><div class="rtt">⚠️ WRONG: treating ferritin as a transport protein. Ferritin STORES iron inside cells; TRANSFERRIN transports it in plasma. Also remember ferritin is an acute-phase reactant — it rises in inflammation/malignancy/liver disease and can mask coexisting iron deficiency, so a 'normal' ferritin in a sick patient does not rule out IDA.</div></div><div class="rt"><div class="rtl">3. 1–2 mg daily intake</div><div class="rte">Only ~1–2 mg of iron is absorbed per day and ~1–2 mg is lost per day (sloughed enterocytes, skin, minor bleeding) — there is NO regulated excretion pathway. The body controls iron balance entirely at the level of ABSORPTION, which is why absorption is so tightly regulated by hepcidin.</div><div class="rtt">⚠️ WRONG: assuming the body excretes excess iron. There is no active excretion route — this is precisely why transfusion-dependent patients and hereditary hemochromatosis develop iron OVERLOAD, and why overload is treated with phlebotomy or chelators, not by 'flushing it out.'</div></div><div class="rt"><div class="rtl">4. Body map distribution</div><div class="rte">Total body iron ~3–4 g. Most is in hemoglobin within RBCs (~2500 mg / ~2/3 of total); the rest is in storage (ferritin/hemosiderin in liver and spleen macrophages ~1000 mg), muscle myoglobin (~300 mg), and a tiny labile plasma transferrin pool (~3 mg).</div><div class="rtt">⚠️ WRONG: thinking the plasma/transferrin pool is large. Only ~3 mg of iron is circulating on transferrin at any moment — the bulk is locked in hemoglobin. This is why daily turnover depends overwhelmingly on macrophage RECYCLING of old RBCs, not on the small transit pool or diet.</div></div><div class="rt"><div class="rtl">5. Transferrin truck</div><div class="rte">Transferrin is the plasma iron TRANSPORT protein; each molecule carries up to 2 Fe3+ ions and delivers iron to cells via transferrin receptor 1 (TfR1). TIBC (total iron-binding capacity) measures available transferrin: TIBC is HIGH in iron deficiency (more empty trucks) and LOW in anemia of chronic disease.</div><div class="rtt">⚠️ WRONG: confusing transferrin with ferritin's role — transferrin does NOT store iron, it transports. Also: TIBC moves OPPOSITELY to ferritin/iron in IDA (iron low, TIBC high). A high TIBC with low TSAT points to true deficiency, whereas low TIBC suggests ACD.</div></div><div class="rt"><div class="rtl">6. Vitamin C / absorption aid</div><div class="rte">Vitamin C (ascorbate) and gastric acid ENHANCE absorption by reducing Fe3+→Fe2+. Inhibitors: tea/coffee (tannins/polyphenols), phytates (bran, legumes), calcium/dairy, and acid-suppressing drugs (PPIs, H2 blockers, antacids). Take oral iron on an empty stomach with vitamin C or orange juice.</div><div class="rtt">⚠️ WRONG: telling a patient to take iron with food, milk, or their morning coffee/tea to 'avoid stomach upset.' These all blunt absorption; chronic PPI use is a frequently missed cause of refractory oral-iron failure. Best is empty stomach + vitamin C, spacing from antacids/coffee.</div></div><div class="rt"><div class="rtl">7. 20–25 recycled banner</div><div class="rte">Macrophages of the reticuloendothelial system (spleen, liver) phagocytose senescent RBCs and recycle ~20–25 mg iron/day — roughly 10–20x more than the 1–2 mg from diet. This internal recycling is the dominant supply for daily erythropoiesis.</div><div class="rtt">⚠️ WRONG: assuming most daily iron comes from the diet. Recycling dwarfs intake (~20–25 mg vs ~1–2 mg). This is why blocking macrophage iron release (high hepcidin in inflammation) rapidly starves erythropoiesis and causes anemia of chronic disease despite full stores.</div></div><div class="rt"><div class="rtl">8. Macrophage workers / FPN</div><div class="rte">FERROPORTIN (FPN) is the ONLY cellular iron EXPORTER — it moves iron out of enterocytes (into blood) and out of macrophages (recycled iron). Hepcidin is its off-switch: hepcidin binds ferroportin, causing its internalization and degradation, so high hepcidin traps iron inside cells.</div><div class="rtt">⚠️ WRONG: thinking iron leaves cells passively or through DMT1. DMT1 imports iron INTO cells; ferroportin is the sole EXPORTER. The hepcidin–ferroportin axis is the single regulated step in human iron homeostasis — knock it out (low hepcidin) and you get hemochromatosis-like overload.</div></div><div class="rt"><div class="rtl">9. Hepcidin control tower (HAMP)</div><div class="rte">Hepcidin (gene HAMP, a 25-amino-acid peptide) is the MASTER iron-regulatory hormone, made by the liver. It LOWERS serum iron by degrading ferroportin → less duodenal absorption and less macrophage release. Mnemonic: Hepcidin = 'Hides iron' (high hepcidin hides iron inside cells).</div><div class="rtt">⚠️ WRONG: thinking hepcidin RAISES serum iron. Hepcidin LOWERS circulating iron. Hereditary hemochromatosis is fundamentally a hepcidin-DEFICIENCY state (HFE mutation → inappropriately low hepcidin → unchecked ferroportin → iron overload), the mirror image of inflammatory anemia.</div></div><div class="rt"><div class="rtl">10. IL-6 raises hepcidin</div><div class="rte">Inflammation drives IL-6 → JAK/STAT3 in hepatocytes → INCREASED hepcidin. Iron overload also raises hepcidin (negative feedback). High hepcidin degrades ferroportin → iron trapped in macrophages/enterocytes → the picture of anemia of chronic (inflammatory) disease: low serum iron, low TIBC, HIGH ferritin.</div><div class="rtt">⚠️ WRONG: in a chronically inflamed patient, calling a low serum iron 'iron deficiency' and giving oral iron. High hepcidin blocks duodenal absorption, so oral iron WON'T work in inflammatory anemia — IV iron (which bypasses absorption) is needed if true coexisting deficiency is confirmed.</div></div><div class="rt"><div class="rtl">11. HIF-2α lowers hepcidin</div><div class="rte">Hypoxia, true iron deficiency, and increased erythropoietic drive LOWER hepcidin → more duodenal absorption and macrophage release. The bone-marrow signal is ERYTHROFERRONE (made by erythroblasts under EPO) which suppresses hepcidin; HIF-2α upregulates the duodenal absorption machinery (DMT1, DCYTB, ferroportin).</div><div class="rtt">⚠️ WRONG: thinking hepcidin RISES in iron deficiency. In true iron deficiency hepcidin is appropriately LOW to maximize absorption. A high hepcidin in an anemic patient signals inflammation/ACD, not iron deficiency — the two are opposite hepcidin states.</div></div><div class="rt"><div class="rtl">12. DCYTB / DMT1 uptake</div><div class="rte">Duodenal cytochrome B (DCYTB) reduces dietary Fe3+→Fe2+ at the enterocyte brush border, then DMT1 (divalent metal transporter 1) imports Fe2+ into the enterocyte. Inside, iron is either stored as ferritin (and shed) or exported to blood via ferroportin depending on hepcidin tone.</div><div class="rtt">⚠️ WRONG: thinking ferric (Fe3+) iron is absorbed directly. Non-heme iron must be REDUCED to Fe2+ (by DCYTB / acid / vitamin C) before DMT1 can take it up — which is why gastric acid and vitamin C aid absorption and PPIs/antacids impair it.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="iron_treatment.html" title="Iron / Microcytic — iron deficiency treatment (oral, IV, monitoring)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="iron_studies.html" title="Iron / Microcytic — iron studies &amp; IRP/IRE regulation">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

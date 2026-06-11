@@ -10,6 +10,27 @@
     --yellow:#ffd166; --body:#d1d5db; --muted:#9ca3af; --green:#4ade80;
   }
   *{box-sizing:border-box}
+  /* PDF-style study panels below the interactive scene */
+  .panels{max-width:1000px;margin:0 auto;padding:8px 18px 60px}
+  details.panel{background:var(--panel);border:1px solid #1f2a3a;border-radius:12px;margin:12px 0;overflow:hidden}
+  details.panel>summary{cursor:pointer;list-style:none;padding:14px 18px;font-size:15px;font-weight:700;
+    color:var(--white);background:#16223a;border-left:4px solid var(--accent);display:flex;align-items:center;gap:10px}
+  details.panel>summary::-webkit-details-marker{display:none}
+  details.panel>summary em{font-style:normal;font-size:12px;font-weight:700;color:#fff;
+    background:var(--accent);border-radius:20px;padding:2px 9px}
+  ol.traps{margin:0;padding:14px 18px 16px 38px;color:var(--body);font-size:14px;line-height:1.55}
+  ol.traps li{margin:0 0 9px}
+  ol.traps b{color:var(--yellow)}
+  .rtwrap{padding:8px 18px 14px}
+  .rt{padding:12px 0;border-bottom:1px solid #1f2a3a}
+  .rt:last-child{border-bottom:none}
+  .rtl{color:var(--white);font-weight:700;font-size:14px;margin-bottom:4px}
+  .rte{color:var(--body);font-size:14px;line-height:1.55}
+  .rtt{color:#fca5a5;font-size:13px;line-height:1.5;margin-top:5px}
+  table.drug{width:calc(100% - 36px);margin:8px 18px 16px;border-collapse:collapse;font-size:13px}
+  table.drug th{background:#16223a;color:var(--white);text-align:left;padding:8px 10px;border:1px solid #2a3a52}
+  table.drug td{padding:8px 10px;border:1px solid #1f2a3a;color:var(--body);vertical-align:top;line-height:1.45}
+  table.drug tr:nth-child(even) td{background:#0f1827}
   html,body{margin:0;height:100%;background:var(--bg);
     font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--body)}
   .wrap{display:flex;height:100vh;gap:0}
@@ -61,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -119,6 +153,8 @@
     <h1 class="scene-title">Acid–Base C — DKA, AKA, MALA (Ketone Kitchen)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -127,9 +163,15 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
+<div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>DKA vs AKA vs MALA table</b> — Don't anchor on glucose — AKA and MALA can have normal glucose yet a severe high-AG acidosis.</li><li><b>DKA — lipolysis → ketoacids</b> — The dominant ketone is β-OHB — not acetoacetate.</li><li><b>DKA — isotonic saline FIRST</b> — Insulin before fluids is the wrong order.</li><li><b>DKA — insulin 0.1 U/kg/h</b> — Add dextrose once glucose ~200 to keep the insulin running and clear ketones — don't just stop insulin.</li><li><b>DKA — replace K+ before insulin</b> — Giving insulin to a hypokalemic patient can cause fatal arrhythmia — K+ comes first.</li><li><b>DKA — bicarb only if pH &lt; 7.0</b> — Routine bicarbonate in DKA is wrong and may worsen hypokalemia.</li><li><b>Euglycemic DKA (SGLT2 inhibitors)</b> — Normal glucose does NOT rule out DKA in a patient on an SGLT2 inhibitor — check ketones/pH.</li><li><b>Always measure SERUM β-OHB</b> — A ‘negative’ urine ketone can be falsely reassuring early — β-OHB predominates.</li><li><b>AKA — β-OHB dominant, glucose low/normal</b> — Low/normal glucose with high-AG acidosis in an alcoholic is AKA, not DKA.</li><li><b>AKA — D5NS + thiamine</b> — Give thiamine BEFORE glucose in an alcoholic to avoid precipitating Wernicke encephalopathy.</li><li><b>MALA — risk factors</b> — Metformin should be held in these settings and around contrast/illness to prevent MALA.</li><li><b>MALA — high AG, NORMAL osm gap</b> — A normal osm gap helps separate MALA/lactic acidosis from toxic-alcohol causes.</li><li><b>MALA — stop metformin + dialysis</b> — Fomepizole does nothing for MALA — it's not a toxic-alcohol problem.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. DKA vs AKA vs MALA table</div><div class="rte">DKA: glucose HIGH. AKA: glucose LOW/normal. MALA: glucose variable. All three give a high anion-gap metabolic acidosis.</div><div class="rtt">⚠️ Don't anchor on glucose — AKA and MALA can have normal glucose yet a severe high-AG acidosis.</div></div><div class="rt"><div class="rtl">2. DKA — lipolysis → ketoacids</div><div class="rte">Insulin deficiency drives lipolysis → free fatty acids → β-hydroxybutyrate + acetoacetate → high-AG ketoacidosis with hyperglycemia.</div><div class="rtt">⚠️ The dominant ketone is β-OHB — not acetoacetate.</div></div><div class="rt"><div class="rtl">3. DKA — isotonic saline FIRST</div><div class="rte">Start fluid resuscitation with isotonic saline before/with insulin — these patients are profoundly volume-depleted.</div><div class="rtt">⚠️ Insulin before fluids is the wrong order.</div></div><div class="rt"><div class="rtl">4. DKA — insulin 0.1 U/kg/h</div><div class="rte">Continuous IV insulin at ~0.1 U/kg/h shuts off ketogenesis and lowers glucose.</div><div class="rtt">⚠️ Add dextrose once glucose ~200 to keep the insulin running and clear ketones — don't just stop insulin.</div></div><div class="rt"><div class="rtl">5. DKA — replace K+ before insulin</div><div class="rte">Insulin drives K+ into cells. Check K+ first; if K+ &lt; 3.3, replace before starting insulin.</div><div class="rtt">⚠️ Giving insulin to a hypokalemic patient can cause fatal arrhythmia — K+ comes first.</div></div><div class="rt"><div class="rtl">6. DKA — bicarb only if pH &lt; 7.0</div><div class="rte">Bicarbonate is reserved for severe acidemia (pH &lt; 6.9–7.0); fluids + insulin correct most cases.</div><div class="rtt">⚠️ Routine bicarbonate in DKA is wrong and may worsen hypokalemia.</div></div><div class="rt"><div class="rtl">7. Euglycemic DKA (SGLT2 inhibitors)</div><div class="rte">SGLT2 inhibitors can cause DKA with near-normal glucose.</div><div class="rtt">⚠️ Normal glucose does NOT rule out DKA in a patient on an SGLT2 inhibitor — check ketones/pH.</div></div><div class="rt"><div class="rtl">8. Always measure SERUM β-OHB</div><div class="rte">Urine/nitroprusside ketone tests detect acetoacetate but miss β-hydroxybutyrate — measure serum β-OHB.</div><div class="rtt">⚠️ A ‘negative’ urine ketone can be falsely reassuring early — β-OHB predominates.</div></div><div class="rt"><div class="rtl">9. AKA — β-OHB dominant, glucose low/normal</div><div class="rte">Alcoholic ketoacidosis: chronic alcohol + starvation/vomiting → β-OHB-predominant high-AG acidosis; glucose low or normal.</div><div class="rtt">⚠️ Low/normal glucose with high-AG acidosis in an alcoholic is AKA, not DKA.</div></div><div class="rt"><div class="rtl">10. AKA — D5NS + thiamine</div><div class="rte">Treat with dextrose-containing saline (D5NS) to switch off ketogenesis, plus thiamine.</div><div class="rtt">⚠️ Give thiamine BEFORE glucose in an alcoholic to avoid precipitating Wernicke encephalopathy.</div></div><div class="rt"><div class="rtl">11. MALA — risk factors</div><div class="rte">Metformin-associated lactic acidosis is precipitated by renal impairment, liver failure, hypoxia, sepsis or heart failure (metformin accumulates).</div><div class="rtt">⚠️ Metformin should be held in these settings and around contrast/illness to prevent MALA.</div></div><div class="rt"><div class="rtl">12. MALA — high AG, NORMAL osm gap</div><div class="rte">MALA is a high anion-gap lactic acidosis with a normal osmolar gap.</div><div class="rtt">⚠️ A normal osm gap helps separate MALA/lactic acidosis from toxic-alcohol causes.</div></div><div class="rt"><div class="rtl">13. MALA — stop metformin + dialysis</div><div class="rte">Stop metformin, give supportive care, and use hemodialysis for severe acidosis / renal failure (also clears metformin).</div><div class="rtt">⚠️ Fomepizole does nothing for MALA — it's not a toxic-alcohol problem.</div></div></div></details></div>
 <script>
 const DATA = [{"label": "Full scene", "x": 50, "y": 50, "z": 1.0, "see": "The whole scene at once.", "encodes": "Use this to orient, then arrow through each symbol.", "trap": ""}, {"label": "DKA vs AKA vs MALA table", "x": 50, "y": 14, "z": 3, "see": "The menu board comparing glucose, main ketone and mixed disorders across DKA, AKA and MALA.", "encodes": "DKA: glucose HIGH. AKA: glucose LOW/normal. MALA: glucose variable. All three give a high anion-gap metabolic acidosis.", "trap": "Don't anchor on glucose — AKA and MALA can have normal glucose yet a severe high-AG acidosis."}, {"label": "DKA — lipolysis → ketoacids", "x": 17, "y": 55, "z": 3, "see": "The left chef: ‘FREE FATTY ACIDS / LIPOLYSIS → β-OHB + acetoacetate → ketoacidosis’.", "encodes": "Insulin deficiency drives lipolysis → free fatty acids → β-hydroxybutyrate + acetoacetate → high-AG ketoacidosis with hyperglycemia.", "trap": "The dominant ketone is β-OHB — not acetoacetate."}, {"label": "DKA — isotonic saline FIRST", "x": 9, "y": 12, "z": 3, "see": "Top-left IV bag: ‘ISOTONIC SALINE FIRST’.", "encodes": "Start fluid resuscitation with isotonic saline before/with insulin — these patients are profoundly volume-depleted.", "trap": "Insulin before fluids is the wrong order."}, {"label": "DKA — insulin 0.1 U/kg/h", "x": 22, "y": 12, "z": 3, "see": "‘INSULIN 0.1 U/kg/h’ tag.", "encodes": "Continuous IV insulin at ~0.1 U/kg/h shuts off ketogenesis and lowers glucose.", "trap": "Add dextrose once glucose ~200 to keep the insulin running and clear ketones — don't just stop insulin."}, {"label": "DKA — replace K+ before insulin", "x": 30, "y": 19, "z": 3, "see": "A potassium (K+) tag by the insulin.", "encodes": "Insulin drives K+ into cells. Check K+ first; if K+ < 3.3, replace before starting insulin.", "trap": "Giving insulin to a hypokalemic patient can cause fatal arrhythmia — K+ comes first."}, {"label": "DKA — bicarb only if pH < 7.0", "x": 26, "y": 26, "z": 3, "see": "‘ONLY IF pH < 7.0’ note.", "encodes": "Bicarbonate is reserved for severe acidemia (pH < 6.9–7.0); fluids + insulin correct most cases.", "trap": "Routine bicarbonate in DKA is wrong and may worsen hypokalemia."}, {"label": "Euglycemic DKA (SGLT2 inhibitors)", "x": 8, "y": 70, "z": 3, "see": "Bottom-left: ‘LOW INSULIN / SGLT2 → euglycemic DKA’.", "encodes": "SGLT2 inhibitors can cause DKA with near-normal glucose.", "trap": "Normal glucose does NOT rule out DKA in a patient on an SGLT2 inhibitor — check ketones/pH."}, {"label": "Always measure SERUM β-OHB", "x": 31, "y": 83, "z": 3, "see": "The glucometer: ‘misses β-OHB / ALWAYS MEASURE THIS’.", "encodes": "Urine/nitroprusside ketone tests detect acetoacetate but miss β-hydroxybutyrate — measure serum β-OHB.", "trap": "A ‘negative’ urine ketone can be falsely reassuring early — β-OHB predominates."}, {"label": "AKA — β-OHB dominant, glucose low/normal", "x": 45, "y": 50, "z": 3, "see": "The middle chef, queasy, marked ‘β-OHB DOMINANT / vomitus’.", "encodes": "Alcoholic ketoacidosis: chronic alcohol + starvation/vomiting → β-OHB-predominant high-AG acidosis; glucose low or normal.", "trap": "Low/normal glucose with high-AG acidosis in an alcoholic is AKA, not DKA."}, {"label": "AKA — D5NS + thiamine", "x": 58, "y": 13, "z": 3, "see": "‘D5NS — dextrose + saline’ vial.", "encodes": "Treat with dextrose-containing saline (D5NS) to switch off ketogenesis, plus thiamine.", "trap": "Give thiamine BEFORE glucose in an alcoholic to avoid precipitating Wernicke encephalopathy."}, {"label": "MALA — risk factors", "x": 73, "y": 24, "z": 3, "see": "Red banners: ‘renal failure, hepatic failure, hypoxia, cardiac failure’.", "encodes": "Metformin-associated lactic acidosis is precipitated by renal impairment, liver failure, hypoxia, sepsis or heart failure (metformin accumulates).", "trap": "Metformin should be held in these settings and around contrast/illness to prevent MALA."}, {"label": "MALA — high AG, NORMAL osm gap", "x": 67, "y": 50, "z": 3, "see": "Gauges: ‘HIGH AG’ + ‘normal osmolar gap’ with a lactic-acid sign.", "encodes": "MALA is a high anion-gap lactic acidosis with a normal osmolar gap.", "trap": "A normal osm gap helps separate MALA/lactic acidosis from toxic-alcohol causes."}, {"label": "MALA — stop metformin + dialysis", "x": 78, "y": 85, "z": 3, "see": "‘STOP METFORMIN’ and a crossed-out fomepizole (‘not useful here’); dialysis machines flank the stove.", "encodes": "Stop metformin, give supportive care, and use hemodialysis for severe acidosis / renal failure (also clears metformin).", "trap": "Fomepizole does nothing for MALA — it's not a toxic-alcohol problem."}];
 const META = {"title": "Acid–Base C — DKA, AKA, MALA (Ketone Kitchen)", "image": "/Users/rimakhatib/Desktop/skts/electrolytes /acid_base/SCENE C — DKA, AKA, MALA  Setting- The Ketone Kitchen.jpeg"};
@@ -147,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -217,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -231,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -249,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -283,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="scene_B.html" title="Acid–Base B — Toxic Alcohols (Underground Poison Market)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="scene_D.html" title="Acid–Base D — Renal Tubular Acidosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

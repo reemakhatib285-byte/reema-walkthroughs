@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The Vitamin D Lab Pattern Ward</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Activation recap</b> — WRONG ANSWER: 'Order 1,25-vitamin D to assess for vitamin D deficiency.' Discriminator: measure 25-OH-D for STATUS — calcitriol (1,25-D) has a short half-life and is tightly regulated, so it can be normal or even HIGH in early deficiency (driven up by secondary PTH). 1,25-D testing is reserved for specific situations (suspected CKD, VDDR, granulomatous disease, oncogenic osteomalacia).</li><li><b>Nutritional deficiency bed</b> — WRONG ANSWER: 'High PTH means a parathyroid adenoma (primary hyperparathyroidism).' Discriminator: in vitamin D deficiency the high PTH is SECONDARY and APPROPRIATE — accompanied by LOW/normal calcium and LOW 25-OH-D. Primary HPT has HIGH calcium with high PTH. The calcium level and the low 25-OH-D distinguish secondary (deficiency) from primary HPT.</li><li><b>VDDR type 1 panel</b> — WRONG ANSWER: 'Treat VDDR1 with high-dose ergocalciferol/cholecalciferol.' Discriminator: the enzyme that ACTIVATES vitamin D (1-alpha-hydroxylase) is missing, so plain vitamin D can't be converted — give CALCITRIOL (or alfacalcidol). The clue is normal/high 25-D but LOW 1,25-D.</li><li><b>VDDR type 2 / VDR resistance</b> — WRONG ANSWER: 'High 1,25-D rules out a vitamin D problem — the patient is fine.' Discriminator: in VDDR2 calcitriol is HIGH but the VDR can't respond (receptor defect), so giving more vitamin D fails. ALOPECIA is the key clue distinguishing VDDR2 (high 1,25-D + alopecia) from VDDR1 (low 1,25-D, no alopecia).</li><li><b>Vitamin D intoxication</b> — WRONG ANSWER: 'High calcium with low PTH must be malignancy.' Discriminator: vitamin D intoxication raises BOTH Ca and PO4 (with low PTH and very high 25-D), whereas humoral hypercalcemia of malignancy (PTHrP) gives high Ca with LOW phosphate. The phosphate direction plus a sky-high 25-OH-D points to toxicity. Note it also differs from primary HPT (high Ca, LOW PO4, high PTH).</li><li><b>Granulomatous / lymphoma</b> — WRONG ANSWER: 'Treat sarcoid hypercalcemia with more vitamin D or with bisphosphonates as first-line.' Discriminator: this is 1,25-D-mediated hypercalcemia with SUPPRESSED PTH — give GLUCOCORTICOIDS (which shut off macrophage 1-alpha-hydroxylase) and AVOID vitamin D/sun. Giving vitamin D worsens it. High 1,25-D with low PTH and low 25-D-needs points to extra-renal activation.</li><li><b>Extra-renal activation tag</b> — WRONG ANSWER: 'Calcitriol production is always tightly controlled, so 1,25-D can't be the cause of hypercalcemia.' Discriminator: extra-renal (macrophage) 1-alpha-hydroxylase escapes feedback regulation, so 1,25-D rises unchecked — measure 1,25-D (HIGH) with suppressed PTH to identify granulomatous/lymphoma-driven hypercalcemia.</li><li><b>Treat with calcitriol note</b> — WRONG ANSWER: 'Plain vitamin D supplementation is sufficient in CKD and VDDR1.' Discriminator: when renal 1-alpha-hydroxylase is missing/impaired (CKD, VDDR1), plain vitamin D can't be activated — give CALCITRIOL or an active analog (paricalcitol in CKD to also help suppress secondary PTH).</li><li><b>VDR resistance / end-organ</b> — WRONG ANSWER: 'Just give calcitriol — it always corrects vitamin D-dependent rickets.' Discriminator: in VDDR2 the receptor can't respond, so calcitriol alone (which works for VDDR1) is frequently INSUFFICIENT — high-dose calcium (sometimes IV) is required. Alopecia and HIGH 1,25-D flag VDDR2 over VDDR1.</li><li><b>CKD station</b> — WRONG ANSWER: 'CKD hypocalcemia is best treated with plain vitamin D alone.' Discriminator: CKD loses the activating enzyme, so plain D can't be converted to calcitriol — use ACTIVE vitamin D (calcitriol/paricalcitol) and control phosphate first (giving active D with high phosphate risks raising the Ca×PO4 product and calcification).</li><li><b>One-look pattern map</b> — WRONG ANSWER: 'You can diagnose calcium/vitamin D disorders from calcium alone.' Discriminator: the diagnosis comes from the COMBINATION — always pair serum calcium with PTH first, then add phosphate and the vitamin D metabolites. The same calcium can mean opposite diseases depending on whether PTH is high or suppressed and whether phosphate is high or low.</li><li><b>Secondary HPT in CKD</b> — WRONG ANSWER: 'High PTH with hypercalcemia in a CKD patient is primary hyperparathyroidism.' Discriminator: in long-standing CKD this is usually TERTIARY HPT (autonomous glands after years of secondary stimulation) — high PTH, now high Ca, in the renal-failure context. Secondary HPT (the earlier stage) has high PTH with LOW/normal calcium. The calcium level and CKD history separate secondary, tertiary, and primary.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Activation recap</div><div class="rte">Vitamin D activation is a two-hydroxylation relay. Skin (UVB on 7-dehydrocholesterol) and diet supply D3 (cholecalciferol) and D2 (ergocalciferol). The LIVER performs 25-hydroxylation (CYP2R1) → 25-OH-D (calcidiol), the STORAGE form and the best marker of vitamin D status (it has the long half-life, ~2–3 weeks, and large pool). The KIDNEY performs 1-alpha-hydroxylation (CYP27B1) → 1,25-(OH)2-D (calcitriol), the ACTIVE form. 1-alpha-hydroxylase is stimulated by PTH and low phosphate, and inhibited by FGF23, high calcium, and calcitriol itself. Mnemonic: 'Liver gives the 25 status; Kidney activates to 1,25.'</div><div class="rtt">⚠️ WRONG ANSWER: 'Order 1,25-vitamin D to assess for vitamin D deficiency.' Discriminator: measure 25-OH-D for STATUS — calcitriol (1,25-D) has a short half-life and is tightly regulated, so it can be normal or even HIGH in early deficiency (driven up by secondary PTH). 1,25-D testing is reserved for specific situations (suspected CKD, VDDR, granulomatous disease, oncogenic osteomalacia).</div></div><div class="rt"><div class="rtl">2. Nutritional deficiency bed</div><div class="rte">Nutritional vitamin D deficiency (low sun exposure, low intake, malabsorption, housebound elderly): low 25-OH-D leads to reduced intestinal Ca and PO4 absorption → low/low-normal serum Ca and PO4 → compensatory secondary hyperparathyroidism (HIGH PTH), which raises calcitriol toward normal and elevates ALP (osteoblast activity from osteomalacia). Deficiency threshold: 25-OH-D &lt;20 ng/mL is deficient, 20–30 insufficient. Treat with cholecalciferol (D3) repletion.</div><div class="rtt">⚠️ WRONG ANSWER: 'High PTH means a parathyroid adenoma (primary hyperparathyroidism).' Discriminator: in vitamin D deficiency the high PTH is SECONDARY and APPROPRIATE — accompanied by LOW/normal calcium and LOW 25-OH-D. Primary HPT has HIGH calcium with high PTH. The calcium level and the low 25-OH-D distinguish secondary (deficiency) from primary HPT.</div></div><div class="rt"><div class="rtl">3. VDDR type 1 panel</div><div class="rte">Vitamin D-dependent rickets type 1 (VDDR1, '1A') is an autosomal recessive deficiency of renal 1-alpha-hydroxylase (CYP27B1). The activation step fails: 25-OH-D is normal/HIGH but 1,25-D (calcitriol) is LOW. Result: hypocalcemia, secondary hyperPTH, hypophosphatemia, and rickets in infancy. Treatment is CALCITRIOL (active vitamin D) — bypassing the missing enzyme; plain vitamin D doesn't work.</div><div class="rtt">⚠️ WRONG ANSWER: 'Treat VDDR1 with high-dose ergocalciferol/cholecalciferol.' Discriminator: the enzyme that ACTIVATES vitamin D (1-alpha-hydroxylase) is missing, so plain vitamin D can't be converted — give CALCITRIOL (or alfacalcidol). The clue is normal/high 25-D but LOW 1,25-D.</div></div><div class="rt"><div class="rtl">4. VDDR type 2 / VDR resistance</div><div class="rte">Vitamin D-dependent rickets type 2 (VDDR2, hereditary vitamin D-resistant rickets) is an autosomal recessive END-ORGAN resistance from a mutated vitamin D receptor (VDR). Calcitriol is made fine — in fact 1,25-D is HIGH (compensatory) — but tissues can't respond. Result: hypocalcemia, secondary hyperPTH, rickets, and characteristic ALOPECIA (often total). Treatment: very high-dose calcitriol and calcium; many require IV/high-dose oral calcium because the receptor defect can't be overcome.</div><div class="rtt">⚠️ WRONG ANSWER: 'High 1,25-D rules out a vitamin D problem — the patient is fine.' Discriminator: in VDDR2 calcitriol is HIGH but the VDR can't respond (receptor defect), so giving more vitamin D fails. ALOPECIA is the key clue distinguishing VDDR2 (high 1,25-D + alopecia) from VDDR1 (low 1,25-D, no alopecia).</div></div><div class="rt"><div class="rtl">5. Vitamin D intoxication</div><div class="rte">Vitamin D toxicity (excess supplements, megadosing): markedly HIGH 25-OH-D (often &gt;100 ng/mL) saturates vitamin D-binding protein, freeing vitamin D metabolites that drive intestinal Ca AND PO4 absorption → HYPERcalcemia and HYPERphosphatemia with appropriately SUPPRESSED (low) PTH. Can cause nephrocalcinosis, AKI, and metastatic calcification. Treatment: stop vitamin D, hydration, and glucocorticoids if severe.</div><div class="rtt">⚠️ WRONG ANSWER: 'High calcium with low PTH must be malignancy.' Discriminator: vitamin D intoxication raises BOTH Ca and PO4 (with low PTH and very high 25-D), whereas humoral hypercalcemia of malignancy (PTHrP) gives high Ca with LOW phosphate. The phosphate direction plus a sky-high 25-OH-D points to toxicity. Note it also differs from primary HPT (high Ca, LOW PO4, high PTH).</div></div><div class="rt"><div class="rtl">6. Granulomatous / lymphoma</div><div class="rte">Granulomatous diseases (sarcoidosis, TB, histoplasmosis, berylliosis) and some lymphomas cause hypercalcemia because activated MACROPHAGES express 1-alpha-hydroxylase EXTRA-RENALLY, converting 25-D → 1,25-D unchecked by normal feedback. Labs: HIGH 1,25-D, hypercalcemia, hypercalciuria, SUPPRESSED PTH, and often elevated ACE (sarcoid). Treatment is GLUCOCORTICOIDS (inhibit macrophage 1-alpha-hydroxylase) plus sun/vitamin D avoidance.</div><div class="rtt">⚠️ WRONG ANSWER: 'Treat sarcoid hypercalcemia with more vitamin D or with bisphosphonates as first-line.' Discriminator: this is 1,25-D-mediated hypercalcemia with SUPPRESSED PTH — give GLUCOCORTICOIDS (which shut off macrophage 1-alpha-hydroxylase) and AVOID vitamin D/sun. Giving vitamin D worsens it. High 1,25-D with low PTH and low 25-D-needs points to extra-renal activation.</div></div><div class="rt"><div class="rtl">7. Extra-renal activation tag</div><div class="rte">Extra-renal 1-alpha-hydroxylase (in granuloma macrophages and some lymphoma cells) is NOT subject to the normal negative feedback that restrains the renal enzyme — it is not suppressed by high calcium or by calcitriol and is not driven by PTH. This unregulated calcitriol production is why granulomatous hypercalcemia is PTH-independent and corticosteroid-responsive.</div><div class="rtt">⚠️ WRONG ANSWER: 'Calcitriol production is always tightly controlled, so 1,25-D can't be the cause of hypercalcemia.' Discriminator: extra-renal (macrophage) 1-alpha-hydroxylase escapes feedback regulation, so 1,25-D rises unchecked — measure 1,25-D (HIGH) with suppressed PTH to identify granulomatous/lymphoma-driven hypercalcemia.</div></div><div class="rt"><div class="rtl">8. Treat with calcitriol note</div><div class="rte">Conditions where the kidney's activation step is impaired require ACTIVE vitamin D (calcitriol or analogs like alfacalcidol/paricalcitol), not plain D2/D3: VDDR1 (absent 1-alpha-hydroxylase) and CKD (lost renal 1-alpha-hydroxylase). Giving plain cholecalciferol can't help if the activating enzyme is gone — you must supply the already-activated hormone.</div><div class="rtt">⚠️ WRONG ANSWER: 'Plain vitamin D supplementation is sufficient in CKD and VDDR1.' Discriminator: when renal 1-alpha-hydroxylase is missing/impaired (CKD, VDDR1), plain vitamin D can't be activated — give CALCITRIOL or an active analog (paricalcitol in CKD to also help suppress secondary PTH).</div></div><div class="rt"><div class="rtl">9. VDR resistance / end-organ</div><div class="rte">VDDR2 is end-organ (post-receptor) resistance: the vitamin D receptor itself is defective, so even abundant calcitriol can't signal. Supplementation alone often fails; management relies on very high-dose calcitriol and high-dose oral or IV calcium to force calcium balance independent of the receptor. Severity correlates with the degree of receptor dysfunction.</div><div class="rtt">⚠️ WRONG ANSWER: 'Just give calcitriol — it always corrects vitamin D-dependent rickets.' Discriminator: in VDDR2 the receptor can't respond, so calcitriol alone (which works for VDDR1) is frequently INSUFFICIENT — high-dose calcium (sometimes IV) is required. Alopecia and HIGH 1,25-D flag VDDR2 over VDDR1.</div></div><div class="rt"><div class="rtl">10. CKD station</div><div class="rte">CKD impairs vitamin D in two ways: loss of functional renal 1-alpha-hydroxylase (low calcitriol) and phosphate retention that raises FGF23 (which further suppresses 1-alpha-hydroxylase). Low calcitriol + hyperphosphatemia + hypocalcemia all drive secondary hyperparathyroidism. Management: phosphate binders, active vitamin D analogs (paricalcitol/calcitriol), and calcimimetics (cinacalcet) to control PTH.</div><div class="rtt">⚠️ WRONG ANSWER: 'CKD hypocalcemia is best treated with plain vitamin D alone.' Discriminator: CKD loses the activating enzyme, so plain D can't be converted to calcitriol — use ACTIVE vitamin D (calcitriol/paricalcitol) and control phosphate first (giving active D with high phosphate risks raising the Ca×PO4 product and calcification).</div></div><div class="rt"><div class="rtl">11. One-look pattern map</div><div class="rte">The whole ward reduces to pattern recognition across 25-D, 1,25-D, Ca, PO4, and PTH. Anchors: Primary HPT = high Ca, low PO4, high PTH. Secondary HPT (deficiency/CKD) = low/normal Ca, high PTH, low 25-D or low calcitriol. Vitamin D toxicity = high Ca, high PO4, low PTH, very high 25-D. Granulomatous = high Ca, high 1,25-D, low PTH. PTHrP malignancy = high Ca, low PO4, low PTH, low PTHrP-positive. VDDR1 = low 1,25-D; VDDR2 = high 1,25-D + alopecia.</div><div class="rtt">⚠️ WRONG ANSWER: 'You can diagnose calcium/vitamin D disorders from calcium alone.' Discriminator: the diagnosis comes from the COMBINATION — always pair serum calcium with PTH first, then add phosphate and the vitamin D metabolites. The same calcium can mean opposite diseases depending on whether PTH is high or suppressed and whether phosphate is high or low.</div></div><div class="rt"><div class="rtl">12. Secondary HPT in CKD</div><div class="rte">Secondary hyperparathyroidism in CKD: chronically low calcitriol, phosphate retention, and hypocalcemia continuously stimulate the parathyroids → HIGH PTH with LOW/normal calcium. Over years the glands hypertrophy and can become autonomous (tertiary HPT: persistently HIGH PTH now with HIGH calcium, often after transplant). Treatment escalates from binders/active D/calcimimetics to parathyroidectomy in refractory tertiary disease.</div><div class="rtt">⚠️ WRONG ANSWER: 'High PTH with hypercalcemia in a CKD patient is primary hyperparathyroidism.' Discriminator: in long-standing CKD this is usually TERTIARY HPT (autonomous glands after years of secondary stimulation) — high PTH, now high Ca, in the renal-failure context. Secondary HPT (the earlier stage) has high PTH with LOW/normal calcium. The calcium level and CKD history separate secondary, tertiary, and primary.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_05_phosphate.html" title="Calcium/PTH/VitD — The Phosphate Vanishing Act">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="adr_acc.html" title="Adrenal — ACC Villain Reveal">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

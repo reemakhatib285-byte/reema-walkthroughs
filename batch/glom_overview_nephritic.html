@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Glomerular Disease — Nephritic Syndrome (Cola-Urine Detective Agency)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Hematuria / RBC casts</b> — WRONG: 'Bland urinary sediment with oval fat bodies / Maltese crosses indicates nephritic syndrome.' Discriminator — oval fat bodies, fatty casts, and a BLAND sediment are NEPHROTIC findings. Nephritic urine shows an ACTIVE sediment: dysmorphic RBCs and RBC casts. Casts = nephritic; lipiduria = nephrotic.</li><li><b>Sub-nephrotic proteinuria</b> — WRONG: 'Proteinuria &gt;3.5 g/day with hypoalbuminemia is expected in nephritic syndrome.' Discriminator — &gt;3.5 g/day defines NEPHROTIC range. Pure nephritic disease has sub-nephrotic proteinuria (&lt;3.5 g); when proteinuria is heavy AND there is an active sediment, think OVERLAP disease (MPGN, diffuse proliferative lupus, IgA).</li><li><b>Hypertension</b> — WRONG: 'Nephritic syndrome causes hypotension from fluid loss.' Discriminator — nephritic disease RETAINS fluid (low GFR → Na/water retention), producing HYPERTENSION and volume overload, not hypotension. Hypotension would suggest volume depletion or sepsis, not glomerulonephritis.</li><li><b>Edema</b> — WRONG: 'Massive generalized anasarca from severe hypoalbuminemia is the typical edema of nephritic syndrome.' Discriminator — massive anasarca from low oncotic pressure (hypoalbuminemia) is the NEPHROTIC mechanism. Nephritic edema is milder and results from salt/water retention secondary to reduced GFR.</li><li><b>AKI / Oliguria / Azotemia</b> — WRONG: 'Polyuria with a rising GFR is characteristic of acute nephritic syndrome.' Discriminator — nephritic injury LOWERS GFR, causing oliguria and azotemia, not polyuria. Polyuria suggests tubular concentrating defects (e.g., recovering ATN, diabetes insipidus), not glomerulonephritis.</li><li><b>Low complement causes</b> — WRONG: 'Anti-GBM disease and ANCA-associated vasculitis cause low complement.' Discriminator — pauci-immune (ANCA) and anti-GBM disease have NORMAL complement. Low complement points to immune-complex disease (PSGN, lupus, MPGN, cryoglobulinemia, endocarditis). Checking C3/C4 is the fastest way to split the nephritic differential.</li><li><b>Normal complement causes</b> — WRONG: 'Post-streptococcal GN belongs in the normal-complement column.' Discriminator — PSGN consumes complement and has LOW C3 (typically normalizing by ~8 weeks). Placing PSGN with the normal-complement diseases is a classic error; PSGN, lupus, MPGN, cryo, and endocarditis are the LOW-complement group.</li><li><b>Nephritic-nephrotic overlap</b> — WRONG: 'Nephritic and nephrotic are mutually exclusive categories; a patient cannot have both.' Discriminator — overlap is real and tested: MPGN and diffuse proliferative lupus commonly produce a mixed nephritic–nephrotic picture (RBC casts plus &gt;3.5 g proteinuria). Treating the two as rigid boxes leads to missed diagnoses.</li><li><b>RPGN / crescents</b> — WRONG: 'RPGN follows a slow, indolent course and can be worked up electively over months.' Discriminator — RPGN is defined by RAPID GFR decline (days–weeks) and demands EMERGENT biopsy and immunosuppression; delay leads to irreversible crescentic scarring and ESKD. An indolent course argues against RPGN.</li><li><b>Urinalysis / microscopy</b> — WRONG: 'Proceed directly to renal biopsy before checking a urinalysis.' Discriminator — urinalysis/microscopy is step ONE; it confirms glomerular hematuria (RBC casts) and guides the rest of the workup. Jumping to invasive biopsy before a UA and serologies skips the highest-yield, lowest-risk diagnostic step.</li><li><b>Serologic workup</b> — WRONG: 'Serologies alone can replace urinalysis as the initial glomerular workup.' Discriminator — serologies are step TWO, interpreted in light of the sediment; they refine the differential but do not substitute for the urinalysis that first establishes glomerular bleeding. Order both, with UA first.</li><li><b>Renal biopsy</b> — WRONG: 'Renal biopsy should always be the first diagnostic test in suspected glomerulonephritis.' Discriminator — biopsy usually FOLLOWS urinalysis and serologies, since many cases (e.g., classic PSGN in a child) are diagnosed clinically. The major exception is suspected RPGN/crescentic disease, where you biopsy urgently rather than wait.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Hematuria / RBC casts</div><div class="rte">Hematuria with DYSMORPHIC red cells (acanthocytes) and especially RED-CELL CASTS is the defining hallmark of nephritic syndrome — it proves the bleeding is GLOMERULAR (cells squeeze through an inflamed, leaky GBM and mold into casts within tubules). Urine is classically 'cola/tea-colored' or smoky brown. RBC casts are essentially pathognomonic for glomerulonephritis.</div><div class="rtt">⚠️ WRONG: 'Bland urinary sediment with oval fat bodies / Maltese crosses indicates nephritic syndrome.' Discriminator — oval fat bodies, fatty casts, and a BLAND sediment are NEPHROTIC findings. Nephritic urine shows an ACTIVE sediment: dysmorphic RBCs and RBC casts. Casts = nephritic; lipiduria = nephrotic.</div></div><div class="rt"><div class="rtl">2. Sub-nephrotic proteinuria</div><div class="rte">Proteinuria IS present in nephritic syndrome but is sub-nephrotic — typically &lt;3.5 g/day (often 1–2 g/day) — because the injury is inflammatory/cellular rather than a pure podocyte filtration-barrier defect. Heavy 'nephrotic-range' protein loss with hypoalbuminemia and edema points instead toward nephrotic syndrome.</div><div class="rtt">⚠️ WRONG: 'Proteinuria &gt;3.5 g/day with hypoalbuminemia is expected in nephritic syndrome.' Discriminator — &gt;3.5 g/day defines NEPHROTIC range. Pure nephritic disease has sub-nephrotic proteinuria (&lt;3.5 g); when proteinuria is heavy AND there is an active sediment, think OVERLAP disease (MPGN, diffuse proliferative lupus, IgA).</div></div><div class="rt"><div class="rtl">3. Hypertension</div><div class="rte">A falling GFR causes salt and water RETENTION → intravascular volume expansion → HYPERTENSION. This is a core nephritic feature (part of the classic pentad) and helps distinguish it from the more variable BP in nephrotic disease. BP control with salt restriction, loop diuretics, and RAAS-sparing antihypertensives is part of management.</div><div class="rtt">⚠️ WRONG: 'Nephritic syndrome causes hypotension from fluid loss.' Discriminator — nephritic disease RETAINS fluid (low GFR → Na/water retention), producing HYPERTENSION and volume overload, not hypotension. Hypotension would suggest volume depletion or sepsis, not glomerulonephritis.</div></div><div class="rt"><div class="rtl">4. Edema</div><div class="rte">Edema in nephritic syndrome is typically MILD and periorbital/facial, driven by primary renal Na/water retention from low GFR (a 'nephritic/overflow' mechanism), not by hypoalbuminemia. It is less severe than nephrotic edema.</div><div class="rtt">⚠️ WRONG: 'Massive generalized anasarca from severe hypoalbuminemia is the typical edema of nephritic syndrome.' Discriminator — massive anasarca from low oncotic pressure (hypoalbuminemia) is the NEPHROTIC mechanism. Nephritic edema is milder and results from salt/water retention secondary to reduced GFR.</div></div><div class="rt"><div class="rtl">5. AKI / Oliguria / Azotemia</div><div class="rte">Inflammatory glomerular injury drops the GFR, producing OLIGURIA and AZOTEMIA (rising BUN and creatinine) — i.e., an acute nephritic AKI. A rapid decline over days–weeks signals RPGN/crescentic disease and is an emergency.</div><div class="rtt">⚠️ WRONG: 'Polyuria with a rising GFR is characteristic of acute nephritic syndrome.' Discriminator — nephritic injury LOWERS GFR, causing oliguria and azotemia, not polyuria. Polyuria suggests tubular concentrating defects (e.g., recovering ATN, diabetes insipidus), not glomerulonephritis.</div></div><div class="rt"><div class="rtl">6. Low complement causes</div><div class="rte">LOW-complement nephritic causes (immune-complex/consumptive) — memory aid: post-streptococcal GN, lupus nephritis, MPGN (types I/II/III), cryoglobulinemia (often HCV-related), and subacute bacterial ENDOCARDITIS-associated GN. The low complement reflects activation/consumption of the cascade by immune complexes.</div><div class="rtt">⚠️ WRONG: 'Anti-GBM disease and ANCA-associated vasculitis cause low complement.' Discriminator — pauci-immune (ANCA) and anti-GBM disease have NORMAL complement. Low complement points to immune-complex disease (PSGN, lupus, MPGN, cryoglobulinemia, endocarditis). Checking C3/C4 is the fastest way to split the nephritic differential.</div></div><div class="rt"><div class="rtl">7. Normal complement causes</div><div class="rte">NORMAL-complement nephritic causes (pauci-immune / anti-GBM / mesangial-IgA group): ANCA-associated vasculitis (GPA, MPA, EGPA — pauci-immune), anti-GBM / Goodpasture disease, IgA nephropathy, and Henoch–Schönlein purpura (IgA vasculitis). These are NOT driven by classical/alternate complement consumption, so C3/C4 stay normal.</div><div class="rtt">⚠️ WRONG: 'Post-streptococcal GN belongs in the normal-complement column.' Discriminator — PSGN consumes complement and has LOW C3 (typically normalizing by ~8 weeks). Placing PSGN with the normal-complement diseases is a classic error; PSGN, lupus, MPGN, cryo, and endocarditis are the LOW-complement group.</div></div><div class="rt"><div class="rtl">8. Nephritic-nephrotic overlap</div><div class="rte">Nephritic and nephrotic are ends of a spectrum, and several diseases STRADDLE both — classically MPGN, diffuse proliferative lupus nephritis (class IV), and sometimes IgA nephropathy — presenting with active sediment/RBC casts AND nephrotic-range proteinuria simultaneously. Recognizing overlap prevents misclassification.</div><div class="rtt">⚠️ WRONG: 'Nephritic and nephrotic are mutually exclusive categories; a patient cannot have both.' Discriminator — overlap is real and tested: MPGN and diffuse proliferative lupus commonly produce a mixed nephritic–nephrotic picture (RBC casts plus &gt;3.5 g proteinuria). Treating the two as rigid boxes leads to missed diagnoses.</div></div><div class="rt"><div class="rtl">9. RPGN / crescents</div><div class="rte">Rapidly progressive glomerulonephritis (RPGN) = nephritic syndrome with GFR loss over DAYS-TO-WEEKS and CRESCENTS (proliferating parietal epithelial cells, macrophages, fibrin) on biopsy. It is a nephrologic EMERGENCY. Three immunologic patterns: type I anti-GBM (linear IF), type II immune-complex (granular IF — PSGN/lupus/IgA), type III pauci-immune (ANCA, scant staining). Needs urgent biopsy and immunosuppression (steroids + cyclophosphamide/rituximab ± plasmapheresis for anti-GBM).</div><div class="rtt">⚠️ WRONG: 'RPGN follows a slow, indolent course and can be worked up electively over months.' Discriminator — RPGN is defined by RAPID GFR decline (days–weeks) and demands EMERGENT biopsy and immunosuppression; delay leads to irreversible crescentic scarring and ESKD. An indolent course argues against RPGN.</div></div><div class="rt"><div class="rtl">10. Urinalysis / microscopy</div><div class="rte">The FIRST step in any glomerular workup is URINALYSIS with sediment microscopy — looking for dysmorphic RBCs, RBC casts, and quantifying proteinuria (spot protein:creatinine ratio). This cheap, fast test localizes the lesion (nephritic vs nephrotic) and directs subsequent serologies and biopsy.</div><div class="rtt">⚠️ WRONG: 'Proceed directly to renal biopsy before checking a urinalysis.' Discriminator — urinalysis/microscopy is step ONE; it confirms glomerular hematuria (RBC casts) and guides the rest of the workup. Jumping to invasive biopsy before a UA and serologies skips the highest-yield, lowest-risk diagnostic step.</div></div><div class="rt"><div class="rtl">11. Serologic workup</div><div class="rte">After urinalysis, send targeted SEROLOGIES to pin the cause: C3/C4 complement, ANCA (anti-MPO/anti-PR3), anti-GBM antibody, ASO/anti-DNase B (post-strep), ANA and anti-dsDNA (lupus), cryoglobulins, hepatitis B/C, and HIV. The complement level is the pivotal first split (low vs normal).</div><div class="rtt">⚠️ WRONG: 'Serologies alone can replace urinalysis as the initial glomerular workup.' Discriminator — serologies are step TWO, interpreted in light of the sediment; they refine the differential but do not substitute for the urinalysis that first establishes glomerular bleeding. Order both, with UA first.</div></div><div class="rt"><div class="rtl">12. Renal biopsy</div><div class="rte">Renal BIOPSY is the definitive step to classify the glomerular lesion (light microscopy, immunofluorescence, EM) when urinalysis plus serologies are inconclusive or when results would change management. It is generally pursued AFTER noninvasive workup — except suspected RPGN, where urgent biopsy is needed to start immunosuppression fast.</div><div class="rtt">⚠️ WRONG: 'Renal biopsy should always be the first diagnostic test in suspected glomerulonephritis.' Discriminator — biopsy usually FOLLOWS urinalysis and serologies, since many cases (e.g., classic PSGN in a child) are diagnosed clinically. The major exception is suspected RPGN/crescentic disease, where you biopsy urgently rather than wait.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="glom_overview_nephritic_complement.html" title="Glomerular Disease — Nephritic Differential by Complement (Complement Courthouse)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="glom_overview_nephrotic_podocyte.html" title="Glomerular Disease — Nephrotic PEAL &amp; Podocyte Diseases (Podocyte Elementary)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

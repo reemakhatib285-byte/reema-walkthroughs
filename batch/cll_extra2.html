@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CLL — Prognosis &amp; Treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>del(13q) best</b> — Best prognosis only when del(13q) is the SOLE abnormality — its favorable weight is overridden if del(17p)/TP53 or a complex karyotype coexists.</li><li><b>del(11q) adverse</b> — del(11q) = bulky nodes + aggressive course; remember ATM is the lost gene, not TP53.</li><li><b>del(17p) worst</b> — del(17p) AND/OR TP53 mutation both confer the worst prognosis — a normal FISH for 17p does not exclude a high-risk TP53 mutation; sequence TP53 too.</li><li><b>FISH before therapy</b> — A favorable FISH at diagnosis can evolve — never reuse old cytogenetics to plan a new line of treatment.</li><li><b>BTK / BCL2 for 17p</b> — Never give chemoimmunotherapy to del(17p)/TP53 CLL — it is ineffective and these patients require targeted therapy regardless of fitness.</li><li><b>IGHV mutated good</b> — "Mutated" sounds bad but is GOOD in CLL — mutated IGHV = favorable. (Counterintuitive: the opposite of the usual oncology connotation.)</li><li><b>IGHV unmutated poor</b> — Unmutated IGHV = worse outcome; unlike most cancers, fewer mutations here means worse prognosis. IGHV status does not change over the disease course (test once).</li><li><b>AIHA / ITP</b> — Autoimmune anemia/thrombocytopenia does NOT upstage Rai — these are immune-mediated, distinct from the marrow-failure cytopenias that define Rai III/IV.</li><li><b>Rai staging ladder</b> — Stage III/IV require MARROW-FAILURE cytopenias — anemia/thrombocytopenia from AUTOIMMUNITY does not count toward advanced stage.</li><li><b>Watch and wait</b> — Do not treat asymptomatic early-stage CLL just because the diagnosis is made — observation is the standard of care.</li><li><b>Treatment triggers</b> — A high WBC/lymphocyte count ALONE is NOT an indication to treat — even very high counts without symptoms or end-organ effects don't warrant therapy (CLL rarely causes leukostasis).</li><li><b>Richter / clonal evolution</b> — Sudden clinical acceleration in known CLL = look for Richter (biopsy the PET-hot node), not merely CLL progression.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. del(13q) best</div><div class="rte">del(13q14) (loss of miR-15a/16-1 → unchecked BCL2 → cell survival) is the MOST COMMON CLL abnormality (~50%) and, when isolated, carries the BEST/most indolent prognosis with the longest survival.</div><div class="rtt">⚠️ Best prognosis only when del(13q) is the SOLE abnormality — its favorable weight is overridden if del(17p)/TP53 or a complex karyotype coexists.</div></div><div class="rt"><div class="rtl">2. Trisomy 12</div><div class="rte">Trisomy 12 (~15%) confers an INTERMEDIATE prognosis and is associated with atypical morphology/immunophenotype and NOTCH1 mutations.</div></div><div class="rt"><div class="rtl">3. del(11q) adverse</div><div class="rte">del(11q22-23) deletes the ATM gene (impaired DNA-damage repair), producing BULKY lymphadenopathy and aggressive disease, often in younger patients — an ADVERSE marker. BTK inhibitors notably improve outcomes in del(11q) disease.</div><div class="rtt">⚠️ del(11q) = bulky nodes + aggressive course; remember ATM is the lost gene, not TP53.</div></div><div class="rt"><div class="rtl">4. del(17p) worst</div><div class="rte">del(17p) deletes TP53 — the WORST prognosis, with resistance to DNA-damaging chemoimmunotherapy. Always test by FISH (and add TP53 sequencing, since TP53 mutation without 17p deletion is equally adverse).</div><div class="rtt">⚠️ del(17p) AND/OR TP53 mutation both confer the worst prognosis — a normal FISH for 17p does not exclude a high-risk TP53 mutation; sequence TP53 too.</div></div><div class="rt"><div class="rtl">5. TP53 → no apoptosis</div><div class="rte">Loss of p53 means cells cannot trigger apoptosis after DNA damage, so they survive cytotoxic chemotherapy — the mechanistic reason del(17p)/TP53 CLL is chemoresistant and MUST be treated with targeted agents.</div></div><div class="rt"><div class="rtl">6. FISH before therapy</div><div class="rte">Repeat FISH (and TP53 sequencing) BEFORE EVERY line of therapy because clonal evolution can acquire del(17p)/TP53 over time, which changes drug selection (mandates BTKi/venetoclax over chemoimmunotherapy).</div><div class="rtt">⚠️ A favorable FISH at diagnosis can evolve — never reuse old cytogenetics to plan a new line of treatment.</div></div><div class="rt"><div class="rtl">7. BTK / BCL2 for 17p</div><div class="rte">del(17p)/TP53 disease: use BTK inhibitors (ibrutinib/acalabrutinib/zanubrutinib) or the BCL2 inhibitor venetoclax — NOT chemoimmunotherapy (FCR/BR), which fails p53-deficient cells.</div><div class="rtt">⚠️ Never give chemoimmunotherapy to del(17p)/TP53 CLL — it is ineffective and these patients require targeted therapy regardless of fitness.</div></div><div class="rt"><div class="rtl">8. IGHV mutated good</div><div class="rte">IGHV-MUTATED CLL (≥2% deviation from germline) is INDOLENT with favorable prognosis and durable responses; this is the subset that can achieve long remissions with fixed-duration chemoimmunotherapy (e.g., FCR) in TP53-intact, young, fit patients.</div><div class="rtt">⚠️ "Mutated" sounds bad but is GOOD in CLL — mutated IGHV = favorable. (Counterintuitive: the opposite of the usual oncology connotation.)</div></div><div class="rt"><div class="rtl">9. IGHV unmutated poor</div><div class="rte">IGHV-UNMUTATED CLL (~40%) is AGGRESSIVE with shorter time-to-treatment and poorer survival, and responds poorly/short-lived to chemoimmunotherapy — favor continuous BTKi or venetoclax-based therapy.</div><div class="rtt">⚠️ Unmutated IGHV = worse outcome; unlike most cancers, fewer mutations here means worse prognosis. IGHV status does not change over the disease course (test once).</div></div><div class="rt"><div class="rtl">10. AIHA / ITP</div><div class="rte">CLL causes AUTOIMMUNE cytopenias (warm AIHA, ITP) from immune dysregulation, not marrow replacement — treat with corticosteroids ± rituximab/IVIG, separate from CLL-directed therapy.</div><div class="rtt">⚠️ Autoimmune anemia/thrombocytopenia does NOT upstage Rai — these are immune-mediated, distinct from the marrow-failure cytopenias that define Rai III/IV.</div></div><div class="rt"><div class="rtl">11. Rai staging ladder</div><div class="rte">Rai staging ladder: 0 = lymphocytosis only (low risk); I = + lymphadenopathy; II = + splenomegaly/hepatomegaly (intermediate); III = + anemia (Hb &lt;11); IV = + thrombocytopenia (plt &lt;100) (high risk). Binet (A/B/C) is the European equivalent based on number of involved areas + cytopenias.</div><div class="rtt">⚠️ Stage III/IV require MARROW-FAILURE cytopenias — anemia/thrombocytopenia from AUTOIMMUNITY does not count toward advanced stage.</div></div><div class="rt"><div class="rtl">12. Watch and wait</div><div class="rte">Early/asymptomatic CLL (Rai 0–II without triggers) is OBSERVED ("watch and wait") — multiple trials show treating early-stage asymptomatic disease provides NO survival benefit and only adds toxicity.</div><div class="rtt">⚠️ Do not treat asymptomatic early-stage CLL just because the diagnosis is made — observation is the standard of care.</div></div><div class="rt"><div class="rtl">13. Treatment triggers</div><div class="rte">Treat only when iwCLL indications are met: progressive marrow failure (worsening anemia/thrombocytopenia), massive/progressive/symptomatic splenomegaly or lymphadenopathy, constitutional B symptoms, symptomatic disease, autoimmune cytopenia refractory to steroids, or lymphocyte doubling time &lt;6 months.</div><div class="rtt">⚠️ A high WBC/lymphocyte count ALONE is NOT an indication to treat — even very high counts without symptoms or end-organ effects don't warrant therapy (CLL rarely causes leukostasis).</div></div><div class="rt"><div class="rtl">14. Richter / clonal evolution</div><div class="rte">CLL can transform (Richter) into aggressive DLBCL — suspect with rapid asymmetric nodal growth, B symptoms, and markedly elevated LDH; confirm with PET-guided excisional biopsy. Clonal evolution (esp. acquiring TP53) also drives resistance, so recheck genetics over time.</div><div class="rtt">⚠️ Sudden clinical acceleration in known CLL = look for Richter (biopsy the PET-hot node), not merely CLL progression.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="cll_overview.html" title="CLL — Epidemiology, Immunophenotype &amp; Diagnosis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="cll_staging.html" title="CLL — Rai/Binet Staging &amp; Prognostic Risk Map">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — Cardio-Renal: CKD as CV Risk Multiplier</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>CV mortality 10-200x — #1 killer</b> — WRONG answer: 'most patients with CKD ultimately die of progressive kidney failure / uremia.' Discriminator: the #1 cause of death in CKD is cardiovascular disease — most CKD patients die WITH their kidney disease (of CV causes) rather than from end-stage renal failure itself.</li><li><b>30-45% at stage 5 have advanced CV disease</b> — WRONG answer: 'cardiovascular screening and prevention can wait until a CKD patient reaches dialysis.' Discriminator: 30–45% already have advanced CV disease by stage 5, so CV risk modification must begin in early CKD — deferring it to dialysis misses the prevention window.</li><li><b>LVH — powerful CV risk</b> — WRONG answer: 'LVH in CKD is a benign adaptive change with no prognostic weight.' Discriminator: LVH is a powerful independent predictor of CV mortality and sudden death in CKD — it is a high-risk marker, not a harmless adaptation.</li><li><b>HFrEF + HFpEF both common</b> — WRONG answer: 'a high BNP/NT-proBNP in a CKD patient reliably confirms acute decompensated heart failure.' Discriminator: natriuretic peptides are chronically elevated in CKD due to reduced clearance — a single elevated value is non-specific; use higher CKD-adjusted cutoffs and the clinical trend/picture.</li><li><b>Low-pressure pulmonary edema</b> — WRONG answer: 'pulmonary edema in a CKD patient always indicates elevated left ventricular filling pressures and primary cardiac failure.' Discriminator: uremic 'low-pressure' pulmonary edema arises from increased capillary permeability + volume and can occur with normal LV filling pressures — it responds to dialysis, distinguishing it from purely cardiogenic edema.</li><li><b>Responds to dialysis, not diuretics</b> — WRONG answer: 'give escalating IV furosemide to manage flash pulmonary edema in an anuric dialysis patient.' Discriminator: an anuric ESRD patient cannot respond to diuretics — emergent ultrafiltration/dialysis is the treatment for their volume overload and uremic pulmonary edema.</li><li><b>Uremic pericarditis</b> — WRONG answer: 'treat uremic pericarditis first-line with NSAIDs and colchicine like viral/idiopathic pericarditis.' Discriminator: the primary treatment for uremic pericarditis is intensified DIALYSIS (it reflects under-dialysis); NSAIDs/colchicine are not the answer, and uremic pericarditis classically lacks the diffuse ST elevation of viral pericarditis.</li><li><b>No heparin during dialysis</b> — WRONG answer: 'use standard systemic heparin anticoagulation during dialysis for a patient with uremic pericarditis.' Discriminator: heparin can precipitate hemorrhagic pericardial effusion and tamponade in uremic pericarditis — heparin-free or regional citrate anticoagulation is mandatory.</li><li><b>Troponin — trend over hours</b> — WRONG answer: 'a single elevated high-sensitivity troponin in a CKD patient confirms acute myocardial infarction.' Discriminator: baseline troponin is chronically elevated in CKD — diagnosis of MI requires a dynamic delta (rise/fall) on serial draws, not one static elevated value.</li><li><b>MIA paradox — reverse epidemiology</b> — WRONG answer: 'a low cholesterol and low blood pressure in a dialysis patient are reassuring signs of good cardiovascular health.' Discriminator: by reverse epidemiology, low cholesterol/BP/BMI in dialysis patients signal malnutrition-inflammation (MIA) and predict HIGHER mortality — they are bad prognostic signs, not protective.</li><li><b>AV fistula → high-output HF</b> — WRONG answer: 'heart failure in a dialysis patient with a large AV fistula must be a low-output ischemic cardiomyopathy.' Discriminator: a high-flow AV fistula can cause HIGH-output HF via shunt physiology — check for the Branham sign (HR drops with fistula compression); banding/ligation can treat it, unlike an ischemic cause.</li><li><b>HTN 3-step: salt restriction first</b> — WRONG answer: 'a BP of 145/90 is an acceptable target in a proteinuric CKD patient.' Discriminator: CKD (especially with proteinuria/DM) requires a tight target ≤130/80 (often lower) plus salt restriction — a 'standard' goal of &lt;140/90 is too lax and accelerates renal and CV decline.</li><li><b>First-line: ACEi/ARB if proteinuria</b> — WRONG answer: 'combine an ACE inhibitor WITH an ARB (dual RAAS blockade) to maximize antiproteinuric effect.' Discriminator: dual ACEi+ARB blockade increases hyperkalemia, AKI, and hypotension without outcome benefit (ONTARGET, VA NEPHRON-D) — use only ONE RAAS agent. Also: a creatinine rise up to ~30% is expected and not a reason to stop.</li><li><b>Non-DHP CCB if BP only</b> — WRONG answer: 'a non-DHP calcium channel blocker is the preferred first-line antihypertensive for renoprotection in proteinuric CKD.' Discriminator: RAAS blockade (ACEi/ARB) is first-line for proteinuric CKD; non-DHP CCBs control BP but do not match the antiproteinuric/renoprotective benefit — they are adjuncts, not the cornerstone.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. CV mortality 10-200x — #1 killer</div><div class="rte">CKD is a powerful, independent cardiovascular risk multiplier — it raises CV mortality 10- to 200-fold (the relative excess is greatest in the youngest dialysis patients). Cardiovascular DISEASE, not uremia or dialysis complications, is the LEADING cause of death across all stages of CKD. A patient with CKD is far more likely to die of CV disease than to ever reach dialysis. CKD is treated as a coronary-disease risk equivalent.</div><div class="rtt">⚠️ WRONG answer: 'most patients with CKD ultimately die of progressive kidney failure / uremia.' Discriminator: the #1 cause of death in CKD is cardiovascular disease — most CKD patients die WITH their kidney disease (of CV causes) rather than from end-stage renal failure itself.</div></div><div class="rt"><div class="rtl">2. 30-45% at stage 5 have advanced CV disease</div><div class="rte">By the time CKD reaches stage 5 (eGFR &lt;15 / dialysis), roughly 30–45% of patients already have ADVANCED, established cardiovascular disease — coronary disease, LVH, and HF accumulate silently throughout earlier stages. This underscores starting CV risk reduction EARLY (BP control, statins, RAAS blockade for proteinuria) rather than waiting for symptoms.</div><div class="rtt">⚠️ WRONG answer: 'cardiovascular screening and prevention can wait until a CKD patient reaches dialysis.' Discriminator: 30–45% already have advanced CV disease by stage 5, so CV risk modification must begin in early CKD — deferring it to dialysis misses the prevention window.</div></div><div class="rt"><div class="rtl">3. LVH — powerful CV risk</div><div class="rte">Left ventricular hypertrophy is extremely prevalent in CKD (driven by pressure overload from hypertension/arterial stiffness, volume overload from salt/water retention and anemia, and uremic factors) and is one of the strongest INDEPENDENT predictors of CV death. LVH begets diastolic dysfunction, arrhythmia, and sudden cardiac death — the leading mode of CV death in dialysis patients.</div><div class="rtt">⚠️ WRONG answer: 'LVH in CKD is a benign adaptive change with no prognostic weight.' Discriminator: LVH is a powerful independent predictor of CV mortality and sudden death in CKD — it is a high-risk marker, not a harmless adaptation.</div></div><div class="rt"><div class="rtl">4. HFrEF + HFpEF both common</div><div class="rte">CKD predisposes to BOTH heart-failure phenotypes: HFpEF (from LVH, hypertension, and arterial stiffness causing diastolic dysfunction) and HFrEF (from accelerated coronary disease/ischemia and chronic volume overload). Diagnosis is harder because natriuretic peptides (BNP/NT-proBNP) are CHRONICALLY elevated in CKD from reduced renal clearance and chronic strain — interpret them against CKD-specific, higher thresholds.</div><div class="rtt">⚠️ WRONG answer: 'a high BNP/NT-proBNP in a CKD patient reliably confirms acute decompensated heart failure.' Discriminator: natriuretic peptides are chronically elevated in CKD due to reduced clearance — a single elevated value is non-specific; use higher CKD-adjusted cutoffs and the clinical trend/picture.</div></div><div class="rt"><div class="rtl">5. Low-pressure pulmonary edema</div><div class="rte">Uremia increases pulmonary capillary PERMEABILITY, producing 'low-pressure' (non-cardiogenic) pulmonary edema — a classic 'bat-wing' central perihilar pattern on CXR — even when left ventricular filling pressures are normal/near-normal. Because the leak is from permeability plus volume overload rather than purely high LV pressure, the definitive treatment is volume removal by DIALYSIS/ultrafiltration.</div><div class="rtt">⚠️ WRONG answer: 'pulmonary edema in a CKD patient always indicates elevated left ventricular filling pressures and primary cardiac failure.' Discriminator: uremic 'low-pressure' pulmonary edema arises from increased capillary permeability + volume and can occur with normal LV filling pressures — it responds to dialysis, distinguishing it from purely cardiogenic edema.</div></div><div class="rt"><div class="rtl">6. Responds to dialysis, not diuretics</div><div class="rte">In advanced CKD/ESRD, the kidneys can no longer respond to loop diuretics (no/low residual function), so uremic low-pressure pulmonary edema and volume overload are treated by DIALYSIS with ultrafiltration, not by escalating furosemide. In earlier CKD with residual function, high-dose loop diuretics still work but need higher doses to reach the tubular site of action.</div><div class="rtt">⚠️ WRONG answer: 'give escalating IV furosemide to manage flash pulmonary edema in an anuric dialysis patient.' Discriminator: an anuric ESRD patient cannot respond to diuretics — emergent ultrafiltration/dialysis is the treatment for their volume overload and uremic pulmonary edema.</div></div><div class="rt"><div class="rtl">7. Uremic pericarditis</div><div class="rte">Uremic pericarditis presents with a pericardial friction rub and chest pain, typically when BUN is very high (often &gt;60 mg/dL); classically the ECG LACKS the diffuse ST elevation seen in viral pericarditis because the inflammation is epicardial/myocardial-sparing. It is an absolute indication to INITIATE or INTENSIFY dialysis, which usually resolves it. Watch for progression to hemorrhagic effusion and tamponade.</div><div class="rtt">⚠️ WRONG answer: 'treat uremic pericarditis first-line with NSAIDs and colchicine like viral/idiopathic pericarditis.' Discriminator: the primary treatment for uremic pericarditis is intensified DIALYSIS (it reflects under-dialysis); NSAIDs/colchicine are not the answer, and uremic pericarditis classically lacks the diffuse ST elevation of viral pericarditis.</div></div><div class="rt"><div class="rtl">8. No heparin during dialysis</div><div class="rte">When intensifying dialysis to treat uremic pericarditis, use HEPARIN-FREE (or regional citrate) dialysis. The inflamed pericardium is prone to hemorrhagic effusion, and systemic anticoagulation risks converting it into a life-threatening hemorrhagic effusion/cardiac tamponade.</div><div class="rtt">⚠️ WRONG answer: 'use standard systemic heparin anticoagulation during dialysis for a patient with uremic pericarditis.' Discriminator: heparin can precipitate hemorrhagic pericardial effusion and tamponade in uremic pericarditis — heparin-free or regional citrate anticoagulation is mandatory.</div></div><div class="rt"><div class="rtl">9. Troponin — trend over hours</div><div class="rte">Cardiac troponin (especially high-sensitivity assays) is CHRONICALLY elevated at baseline in CKD due to reduced renal clearance plus ongoing subclinical myocardial strain/microinfarction. Therefore MI is diagnosed not by a single value above the threshold but by a significant dynamic RISE-AND/OR-FALL (delta) over serial measurements (e.g., 0/1–3 h), interpreted with symptoms and ECG.</div><div class="rtt">⚠️ WRONG answer: 'a single elevated high-sensitivity troponin in a CKD patient confirms acute myocardial infarction.' Discriminator: baseline troponin is chronically elevated in CKD — diagnosis of MI requires a dynamic delta (rise/fall) on serial draws, not one static elevated value.</div></div><div class="rt"><div class="rtl">10. MIA paradox — reverse epidemiology</div><div class="rte">The MIA syndrome (Malnutrition–Inflammation–Atherosclerosis/cachexia) drives 'reverse epidemiology' in dialysis patients: factors that are RISK markers in the general population become PROTECTIVE-appearing here — LOW BMI, LOW blood pressure, and LOW cholesterol all predict WORSE survival on dialysis (they mark malnutrition/inflammation/frailty). This is why aggressive statin initiation in prevalent dialysis patients failed to reduce mortality (4D, AURORA trials).</div><div class="rtt">⚠️ WRONG answer: 'a low cholesterol and low blood pressure in a dialysis patient are reassuring signs of good cardiovascular health.' Discriminator: by reverse epidemiology, low cholesterol/BP/BMI in dialysis patients signal malnutrition-inflammation (MIA) and predict HIGHER mortality — they are bad prognostic signs, not protective.</div></div><div class="rt"><div class="rtl">11. AV fistula → high-output HF</div><div class="rte">A hemodialysis arteriovenous fistula creates a permanent left-to-right shunt; a high-flow access (especially flow &gt;2 L/min or upper-arm fistulas) can chronically increase venous return and cardiac output enough to precipitate HIGH-OUTPUT heart failure. A bedside clue is the Nicoladoni–Branham sign (manual compression of the fistula slows the heart rate). Treatment is flow reduction (banding) or ligation.</div><div class="rtt">⚠️ WRONG answer: 'heart failure in a dialysis patient with a large AV fistula must be a low-output ischemic cardiomyopathy.' Discriminator: a high-flow AV fistula can cause HIGH-output HF via shunt physiology — check for the Branham sign (HR drops with fistula compression); banding/ligation can treat it, unlike an ischemic cause.</div></div><div class="rt"><div class="rtl">12. HTN 3-step: salt restriction first</div><div class="rte">CKD hypertension is largely volume/salt-dependent, so step 1 is SODIUM RESTRICTION (&lt;2 g/day) plus volume management. BP targets are stringent: generally &lt;130/80 (KDIGO even suggests SBP &lt;120 by standardized measurement in many CKD patients), and tighter control especially with diabetes or proteinuria &gt;1 g/day. Controlling volume and salt also restores responsiveness to antihypertensive drugs.</div><div class="rtt">⚠️ WRONG answer: 'a BP of 145/90 is an acceptable target in a proteinuric CKD patient.' Discriminator: CKD (especially with proteinuria/DM) requires a tight target ≤130/80 (often lower) plus salt restriction — a 'standard' goal of &lt;140/90 is too lax and accelerates renal and CV decline.</div></div><div class="rt"><div class="rtl">13. First-line: ACEi/ARB if proteinuria</div><div class="rte">For CKD with proteinuria/albuminuria, an ACE inhibitor OR an ARB is first-line and RENOPROTECTIVE beyond BP lowering — they dilate the efferent arteriole, reducing intraglomerular pressure and proteinuria, slowing CKD progression. Expect (and tolerate) an initial creatinine rise up to ~30% and monitor potassium. Add a loop diuretic for volume. Newer agents (SGLT2 inhibitors, finerenone) add further renal/CV protection in diabetic CKD.</div><div class="rtt">⚠️ WRONG answer: 'combine an ACE inhibitor WITH an ARB (dual RAAS blockade) to maximize antiproteinuric effect.' Discriminator: dual ACEi+ARB blockade increases hyperkalemia, AKI, and hypotension without outcome benefit (ONTARGET, VA NEPHRON-D) — use only ONE RAAS agent. Also: a creatinine rise up to ~30% is expected and not a reason to stop.</div></div><div class="rt"><div class="rtl">14. Non-DHP CCB if BP only</div><div class="rte">Non-dihydropyridine calcium channel blockers (diltiazem, verapamil) lower BP and have a modest antiproteinuric effect, but they LACK the robust renoprotective/antiproteinuric benefit of RAAS blockade and are not first-line for proteinuric CKD. They are useful add-ons (or when RAAS inhibitors are contraindicated/not tolerated). Avoid combining non-DHP CCBs with beta-blockers (risk of bradycardia/heart block).</div><div class="rtt">⚠️ WRONG answer: 'a non-DHP calcium channel blocker is the preferred first-line antihypertensive for renoprotection in proteinuric CKD.' Discriminator: RAAS blockade (ACEi/ARB) is first-line for proteinuric CKD; non-DHP CCBs control BP but do not match the antiproteinuric/renoprotective benefit — they are adjuncts, not the cornerstone.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_crt.html" title="Heart Failure — CRT (Cardiac Resynchronization)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_adhf_figure.html" title="Heart Failure — Figure 265-2: ADHF Phenotypes &amp; Therapy">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

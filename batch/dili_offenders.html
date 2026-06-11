@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DILI — Classic Offenders (Drug Hall)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>DILI Drug Hall banner</b> — BOARD TRAP: with a single suggestive drug on the med list, the wrong move is to stop the workup; you must still document a temporal relationship and rule out competing causes, since untreated viral or obstructive disease is the real miss.</li><li><b>Room 1: INH (isoniazid)</b> — WRONG to stop INH for an isolated asymptomatic ALT &lt;3x ULN — that is adaptation and you continue with monitoring; the discriminator for stopping is ALT &gt;3x ULN WITH symptoms/jaundice or &gt;5x ULN regardless of symptoms.</li><li><b>INH true hepatitis criteria</b> — WRONG to expect an allergic picture — INH injury is metabolic, so there is NO rash, fever, or eosinophilia; their absence does not make it benign, and waiting for allergic signs delays appropriate discontinuation.</li><li><b>Room 2: Nitrofurantoin</b> — WRONG to diagnose primary AIH and start indefinite immunosuppression in a woman on chronic nitrofurantoin — stop the drug first; drug-induced AIH resolves on withdrawal and rarely relapses off steroids, unlike idiopathic AIH.</li><li><b>Nitrofurantoin lung companion</b> — WRONG to attribute new dyspnea and a restrictive PFT pattern in a chronic-nitrofurantoin patient to age or heart failure — drug-induced pulmonary fibrosis is the board answer, and it can coexist with the hepatic AIH-like injury.</li><li><b>Room 3: Amox-clav (#1 idiosyncratic)</b> — WRONG to exclude amox-clav just because the patient already completed the course — delayed onset after stopping is its signature; failing to connect a recent antibiotic course to new cholestatic jaundice is the classic miss.</li><li><b>Vanishing bile duct syndrome</b> — WRONG to expect rapid normalization in every cholestatic DILI — vanishing bile duct syndrome can cause cholestasis persisting for months after the drug is stopped, and a slow recovery does not mean the diagnosis is wrong.</li><li><b>Room 4: Statins</b> — WRONG to stop a statin in a stable patient with mild ALT elevation &lt;3x ULN — this is the most-tested statin trap; you continue and monitor, since cardiovascular benefit far outweighs the rare hepatotoxicity.</li><li><b>Statin liver disease note</b> — WRONG to withhold a statin from a patient with compensated NAFLD or stable cirrhosis who needs it for ASCVD risk — denying indicated statin therapy in compensated CLD is the wrong board answer.</li><li><b>Room 5: Valproate (VPA)</b> — WRONG to reassure based on a normal ammonia or mildly abnormal LFTs in a confused patient on valproate — valproate-induced hyperammonemic encephalopathy can occur with normal LFTs, and the treatment is L-carnitine plus drug withdrawal, not just monitoring.</li><li><b>VPA high-risk groups</b> — WRONG to start valproate in a young child with developmental regression/seizures of unknown cause without considering POLG mutation — valproate can precipitate fatal liver failure (Alpers syndrome) and is contraindicated in known mitochondrial disease.</li><li><b>Room 6: Amiodarone</b> — WRONG to diagnose alcoholic hepatitis in a non-drinker on amiodarone with steatohepatitis and Mallory bodies — only amiodarone shows the phospholipid LAMELLAR inclusion bodies on EM; the drug history and lamellar bodies are the discriminators.</li><li><b>Amiodarone NOT immune</b> — WRONG to exclude amiodarone as the cause because it was stopped weeks-to-months ago — it persists in tissue and injury can appear or worsen long after discontinuation, unlike most drugs that improve on dechallenge.</li><li><b>R-value key (pattern reminders)</b> — WRONG to compute R from AST instead of ALT, or to skip GGT confirmation — R uses ALT, and an isolated ALP rise needs a high GGT to confirm a hepatic (rather than bony) source before being called cholestatic.</li><li><b>STOP sign + monitor</b> — WRONG answer: continuing the drug while merely 'monitoring' once thresholds are crossed or jaundice appears — at ≥5x ULN, or &gt;3x ULN with symptoms/jaundice, prompt discontinuation is required, not watchful waiting.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. DILI Drug Hall banner</div><div class="rte">DILI is a diagnosis of exclusion — before blaming any drug in this hall, exclude viral hepatitis (A/B/C/E), autoimmune hepatitis (ANA/ASMA), and biliary obstruction (RUQ ultrasound). Then classify by R-value pattern and assess severity with Hy's Law (hepatocellular ALT &gt;3x ULN + bilirubin &gt;2x ULN = &gt;10% mortality).</div><div class="rtt">⚠️ BOARD TRAP: with a single suggestive drug on the med list, the wrong move is to stop the workup; you must still document a temporal relationship and rule out competing causes, since untreated viral or obstructive disease is the real miss.</div></div><div class="rt"><div class="rtl">2. Room 1: INH (isoniazid)</div><div class="rte">Isoniazid causes a HEPATOCELLULAR (R &gt;5) idiosyncratic-metabolic injury via a toxic acetylhydrazine metabolite. About 10–20% develop transient asymptomatic ALT elevation (adaptation), but ~0.5–1% develop serious hepatitis; risk climbs with age (&gt;35), daily alcohol, and combination with rifampin/pyrazinamide.</div><div class="rtt">⚠️ WRONG to stop INH for an isolated asymptomatic ALT &lt;3x ULN — that is adaptation and you continue with monitoring; the discriminator for stopping is ALT &gt;3x ULN WITH symptoms/jaundice or &gt;5x ULN regardless of symptoms.</div></div><div class="rt"><div class="rtl">3. INH true hepatitis criteria</div><div class="rte">True INH hepatitis has a latency of weeks to 6 months and presents with anorexia, nausea, jaundice, and ALT &gt;3x ULN. Stop INH immediately for symptomatic hepatitis, jaundice, ALT &gt;3x ULN with symptoms, or &gt;5x ULN asymptomatic; combined with rifampin and pyrazinamide the hepatotoxicity is additive.</div><div class="rtt">⚠️ WRONG to expect an allergic picture — INH injury is metabolic, so there is NO rash, fever, or eosinophilia; their absence does not make it benign, and waiting for allergic signs delays appropriate discontinuation.</div></div><div class="rt"><div class="rtl">4. Room 2: Nitrofurantoin</div><div class="rte">Nitrofurantoin (long-term UTI prophylaxis, classically older women) causes CHRONIC hepatitis that mimics autoimmune hepatitis with positive ANA/ASMA, interface hepatitis, and plasma cells. It also causes interstitial pulmonary fibrosis — a signature dual toxicity.</div><div class="rtt">⚠️ WRONG to diagnose primary AIH and start indefinite immunosuppression in a woman on chronic nitrofurantoin — stop the drug first; drug-induced AIH resolves on withdrawal and rarely relapses off steroids, unlike idiopathic AIH.</div></div><div class="rt"><div class="rtl">5. Nitrofurantoin lung companion</div><div class="rte">Nitrofurantoin's other classic organ target is the lung: acute hypersensitivity pneumonitis (eosinophilia, fever) with short-term use and chronic interstitial pulmonary fibrosis with long-term prophylaxis. Pair 'chronic hepatitis + pulmonary fibrosis' as the nitrofurantoin combination.</div><div class="rtt">⚠️ WRONG to attribute new dyspnea and a restrictive PFT pattern in a chronic-nitrofurantoin patient to age or heart failure — drug-induced pulmonary fibrosis is the board answer, and it can coexist with the hepatic AIH-like injury.</div></div><div class="rt"><div class="rtl">6. Room 3: Amox-clav (#1 idiosyncratic)</div><div class="rte">Amoxicillin-clavulanate is the #1 cause of idiosyncratic DILI in the West. It produces a CHOLESTATIC or MIXED pattern (ALP/GGT up, R &lt;2 to 2–5) with jaundice and pruritus, and onset is characteristically DELAYED — days to weeks AFTER the antibiotic course is finished. The clavulanate component drives the injury (HLA-linked).</div><div class="rtt">⚠️ WRONG to exclude amox-clav just because the patient already completed the course — delayed onset after stopping is its signature; failing to connect a recent antibiotic course to new cholestatic jaundice is the classic miss.</div></div><div class="rt"><div class="rtl">7. Vanishing bile duct syndrome</div><div class="rte">Severe cholestatic DILI (amox-clav, and others like flucloxacillin, carbamazepine, azithromycin) can cause progressive bile-duct loss = ductopenia / vanishing bile duct syndrome, with prolonged cholestasis that may progress to biliary cirrhosis.</div><div class="rtt">⚠️ WRONG to expect rapid normalization in every cholestatic DILI — vanishing bile duct syndrome can cause cholestasis persisting for months after the drug is stopped, and a slow recovery does not mean the diagnosis is wrong.</div></div><div class="rt"><div class="rtl">8. Room 4: Statins</div><div class="rte">Statins cause a mild, usually asymptomatic ALT rise (often &lt;3x ULN) that frequently represents adaptation; clinically serious DILI is rare (~1 in 100,000). Routine periodic LFT monitoring is NO longer recommended — check baseline ALT, then only if symptoms arise.</div><div class="rtt">⚠️ WRONG to stop a statin in a stable patient with mild ALT elevation &lt;3x ULN — this is the most-tested statin trap; you continue and monitor, since cardiovascular benefit far outweighs the rare hepatotoxicity.</div></div><div class="rt"><div class="rtl">9. Statin liver disease note</div><div class="rte">Stable/compensated chronic liver disease — including NAFLD/NASH, chronic HCV, and compensated cirrhosis — is NOT a contraindication to statins and statins may even benefit NAFLD. Avoid statins only in decompensated cirrhosis or acute liver failure.</div><div class="rtt">⚠️ WRONG to withhold a statin from a patient with compensated NAFLD or stable cirrhosis who needs it for ASCVD risk — denying indicated statin therapy in compensated CLD is the wrong board answer.</div></div><div class="rt"><div class="rtl">10. Room 5: Valproate (VPA)</div><div class="rte">Valproic acid causes MICROVESICULAR steatosis through mitochondrial beta-oxidation toxicity; it can cause severe, even fatal, hepatotoxicity and hyperammonemic encephalopathy (treat with L-carnitine). Hepatotoxicity is typically NOT predicted by routine LFTs and may be idiosyncratic.</div><div class="rtt">⚠️ WRONG to reassure based on a normal ammonia or mildly abnormal LFTs in a confused patient on valproate — valproate-induced hyperammonemic encephalopathy can occur with normal LFTs, and the treatment is L-carnitine plus drug withdrawal, not just monitoring.</div></div><div class="rt"><div class="rtl">11. VPA high-risk groups</div><div class="rte">Fatal valproate hepatotoxicity risk is highest in children &lt;2 years old, those on anticonvulsant polytherapy, and patients with inherited mitochondrial disease (notably POLG/Alpers gene mutations), in whom valproate is contraindicated.</div><div class="rtt">⚠️ WRONG to start valproate in a young child with developmental regression/seizures of unknown cause without considering POLG mutation — valproate can precipitate fatal liver failure (Alpers syndrome) and is contraindicated in known mitochondrial disease.</div></div><div class="rt"><div class="rtl">12. Room 6: Amiodarone</div><div class="rte">Amiodarone causes MACROVESICULAR steatosis/steatohepatitis with phospholipidosis, lamellar inclusion bodies, and Mallory bodies — histology that closely mimics alcoholic hepatitis. It is highly lipophilic, accumulates in tissue, and has a half-life of ~weeks to months.</div><div class="rtt">⚠️ WRONG to diagnose alcoholic hepatitis in a non-drinker on amiodarone with steatohepatitis and Mallory bodies — only amiodarone shows the phospholipid LAMELLAR inclusion bodies on EM; the drug history and lamellar bodies are the discriminators.</div></div><div class="rt"><div class="rtl">13. Amiodarone NOT immune</div><div class="rte">Amiodarone toxicity is metabolic/accumulation-related, NOT immune, so there is no fever/rash/eosinophilia. Because of tissue accumulation and a long half-life, hepatic (and pulmonary and thyroid) toxicity can progress to cirrhosis and continue even AFTER the drug is discontinued.</div><div class="rtt">⚠️ WRONG to exclude amiodarone as the cause because it was stopped weeks-to-months ago — it persists in tissue and injury can appear or worsen long after discontinuation, unlike most drugs that improve on dechallenge.</div></div><div class="rt"><div class="rtl">14. R-value key (pattern reminders)</div><div class="rte">R-value = (ALT ÷ ULN) ÷ (ALP ÷ ULN). R &gt;5 = hepatocellular (ALT-dominant, e.g., INH, statins, APAP), R 2–5 = mixed, R &lt;2 = cholestatic (ALP/GGT-dominant, e.g., anabolic steroids, estrogens; amox-clav is cholestatic/mixed). The R-value at presentation defines the pattern.</div><div class="rtt">⚠️ WRONG to compute R from AST instead of ALT, or to skip GGT confirmation — R uses ALT, and an isolated ALP rise needs a high GGT to confirm a hepatic (rather than bony) source before being called cholestatic.</div></div><div class="rt"><div class="rtl">15. STOP sign + monitor</div><div class="rte">Management of all DILI is to STOP the offending drug first, then support. Withdraw the drug if transaminases reach ≥5x ULN asymptomatic, or &gt;3x ULN with symptoms/jaundice (Hy's Law concern); NAC is specific only for acetaminophen, and steroids only for hypersensitivity/AIH-like/checkpoint-inhibitor injury.</div><div class="rtt">⚠️ WRONG answer: continuing the drug while merely 'monitoring' once thresholds are crossed or jaundice appears — at ≥5x ULN, or &gt;3x ULN with symptoms/jaundice, prompt discontinuation is required, not watchful waiting.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dili_acetaminophen_nomogram.html" title="DILI — Acetaminophen Nomogram, NAPQI &amp; NAC Protocol">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dili_special_offenders.html" title="DILI — Drug AIH, Amiodarone, Statins &amp; Checkpoint Hepatitis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

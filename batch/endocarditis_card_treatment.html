@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Infective Endocarditis — Prophylaxis &amp; Treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Empiric therapy</b> — WRONG answer: 'give antibiotics first, then draw cultures.' Discriminator: in stable/subacute IE, obtain blood cultures BEFORE antibiotics so the organism is identifiable — premature antibiotics cause culture-negative IE. Only in hemodynamically unstable/septic patients do you start empiric therapy immediately after rapidly obtaining cultures.</li><li><b>Highest-risk only</b> — WRONG answer: 'patients with mitral valve prolapse or rheumatic valve disease need prophylaxis before dental work.' Discriminator: routine acquired valve disease, MVP, and bicuspid aortic valve do NOT get prophylaxis anymore — only the highest-risk list does. Over-prescribing prophylaxis is the most tested error.</li><li><b>Prosthetic valve</b> — WRONG answer: 'only mechanical valves need prophylaxis; bioprosthetic and TAVI do not.' Discriminator: ALL prosthetic valve types — mechanical, bioprosthetic, AND TAVI/repair material — qualify equally for prophylaxis.</li><li><b>Prior IE</b> — WRONG answer: 'a patient who fully recovered from IE years ago no longer needs prophylaxis.' Discriminator: prior IE is a PERMANENT highest-risk indication regardless of how long ago or how complete the recovery — it stays on the prophylaxis list.</li><li><b>Unrepaired cyanotic CHD</b> — WRONG answer: 'all congenital heart disease requires lifelong prophylaxis.' Discriminator: only UNREPAIRED CYANOTIC CHD (or repaired CHD with prosthetic material &lt;6 months, or with a residual defect) qualifies — simple repaired acyanotic lesions without residual defect do NOT.</li><li><b>Repaired CHD &lt;6 mo</b> — WRONG answer: 'a patient with a device-closed ASD needs lifelong prophylaxis.' Discriminator: prophylaxis for prosthetic-material CHD repair lasts only 6 months (endothelialization). Beyond 6 months with no residual defect → NO prophylaxis. A residual defect adjacent to the prosthetic patch, however, keeps the indication.</li><li><b>Valvulopathy post-transplant</b> — WRONG answer: 'all heart transplant patients automatically need prophylaxis.' Discriminator: it is transplant recipients WITH valvulopathy who qualify — a transplant alone without valve disease is not on the list.</li><li><b>Pacemaker alone — NO</b> — WRONG answer: 'a patient with a pacemaker needs prophylaxis before a dental cleaning.' Discriminator: a pacemaker/ICD is intravascular hardware but NOT on the prophylaxis list — only prosthetic VALVES/valve material are. Device alone = no prophylaxis.</li><li><b>HCM / MVP — NO</b> — WRONG answer: 'give amoxicillin before a dental procedure for a patient with HCM or MVP with a murmur.' Discriminator: HCM and MVP (with or without regurgitation) get NO prophylaxis. This is one of the most classic board traps — the historical recommendation is the wrong answer now.</li><li><b>ASD / mitral stenosis — NO</b> — WRONG answer: 'rheumatic mitral stenosis (or an unrepaired secundum ASD) needs endocarditis prophylaxis.' Discriminator: acquired valve disease (MS/AS), bicuspid aortic valve, and isolated ASD are NOT prophylaxis indications — only the six highest-risk conditions are.</li><li><b>Procedure: dental/gingival</b> — WRONG answer: 'routine dental cleaning/exam, or a simple filling, requires prophylaxis.' Discriminator: only procedures that manipulate gingiva/periapical region or perforate oral mucosa qualify — routine cleanings, adjustments of orthodontic appliances, and shedding deciduous teeth do NOT (and only IF the patient is also on the highest-risk list).</li><li><b>GI/GU procedures — NO</b> — WRONG answer: 'a highest-risk patient needs prophylaxis before a screening colonoscopy or cystoscopy.' Discriminator: GI/GU endoscopy is NOT an indication unless there is active infection at the site — purely diagnostic GI/GU procedures get no IE prophylaxis.</li><li><b>Amoxicillin 2g PO</b> — WRONG answer: 'give a 7-day course of amoxicillin around the procedure.' Discriminator: prophylaxis is a SINGLE dose given 30–60 minutes before the procedure, not a multi-day course. (If the dose was missed, it can be given up to 2 hours after.)</li><li><b>Ampicillin IV if NPO</b> — WRONG answer: 'a patient who is NPO simply skips prophylaxis.' Discriminator: switch to a parenteral agent (ampicillin 2 g IV/IM, or cefazolin/ceftriaxone 1 g IV/IM) — being NPO is not a reason to omit indicated prophylaxis.</li><li><b>Penicillin allergy options</b> — WRONG answer: 'use clindamycin for penicillin-allergic IE prophylaxis.' Discriminator: clindamycin is NO LONGER recommended (C. diff/toxicity) — current options are cephalexin, azithromycin/clarithromycin, or doxycycline. Picking clindamycin is the updated-guideline trap.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Empiric therapy</div><div class="rte">While blood cultures and susceptibilities are pending in suspected acute IE, start empiric vancomycin (MRSA/staph/strep/enterococcus coverage) PLUS ceftriaxone or, for prosthetic valves, vancomycin + gentamicin + cefepime ± rifampin to cover staph (incl. MRSA), strep, enterococci, and HACEK. Always draw 3 sets of blood cultures from separate sites BEFORE antibiotics. Total therapy is 4–6 weeks of IV antibiotics, tailored once the organism and MICs return.</div><div class="rtt">⚠️ WRONG answer: 'give antibiotics first, then draw cultures.' Discriminator: in stable/subacute IE, obtain blood cultures BEFORE antibiotics so the organism is identifiable — premature antibiotics cause culture-negative IE. Only in hemodynamically unstable/septic patients do you start empiric therapy immediately after rapidly obtaining cultures.</div></div><div class="rt"><div class="rtl">2. Highest-risk only</div><div class="rte">Antibiotic prophylaxis is reserved ONLY for cardiac conditions at highest risk of an adverse outcome from IE: (1) prosthetic valve or prosthetic repair material, (2) prior IE, (3) unrepaired cyanotic congenital heart disease, (4) repaired CHD with prosthetic material within the first 6 months, (5) repaired CHD with a residual defect at/near the prosthetic site, and (6) cardiac transplant recipients with valvulopathy. Since 2007 (AHA), prophylaxis for the general valve population was abandoned because most bacteremia is from daily activities, not procedures.</div><div class="rtt">⚠️ WRONG answer: 'patients with mitral valve prolapse or rheumatic valve disease need prophylaxis before dental work.' Discriminator: routine acquired valve disease, MVP, and bicuspid aortic valve do NOT get prophylaxis anymore — only the highest-risk list does. Over-prescribing prophylaxis is the most tested error.</div></div><div class="rt"><div class="rtl">3. Prosthetic valve</div><div class="rte">Any prosthetic heart valve — mechanical, bioprosthetic, transcatheter (TAVI/TAVR), or prosthetic material used for valve repair (annuloplasty rings, chords) — is a highest-risk condition warranting prophylaxis before qualifying dental procedures. Prosthetic material is a nidus that, once infected, carries high morbidity and often needs surgery.</div><div class="rtt">⚠️ WRONG answer: 'only mechanical valves need prophylaxis; bioprosthetic and TAVI do not.' Discriminator: ALL prosthetic valve types — mechanical, bioprosthetic, AND TAVI/repair material — qualify equally for prophylaxis.</div></div><div class="rt"><div class="rtl">4. Prior IE</div><div class="rte">A previous episode of infective endocarditis marks the patient as highest-risk and an indication for prophylaxis, because prior IE strongly predicts recurrence (damaged/abnormal endocardium and host susceptibility).</div><div class="rtt">⚠️ WRONG answer: 'a patient who fully recovered from IE years ago no longer needs prophylaxis.' Discriminator: prior IE is a PERMANENT highest-risk indication regardless of how long ago or how complete the recovery — it stays on the prophylaxis list.</div></div><div class="rt"><div class="rtl">5. Unrepaired cyanotic CHD</div><div class="rte">Unrepaired cyanotic congenital heart disease (e.g., tetralogy of Fallot, transposition, single-ventricle physiology, palliative shunts/conduits) is a highest-risk condition for IE and an indication for prophylaxis, owing to turbulent flow and prosthetic conduit material.</div><div class="rtt">⚠️ WRONG answer: 'all congenital heart disease requires lifelong prophylaxis.' Discriminator: only UNREPAIRED CYANOTIC CHD (or repaired CHD with prosthetic material &lt;6 months, or with a residual defect) qualifies — simple repaired acyanotic lesions without residual defect do NOT.</div></div><div class="rt"><div class="rtl">6. Repaired CHD &lt;6 mo</div><div class="rte">CHD repaired WITH prosthetic material or device gets prophylaxis only during the first 6 MONTHS after the procedure — the window before endothelialization covers the foreign material. After 6 months, if there is no residual defect, prophylaxis is no longer required.</div><div class="rtt">⚠️ WRONG answer: 'a patient with a device-closed ASD needs lifelong prophylaxis.' Discriminator: prophylaxis for prosthetic-material CHD repair lasts only 6 months (endothelialization). Beyond 6 months with no residual defect → NO prophylaxis. A residual defect adjacent to the prosthetic patch, however, keeps the indication.</div></div><div class="rt"><div class="rtl">7. Valvulopathy post-transplant</div><div class="rte">Cardiac transplant recipients who develop valvulopathy (structural valve disease in the transplanted heart) are classified as highest-risk and should receive prophylaxis. The combination of immunosuppression and an abnormal valve raises IE risk and severity.</div><div class="rtt">⚠️ WRONG answer: 'all heart transplant patients automatically need prophylaxis.' Discriminator: it is transplant recipients WITH valvulopathy who qualify — a transplant alone without valve disease is not on the list.</div></div><div class="rt"><div class="rtl">8. Pacemaker alone — NO</div><div class="rte">An isolated cardiac implantable electronic device (pacemaker or ICD) WITHOUT accompanying valve disease is NOT a highest-risk condition and does NOT warrant antibiotic prophylaxis before dental procedures, despite being 'hardware in the heart.'</div><div class="rtt">⚠️ WRONG answer: 'a patient with a pacemaker needs prophylaxis before a dental cleaning.' Discriminator: a pacemaker/ICD is intravascular hardware but NOT on the prophylaxis list — only prosthetic VALVES/valve material are. Device alone = no prophylaxis.</div></div><div class="rt"><div class="rtl">9. HCM / MVP — NO</div><div class="rte">Hypertrophic cardiomyopathy and mitral valve prolapse are NOT indications for IE prophylaxis under current guidelines — even MVP with regurgitation. These were historically (pre-2007) covered, which is exactly why they are now favorite exam distractors.</div><div class="rtt">⚠️ WRONG answer: 'give amoxicillin before a dental procedure for a patient with HCM or MVP with a murmur.' Discriminator: HCM and MVP (with or without regurgitation) get NO prophylaxis. This is one of the most classic board traps — the historical recommendation is the wrong answer now.</div></div><div class="rt"><div class="rtl">10. ASD / mitral stenosis — NO</div><div class="rte">Atrial septal defect (and other repaired CHD without residual defect beyond 6 months) and acquired native-valve lesions such as mitral stenosis, aortic stenosis, and rheumatic valve disease do NOT require prophylaxis. Bicuspid aortic valve is likewise not on the list.</div><div class="rtt">⚠️ WRONG answer: 'rheumatic mitral stenosis (or an unrepaired secundum ASD) needs endocarditis prophylaxis.' Discriminator: acquired valve disease (MS/AS), bicuspid aortic valve, and isolated ASD are NOT prophylaxis indications — only the six highest-risk conditions are.</div></div><div class="rt"><div class="rtl">11. Procedure: dental/gingival</div><div class="rte">Even in highest-risk patients, prophylaxis is given ONLY for procedures involving manipulation of GINGIVAL tissue or the PERIAPICAL region of teeth, or PERFORATION of the oral mucosa (e.g., extractions, periodontal surgery, implant placement, scaling). It is also reasonable for invasive RESPIRATORY tract procedures that incise/biopsy the mucosa (e.g., tonsillectomy).</div><div class="rtt">⚠️ WRONG answer: 'routine dental cleaning/exam, or a simple filling, requires prophylaxis.' Discriminator: only procedures that manipulate gingiva/periapical region or perforate oral mucosa qualify — routine cleanings, adjustments of orthodontic appliances, and shedding deciduous teeth do NOT (and only IF the patient is also on the highest-risk list).</div></div><div class="rt"><div class="rtl">12. GI/GU procedures — NO</div><div class="rte">Gastrointestinal and genitourinary procedures (including colonoscopy, EGD, cystoscopy) do NOT require IE prophylaxis solely to prevent endocarditis. The only exception: if there is an established ACTIVE infection (e.g., enterococcal UTI before a GU procedure), treat that infection and include enterococcal coverage.</div><div class="rtt">⚠️ WRONG answer: 'a highest-risk patient needs prophylaxis before a screening colonoscopy or cystoscopy.' Discriminator: GI/GU endoscopy is NOT an indication unless there is active infection at the site — purely diagnostic GI/GU procedures get no IE prophylaxis.</div></div><div class="rt"><div class="rtl">13. Amoxicillin 2g PO</div><div class="rte">First-line prophylaxis regimen: amoxicillin 2 g PO as a single dose 30–60 minutes before the qualifying procedure (children 50 mg/kg, max 2 g). Amoxicillin is chosen for high oral bioavailability and reliable activity against viridans streptococci, the main oral-procedure pathogen.</div><div class="rtt">⚠️ WRONG answer: 'give a 7-day course of amoxicillin around the procedure.' Discriminator: prophylaxis is a SINGLE dose given 30–60 minutes before the procedure, not a multi-day course. (If the dose was missed, it can be given up to 2 hours after.)</div></div><div class="rt"><div class="rtl">14. Ampicillin IV if NPO</div><div class="rte">If the patient cannot take oral medication, give ampicillin 2 g IV/IM, OR cefazolin/ceftriaxone 1 g IV/IM, as a single dose within 30–60 minutes before the procedure (children 50 mg/kg).</div><div class="rtt">⚠️ WRONG answer: 'a patient who is NPO simply skips prophylaxis.' Discriminator: switch to a parenteral agent (ampicillin 2 g IV/IM, or cefazolin/ceftriaxone 1 g IV/IM) — being NPO is not a reason to omit indicated prophylaxis.</div></div><div class="rt"><div class="rtl">15. Penicillin allergy options</div><div class="rte">For penicillin-allergic patients: cephalexin 2 g PO (or another first/second-generation cephalosporin — avoid if anaphylaxis/angioedema/urticaria to penicillins), OR azithromycin/clarithromycin 500 mg PO, OR doxycycline 100 mg PO. The updated AHA guidance REMOVED clindamycin because of disproportionate C. difficile and adverse-event risk.</div><div class="rtt">⚠️ WRONG answer: 'use clindamycin for penicillin-allergic IE prophylaxis.' Discriminator: clindamycin is NO LONGER recommended (C. diff/toxicity) — current options are cephalexin, azithromycin/clarithromycin, or doxycycline. Picking clindamycin is the updated-guideline trap.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="endocarditis_1.html" title="Infective Endocarditis — Pathogenesis, Organism Entry Doors &amp; Clinical Manifestations">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="endocarditis_3.html" title="Infective Endocarditis — Surgical Indications, Neurologic Timing &amp; Prophylaxis/Prognosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

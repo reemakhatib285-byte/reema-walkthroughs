@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Arrhythmias — Approach to Supraventricular Arrhythmias</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Atria above</b> — 'SVT' on a monitor is often used loosely to mean a regular narrow-complex paroxysmal tachycardia (PSVT = AVNRT/AVRT/AT), but technically AF and flutter are also supraventricular — be precise about which the question is testing.</li><li><b>AV booth gatekeeper</b> — AV-nodal blockade terminates AV-node-DEPENDENT rhythms (AVNRT, AVRT) but only transiently slows AV-node-INDEPENDENT rhythms (atrial flutter, atrial tachycardia, sinus tach), which resume after the drug wears off — and is dangerous in pre-excited AF (WPW).</li><li><b>Narrow QRS &lt;120ms</b> — Narrow complex does NOT automatically mean sinus rhythm — it can be AVNRT, AVRT, focal AT, flutter, or AF. Conversely, a wide QRS does not rule out SVT (aberrancy/BBB/pre-excitation can widen it).</li><li><b>AVNRT most common</b> — AVNRT, not AVRT, is the most common PSVT — picking AVRT as 'most common' is the classic distractor. Also, the buried/pseudo-r' P wave (not absent P waves) distinguishes AVNRT from AF.</li><li><b>AVRT runner + delta</b> — Antidromic AVRT conducts DOWN the accessory pathway, producing a WIDE, maximally pre-excited QRS that mimics VT — do not reflexively call it 'VT' or treat with standard AV-nodal blockers. Distinguish orthodromic (narrow) from antidromic (wide) AVRT.</li><li><b>Delta = pre-excitation</b> — The most feared scenario in WPW is PRE-EXCITED ATRIAL FIBRILLATION: rapid irregular wide-complex tachycardia. AV-nodal blockers (adenosine, verapamil/diltiazem, beta-blockers, digoxin) are CONTRAINDICATED because they shunt conduction down the accessory pathway and can accelerate to VF — use procainamide (or ibutilide) or synchronized cardioversion instead.</li><li><b>Focal AT</b> — Focal AT is AV-node-independent, so adenosine usually only causes transient AV block (revealing the abnormal P waves) rather than terminating it — unlike AVNRT/AVRT which it terminates.</li><li><b>AT rate &gt;200</b> — Don't confuse atrial tachycardia with atrial flutter: flutter has continuous sawtooth waves (no isoelectric baseline) at ~300/min, whereas AT has discrete P waves separated by a flat baseline.</li><li><b>Lungs (MAT)</b> — MAT is irregularly irregular and is easily MISTAKEN for atrial fibrillation — the discriminator is the presence of discrete, multiform P waves in MAT (AF has no organized P waves). Also, avoid non-selective beta-blockers in bronchospastic COPD patients with MAT.</li><li><b>Older adults</b> — Age/comorbidity helps pre-test probability: a young healthy patient with paroxysmal palpitations is more likely AVNRT/AVRT; an elderly COPD patient with irregular narrow tachy is more likely MAT — anchoring on the wrong demographic leads to the wrong diagnosis.</li><li><b>Treat the cause</b> — AT WITH BLOCK plus this picture should trigger thought of DIGOXIN TOXICITY — giving more AV-nodal blockade or ignoring the dig level is the trap; check the digoxin level and correct potassium.</li><li><b>Wide = VT until proven</b> — Defaulting to 'SVT with aberrancy' for a wide-complex tachycardia is a dangerous error — and giving verapamil to a misdiagnosed VT can cause hemodynamic collapse. When in doubt, treat as VT (procainamide/amiodarone if stable, cardiovert if unstable).</li><li><b>Causes of wide QRS in SVT</b> — Even knowing these causes, the safe default for an undifferentiated wide-complex tachycardia remains 'treat as VT' — only call it SVT with aberrancy when you have solid morphologic/clinical evidence.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Atria above</div><div class="rte">Supraventricular means the arrhythmia originates AT or ABOVE the AV node — in the atria or AV junction. By convention this produces a narrow QRS (&lt;120 ms) because the ventricles are still activated through the normal His-Purkinje system. The major SVTs are sinus tachycardia, atrial fibrillation, atrial flutter, atrial tachycardia (focal/multifocal), AVNRT, and AVRT.</div><div class="rtt">⚠️ 'SVT' on a monitor is often used loosely to mean a regular narrow-complex paroxysmal tachycardia (PSVT = AVNRT/AVRT/AT), but technically AF and flutter are also supraventricular — be precise about which the question is testing.</div></div><div class="rt"><div class="rtl">2. AV booth gatekeeper</div><div class="rte">The AV node is the gatekeeper that conducts (and physiologically delays) impulses from atria to ventricles. It is the obligatory limb of the re-entry circuit in AVNRT and AVRT, which is exactly why slowing/blocking the AV node (vagal maneuvers, adenosine, beta-blockers, non-dihydropyridine CCBs) terminates those arrhythmias.</div><div class="rtt">⚠️ AV-nodal blockade terminates AV-node-DEPENDENT rhythms (AVNRT, AVRT) but only transiently slows AV-node-INDEPENDENT rhythms (atrial flutter, atrial tachycardia, sinus tach), which resume after the drug wears off — and is dangerous in pre-excited AF (WPW).</div></div><div class="rt"><div class="rtl">3. Narrow QRS &lt;120ms</div><div class="rte">A narrow QRS (&lt;120 ms / &lt;3 small boxes) indicates the ventricles are depolarized via the normal His-Purkinje system, so the rhythm is supraventricular in origin. Next, characterize it by regularity and by the P-wave/RP relationship: irregularly irregular with no P waves = AF; sawtooth = flutter; regular with hidden or pseudo-r' P waves = AVNRT.</div><div class="rtt">⚠️ Narrow complex does NOT automatically mean sinus rhythm — it can be AVNRT, AVRT, focal AT, flutter, or AF. Conversely, a wide QRS does not rule out SVT (aberrancy/BBB/pre-excitation can widen it).</div></div><div class="rt"><div class="rtl">4. AVNRT most common</div><div class="rte">AV nodal re-entrant tachycardia is the MOST COMMON paroxysmal SVT (~60% of PSVT), typically in young women. It uses dual pathways within/near the AV node (a slow and a fast pathway) that form a micro-reentry loop. On ECG the retrograde P wave is buried in or just after the QRS, producing a pseudo-r' in V1 or a pseudo-S in inferior leads (short RP tachycardia). Rate is typically 150-250 bpm.</div><div class="rtt">⚠️ AVNRT, not AVRT, is the most common PSVT — picking AVRT as 'most common' is the classic distractor. Also, the buried/pseudo-r' P wave (not absent P waves) distinguishes AVNRT from AF.</div></div><div class="rt"><div class="rtl">5. AVRT runner + delta</div><div class="rte">AV re-entrant tachycardia uses an accessory pathway (e.g., bundle of Kent) connecting atrium to ventricle outside the AV node. In sinus rhythm with WPW, antegrade conduction down the accessory pathway pre-excites the ventricle, giving a SHORT PR (&lt;120 ms) and a DELTA wave (slurred QRS upstroke). During orthodromic AVRT (most common, ~95%) the circuit goes down the AV node and back up the accessory pathway, yielding a narrow QRS with a retrograde P after the QRS (RP &lt; PR, but P separated from QRS).</div><div class="rtt">⚠️ Antidromic AVRT conducts DOWN the accessory pathway, producing a WIDE, maximally pre-excited QRS that mimics VT — do not reflexively call it 'VT' or treat with standard AV-nodal blockers. Distinguish orthodromic (narrow) from antidromic (wide) AVRT.</div></div><div class="rt"><div class="rtl">6. Delta = pre-excitation</div><div class="rte">The delta wave is the slurred initial QRS upstroke caused by accessory-pathway pre-excitation — the hallmark of Wolff-Parkinson-White on the resting ECG (short PR + delta wave + wide QRS). WPW syndrome = the ECG pattern PLUS symptomatic arrhythmia.</div><div class="rtt">⚠️ The most feared scenario in WPW is PRE-EXCITED ATRIAL FIBRILLATION: rapid irregular wide-complex tachycardia. AV-nodal blockers (adenosine, verapamil/diltiazem, beta-blockers, digoxin) are CONTRAINDICATED because they shunt conduction down the accessory pathway and can accelerate to VF — use procainamide (or ibutilide) or synchronized cardioversion instead.</div></div><div class="rt"><div class="rtl">7. Focal AT</div><div class="rte">Focal atrial tachycardia arises from a single ectopic atrial focus firing faster than the sinus node (automaticity/triggered activity). The P-wave morphology DIFFERS from sinus, there is an isoelectric baseline between P waves, and it is a long-RP tachycardia. It often shows a 'warm-up' (gradually accelerating) onset.</div><div class="rtt">⚠️ Focal AT is AV-node-independent, so adenosine usually only causes transient AV block (revealing the abnormal P waves) rather than terminating it — unlike AVNRT/AVRT which it terminates.</div></div><div class="rt"><div class="rtl">8. AT rate &gt;200</div><div class="rte">Atrial tachycardias run at atrial rates of roughly 100-250 bpm (focal AT often 150-200+). Key feature: a clear isoelectric baseline between discrete P waves distinguishes AT from atrial flutter, where the undulating sawtooth has no isoelectric baseline (flutter atrial rate is classically ~300 bpm).</div><div class="rtt">⚠️ Don't confuse atrial tachycardia with atrial flutter: flutter has continuous sawtooth waves (no isoelectric baseline) at ~300/min, whereas AT has discrete P waves separated by a flat baseline.</div></div><div class="rt"><div class="rtl">9. Lungs (MAT)</div><div class="rte">Multifocal atrial tachycardia is defined by ≥3 distinct P-wave morphologies with varying PP, PR, and RR intervals — an irregular narrow-complex rhythm classically seen in severe COPD/hypoxia and also in theophylline toxicity and hypomagnesemia. Treatment targets the underlying lung disease and corrects hypoxia/electrolytes; verapamil or a beta-blocker (cautiously, given COPD) can be used for rate.</div><div class="rtt">⚠️ MAT is irregularly irregular and is easily MISTAKEN for atrial fibrillation — the discriminator is the presence of discrete, multiform P waves in MAT (AF has no organized P waves). Also, avoid non-selective beta-blockers in bronchospastic COPD patients with MAT.</div></div><div class="rt"><div class="rtl">10. Older adults</div><div class="rte">Atrial tachycardias (focal AT, MAT) are more common in OLDER patients with structural heart disease, COPD, or critical illness — in contrast to AVNRT/AVRT, which classically present in younger patients with structurally normal hearts.</div><div class="rtt">⚠️ Age/comorbidity helps pre-test probability: a young healthy patient with paroxysmal palpitations is more likely AVNRT/AVRT; an elderly COPD patient with irregular narrow tachy is more likely MAT — anchoring on the wrong demographic leads to the wrong diagnosis.</div></div><div class="rt"><div class="rtl">11. Treat the cause</div><div class="rte">Automatic atrial rhythms (focal AT, MAT) are often driven by reversible triggers — ischemia, hypoxia, sympathetic surge, electrolyte derangements (low K+/Mg2+), digoxin toxicity (classic for AT with block), and theophylline. Management emphasizes reversing the trigger, not just AV-nodal rate control.</div><div class="rtt">⚠️ AT WITH BLOCK plus this picture should trigger thought of DIGOXIN TOXICITY — giving more AV-nodal blockade or ignoring the dig level is the trap; check the digoxin level and correct potassium.</div></div><div class="rt"><div class="rtl">12. Wide = VT until proven</div><div class="rte">Any WIDE-complex tachycardia (QRS ≥120 ms) is ventricular tachycardia until proven otherwise — assume the most dangerous diagnosis. Features favoring VT: AV dissociation, capture/fusion beats, very wide QRS (&gt;140 ms in RBBB / &gt;160 ms in LBBB morphology), extreme axis, concordance across precordial leads, and a history of structural heart disease/prior MI (the single best predictor).</div><div class="rtt">⚠️ Defaulting to 'SVT with aberrancy' for a wide-complex tachycardia is a dangerous error — and giving verapamil to a misdiagnosed VT can cause hemodynamic collapse. When in doubt, treat as VT (procainamide/amiodarone if stable, cardiovert if unstable).</div></div><div class="rt"><div class="rtl">13. Causes of wide QRS in SVT</div><div class="rte">An SVT can appear WIDE when there is: (1) a pre-existing or rate-related bundle branch block (aberrancy), (2) antegrade conduction over an accessory pathway (pre-excited AF or antidromic AVRT in WPW), or (3) drug/electrolyte effects that widen the QRS (hyperkalemia, sodium-channel blockers like TCAs/class I antiarrhythmics).</div><div class="rtt">⚠️ Even knowing these causes, the safe default for an undifferentiated wide-complex tachycardia remains 'treat as VT' — only call it SVT with aberrancy when you have solid morphologic/clinical evidence.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="arr_avnrt.html" title="Arrhythmias — AVNRT (Paroxysmal SVT)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="arr_vt_idiopathic.html" title="Arrhythmias — Idiopathic VT (RVOT &amp; Fascicular)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

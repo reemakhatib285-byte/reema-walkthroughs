@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Polycythemia / MPN — MPN overview (PV vs PMF vs ET)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Overproduction, no dysplasia</b> — WRONG answer: 'MPNs show marrow dysplasia.' That describes MDS. Discriminator: MPNs produce abundant mature cells (high counts in the blood) with a hypercellular but non-dysplastic marrow; MDS produces dysplastic precursors and peripheral CYTOPENIAS. Mixing the two up (MDS/MPN overlap exists but is a separate category) is the tested error.</li><li><b>PV — red flood</b> — WRONG to attribute post-shower itching in a polycythemic patient to dry skin or eczema. Discriminator: aquagenic pruritus is a hallmark of PV; pairing it with elevated Hct, splenomegaly, and a SUPPRESSED EPO points to PV rather than a secondary erythrocytosis (where EPO is high and pruritus is absent).</li><li><b>PV: phlebotomy + ruxolitinib/IFN</b> — WRONG answer: target Hct &lt;50% or 'whatever relieves symptoms.' Discriminator: the evidence-based target is Hct &lt;45%; the CYTO-PV trial showed &lt;45% had far fewer cardiovascular events than a 45–50% target. Also, never withhold aspirin assuming high counts protect — PV patients clot.</li><li><b>PV spleen can mask high RCM</b> — WRONG to exclude PV because the Hct is only mildly elevated in a patient with splenomegaly and JAK2 positivity. Discriminator: splenic sequestration (or masking iron deficiency) can keep the Hct deceptively low; rely on JAK2, EPO, and marrow rather than the Hct alone, and consider a red cell mass study if needed.</li><li><b>PMF — exhausted, weight loss</b> — WRONG to dismiss the constitutional symptoms as occult malignancy/infection without checking the smear. Discriminator: an older patient with night sweats, weight loss, massive splenomegaly, anemia, and a LEUKOERYTHROBLASTIC smear with TEARDROP cells points to PMF; the smear and JAK2/CALR/MPL testing make the diagnosis.</li><li><b>PMF — massive spleen</b> — WRONG to attribute teardrop cells and a leukoerythroblastic smear solely to PMF without excluding marrow infiltration. Discriminator: teardrop cells/leukoerythroblastosis also occur with metastatic marrow infiltration and other myelophthisic processes; in PMF the bone marrow biopsy shows fibrosis with atypical megakaryocyte clustering plus a driver mutation.</li><li><b>PMF — dry tap on needle into rock</b> — WRONG answer: repeat the aspirate or call it a failed/inadequate sample when aspiration yields nothing. Discriminator: a dry tap is itself a clue to marrow fibrosis (PMF or other fibrotic process); the correct next step is a trephine core biopsy with reticulin staining, not another aspiration attempt.</li><li><b>PMF: ruxolitinib palliates</b> — WRONG to call ruxolitinib curative for PMF. Discriminator: ruxolitinib is symptom-directed/palliative (spleen and constitutional symptoms); the ONLY curative therapy is allogeneic hematopoietic stem cell transplant. Offering ruxolitinib as 'the cure' is the tested mistake.</li><li><b>ET — best prognosis, ECG normal</b> — WRONG answer: 'ET is the most aggressive MPN.' Discriminator: ET has the BEST prognosis and longest survival; primary myelofibrosis is the most aggressive with the worst survival. Reversing this prognostic ranking is a classic tested error.</li><li><b>ET #1 risk thrombosis</b> — WRONG to gauge ET thrombotic risk by the platelet number. Discriminator: thrombosis risk is driven by AGE, PRIOR THROMBOSIS, and JAK2 status (IPSET-thrombosis) — a young CALR-mutant patient with a million platelets may be LOW risk, while an older JAK2+ patient with modest thrombocytosis is HIGH risk.</li><li><b>Clonal evolution to AML</b> — WRONG to reassure that ET/PV 'never become leukemia.' Discriminator: all MPNs carry a real (if low for ET, higher for PMF) risk of fibrotic and leukemic transformation; new cytopenias, rising blasts, or worsening constitutional symptoms in a stable MPN patient signal transformation and warrant marrow re-evaluation.</li><li><b>MPNs can transition between each other</b> — WRONG to assume an MPN diagnosis is fixed for life. Discriminator: a known ET/PV patient who develops anemia, a leukoerythroblastic smear, teardrop cells, and growing splenomegaly has progressed to post-ET/post-PV myelofibrosis — a repeat marrow biopsy (showing fibrosis) confirms the transition, changing prognosis and treatment.</li><li><b>MDS (separate, dysplastic)</b> — WRONG answer: lumping MDS with the MPNs because both are clonal myeloid neoplasms. Discriminator: MDS shows DYSPLASIA and CYTOPENIAS (ineffective hematopoiesis), whereas MPNs show effective overproduction with high blood counts and no dysplasia — the marrow morphology and blood counts separate them.</li><li><b>Phlebotomy iron masking</b> — WRONG to give iron supplementation to a phlebotomized PV patient to 'correct' the iron deficiency and microcytosis. Discriminator: iron repletion in PV unmasks and re-drives erythrocytosis (Hct surges, raising thrombosis risk); iron deficiency is an expected, tolerated consequence of phlebotomy therapy, not something to routinely replace.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Overproduction, no dysplasia</div><div class="rte">The classic Philadelphia-negative myeloproliferative neoplasms (PV, ET, PMF) are clonal hematopoietic stem-cell disorders defined by EFFECTIVE overproduction of one or more mature, well-differentiated cell lines WITHOUT dysplasia. This contrasts with MDS, where hematopoiesis is INEFFECTIVE and DYSPLASTIC (cytopenias despite a cellular marrow). The shared driver in most cases is constitutive JAK-STAT pathway activation (JAK2 V617F, CALR, or MPL). Mnemonic: 'MPN = too many GOOD cells; MDS = too few BAD cells.'</div><div class="rtt">⚠️ WRONG answer: 'MPNs show marrow dysplasia.' That describes MDS. Discriminator: MPNs produce abundant mature cells (high counts in the blood) with a hypercellular but non-dysplastic marrow; MDS produces dysplastic precursors and peripheral CYTOPENIAS. Mixing the two up (MDS/MPN overlap exists but is a separate category) is the tested error.</div></div><div class="rt"><div class="rtl">2. PV — red flood</div><div class="rte">Polycythemia vera: JAK2 mutation (V617F in ~95%, exon 12 in the rest) driving panmyelosis with predominant erythrocytosis. Classic features: plethora, AQUAGENIC PRURITUS (itching after a warm shower from mast-cell/histamine release), erythromelalgia, thrombosis, hyperviscosity (headache, visual changes), and gout from high cell turnover. Can present before age 50. Mnemonic: 'PV = Plethora, Pruritus (post-bath), thromბosis.'</div><div class="rtt">⚠️ WRONG to attribute post-shower itching in a polycythemic patient to dry skin or eczema. Discriminator: aquagenic pruritus is a hallmark of PV; pairing it with elevated Hct, splenomegaly, and a SUPPRESSED EPO points to PV rather than a secondary erythrocytosis (where EPO is high and pruritus is absent).</div></div><div class="rt"><div class="rtl">3. PV: phlebotomy + ruxolitinib/IFN</div><div class="rte">PV management: therapeutic PHLEBOTOMY to a target Hct &lt;45% (CYTO-PV trial showed &lt;45% reduces cardiovascular death/thrombosis) PLUS low-dose aspirin for all. High-risk patients (age &gt;60 or prior thrombosis) add cytoreduction: hydroxyurea first-line, with ruxolitinib (JAK1/2 inhibitor) for hydroxyurea-resistant/intolerant disease, and pegylated interferon-alfa favored in younger patients/pregnancy. Mnemonic: 'Phlebotomy to forty-five, Aspirin for all, Hydroxyurea if high-risk.'</div><div class="rtt">⚠️ WRONG answer: target Hct &lt;50% or 'whatever relieves symptoms.' Discriminator: the evidence-based target is Hct &lt;45%; the CYTO-PV trial showed &lt;45% had far fewer cardiovascular events than a 45–50% target. Also, never withhold aspirin assuming high counts protect — PV patients clot.</div></div><div class="rt"><div class="rtl">4. PV spleen can mask high RCM</div><div class="rte">Splenomegaly in PV can pool/sequester red cells, so the peripheral Hct may underrepresent the true total red cell mass. Conversely, concurrent iron deficiency or GI bleeding can also lower the measured Hct. The clue that something is being masked may be persistent thrombocytosis/leukocytosis or splenomegaly with a 'normal' Hct. Mnemonic: 'a big spleen hides the red cells.'</div><div class="rtt">⚠️ WRONG to exclude PV because the Hct is only mildly elevated in a patient with splenomegaly and JAK2 positivity. Discriminator: splenic sequestration (or masking iron deficiency) can keep the Hct deceptively low; rely on JAK2, EPO, and marrow rather than the Hct alone, and consider a red cell mass study if needed.</div></div><div class="rt"><div class="rtl">5. PMF — exhausted, weight loss</div><div class="rte">Primary myelofibrosis: clonal proliferation driving marrow fibrosis (reactive reticulin/collagen deposition via megakaryocyte-derived TGF-β/PDGF) and extramedullary hematopoiesis. Dominated by CONSTITUTIONAL symptoms — fatigue, weight loss/cachexia, drenching night sweats, low-grade fever — typically presenting in the 60s. Drivers: JAK2 (~50–60%), CALR (~25%), MPL (~8%), or triple-negative. Mnemonic: 'PMF = the wasted, sweating, fibrotic marrow.'</div><div class="rtt">⚠️ WRONG to dismiss the constitutional symptoms as occult malignancy/infection without checking the smear. Discriminator: an older patient with night sweats, weight loss, massive splenomegaly, anemia, and a LEUKOERYTHROBLASTIC smear with TEARDROP cells points to PMF; the smear and JAK2/CALR/MPL testing make the diagnosis.</div></div><div class="rt"><div class="rtl">6. PMF — massive spleen</div><div class="rte">PMF produces the MOST massive splenomegaly of the MPNs, driven by extramedullary hematopoiesis as the fibrotic marrow fails. The spleen can extend into the pelvis, causing early satiety, abdominal pain, and splenic infarcts. The peripheral smear shows a leukoerythroblastic picture with nucleated RBCs, immature myeloid cells, and characteristic TEARDROP cells (dacrocytes). Mnemonic: 'PMF = massive spleen + teardrop cells.'</div><div class="rtt">⚠️ WRONG to attribute teardrop cells and a leukoerythroblastic smear solely to PMF without excluding marrow infiltration. Discriminator: teardrop cells/leukoerythroblastosis also occur with metastatic marrow infiltration and other myelophthisic processes; in PMF the bone marrow biopsy shows fibrosis with atypical megakaryocyte clustering plus a driver mutation.</div></div><div class="rt"><div class="rtl">7. PMF — dry tap on needle into rock</div><div class="rte">The fibrotic marrow yields a 'DRY TAP' — bone marrow ASPIRATION fails because the marrow is replaced by reticulin/collagen fibrosis, so diagnosis requires a core BIOPSY (with reticulin/trichrome staining graded MF-0 to MF-3). Mnemonic: 'dry tap = needle hits a rock, get the biopsy.'</div><div class="rtt">⚠️ WRONG answer: repeat the aspirate or call it a failed/inadequate sample when aspiration yields nothing. Discriminator: a dry tap is itself a clue to marrow fibrosis (PMF or other fibrotic process); the correct next step is a trephine core biopsy with reticulin staining, not another aspiration attempt.</div></div><div class="rt"><div class="rtl">8. PMF: ruxolitinib palliates</div><div class="rte">PMF therapy is risk-adapted (DIPSS/DIPSS-plus). Ruxolitinib (JAK1/2 inhibitor) reduces spleen size and constitutional symptoms and improves quality of life/survival but is PALLIATIVE — it does not reverse fibrosis or cure. Allogeneic stem cell transplant is the ONLY curative option, reserved for higher-risk eligible patients. Supportive care: transfusions, EPO/danazol for anemia. Mnemonic: 'Ruxolitinib shrinks the spleen; only alloBMT cures.'</div><div class="rtt">⚠️ WRONG to call ruxolitinib curative for PMF. Discriminator: ruxolitinib is symptom-directed/palliative (spleen and constitutional symptoms); the ONLY curative therapy is allogeneic hematopoietic stem cell transplant. Offering ruxolitinib as 'the cure' is the tested mistake.</div></div><div class="rt"><div class="rtl">9. ET — best prognosis, ECG normal</div><div class="rte">Essential thrombocythemia is the most INDOLENT classic MPN, with near-normal life expectancy measured in decades and the lowest rate of leukemic transformation. Most patients are asymptomatic at diagnosis (incidental thrombocytosis) or have vasomotor symptoms. Drivers: JAK2 (~55%), CALR (~25%), MPL (~3–5%). Mnemonic: 'ET = the calm, long-lived MPN.'</div><div class="rtt">⚠️ WRONG answer: 'ET is the most aggressive MPN.' Discriminator: ET has the BEST prognosis and longest survival; primary myelofibrosis is the most aggressive with the worst survival. Reversing this prognostic ranking is a classic tested error.</div></div><div class="rt"><div class="rtl">10. ET #1 risk thrombosis</div><div class="rte">Thrombosis (arterial &gt; venous) is the LEADING clinical complication and cause of morbidity in ET; it can occur in unusual sites (splanchnic/Budd-Chiari, cerebral). Risk is stratified by IPSET-thrombosis (age &gt;60, prior thrombosis, JAK2 mutation, cardiovascular risk factors), NOT by platelet count alone. At extreme counts, paradoxical bleeding from acquired vWD also occurs. Mnemonic: 'ET's #1 enemy is the clot.'</div><div class="rtt">⚠️ WRONG to gauge ET thrombotic risk by the platelet number. Discriminator: thrombosis risk is driven by AGE, PRIOR THROMBOSIS, and JAK2 status (IPSET-thrombosis) — a young CALR-mutant patient with a million platelets may be LOW risk, while an older JAK2+ patient with modest thrombocytosis is HIGH risk.</div></div><div class="rt"><div class="rtl">11. Clonal evolution to AML</div><div class="rte">All MPNs are clonal stem-cell diseases capable of CLONAL EVOLUTION toward secondary myelofibrosis and, ultimately, blast-phase transformation to acute myeloid leukemia (a 'spent phase' → AML). Transformation risk over time: PMF &gt; PV &gt; ET. Leukemic transformation carries a dismal prognosis; allogeneic transplant is the only curative route. Mnemonic: 'MPN → MF → AML; the clone keeps climbing.'</div><div class="rtt">⚠️ WRONG to reassure that ET/PV 'never become leukemia.' Discriminator: all MPNs carry a real (if low for ET, higher for PMF) risk of fibrotic and leukemic transformation; new cytopenias, rising blasts, or worsening constitutional symptoms in a stable MPN patient signal transformation and warrant marrow re-evaluation.</div></div><div class="rt"><div class="rtl">12. MPNs can transition between each other</div><div class="rte">MPNs are not static — PV and ET can evolve into 'spent-phase' secondary myelofibrosis (post-PV MF, post-ET MF), and JAK2+ ET may progress to overt PV. Some transitions are disease-driven; others can be influenced by prior cytoreductive therapy. The shared JAK-STAT biology underlies this fluid spectrum. Mnemonic: 'one MPN can morph into another.'</div><div class="rtt">⚠️ WRONG to assume an MPN diagnosis is fixed for life. Discriminator: a known ET/PV patient who develops anemia, a leukoerythroblastic smear, teardrop cells, and growing splenomegaly has progressed to post-ET/post-PV myelofibrosis — a repeat marrow biopsy (showing fibrosis) confirms the transition, changing prognosis and treatment.</div></div><div class="rt"><div class="rtl">13. MDS (separate, dysplastic)</div><div class="rte">Myelodysplastic syndrome is a DISTINCT clonal disorder of INEFFECTIVE, DYSPLASTIC hematopoiesis: a hypercellular marrow producing peripheral CYTOPENIAS, with morphologic dysplasia (e.g., ring sideroblasts, hypogranular neutrophils, pseudo-Pelger-Huët cells) and risk of AML. It contrasts with MPN's effective overproduction. Overlap syndromes (MDS/MPN, e.g., CMML) exist as a separate WHO category. Mnemonic: 'MDS = Dysplasia + cytopenias; MPN = proliferation + high counts.'</div><div class="rtt">⚠️ WRONG answer: lumping MDS with the MPNs because both are clonal myeloid neoplasms. Discriminator: MDS shows DYSPLASIA and CYTOPENIAS (ineffective hematopoiesis), whereas MPNs show effective overproduction with high blood counts and no dysplasia — the marrow morphology and blood counts separate them.</div></div><div class="rt"><div class="rtl">14. Phlebotomy iron masking</div><div class="rte">Repeated phlebotomy (or GI blood loss) induces iron deficiency, which limits erythropoiesis and can keep the Hct in/near the normal range even in active PV — masking the disease. The persistent clonal drive then often manifests as microcytosis and ongoing thrombocytosis/leukocytosis. Mnemonic: 'bleed out the iron and the Hct hides the PV.'</div><div class="rtt">⚠️ WRONG to give iron supplementation to a phlebotomized PV patient to 'correct' the iron deficiency and microcytosis. Discriminator: iron repletion in PV unmasks and re-drives erythrocytosis (Hct surges, raising thrombosis risk); iron deficiency is an expected, tolerated consequence of phlebotomy therapy, not something to routinely replace.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcv_et.html" title="Polycythemia / MPN — Essential thrombocythemia">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcv_myelofibrosis_clinical.html" title="Polycythemia / MPN — Myelofibrosis clinical features &amp; diagnosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

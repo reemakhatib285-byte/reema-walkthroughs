@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pituitary/DI/SIADH — AVP/ADH physiology (posterior pituitary)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Magnocellular neuron</b> — WRONG: AVP is made in the anterior pituitary. Discriminator — the anterior pituitary (adenohypophysis) is glandular tissue making ACTH/TSH/GH/LH/FSH/prolactin under hypothalamic releasing factors; AVP and oxytocin are made by hypothalamic NEURONS and merely stored in the posterior pituitary (neurohypophysis).</li><li><b>Posterior pituitary</b> — WRONG: the posterior pituitary synthesizes ADH. Discriminator — synthesis occurs in hypothalamic magnocellular neurons; the posterior lobe is a storage/release depot. On MRI this stored AVP is what produces the T1 'bright spot,' which disappears in central DI.</li><li><b>Osmoreceptor</b> — WRONG: osmoreceptors sense plasma sodium concentration directly. Discriminator — they respond to effective OSMOLALITY (osmotically driven cell shrinkage), not Na+ per se; Na+ matters only because it is the dominant effective extracellular osmole.</li><li><b>Senses Na not urea/glucose</b> — WRONG: urea is an effective osmole for AVP release. Discriminator — urea distributes across all body water and does not create a transmembrane gradient, so it does not shrink osmoreceptors; this is also why BUN does not contribute to the 'effective' osmolality (2×Na + glucose/18) used clinically.</li><li><b>Chromosome 20 / pre-pro-AVP</b> — WRONG: copeptin and AVP are released in different ratios. Discriminator — all three cleavage products come from the SAME precursor and are secreted 1:1:1; this fixed stoichiometry is precisely what makes copeptin a valid AVP surrogate.</li><li><b>Copeptin</b> — WRONG: copeptin is the biologically active hormone. Discriminator — copeptin is an inert cleavage byproduct with no known receptor or physiologic action; the active hormone is AVP. Copeptin's value is purely as a stable diagnostic surrogate.</li><li><b>Osmotic threshold</b> — WRONG: thirst is triggered before AVP release. Discriminator — AVP release (~275–280) precedes thirst (~290+); a patient with central DI but intact thirst and water access stays near-normonatremic, while loss of thirst (adipsic/hypothalamic DI) is what produces dangerous hypernatremia.</li><li><b>Blood pressure / volume</b> — WRONG: a small 5% volume loss is the main driver of AVP. Discriminator — the baroreceptor pathway needs ~10–20% volume depletion to engage; under normal volume the osmotic pathway dominates. The clinical pearl is that severe hypovolemia overrides osmolality, perpetuating hypotonic hyponatremia.</li><li><b>V2 receptor</b> — WRONG: the V1 receptor mediates renal water reabsorption. Discriminator — V1a causes vasoconstriction; the antidiuretic/water-reabsorption action is V2-mediated. DDAVP is V2-selective precisely so it concentrates urine without raising blood pressure.</li><li><b>AQP2 aquaporins</b> — WRONG: AQP2 is inserted on the basolateral side. Discriminator — AQP2 is the AVP-REGULATED apical/luminal channel; AQP3 and AQP4 are the constitutive basolateral exit channels. The disease-relevant target (lithium, V2 mutations) is apical AQP2.</li><li><b>Bright spot</b> — WRONG: the bright spot is present in central DI. Discriminator — central DI = depleted AVP stores = bright spot ABSENT; preserved bright spot points toward nephrogenic DI or primary polydipsia. (Note: bright spot can also be absent in some normal elderly, so it is supportive, not definitive.)</li><li><b>Oxytocin sister hormone</b> — WRONG: oxytocin's primary role is renal water reabsorption. Discriminator — water reabsorption is AVP/V2-mediated; oxytocin's main targets are breast and uterus. Only at supraphysiologic doses does its structural similarity to AVP cause incidental antidiuresis.</li><li><b>DDAVP / desmopressin</b> — WRONG: DDAVP acts mainly on V1 receptors. Discriminator — DDAVP is deliberately V2-selective so it concentrates urine without vasoconstriction/hypertension; native vasopressin (which does hit V1a) is the agent chosen when you WANT pressor effect (e.g., septic/vasodilatory shock).</li><li><b>Non-osmotic triggers</b> — WRONG: nausea has no effect on AVP secretion. Discriminator — nausea is in fact the single most potent non-osmotic AVP stimulus; this underlies perioperative hyponatremia and is why antiemetics plus fluid caution matter post-op.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Magnocellular neuron</div><div class="rte">AVP (ADH/vasopressin) is synthesized in the cell bodies of magnocellular neurons in the supraoptic and paraventricular nuclei of the hypothalamus. The hormone is packaged with neurophysin II and transported anterogradely down the axon to nerve terminals in the posterior pituitary, where it is stored and released into the systemic circulation. Mnemonic: 'Supra-Para make it, posterior pituitary spits it.'</div><div class="rtt">⚠️ WRONG: AVP is made in the anterior pituitary. Discriminator — the anterior pituitary (adenohypophysis) is glandular tissue making ACTH/TSH/GH/LH/FSH/prolactin under hypothalamic releasing factors; AVP and oxytocin are made by hypothalamic NEURONS and merely stored in the posterior pituitary (neurohypophysis).</div></div><div class="rt"><div class="rtl">2. Posterior pituitary</div><div class="rte">The posterior pituitary (neurohypophysis) is a downward extension of neural tissue (axon terminals + pituicytes), not a true gland. It only STORES and releases preformed AVP and oxytocin — it performs no hormone synthesis. This is why a transected pituitary stalk or hypothalamic lesion (not a posterior-lobe defect alone) causes central DI.</div><div class="rtt">⚠️ WRONG: the posterior pituitary synthesizes ADH. Discriminator — synthesis occurs in hypothalamic magnocellular neurons; the posterior lobe is a storage/release depot. On MRI this stored AVP is what produces the T1 'bright spot,' which disappears in central DI.</div></div><div class="rt"><div class="rtl">3. Osmoreceptor</div><div class="rte">Osmoreceptors in the anterolateral hypothalamus (organum vasculosum of the lamina terminalis, OVLT, a circumventricular organ outside the blood-brain barrier) sense plasma tonicity and drive AVP release and thirst. They are exquisitely sensitive — a 1% rise in effective osmolality measurably increases AVP. Volume/pressure changes act through a separate baroreceptor pathway.</div><div class="rtt">⚠️ WRONG: osmoreceptors sense plasma sodium concentration directly. Discriminator — they respond to effective OSMOLALITY (osmotically driven cell shrinkage), not Na+ per se; Na+ matters only because it is the dominant effective extracellular osmole.</div></div><div class="rt"><div class="rtl">4. Senses Na not urea/glucose</div><div class="rte">Only EFFECTIVE (impermeant) osmoles trigger AVP release: sodium salts and mannitol. Urea crosses cell membranes freely, and glucose enters cells with insulin, so neither shrinks the osmoreceptor — they are INEFFECTIVE osmoles. Clinical corollary: uremia and (insulin-mediated) hyperglycemia raise measured osm without stimulating AVP, whereas hyperglycemia in DKA pulls water out and CAN stimulate it because glucose is then transiently effective.</div><div class="rtt">⚠️ WRONG: urea is an effective osmole for AVP release. Discriminator — urea distributes across all body water and does not create a transmembrane gradient, so it does not shrink osmoreceptors; this is also why BUN does not contribute to the 'effective' osmolality (2×Na + glucose/18) used clinically.</div></div><div class="rt"><div class="rtl">5. Chromosome 20 / pre-pro-AVP</div><div class="rte">The AVP precursor pre-pro-vasopressin (gene on chromosome 20) is enzymatically cleaved into three products in a fixed 1:1:1 ratio: AVP, neurophysin II (carrier protein), and copeptin (C-terminal glycopeptide). Because copeptin is co-secreted equimolar with AVP but is far more stable in plasma, it serves as a surrogate marker for AVP secretion. Autosomal-dominant mutations in this gene cause familial central DI.</div><div class="rtt">⚠️ WRONG: copeptin and AVP are released in different ratios. Discriminator — all three cleavage products come from the SAME precursor and are secreted 1:1:1; this fixed stoichiometry is precisely what makes copeptin a valid AVP surrogate.</div></div><div class="rt"><div class="rtl">6. Copeptin</div><div class="rte">Copeptin is the stable, easily-assayed C-terminal fragment co-secreted 1:1 with AVP. Unlike AVP (short half-life, platelet-bound, hard to measure), copeptin is robust, so baseline and hypertonic-saline-stimulated copeptin have largely replaced the classic water-deprivation test for distinguishing DI subtypes. Baseline &gt;21.4 pmol/L indicates nephrogenic DI; stimulated &gt;4.9 pmol/L favors primary polydipsia over central DI.</div><div class="rtt">⚠️ WRONG: copeptin is the biologically active hormone. Discriminator — copeptin is an inert cleavage byproduct with no known receptor or physiologic action; the active hormone is AVP. Copeptin's value is purely as a stable diagnostic surrogate.</div></div><div class="rt"><div class="rtl">7. Osmotic threshold</div><div class="rte">AVP secretion begins at a plasma osmolality threshold of roughly 275–280 mOsm/kg and rises linearly with osmolality. Thirst is triggered at a HIGHER set point, ~290–295 mOsm/kg, so AVP-mediated water conservation engages first as the body's initial defense, with thirst as backup. This ordering keeps a conscious person with intact thirst from becoming hypernatremic even when AVP fails.</div><div class="rtt">⚠️ WRONG: thirst is triggered before AVP release. Discriminator — AVP release (~275–280) precedes thirst (~290+); a patient with central DI but intact thirst and water access stays near-normonatremic, while loss of thirst (adipsic/hypothalamic DI) is what produces dangerous hypernatremia.</div></div><div class="rt"><div class="rtl">8. Blood pressure / volume</div><div class="rte">Baroreceptors (carotid sinus, aortic arch, and low-pressure atrial/pulmonary venous receptors) provide a non-osmotic stimulus to AVP, but the system is insensitive — it takes a LARGE fall in blood volume/pressure (~10–20%) before AVP rises sharply. When activated, this baroreceptor drive OVERRIDES osmotic control, which is why hypovolemia causes AVP release and water retention even when the patient is already hyponatremic/hypotonic.</div><div class="rtt">⚠️ WRONG: a small 5% volume loss is the main driver of AVP. Discriminator — the baroreceptor pathway needs ~10–20% volume depletion to engage; under normal volume the osmotic pathway dominates. The clinical pearl is that severe hypovolemia overrides osmolality, perpetuating hypotonic hyponatremia.</div></div><div class="rt"><div class="rtl">9. V2 receptor</div><div class="rte">AVP binds V2 receptors (Gs-coupled) on the BASOLATERAL membrane of collecting-duct principal cells → adenylate cyclase → ↑cAMP → PKA. PKA phosphorylates aquaporin-2 vesicles, triggering their insertion into the apical membrane and increasing water reabsorption (urine concentration). V2 also mediates release of vWF/factor VIII (basis for DDAVP use in mild hemophilia A and von Willebrand disease); V1a (vascular smooth muscle) mediates vasoconstriction; V1b is on the anterior pituitary.</div><div class="rtt">⚠️ WRONG: the V1 receptor mediates renal water reabsorption. Discriminator — V1a causes vasoconstriction; the antidiuretic/water-reabsorption action is V2-mediated. DDAVP is V2-selective precisely so it concentrates urine without raising blood pressure.</div></div><div class="rt"><div class="rtl">10. AQP2 aquaporins</div><div class="rte">V2→cAMP→PKA signaling shuttles aquaporin-2 (AQP2) water channels to the APICAL (luminal) membrane of principal cells, the rate-limiting, regulated step in water reabsorption. Water then exits the cell via constitutive AQP3 and AQP4 on the basolateral side into the hypertonic medullary interstitium. Lithium and hypercalcemia cause nephrogenic DI largely by downregulating AQP2.</div><div class="rtt">⚠️ WRONG: AQP2 is inserted on the basolateral side. Discriminator — AQP2 is the AVP-REGULATED apical/luminal channel; AQP3 and AQP4 are the constitutive basolateral exit channels. The disease-relevant target (lithium, V2 mutations) is apical AQP2.</div></div><div class="rt"><div class="rtl">11. Bright spot</div><div class="rte">The posterior pituitary 'bright spot' is a normal T1-hyperintense signal on MRI reflecting stored AVP (neurosecretory granules). It is characteristically ABSENT in central DI (AVP deficiency) because the storage pool is depleted/destroyed. It is typically PRESENT in nephrogenic DI, since the hormone is made and stored normally — the defect is renal resistance.</div><div class="rtt">⚠️ WRONG: the bright spot is present in central DI. Discriminator — central DI = depleted AVP stores = bright spot ABSENT; preserved bright spot points toward nephrogenic DI or primary polydipsia. (Note: bright spot can also be absent in some normal elderly, so it is supportive, not definitive.)</div></div><div class="rt"><div class="rtl">12. Oxytocin sister hormone</div><div class="rte">Oxytocin is the other posterior-pituitary nonapeptide (differs from AVP by only 2 amino acids), produced mainly by the paraventricular nucleus. Its actions are milk letdown (myoepithelial contraction in lactation), uterine contraction in labor (used clinically as Pitocin), and social/maternal bonding. At very high doses oxytocin has weak antidiuretic activity, which is why high-dose oxytocin infusions in labor can occasionally cause hyponatremia.</div><div class="rtt">⚠️ WRONG: oxytocin's primary role is renal water reabsorption. Discriminator — water reabsorption is AVP/V2-mediated; oxytocin's main targets are breast and uterus. Only at supraphysiologic doses does its structural similarity to AVP cause incidental antidiuresis.</div></div><div class="rt"><div class="rtl">13. DDAVP / desmopressin</div><div class="rte">Desmopressin (1-deamino-8-D-arginine vasopressin, DDAVP) is a synthetic AVP analog engineered to be V2-SELECTIVE with a long half-life and minimal V1 (vasopressor) activity. It is first-line for central DI (intranasal 10–20 mcg, oral 100–400 mcg, or IV/SC 1–2 mcg) and also raises vWF/factor VIII for von Willebrand disease and mild hemophilia A, and treats nocturnal enuresis. Its main complication is dilutional hyponatremia, so serum Na must be monitored.</div><div class="rtt">⚠️ WRONG: DDAVP acts mainly on V1 receptors. Discriminator — DDAVP is deliberately V2-selective so it concentrates urine without vasoconstriction/hypertension; native vasopressin (which does hit V1a) is the agent chosen when you WANT pressor effect (e.g., septic/vasodilatory shock).</div></div><div class="rt"><div class="rtl">14. Non-osmotic triggers</div><div class="rte">Beyond osmolality and volume, several non-osmotic stimuli release AVP: nausea/vomiting (the MOST potent stimulus, raising AVP up to 100-fold), pain, stress, hypoglycemia, angiotensin II, hypovolemia, nicotine/smoking, and glucocorticoid (cortisol) deficiency. These explain post-operative and post-nausea hyponatremia, and why secondary adrenal insufficiency unmasks SIADH-like hyponatremia (cortisol normally tonically suppresses AVP).</div><div class="rtt">⚠️ WRONG: nausea has no effect on AVP secretion. Discriminator — nausea is in fact the single most potent non-osmotic AVP stimulus; this underlies perioperative hyponatremia and is why antiemetics plus fluid caution matter post-op.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aldo_low_renin_htn.html" title="Primary Aldosteronism — The Low-Renin Hypertension Lineup">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="neuro_di_causes.html" title="Pituitary/DI/SIADH — Diabetes insipidus causes (central vs nephrogenic)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

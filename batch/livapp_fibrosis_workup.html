@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Liver Approach — Left Lab Bench</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>19</em></summary><ol class="traps"><li><b>ALT tube (liver-specific)</b> — WRONG answer: assuming a normal ALT excludes significant liver disease/fibrosis. Discriminator: ALT can be normal in advanced fibrosis/cirrhosis and in NAFLD — staging relies on FIB-4 and elastography, not on the ALT value alone.</li><li><b>AST tube (multi-organ)</b> — WRONG answer: diagnosing liver disease from an isolated AST elevation with a normal ALT. Discriminator: check CK and a hemolysis panel — muscle injury (rhabdo, myositis, macro-AST) or hemolysis raises AST without liver disease; a truly hepatic process usually moves ALT too.</li><li><b>AST:ALT dial &gt;2:1</b> — WRONG answer: using an AST:ALT &gt;2:1 to call viral hepatitis or to diagnose ALD by ratio alone. Discriminator: viral/NAFLD give ALT&gt;AST (ratio &lt;1); the &gt;2:1 pattern points to alcohol, but NAFLD that has progressed to cirrhosis can also flip the ratio above 1 — interpret with the clinical context, not the number in isolation.</li><li><b>AST&gt;300 in alcohol rare</b> — WRONG answer: attributing transaminases in the thousands to alcohol. Discriminator: AST/ALT &gt;1000 are NOT alcohol — think ischemic ('shock') hepatitis, acute viral hepatitis, or toxin (acetaminophen); reconsider the diagnosis when an apparent drinker has very high values (look for coingested acetaminophen, hypotension, viral cause).</li><li><b>B6 deficiency / low ALT</b> — WRONG answer: interpreting the low ALT in an alcoholic as evidence of mild/improving liver disease. Discriminator: the low ALT is a B6-deficiency artifact inflating the ratio — it does not mean less injury; severity is judged by Maddrey's discriminant function/MELD, not by the falsely low ALT.</li><li><b>Gilbert range bar</b> — WRONG answer: treating a mildly elevated INDIRECT bilirubin (&lt;3) as a cholestatic/obstructive problem warranting imaging. Discriminator: isolated unconjugated hyperbilirubinemia with normal ALP/transaminases and no hemolysis is Gilbert — benign, no imaging or biopsy; cholestasis is CONJUGATED with high ALP.</li><li><b>Gilbert no jaundice face</b> — WRONG answer: launching a hepatitis/cholestasis workup or biopsy in a young patient with intermittent mild jaundice during illness/fasting. Discriminator: normal CBC, normal LFTs except isolated indirect bilirubin, no hemolysis = Gilbert; the trigger (fasting/stress) and otherwise normal labs clinch it without further testing.</li><li><b>Normal CBC, no hemolysis</b> — WRONG answer: ordering a hemolysis panel/imaging anyway when the CBC is normal and bilirubin is isolated indirect. Discriminator: with a normal CBC and no hemolysis the cause is Gilbert by default; pursuing hemolysis labs or biliary imaging is the over-testing trap.</li><li><b>Abnormal CBC → hemolysis</b> — WRONG answer: attributing the indirect hyperbilirubinemia to Gilbert when the patient is anemic. Discriminator: anemia + reticulocytosis + high LDH + low haptoglobin = hemolysis, not Gilbert — Gilbert has a NORMAL CBC and no hemolysis markers.</li><li><b>IgG / AIH jar</b> — WRONG answer: mistaking the high-IgG, AMA-negative cholestatic/hepatocellular picture for PBC. Discriminator: AIH = high IgG + ANA/ASMA + hepatocellular (high ALT) responding to steroids; PBC = high IgM + AMA + cholestatic (high ALP) treated with ursodeoxycholic acid — the immunoglobulin class and the LFT pattern separate them.</li><li><b>IgM / PBC jar</b> — WRONG answer: confirming PBC by cholangiography or confusing its IgM with the IgG of AIH. Discriminator: PBC is IgM + AMA + cholestatic with a NORMAL cholangiogram (small-duct disease); AIH is IgG + ANA/ASMA + hepatocellular — the antibody and Ig class decide it, not imaging.</li><li><b>IgA alcoholic jar</b> — WRONG answer: forgetting the Ig-to-disease mapping and pairing IgA with an autoimmune liver disease. Discriminator: IgA = alcohol, IgM = PBC, IgG = AIH — use this triad to assign the immunoglobulin to the correct etiology.</li><li><b>FIB-4 calculator</b> — WRONG answer: going straight to liver biopsy to stage fibrosis in NAFLD. Discriminator: the validated pathway is FIB-4 first, then elastography (FibroScan) for indeterminate/high values, and biopsy only when noninvasive tests are discordant or inconclusive.</li><li><b>FIB-4 &lt;1.3 community</b> — WRONG answer: referring every NAFLD patient to hepatology regardless of FIB-4. Discriminator: FIB-4 &lt;1.3 rules out advanced fibrosis well — referral/elastography is reserved for FIB-4 &gt;1.3 (indeterminate) or &gt;2.67 (high risk).</li><li><b>FIB-4 &gt;2.67 referral</b> — WRONG answer: reassuring/discharging a patient with FIB-4 &gt;2.67. Discriminator: a high FIB-4 mandates referral and elastography — treating it as low-risk misses advanced fibrosis/cirrhosis that needs varices and HCC surveillance.</li><li><b>FibroScan first</b> — WRONG answer: choosing liver biopsy as the first-line test to stage fibrosis. Discriminator: biopsy is NOT first-line — noninvasive FIB-4 then FibroScan come first; biopsy (with its bleeding risk and sampling error) is reserved for discordant or inconclusive noninvasive results.</li><li><b>Platelets low = fibrosis</b> — WRONG answer: working up isolated thrombocytopenia as a primary hematologic problem (ITP, marrow) while ignoring the liver. Discriminator: in chronic liver disease, low platelets reflect portal hypertension/hypersplenism — check spleen size, FIB-4 and synthetic function before assuming a marrow/immune cause.</li><li><b>HBV flag</b> — WRONG answer: omitting viral hepatitis serologies and attributing all fibrosis to NAFLD/alcohol. Discriminator: HBV/HCV are reversible drivers — missing them forgoes curative DAA therapy (HCV) or HCC surveillance and antivirals (HBV); chronic HBV needs HCC screening even without cirrhosis.</li><li><b>MRCP / biopsy crossed</b> — WRONG answer: ordering MRCP or biopsy for benign Gilbert-pattern isolated indirect hyperbilirubinemia. Discriminator: with normal CBC, no hemolysis and normal ALP/transaminases the answer is reassurance — invasive/advanced imaging is over-testing; escalate only when something is genuinely abnormal.</li></ol></details><details class="panel"><summary>📖 Read-through — all 19 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ALT tube (liver-specific)</div><div class="rte">ALT (alanine aminotransferase) is the LIVER-specific transaminase — it is concentrated in hepatocytes, so its elevation reliably localizes injury to the liver. An ALT-predominant (ALT &gt; AST) hepatocellular pattern classically reflects viral hepatitis or NAFLD/MASLD (fatty liver). In chronic HCV and steatohepatitis ALT can be only mildly elevated yet still mark ongoing injury, so it anchors the noninvasive fibrosis workup.</div><div class="rtt">⚠️ WRONG answer: assuming a normal ALT excludes significant liver disease/fibrosis. Discriminator: ALT can be normal in advanced fibrosis/cirrhosis and in NAFLD — staging relies on FIB-4 and elastography, not on the ALT value alone.</div></div><div class="rt"><div class="rtl">2. AST tube (multi-organ)</div><div class="rte">AST (aspartate aminotransferase) is MULTI-organ: it comes from liver, skeletal muscle, cardiac muscle, kidney and red blood cells, so it is NOT liver-specific. An isolated AST rise should prompt a non-hepatic search (CK for muscle/rhabdomyolysis, hemolysis, recent MI, strenuous exercise) before blaming the liver.</div><div class="rtt">⚠️ WRONG answer: diagnosing liver disease from an isolated AST elevation with a normal ALT. Discriminator: check CK and a hemolysis panel — muscle injury (rhabdo, myositis, macro-AST) or hemolysis raises AST without liver disease; a truly hepatic process usually moves ALT too.</div></div><div class="rt"><div class="rtl">3. AST:ALT dial &gt;2:1</div><div class="rte">The AST:ALT (De Ritis) ratio triages hepatocellular injury: ALT &gt; AST (ratio &lt;1) suggests viral hepatitis or NAFLD; AST:ALT &gt;2:1 suggests alcoholic liver disease; &gt;3:1 strongly supports established ALD. A rising ratio toward/above 1 in known NAFLD also signals progression to advanced fibrosis/cirrhosis, and any cause plus a low albumin/high INR signals cirrhosis.</div><div class="rtt">⚠️ WRONG answer: using an AST:ALT &gt;2:1 to call viral hepatitis or to diagnose ALD by ratio alone. Discriminator: viral/NAFLD give ALT&gt;AST (ratio &lt;1); the &gt;2:1 pattern points to alcohol, but NAFLD that has progressed to cirrhosis can also flip the ratio above 1 — interpret with the clinical context, not the number in isolation.</div></div><div class="rt"><div class="rtl">4. AST&gt;300 in alcohol rare</div><div class="rte">In pure alcoholic hepatitis the AST rarely exceeds ~300-400 IU/L despite a sick patient; the injury is ratio-defined (AST:ALT &gt;2) rather than magnitude-defined. The relatively modest AST cap is a key board discriminator from the &gt;1000 causes.</div><div class="rtt">⚠️ WRONG answer: attributing transaminases in the thousands to alcohol. Discriminator: AST/ALT &gt;1000 are NOT alcohol — think ischemic ('shock') hepatitis, acute viral hepatitis, or toxin (acetaminophen); reconsider the diagnosis when an apparent drinker has very high values (look for coingested acetaminophen, hypotension, viral cause).</div></div><div class="rt"><div class="rtl">5. B6 deficiency / low ALT</div><div class="rte">ALT synthesis requires pyridoxal-5'-phosphate (vitamin B6). Chronic alcoholics are B6-deficient, so they make less ALT — this is the mechanism that DROPS the ALT and raises the AST:ALT ratio above 2 in alcoholic liver disease (it is the AST:ALT ratio's underlying explanation, not just a footnote).</div><div class="rtt">⚠️ WRONG answer: interpreting the low ALT in an alcoholic as evidence of mild/improving liver disease. Discriminator: the low ALT is a B6-deficiency artifact inflating the ratio — it does not mean less injury; severity is judged by Maddrey's discriminant function/MELD, not by the falsely low ALT.</div></div><div class="rt"><div class="rtl">6. Gilbert range bar</div><div class="rte">Unconjugated hyperbilirubinemia from impaired UGT1A1 conjugation grades by bilirubin level: Gilbert syndrome typically &lt;3 mg/dL (reduced UGT1A1 activity), Crigler-Najjar type II ~6-25 mg/dL (severe partial deficiency, responds to phenobarbital), Crigler-Najjar type I ~20-45 mg/dL (near-absent enzyme, kernicterus risk, needs phototherapy/transplant).</div><div class="rtt">⚠️ WRONG answer: treating a mildly elevated INDIRECT bilirubin (&lt;3) as a cholestatic/obstructive problem warranting imaging. Discriminator: isolated unconjugated hyperbilirubinemia with normal ALP/transaminases and no hemolysis is Gilbert — benign, no imaging or biopsy; cholestasis is CONJUGATED with high ALP.</div></div><div class="rt"><div class="rtl">7. Gilbert no jaundice face</div><div class="rte">Gilbert syndrome is a benign, common (~5-10%) inherited reduction in UGT1A1 conjugation producing mild, fluctuating, often subclinical indirect hyperbilirubinemia. It is unmasked by FASTING, illness, stress, dehydration or exertion, and is otherwise asymptomatic with a completely normal exam — no treatment needed.</div><div class="rtt">⚠️ WRONG answer: launching a hepatitis/cholestasis workup or biopsy in a young patient with intermittent mild jaundice during illness/fasting. Discriminator: normal CBC, normal LFTs except isolated indirect bilirubin, no hemolysis = Gilbert; the trigger (fasting/stress) and otherwise normal labs clinch it without further testing.</div></div><div class="rt"><div class="rtl">8. Normal CBC, no hemolysis</div><div class="rte">For isolated unconjugated hyperbilirubinemia, a NORMAL CBC with no hemolysis markers (normal reticulocytes, LDH, haptoglobin, no schistocytes) effectively confirms Gilbert and ends the workup — no imaging, no biopsy.</div><div class="rtt">⚠️ WRONG answer: ordering a hemolysis panel/imaging anyway when the CBC is normal and bilirubin is isolated indirect. Discriminator: with a normal CBC and no hemolysis the cause is Gilbert by default; pursuing hemolysis labs or biliary imaging is the over-testing trap.</div></div><div class="rt"><div class="rtl">9. Abnormal CBC → hemolysis</div><div class="rte">If the CBC is ABNORMAL (anemia) alongside unconjugated hyperbilirubinemia, pursue a hemolysis workup: reticulocyte count (high), LDH (high), haptoglobin (low), peripheral smear (schistocytes/spherocytes), and a direct Coombs/DAT. Hemolysis overproduces bilirubin faster than the liver can conjugate it.</div><div class="rtt">⚠️ WRONG answer: attributing the indirect hyperbilirubinemia to Gilbert when the patient is anemic. Discriminator: anemia + reticulocytosis + high LDH + low haptoglobin = hemolysis, not Gilbert — Gilbert has a NORMAL CBC and no hemolysis markers.</div></div><div class="rt"><div class="rtl">10. IgG / AIH jar</div><div class="rte">A high IgG (hypergammaglobulinemia) points to autoimmune hepatitis — a hepatocellular, interface-hepatitis disease, classically in women, with positive ANA and anti-smooth-muscle antibody (type 1) or anti-LKM-1 (type 2). Treatment is corticosteroids (prednisone) +/- azathioprine.</div><div class="rtt">⚠️ WRONG answer: mistaking the high-IgG, AMA-negative cholestatic/hepatocellular picture for PBC. Discriminator: AIH = high IgG + ANA/ASMA + hepatocellular (high ALT) responding to steroids; PBC = high IgM + AMA + cholestatic (high ALP) treated with ursodeoxycholic acid — the immunoglobulin class and the LFT pattern separate them.</div></div><div class="rt"><div class="rtl">11. IgM / PBC jar</div><div class="rte">A high IgM together with a positive anti-mitochondrial antibody (AMA) points to primary biliary cholangitis — autoimmune destruction of small bile ducts in a middle-aged woman, presenting with pruritus, fatigue and a cholestatic (high ALP) profile. First-line therapy is ursodeoxycholic acid 13-15 mg/kg/day.</div><div class="rtt">⚠️ WRONG answer: confirming PBC by cholangiography or confusing its IgM with the IgG of AIH. Discriminator: PBC is IgM + AMA + cholestatic with a NORMAL cholangiogram (small-duct disease); AIH is IgG + ANA/ASMA + hepatocellular — the antibody and Ig class decide it, not imaging.</div></div><div class="rt"><div class="rtl">12. IgA alcoholic jar</div><div class="rte">A high IgA points to alcoholic liver disease (the 'A for Alcohol' mnemonic: IgA-Alcohol, IgM-PBC/Mitochondrial, IgG-autoimmune hepatitis). It complements the AST:ALT &gt;2:1 pattern and the alcohol-related peripheral stigmata.</div><div class="rtt">⚠️ WRONG answer: forgetting the Ig-to-disease mapping and pairing IgA with an autoimmune liver disease. Discriminator: IgA = alcohol, IgM = PBC, IgG = AIH — use this triad to assign the immunoglobulin to the correct etiology.</div></div><div class="rt"><div class="rtl">13. FIB-4 calculator</div><div class="rte">FIB-4 = (age x AST) / (platelets x sqrt(ALT)) — a free, four-variable index that is the recommended FIRST-LINE noninvasive fibrosis estimate in NAFLD/MASLD and other chronic liver disease. It risk-stratifies who can stay in primary care versus who needs elastography or hepatology referral, avoiding biopsy in most patients.</div><div class="rtt">⚠️ WRONG answer: going straight to liver biopsy to stage fibrosis in NAFLD. Discriminator: the validated pathway is FIB-4 first, then elastography (FibroScan) for indeterminate/high values, and biopsy only when noninvasive tests are discordant or inconclusive.</div></div><div class="rt"><div class="rtl">14. FIB-4 &lt;1.3 community</div><div class="rte">A FIB-4 &lt;1.3 (or &lt;2.0 if age &gt;65) has a high negative predictive value for advanced fibrosis — these patients are LOW risk and can be managed in primary/community care with lifestyle modification and periodic reassessment, no specialist or biopsy needed.</div><div class="rtt">⚠️ WRONG answer: referring every NAFLD patient to hepatology regardless of FIB-4. Discriminator: FIB-4 &lt;1.3 rules out advanced fibrosis well — referral/elastography is reserved for FIB-4 &gt;1.3 (indeterminate) or &gt;2.67 (high risk).</div></div><div class="rt"><div class="rtl">15. FIB-4 &gt;2.67 referral</div><div class="rte">A FIB-4 &gt;2.67 indicates HIGH probability of advanced fibrosis — these patients need hepatology referral and further staging (transient elastography/FibroScan, and biopsy if discordant). Values between 1.3 and 2.67 are indeterminate and go to elastography next.</div><div class="rtt">⚠️ WRONG answer: reassuring/discharging a patient with FIB-4 &gt;2.67. Discriminator: a high FIB-4 mandates referral and elastography — treating it as low-risk misses advanced fibrosis/cirrhosis that needs varices and HCC surveillance.</div></div><div class="rt"><div class="rtl">16. FibroScan first</div><div class="rte">Transient elastography (FibroScan) measures liver stiffness in kilopascals (kPa) as a noninvasive surrogate for fibrosis stage — roughly &lt;7 kPa low/none, ~8-12 kPa significant fibrosis, and &gt;12-15 kPa suggestive of advanced fibrosis/cirrhosis (cutoffs vary by etiology). It is the second step after an elevated/indeterminate FIB-4 and stages fibrosis BEFORE biopsy is considered.</div><div class="rtt">⚠️ WRONG answer: choosing liver biopsy as the first-line test to stage fibrosis. Discriminator: biopsy is NOT first-line — noninvasive FIB-4 then FibroScan come first; biopsy (with its bleeding risk and sampling error) is reserved for discordant or inconclusive noninvasive results.</div></div><div class="rt"><div class="rtl">17. Platelets low = fibrosis</div><div class="rte">A falling platelet count is one of the earliest clues to advanced fibrosis/cirrhosis: portal hypertension causes splenic sequestration (hypersplenism) and reduced hepatic thrombopoietin lowers platelets. Low platelets is also why FIB-4 (which divides by platelets) rises with worsening fibrosis.</div><div class="rtt">⚠️ WRONG answer: working up isolated thrombocytopenia as a primary hematologic problem (ITP, marrow) while ignoring the liver. Discriminator: in chronic liver disease, low platelets reflect portal hypertension/hypersplenism — check spleen size, FIB-4 and synthetic function before assuming a marrow/immune cause.</div></div><div class="rt"><div class="rtl">18. HBV flag</div><div class="rte">Always screen for hepatitis B (HBsAg, anti-HBc, anti-HBs) and hepatitis C (anti-HCV) as treatable, fibrosis-driving causes in any chronic liver/fibrosis workup. Chronic HBV independently raises HCC risk (even without cirrhosis), mandating surveillance and antiviral therapy (entecavir/tenofovir) when indicated.</div><div class="rtt">⚠️ WRONG answer: omitting viral hepatitis serologies and attributing all fibrosis to NAFLD/alcohol. Discriminator: HBV/HCV are reversible drivers — missing them forgoes curative DAA therapy (HCV) or HCC surveillance and antivirals (HBV); chronic HBV needs HCC screening even without cirrhosis.</div></div><div class="rt"><div class="rtl">19. MRCP / biopsy crossed</div><div class="rte">MRCP and liver biopsy are NOT part of the routine evaluation of isolated unconjugated hyperbilirubinemia (Gilbert pattern) — they are reserved for unexplained, abnormal, or discordant cases (e.g., abnormal CBC suggesting hemolysis, cholestatic biochemistry, or noninvasive tests that disagree).</div><div class="rtt">⚠️ WRONG answer: ordering MRCP or biopsy for benign Gilbert-pattern isolated indirect hyperbilirubinemia. Discriminator: with normal CBC, no hemolysis and normal ALP/transaminases the answer is reassurance — invasive/advanced imaging is over-testing; escalate only when something is genuinely abnormal.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="livapp_bilirubin.html" title="Liver Approach — Harbor Dock">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="livapp_cholestasis.html" title="Liver Approach — Mechanic&#x27;s Workshop">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

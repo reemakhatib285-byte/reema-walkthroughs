@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium (Renal) — Drugs</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Drugs that trouble Ca</b> — WRONG: launching a full malignancy/parathyroid workup before reviewing the medication list. A thiazide or lithium can fully explain mild hypercalcemia, and bisphosphonate/denosumab or citrate can explain hypocalcemia — stopping the drug comes first.</li><li><b>HyperCa troublemakers</b> — WRONG: attributing severe symptomatic hypercalcemia (&gt;14) to a thiazide alone. Drug-induced hypercalcemia is usually mild; a markedly high calcium points to primary hyperPTH or malignancy that the drug merely unmasked.</li><li><b>HypoCa troublemakers</b> — WRONG: giving a bisphosphonate or denosumab to a patient with unrecognized vitamin D deficiency. This precipitates severe, prolonged hypocalcemia (especially with denosumab) — correct 25-D and calcium first.</li><li><b>Checkpoint inhibitors both</b> — WRONG: assuming a checkpoint-inhibitor patient's calcium derangement is always tumor-related (PTHrP/lytic). Autoimmune hypoparathyroidism and granulomatous reactions are drug-induced and reversible/steroid-responsive — check PTH and the autoimmune panel.</li><li><b>Thiazide ↑Ca</b> — WRONG: confusing thiazide and loop effects on calcium. Thiazides RETAIN calcium (hypercalcemia, used for stone prevention); loops (furosemide) DUMP calcium in urine. 'Loops Lose calcium' is the discriminator.</li><li><b>Lithium ↑Ca</b> — WRONG: diagnosing primary hyperparathyroidism in a lithium-treated bipolar patient without considering lithium itself. The labs look identical (high Ca, high/normal PTH); the drug history is the discriminator — trial of lithium cessation if feasible.</li><li><b>Vitamin A ↑Ca</b> — WRONG: overlooking retinoids/supplements as a cause and chasing malignancy. A patient on isotretinoin or megadose vitamin A with bone pain and headache has a clear drug etiology — review the supplement list.</li><li><b>Teriparatide ↑Ca</b> — WRONG: thinking PTH always resorbs bone. CONTINUOUS PTH (hyperparathyroidism) is catabolic and thins bone, but INTERMITTENT/daily teriparatide is ANABOLIC and builds bone — the dosing pattern, not the molecule, determines the effect.</li><li><b>Vitamin D intox ↑Ca</b> — WRONG: ordering 1,25-D to diagnose vitamin D toxicity. Exogenous toxicity elevates 25-OH-D (storage form); 1,25-D is often normal because its synthesis is feedback-suppressed. Measure 25-D for intoxication.</li><li><b>Bisphosphonates ↓Ca</b> — WRONG: expecting a bisphosphonate to fix hypercalcemia within hours. Onset is delayed 2–4 days — that's why you bridge with IV saline and CALCITONIN for the first 48 h. And dose-reduce/avoid in significant renal impairment.</li><li><b>Denosumab ↓Ca</b> — WRONG: giving denosumab without first repleting calcium/vitamin D in a CKD patient. This is a classic cause of life-threatening hypocalcemia — and stopping denosumab causes rapid rebound bone loss/vertebral fractures, so it cannot just be abruptly discontinued.</li><li><b>Phenytoin/phenobarb ↓Ca</b> — WRONG: missing osteomalacia in a chronic epileptic. Bone pain, low calcium, low 25-D, and high alk phos in a patient on phenytoin/phenobarbital is drug-induced vitamin D deficiency — supplement vitamin D, don't just chase the calcium.</li><li><b>PPIs ↓Ca</b> — WRONG: repleting calcium alone in a long-term PPI user with hypocalcemia. Check and correct MAGNESIUM too — PPI hypomagnesemia causes refractory hypocalcemia that won't respond until Mg is restored.</li><li><b>Citrate ↓Ca</b> — WRONG: trusting total calcium during massive transfusion. Citrate drops the IONIZED fraction specifically — total Ca can be normal/high while the patient is symptomatically hypocalcemic. Always monitor IONIZED calcium in these settings.</li><li><b>Stop offending agent first</b> — WRONG: stacking calcium-lowering drugs (saline, calcitonin, bisphosphonate) onto a patient whose hypercalcemia is simply from a thiazide. You may overshoot into hypocalcemia — withdraw the offending agent and reassess first.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Drugs that trouble Ca</div><div class="rte">Mnemonic tavern: the LEFT side of the bar holds agents that RAISE calcium (hypercalcemia), the RIGHT side holds agents that LOWER it (hypocalcemia). On boards, a drug history is mandatory in any unexplained calcium abnormality — discontinuing the culprit is often the entire treatment. Always reconcile thiazides, lithium, vitamin D/A, antiresorptives, anticonvulsants, PPIs, and citrate exposure.</div><div class="rtt">⚠️ WRONG: launching a full malignancy/parathyroid workup before reviewing the medication list. A thiazide or lithium can fully explain mild hypercalcemia, and bisphosphonate/denosumab or citrate can explain hypocalcemia — stopping the drug comes first.</div></div><div class="rt"><div class="rtl">2. HyperCa troublemakers</div><div class="rte">The hypercalcemia-causing drugs: thiazide diuretics (decrease urinary Ca), lithium (raises PTH set point), excess vitamin A (osteoclastic bone resorption), teriparatide (intermittent PTH analog), and vitamin D intoxication (increased gut absorption). Antacid/calcium + alkali (milk-alkali) also belongs here. Most cause MILD hypercalcemia that resolves on withdrawal.</div><div class="rtt">⚠️ WRONG: attributing severe symptomatic hypercalcemia (&gt;14) to a thiazide alone. Drug-induced hypercalcemia is usually mild; a markedly high calcium points to primary hyperPTH or malignancy that the drug merely unmasked.</div></div><div class="rt"><div class="rtl">3. HypoCa troublemakers</div><div class="rte">The hypocalcemia-causing drugs: bisphosphonates and denosumab (block osteoclasts), plicamycin, phenytoin/phenobarbital (induce CYP → degrade vitamin D), chronic PPIs (reduce Ca absorption), citrate (chelation in massive transfusion/CRRT), and foscarnet/phosphate enemas (chelate/bind Ca). Antiresorptives are the highest-yield: always check and replete vitamin D BEFORE giving them.</div><div class="rtt">⚠️ WRONG: giving a bisphosphonate or denosumab to a patient with unrecognized vitamin D deficiency. This precipitates severe, prolonged hypocalcemia (especially with denosumab) — correct 25-D and calcium first.</div></div><div class="rt"><div class="rtl">4. Checkpoint inhibitors both</div><div class="rte">Immune checkpoint inhibitors (anti-PD-1/PD-L1, anti-CTLA-4) can swing calcium EITHER way: immune hypophysitis/adrenalitis or hypoparathyroidism (via anti-CaSR-activating autoantibodies) → hypocalcemia, while disease flares or sarcoid-like granulomatous reactions → hypercalcemia. With rising cancer immunotherapy use, this is an increasingly tested cause of endocrinopathy.</div><div class="rtt">⚠️ WRONG: assuming a checkpoint-inhibitor patient's calcium derangement is always tumor-related (PTHrP/lytic). Autoimmune hypoparathyroidism and granulomatous reactions are drug-induced and reversible/steroid-responsive — check PTH and the autoimmune panel.</div></div><div class="rt"><div class="rtl">5. Thiazide ↑Ca</div><div class="rte">Thiazides act at the distal convoluted tubule and INCREASE distal calcium reabsorption, lowering URINARY calcium and modestly raising serum calcium — which is exactly why they are used to prevent calcium kidney stones. They can also UNMASK underlying primary hyperPTH. Hold the thiazide and recheck; if hypercalcemia persists, work up for hyperPTH.</div><div class="rtt">⚠️ WRONG: confusing thiazide and loop effects on calcium. Thiazides RETAIN calcium (hypercalcemia, used for stone prevention); loops (furosemide) DUMP calcium in urine. 'Loops Lose calcium' is the discriminator.</div></div><div class="rt"><div class="rtl">6. Lithium ↑Ca</div><div class="rte">Lithium raises the calcium set point of the CaSR on parathyroid cells, so higher calcium is needed to suppress PTH → mild hypercalcemia with high/normal PTH (a phenocopy of FHH or primary hyperPTH). It can also cause nephrogenic diabetes insipidus. Chronic use may lead to true parathyroid hyperplasia/adenoma.</div><div class="rtt">⚠️ WRONG: diagnosing primary hyperparathyroidism in a lithium-treated bipolar patient without considering lithium itself. The labs look identical (high Ca, high/normal PTH); the drug history is the discriminator — trial of lithium cessation if feasible.</div></div><div class="rt"><div class="rtl">7. Vitamin A ↑Ca</div><div class="rte">Hypervitaminosis A (high-dose supplements, isotretinoin/retinoids) stimulates osteoclastic bone resorption → hypercalcemia, plus pseudotumor cerebri, dry skin, and hepatotoxicity. Treatment is stopping the vitamin; hydration and rarely a short steroid course.</div><div class="rtt">⚠️ WRONG: overlooking retinoids/supplements as a cause and chasing malignancy. A patient on isotretinoin or megadose vitamin A with bone pain and headache has a clear drug etiology — review the supplement list.</div></div><div class="rt"><div class="rtl">8. Teriparatide ↑Ca</div><div class="rte">Teriparatide (PTH 1-34) and abaloparatide are ANABOLIC osteoporosis drugs: INTERMITTENT PTH stimulates osteoblasts (net bone formation), but can cause transient hypercalcemia/hypercalciuria. They carry a (rodent) osteosarcoma boxed warning and are avoided in Paget, prior skeletal radiation, or unexplained high alk phos. Limit course to ~2 years.</div><div class="rtt">⚠️ WRONG: thinking PTH always resorbs bone. CONTINUOUS PTH (hyperparathyroidism) is catabolic and thins bone, but INTERMITTENT/daily teriparatide is ANABOLIC and builds bone — the dosing pattern, not the molecule, determines the effect.</div></div><div class="rt"><div class="rtl">9. Vitamin D intox ↑Ca</div><div class="rte">Vitamin D intoxication (megadose supplements) raises gut calcium and phosphate absorption → hypercalcemia AND hyperphosphatemia, with markedly elevated 25-OH-D (the form to measure) and suppressed PTH. Because vitamin D is fat-soluble with a long half-life, hypercalcemia can persist for WEEKS. Treat with hydration, steroids, and stopping the supplement.</div><div class="rtt">⚠️ WRONG: ordering 1,25-D to diagnose vitamin D toxicity. Exogenous toxicity elevates 25-OH-D (storage form); 1,25-D is often normal because its synthesis is feedback-suppressed. Measure 25-D for intoxication.</div></div><div class="rt"><div class="rtl">10. Bisphosphonates ↓Ca</div><div class="rte">Bisphosphonates (IV zoledronic acid 4 mg, pamidronate 60–90 mg) inhibit osteoclast farnesyl pyrophosphate synthase → durable suppression of bone resorption; they are the mainstay for malignant hypercalcemia (peak effect 2–4 days). Overshoot or pre-existing vitamin D deficiency causes hypocalcemia. Watch for renal toxicity, jaw osteonecrosis, and atypical femur fractures.</div><div class="rtt">⚠️ WRONG: expecting a bisphosphonate to fix hypercalcemia within hours. Onset is delayed 2–4 days — that's why you bridge with IV saline and CALCITONIN for the first 48 h. And dose-reduce/avoid in significant renal impairment.</div></div><div class="rt"><div class="rtl">11. Denosumab ↓Ca</div><div class="rte">Denosumab is a monoclonal anti-RANKL antibody that blocks osteoclast formation/activity, lowering calcium; it is the preferred antiresorptive for hypercalcemia in RENAL FAILURE (not cleared by kidney, no dose adjustment) and for bisphosphonate-refractory cases. It causes more frequent and severe hypocalcemia than bisphosphonates, especially with low vitamin D or CKD.</div><div class="rtt">⚠️ WRONG: giving denosumab without first repleting calcium/vitamin D in a CKD patient. This is a classic cause of life-threatening hypocalcemia — and stopping denosumab causes rapid rebound bone loss/vertebral fractures, so it cannot just be abruptly discontinued.</div></div><div class="rt"><div class="rtl">12. Phenytoin/phenobarb ↓Ca</div><div class="rte">Phenytoin and phenobarbital are potent CYP450 INDUCERS that accelerate hepatic catabolism of vitamin D to inactive metabolites → vitamin D deficiency, hypocalcemia, and osteomalacia/rickets with chronic use. Patients on long-term enzyme-inducing anticonvulsants need vitamin D monitoring and supplementation.</div><div class="rtt">⚠️ WRONG: missing osteomalacia in a chronic epileptic. Bone pain, low calcium, low 25-D, and high alk phos in a patient on phenytoin/phenobarbital is drug-induced vitamin D deficiency — supplement vitamin D, don't just chase the calcium.</div></div><div class="rt"><div class="rtl">13. PPIs ↓Ca</div><div class="rte">Chronic proton-pump inhibitors raise gastric pH and reduce solubility/absorption of calcium carbonate (and magnesium) → hypocalcemia and increased fracture risk over years. PPI-induced hypomagnesemia can ALSO worsen calcium by impairing PTH secretion/action.</div><div class="rtt">⚠️ WRONG: repleting calcium alone in a long-term PPI user with hypocalcemia. Check and correct MAGNESIUM too — PPI hypomagnesemia causes refractory hypocalcemia that won't respond until Mg is restored.</div></div><div class="rt"><div class="rtl">14. Citrate ↓Ca</div><div class="rte">Citrate (anticoagulant in MASSIVE TRANSFUSION, apheresis, and regional citrate anticoagulation for CRRT) CHELATES ionized calcium → acute hypocalcemia with perioral tingling, tetany, and prolonged QT, while TOTAL calcium may look normal. Liver dysfunction worsens it (citrate not metabolized). Treat by repleting calcium and monitoring ionized Ca.</div><div class="rtt">⚠️ WRONG: trusting total calcium during massive transfusion. Citrate drops the IONIZED fraction specifically — total Ca can be normal/high while the patient is symptomatically hypocalcemic. Always monitor IONIZED calcium in these settings.</div></div><div class="rt"><div class="rtl">15. Stop offending agent first</div><div class="rte">Core management principle for ALL drug-induced calcium disorders: identify and STOP the culprit before escalating therapy. Often discontinuation (± hydration) is curative for thiazide/lithium hypercalcemia, and repleting the missing factor (vitamin D, magnesium, calcium) reverses drug-induced hypocalcemia. Reconcile the full med list at the bedside.</div><div class="rtt">⚠️ WRONG: stacking calcium-lowering drugs (saline, calcitonin, bisphosphonate) onto a patient whose hypercalcemia is simply from a thiazide. You may overshoot into hypocalcemia — withdraw the offending agent and reassess first.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nca_algorithm.html" title="Calcium (Renal) — Algorithm">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nca_hypercalcemia.html" title="Calcium (Renal) — Hypercalcemia">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

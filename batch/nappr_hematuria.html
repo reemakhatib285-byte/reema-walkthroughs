@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Approach — Hematuria (glomerular vs urologic, casts, malignancy workup)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Persistent hematuria criteria</b> — Tempting wrong answer: 'one dipstick positive for blood = hematuria, start the workup.' Discriminator: a positive dipstick must be confirmed with MICROSCOPY showing actual RBCs — dipstick detects heme peroxidase activity and is also positive with myoglobin and hemoglobin (no RBCs). Confirm true hematuria before imaging/cystoscopy.</li><li><b>Dipstick vs myoglobinuria</b> — Tempting wrong answer: 'positive urine dipstick for blood means the patient is bleeding — order CT urography and cystoscopy.' Discriminator: with NO RBCs on microscopy there is no bleeding to image — pursue rhabdomyolysis (CK, AKI) or hemolysis (haptoglobin/LDH/smear) instead. Imaging the urinary tract here is the wrong, low-yield path.</li><li><b>RBC casts = glomerular</b> — Tempting wrong answer: 'patient with hematuria and RBC casts needs cystoscopy to rule out bladder cancer.' Discriminator: RBC casts NEVER arise from a lower-tract/urologic source — they localize bleeding to the glomerulus, so the correct next step is nephrologic (serologies, biopsy), not urologic imaging.</li><li><b>Dysmorphic RBCs / phase contrast</b> — Tempting wrong answer: 'all the RBCs look round and uniform, but it's still probably glomerular GN.' Discriminator: ISOMORPHIC (uniform, normal-shaped) RBCs indicate a non-glomerular/urologic source — stones, infection, trauma, or malignancy — and should be worked up with imaging and cystoscopy, not biopsy.</li><li><b>Proteinuria flags glomerular</b> — Tempting wrong answer: 'isolated microscopic hematuria with no proteinuria and no casts is dangerous glomerular disease — biopsy now.' Discriminator: isolated hematuria with no protein and no casts favors a UROLOGIC cause and is worked up with imaging/cystoscopy; absence of proteinuria/casts argues against significant glomerulonephritis.</li><li><b>GN virtually diagnostic → renal biopsy</b> — Tempting wrong answer: 'glomerular-pattern hematuria — get cystoscopy and CT urography first.' Discriminator: cystoscopy and CT urography are for the UROLOGIC/isomorphic pattern (malignancy/stones). A clear glomerular pattern goes to nephrology serologies and renal biopsy; urologic imaging would be wasted and delay treatment.</li><li><b>Hereditary nephritis / familial risk</b> — Tempting wrong answer: 'gross hematuria a few days after a sore throat = post-streptococcal GN.' Discriminator: SYNPHARYNGITIC hematuria (within 1-3 days of URI, normal complement) is IgA nephropathy; post-streptococcal GN comes 2-3 WEEKS after pharyngitis/impetigo with LOW C3 and positive strep serologies. Timing and complement separate them.</li><li><b>Elderly + anticoagulation</b> — Tempting wrong answer: 'the patient is on warfarin/DOAC, so hematuria is just the blood thinner — no workup needed.' Discriminator: hematuria in an anticoagulated (especially older, smoking) patient still requires the full urologic evaluation; attributing it to the drug alone misses bladder/upper-tract cancers that the anticoagulant merely revealed.</li><li><b>Pyelonephritis / sterile pyuria</b> — Tempting wrong answer: 'WBCs in the urine and negative culture — just repeat antibiotics for a UTI.' Discriminator: STERILE pyuria (pyuria + negative routine culture) demands a broader differential — order acid-fast/TB testing, consider AIN (drug history, eosinophilia), GN, and stones rather than empirically re-treating a 'UTI.'</li><li><b>Eos not recommended</b> — Tempting wrong answer: 'order urine eosinophils to confirm AIN.' Discriminator: a negative urine eosinophil does not exclude AIN and a positive one does not confirm it — the test is unreliable and discouraged. Base the diagnosis on drug timing, sterile pyuria/WBC casts, and biopsy.</li><li><b>ATN sediment / waxy casts CKD</b> — Tempting wrong answer: 'broad waxy casts mean acute tubular necrosis.' Discriminator: muddy-brown GRANULAR casts = ATN (acute); broad WAXY casts = chronic CKD with dilated tubules. Mixing them up changes the timeline and management — one is reversible supportive care, the other is established CKD.</li><li><b>Vascular causes / renal vein &amp; artery</b> — Tempting wrong answer: 'acute flank pain with hematuria is always a kidney stone.' Discriminator: renal artery thromboembolism (AF, endocarditis, hypercoagulable) mimics colic but shows elevated LDH and an infarct on contrast CT, and renal vein thrombosis is heralded by nephrotic-range proteinuria — neither is a stone, and management differs (anticoagulation vs stone treatment).</li><li><b>Atheroembolic disease</b> — Tempting wrong answer: 'AKI right after cardiac cath is contrast-induced nephropathy.' Discriminator: contrast nephropathy peaks at 3-5 days and resolves in 1-2 weeks with NO skin findings; atheroembolic disease is DELAYED, STEPWISE/progressive, and shows livedo reticularis, blue toes, eosinophilia, and low complement. The skin/eosinophil findings and timing distinguish them.</li><li><b>Age / malignancy workup</b> — Tempting wrong answer: 'painless gross hematuria in a 65-year-old smoker — reassure, it's probably a UTI or BPH.' Discriminator: painless GROSS hematuria in an older patient (especially a smoker) is bladder/urothelial cancer until proven otherwise and requires cystoscopy + CT urography; attributing it to UTI/BPH without that workup misses curable malignancy.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Persistent hematuria criteria</div><div class="rte">Clinically significant microscopic hematuria is defined as ≥3 RBC/HPF on a properly collected, centrifuged urine. Gross (visible) hematuria, or a single specimen with very high RBC counts, always warrants evaluation because the yield for a significant lesion (including malignancy) is much higher. The first fork is microscopy of the sediment: glomerular (dysmorphic RBCs, RBC casts, proteinuria) vs non-glomerular/urologic (isomorphic RBCs, clots). Mnemonic — '3 RBC/HPF is the threshold; gross blood is guilty until proven innocent.'</div><div class="rtt">⚠️ Tempting wrong answer: 'one dipstick positive for blood = hematuria, start the workup.' Discriminator: a positive dipstick must be confirmed with MICROSCOPY showing actual RBCs — dipstick detects heme peroxidase activity and is also positive with myoglobin and hemoglobin (no RBCs). Confirm true hematuria before imaging/cystoscopy.</div></div><div class="rt"><div class="rtl">2. Dipstick vs myoglobinuria</div><div class="rte">A dipstick that is positive for blood but shows NO RBCs on microscopy means pigmenturia, not hematuria: myoglobinuria (rhabdomyolysis — CK markedly elevated, muscle pain, AKI risk) or hemoglobinuria (intravascular hemolysis — low haptoglobin, elevated LDH, schistocytes). The dipstick reacts to the peroxidase activity of heme in any of these pigments. Mnemonic — 'positive stick, no cells = pigment (myo- or hemo-globin).'</div><div class="rtt">⚠️ Tempting wrong answer: 'positive urine dipstick for blood means the patient is bleeding — order CT urography and cystoscopy.' Discriminator: with NO RBCs on microscopy there is no bleeding to image — pursue rhabdomyolysis (CK, AKI) or hemolysis (haptoglobin/LDH/smear) instead. Imaging the urinary tract here is the wrong, low-yield path.</div></div><div class="rt"><div class="rtl">3. RBC casts = glomerular</div><div class="rte">RBC casts form when red cells extravasate through an inflamed glomerular basement membrane and are molded into a cylindrical cast within the tubular lumen by Tamm-Horsfall protein. They are essentially pathognomonic for glomerular bleeding / glomerulonephritis (e.g., IgA nephropathy, post-strep GN, anti-GBM, ANCA vasculitis, lupus nephritis). Their presence shifts the workup to serologies (complement, ANCA, anti-GBM, ANA) and renal biopsy, not cystoscopy. Mnemonic — 'RBC casts cast the blame on the glomerulus.'</div><div class="rtt">⚠️ Tempting wrong answer: 'patient with hematuria and RBC casts needs cystoscopy to rule out bladder cancer.' Discriminator: RBC casts NEVER arise from a lower-tract/urologic source — they localize bleeding to the glomerulus, so the correct next step is nephrologic (serologies, biopsy), not urologic imaging.</div></div><div class="rt"><div class="rtl">4. Dysmorphic RBCs / phase contrast</div><div class="rte">Dysmorphic RBCs are red cells deformed by squeezing through the damaged GBM and by osmotic stress in the tubule; acanthocytes (ring-shaped 'G1' cells with membrane blebs) are the most specific for glomerular origin and are best seen on phase-contrast microscopy. A high proportion of dysmorphic RBCs (and especially acanthocytes &gt;5%) points strongly to glomerular bleeding. Mnemonic — 'deformed/dysmorphic = damaged glomerulus.'</div><div class="rtt">⚠️ Tempting wrong answer: 'all the RBCs look round and uniform, but it's still probably glomerular GN.' Discriminator: ISOMORPHIC (uniform, normal-shaped) RBCs indicate a non-glomerular/urologic source — stones, infection, trauma, or malignancy — and should be worked up with imaging and cystoscopy, not biopsy.</div></div><div class="rt"><div class="rtl">5. Proteinuria flags glomerular</div><div class="rte">Significant proteinuria (especially &gt;500 mg-1 g/day or a nephritic/nephrotic picture) accompanying hematuria is a strong flag for glomerular disease, because a leaky/inflamed filtration barrier loses both protein and red cells. The combination of hematuria + proteinuria + dysmorphic RBCs/casts defines the glomerular pattern and triggers nephrology referral and biopsy. Mnemonic — 'blood AND protein together = glomerulus.'</div><div class="rtt">⚠️ Tempting wrong answer: 'isolated microscopic hematuria with no proteinuria and no casts is dangerous glomerular disease — biopsy now.' Discriminator: isolated hematuria with no protein and no casts favors a UROLOGIC cause and is worked up with imaging/cystoscopy; absence of proteinuria/casts argues against significant glomerulonephritis.</div></div><div class="rt"><div class="rtl">6. GN virtually diagnostic → renal biopsy</div><div class="rte">When the sediment shows the full glomerular pattern — dysmorphic RBCs/acanthocytes + RBC casts + proteinuria — glomerulonephritis is virtually diagnosed, and renal biopsy is the definitive next step to subtype the GN and guide immunosuppression. First send the noninvasive glomerular serologies (C3/C4, ANCA, anti-GBM, ANA/dsDNA, ASO, hepatitis serologies) which often narrow the differential before the needle. Mnemonic — 'glomerular pattern → serologies then biopsy.'</div><div class="rtt">⚠️ Tempting wrong answer: 'glomerular-pattern hematuria — get cystoscopy and CT urography first.' Discriminator: cystoscopy and CT urography are for the UROLOGIC/isomorphic pattern (malignancy/stones). A clear glomerular pattern goes to nephrology serologies and renal biopsy; urologic imaging would be wasted and delay treatment.</div></div><div class="rt"><div class="rtl">7. Hereditary nephritis / familial risk</div><div class="rte">Persistent glomerular hematuria in a young patient narrows to: IgA nephropathy (most common GN worldwide; gross hematuria within 1-3 DAYS of a URI — 'synpharyngitic'), thin basement membrane disease (benign familial hematuria, isolated microscopic hematuria, good prognosis), and Alport syndrome (X-linked type IV collagen defect with hematuria + sensorineural hearing loss + lenticonus/ocular findings, progressive). Family history and audiogram/eye exam help separate them. Mnemonic — 'young + hematuria → IgA, thin BM, Alport.'</div><div class="rtt">⚠️ Tempting wrong answer: 'gross hematuria a few days after a sore throat = post-streptococcal GN.' Discriminator: SYNPHARYNGITIC hematuria (within 1-3 days of URI, normal complement) is IgA nephropathy; post-streptococcal GN comes 2-3 WEEKS after pharyngitis/impetigo with LOW C3 and positive strep serologies. Timing and complement separate them.</div></div><div class="rt"><div class="rtl">8. Elderly + anticoagulation</div><div class="rte">Anticoagulation, antiplatelets, and indwelling catheters can provoke bleeding but do NOT exonerate hematuria — therapeutic anticoagulation unmasks rather than causes underlying lesions, and the rate of significant pathology (including urologic malignancy) in anticoagulated patients with hematuria is similar to the general population. Risk factors that raise malignancy concern: age &gt;35-40, smoking (the strongest urothelial risk), occupational dyes/aromatic amines, prior pelvic radiation/cyclophosphamide, and chronic catheter/Schistosoma exposure. Mnemonic — 'on a blood thinner is not a free pass.'</div><div class="rtt">⚠️ Tempting wrong answer: 'the patient is on warfarin/DOAC, so hematuria is just the blood thinner — no workup needed.' Discriminator: hematuria in an anticoagulated (especially older, smoking) patient still requires the full urologic evaluation; attributing it to the drug alone misses bladder/upper-tract cancers that the anticoagulant merely revealed.</div></div><div class="rt"><div class="rtl">9. Pyelonephritis / sterile pyuria</div><div class="rte">WBCs (pyuria) ± WBC casts with hematuria point to infection/inflammation: bacterial pyelonephritis (positive culture, nitrites/leukocyte esterase, flank pain, fever) or, when cultures are negative, STERILE PYURIA. Causes of sterile pyuria: genitourinary tuberculosis, acute interstitial nephritis (AIN), glomerulonephritis, nephrolithiasis, partially treated/atypical UTI (Chlamydia/Ureaplasma), and renal transplant rejection. Mnemonic — 'pus without bugs = TB, AIN, GN, stones, transplant rejection.'</div><div class="rtt">⚠️ Tempting wrong answer: 'WBCs in the urine and negative culture — just repeat antibiotics for a UTI.' Discriminator: STERILE pyuria (pyuria + negative routine culture) demands a broader differential — order acid-fast/TB testing, consider AIN (drug history, eosinophilia), GN, and stones rather than empirically re-treating a 'UTI.'</div></div><div class="rt"><div class="rtl">10. Eos not recommended</div><div class="rte">Urine eosinophils were historically used to suggest acute interstitial nephritis (AIN), but they have poor sensitivity and specificity (also seen in UTI, GN, atheroembolic disease, prostatitis) and are NO LONGER recommended for diagnosing AIN. AIN is now diagnosed clinically — offending drug exposure (NSAIDs, beta-lactams, PPIs, sulfonamides), the classic (often absent) triad of fever/rash/eosinophilia, sterile pyuria with WBC casts, and confirmed by biopsy when needed. Mnemonic — 'urine eos are out; drug history and biopsy are in.'</div><div class="rtt">⚠️ Tempting wrong answer: 'order urine eosinophils to confirm AIN.' Discriminator: a negative urine eosinophil does not exclude AIN and a positive one does not confirm it — the test is unreliable and discouraged. Base the diagnosis on drug timing, sterile pyuria/WBC casts, and biopsy.</div></div><div class="rt"><div class="rtl">11. ATN sediment / waxy casts CKD</div><div class="rte">Broad, waxy casts form slowly in dilated, hypofunctioning tubules of nephrons that have hypertrophied to compensate for nephron loss — they are a marker of CHRONIC kidney disease ('renal failure casts'). Contrast with the acute story: muddy-brown granular and renal-tubular-epithelial-cell casts indicate ATN. Reading the cast tells you the chronicity and the compartment injured. Mnemonic — 'broad &amp; waxy = chronic &amp; wide tubules.'</div><div class="rtt">⚠️ Tempting wrong answer: 'broad waxy casts mean acute tubular necrosis.' Discriminator: muddy-brown GRANULAR casts = ATN (acute); broad WAXY casts = chronic CKD with dilated tubules. Mixing them up changes the timeline and management — one is reversible supportive care, the other is established CKD.</div></div><div class="rt"><div class="rtl">12. Vascular causes / renal vein &amp; artery</div><div class="rte">Renal vascular events cause hematuria with characteristic proteinuria: renal ARTERY thrombosis/infarction → acute flank pain, hematuria, elevated LDH, and MILD proteinuria; renal VEIN thrombosis → hematuria with HEAVY proteinuria and is classically associated with (and can be caused by) nephrotic syndrome, especially membranous nephropathy, and with malignancy/hypercoagulable states. Suspect RVT in a nephrotic patient with new flank pain, hematuria, or PE. Mnemonic — 'artery = pain + mild protein; vein = nephrotic + heavy protein.'</div><div class="rtt">⚠️ Tempting wrong answer: 'acute flank pain with hematuria is always a kidney stone.' Discriminator: renal artery thromboembolism (AF, endocarditis, hypercoagulable) mimics colic but shows elevated LDH and an infarct on contrast CT, and renal vein thrombosis is heralded by nephrotic-range proteinuria — neither is a stone, and management differs (anticoagulation vs stone treatment).</div></div><div class="rt"><div class="rtl">13. Atheroembolic disease</div><div class="rte">Cholesterol/atheroembolic AKI follows arterial instrumentation (cardiac cath, aortic surgery) or anticoagulation/thrombolysis, when cholesterol crystals shower distal small arteries. Look for the triad of DELAYED (days-weeks) AKI, livedo reticularis and blue/purple toes with intact pulses, plus eosinophilia, hypocomplementemia, and biopsy showing cholesterol clefts. Course is often subacute and stepwise; treatment is supportive (statins, avoid further instrumentation). Mnemonic — 'post-cath + blue toes + livedo + eosinophilia = cholesterol emboli.'</div><div class="rtt">⚠️ Tempting wrong answer: 'AKI right after cardiac cath is contrast-induced nephropathy.' Discriminator: contrast nephropathy peaks at 3-5 days and resolves in 1-2 weeks with NO skin findings; atheroembolic disease is DELAYED, STEPWISE/progressive, and shows livedo reticularis, blue toes, eosinophilia, and low complement. The skin/eosinophil findings and timing distinguish them.</div></div><div class="rt"><div class="rtl">14. Age / malignancy workup</div><div class="rte">Non-glomerular (isomorphic) hematuria, especially gross hematuria, in an adult with risk factors triggers the full urologic malignancy workup: CT urography (upper tract — renal/ureteral evaluation) PLUS cystoscopy (bladder/urethra). Risk factors that mandate this: age &gt;35-40, smoking (strongest), male sex, gross hematuria, occupational carcinogen exposure, prior cyclophosphamide/pelvic radiation. Urine cytology is adjunctive. Mnemonic — 'CT urography sees the upper tract, cystoscopy sees the bladder — do both.'</div><div class="rtt">⚠️ Tempting wrong answer: 'painless gross hematuria in a 65-year-old smoker — reassure, it's probably a UTI or BPH.' Discriminator: painless GROSS hematuria in an older patient (especially a smoker) is bladder/urothelial cancer until proven otherwise and requires cystoscopy + CT urography; attributing it to UTI/BPH without that workup misses curable malignancy.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nappr_gfr.html" title="Renal Approach — GFR &amp; Estimation (creatinine, cystatin C, eGFR equations)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nappr_polyuria.html" title="Renal Approach — Polyuria (osmotic vs water diuresis, DI types, water deprivation test)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

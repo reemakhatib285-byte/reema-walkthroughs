@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Diabetes — Scene B: The Diabetes War Room (CV Benefit &amp; Comorbidity Drug Picks)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>CV Benefit Podium</b> — Wrong answer: 'add a DPP-4 inhibitor to reduce cardiovascular risk.' Discriminator — DPP-4i are CV-neutral and saxagliptin actually INCREASED heart-failure hospitalization (SAVOR-TIMI); for CV benefit choose SGLT2i or GLP-1 RA, not a gliptin.</li><li><b>Territory 1 — HFrEF</b> — Wrong answer: 'choose a GLP-1 RA for a diabetic with HFrEF because it lowers glucose and weight.' Discriminator — GLP-1 RAs do NOT share the robust HF-hospitalization benefit of SGLT2i; the dedicated HF agent is the SGLT2 inhibitor. Pick the flozin for the failing heart.</li><li><b>TZD contraindicated in HF</b> — Wrong answer: 'pioglitazone is acceptable in mild heart failure since it's CV-neutral on MACE.' Discriminator — regardless of MACE neutrality, TZD fluid retention worsens HF; both pio- and rosiglitazone are contraindicated in symptomatic HF. Use SGLT2i instead.</li><li><b>Territory 2 — CKD (not dialysis)</b> — Wrong answer: 'avoid SGLT2i in a patient with eGFR 35 and albuminuria because they don't lower glucose much at that level.' Discriminator — the renoprotective indication persists at low eGFR even when the glycemic effect fades; you keep/start the SGLT2i for kidney protection. Don't withhold it just because A1c drop is small.</li><li><b>Metformin in CKD</b> — Wrong answer: 'stop metformin once eGFR drops below 45 or 60.' Discriminator — the hard cutoff is eGFR 30, not 45/60 (dose-reduce, don't stop, at 30–45). Choosing the higher numbers is the classic numeric trap; also remember to hold for contrast.</li><li><b>Territory 5 — Dialysis</b> — Wrong answer: 'continue the SGLT2 inhibitor for renal protection after the patient starts hemodialysis.' Discriminator — SGLT2i renal benefit applies to non-dialysis CKD; on dialysis they are not indicated. Switch to insulin, the safe option in ESRD.</li><li><b>Territory 3 — ASCVD</b> — Wrong answer: 'a sulfonylurea is a reasonable second agent in a patient with ASCVD because it lowers A1c well.' Discriminator — SUs have NO CV benefit (and cause hypoglycemia/weight gain); in ASCVD select a GLP-1 RA or SGLT2i with proven MACE reduction.</li><li><b>Territory 4 — Weight loss champion</b> — Wrong answer: 'add basal insulin, a sulfonylurea, or a TZD when weight loss is the priority.' Discriminator — insulin, SU, glinides, and TZD all cause weight GAIN, the opposite of the goal. Choose a GLP-1 RA or tirzepatide for the weight-loss phenotype.</li><li><b>Territory 6 — postprandial glucose</b> — Wrong answer: 'use acarbose or a glinide to fix isolated FASTING hyperglycemia.' Discriminator — these target POSTPRANDIAL, not fasting, glucose; fasting hyperglycemia is better addressed by metformin (hepatic output) or basal insulin. Also acarbose's GI flatulence/diarrhea limits adherence.</li><li><b>Euglycemic DKA board</b> — Wrong answer: 'a normal blood glucose rules out DKA in a patient on an SGLT2 inhibitor with vomiting and an elevated anion gap.' Discriminator — euglycemic DKA presents with normal/mildly elevated glucose; you must check the anion gap and serum/urine ketones. Don't be falsely reassured by a normal glucose.</li><li><b>Combination therapy corner</b> — Wrong answer: 'combine two agents from the same pathway (e.g., DPP-4i + GLP-1 RA, or SU + glinide) to intensify therapy.' Discriminator — same-pathway combos are redundant (incretin + incretin) or dangerously additive (two secretagogues → hypoglycemia). Stack DIFFERENT mechanisms instead.</li><li><b>No SU + glinide combo / repaglinide+insulin</b> — Wrong answer: 'add a glinide to a patient already on a sulfonylurea for better postprandial control.' Discriminator — both are secretagogues acting via the same channel; combining them just compounds hypoglycemia/weight gain. Add a different-mechanism agent (metformin, SGLT2i, GLP-1 RA) instead.</li><li><b>Rosiglitazone vs pioglitazone CV</b> — Wrong answer: 'rosiglitazone is the safer thiazolidinedione for cardiovascular risk.' Discriminator — it's the reverse: pioglitazone is the CV-safer TZD; rosiglitazone carried the increased CV/MI concern. Either way, avoid both in heart failure due to fluid retention.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. CV Benefit Podium</div><div class="rte">Two classes have proven cardiovascular outcome benefit in T2DM: SGLT2 inhibitors and GLP-1 receptor agonists. SGLT2i are strongest for heart-failure hospitalization and renal/CV-death outcomes (EMPA-REG, DAPA-HF, EMPEROR, CREDENCE); GLP-1 RAs are strongest for atherosclerotic MACE (LEADER, SUSTAIN-6, REWIND). DPP-4 inhibitors and sulfonylureas are CV-NEUTRAL. Mnemonic: 'flozins win the heart-failure/kidney medal; glutides win the artery medal.'</div><div class="rtt">⚠️ Wrong answer: 'add a DPP-4 inhibitor to reduce cardiovascular risk.' Discriminator — DPP-4i are CV-neutral and saxagliptin actually INCREASED heart-failure hospitalization (SAVOR-TIMI); for CV benefit choose SGLT2i or GLP-1 RA, not a gliptin.</div></div><div class="rt"><div class="rtl">2. Territory 1 — HFrEF</div><div class="rte">In heart failure (reduced AND preserved EF), SGLT2 inhibitors reduce HF hospitalization and CV death even in patients WITHOUT diabetes — they are now a guideline pillar of HFrEF therapy (with ARNI, beta-blocker, MRA). Dapagliflozin (DAPA-HF) and empagliflozin (EMPEROR-Reduced) are first choice. Mnemonic: 'a flozin for every failing pump.'</div><div class="rtt">⚠️ Wrong answer: 'choose a GLP-1 RA for a diabetic with HFrEF because it lowers glucose and weight.' Discriminator — GLP-1 RAs do NOT share the robust HF-hospitalization benefit of SGLT2i; the dedicated HF agent is the SGLT2 inhibitor. Pick the flozin for the failing heart.</div></div><div class="rt"><div class="rtl">3. TZD contraindicated in HF</div><div class="rte">Thiazolidinediones activate PPAR-γ → renal sodium/water retention → edema, weight gain, and precipitation/worsening of heart failure; they are contraindicated in symptomatic (NYHA III–IV) HF. The effect is worse when combined with insulin. Mnemonic: 'PPAR-γ pours fluid into the failing heart.'</div><div class="rtt">⚠️ Wrong answer: 'pioglitazone is acceptable in mild heart failure since it's CV-neutral on MACE.' Discriminator — regardless of MACE neutrality, TZD fluid retention worsens HF; both pio- and rosiglitazone are contraindicated in symptomatic HF. Use SGLT2i instead.</div></div><div class="rt"><div class="rtl">4. Territory 2 — CKD (not dialysis)</div><div class="rte">In diabetic CKD (not yet on dialysis), SGLT2 inhibitors are most renoprotective: they reduce intraglomerular pressure (afferent arteriolar constriction), slow GFR decline and progression to ESRD, and lower albuminuria (CREDENCE, DAPA-CKD). They can be initiated to low eGFR (~20) for renal protection even though glucose-lowering wanes. Add a GLP-1 RA for additional CV/glycemic benefit. Mnemonic: 'flozin = the kidney's bodyguard.'</div><div class="rtt">⚠️ Wrong answer: 'avoid SGLT2i in a patient with eGFR 35 and albuminuria because they don't lower glucose much at that level.' Discriminator — the renoprotective indication persists at low eGFR even when the glycemic effect fades; you keep/start the SGLT2i for kidney protection. Don't withhold it just because A1c drop is small.</div></div><div class="rt"><div class="rtl">5. Metformin in CKD</div><div class="rte">Metformin remains acceptable in CKD if eGFR &gt;30 (reduce dose / use caution at 30–45); contraindicated below 30 because impaired clearance raises lactic acidosis risk. Always hold around iodinated contrast and acute illness/AKI. Mnemonic: 'metformin lives above an eGFR of 30.'</div><div class="rtt">⚠️ Wrong answer: 'stop metformin once eGFR drops below 45 or 60.' Discriminator — the hard cutoff is eGFR 30, not 45/60 (dose-reduce, don't stop, at 30–45). Choosing the higher numbers is the classic numeric trap; also remember to hold for contrast.</div></div><div class="rt"><div class="rtl">6. Territory 5 — Dialysis</div><div class="rte">In ESRD on dialysis, INSULIN is the safe and preferred glucose-lowering agent (titrate carefully — insulin clearance falls, hypoglycemia risk rises, and needs often drop). Most oral agents are contraindicated/cleared poorly, and SGLT2i are not indicated/effective on dialysis. Mnemonic: 'on dialysis, the answer is insulin.'</div><div class="rtt">⚠️ Wrong answer: 'continue the SGLT2 inhibitor for renal protection after the patient starts hemodialysis.' Discriminator — SGLT2i renal benefit applies to non-dialysis CKD; on dialysis they are not indicated. Switch to insulin, the safe option in ESRD.</div></div><div class="rt"><div class="rtl">7. Territory 3 — ASCVD</div><div class="rte">In established atherosclerotic CV disease (prior MI, stroke, PAD), BOTH GLP-1 RAs and SGLT2i reduce major adverse CV events; GLP-1 RAs have the strongest evidence for atherosclerotic events while SGLT2i excel at HF/renal endpoints. Either is an appropriate, guideline-endorsed add-on regardless of A1c. Mnemonic: 'arteries clogged → glutide (or flozin), never a sulfonylurea.'</div><div class="rtt">⚠️ Wrong answer: 'a sulfonylurea is a reasonable second agent in a patient with ASCVD because it lowers A1c well.' Discriminator — SUs have NO CV benefit (and cause hypoglycemia/weight gain); in ASCVD select a GLP-1 RA or SGLT2i with proven MACE reduction.</div></div><div class="rt"><div class="rtl">8. Territory 4 — Weight loss champion</div><div class="rte">Greatest weight loss comes from incretin-based injectables: GLP-1 RAs (semaglutide ~10–15%, liraglutide) and the dual GIP/GLP-1 agonist tirzepatide (up to ~20%, the most potent). SGLT2i add modest loss (~2–3 kg). These are first-line when obesity dominates the phenotype. Mnemonic: 'tirzepatide = two incretins = top of the weight-loss podium.'</div><div class="rtt">⚠️ Wrong answer: 'add basal insulin, a sulfonylurea, or a TZD when weight loss is the priority.' Discriminator — insulin, SU, glinides, and TZD all cause weight GAIN, the opposite of the goal. Choose a GLP-1 RA or tirzepatide for the weight-loss phenotype.</div></div><div class="rt"><div class="rtl">9. Territory 6 — postprandial glucose</div><div class="rte">When the problem is POSTPRANDIAL hyperglycemia (high after-meal spikes with acceptable fasting glucose), the targeted agents are acarbose (alpha-glucosidase inhibitor — delays carb absorption) and glinides/meglitinides (short-acting secretagogues dosed before each meal). Rapid-acting prandial insulin also targets this. Mnemonic: 'meal-time spikes → meal-time drugs (acarbose, glinides).'</div><div class="rtt">⚠️ Wrong answer: 'use acarbose or a glinide to fix isolated FASTING hyperglycemia.' Discriminator — these target POSTPRANDIAL, not fasting, glucose; fasting hyperglycemia is better addressed by metformin (hepatic output) or basal insulin. Also acarbose's GI flatulence/diarrhea limits adherence.</div></div><div class="rt"><div class="rtl">10. Euglycemic DKA board</div><div class="rte">SGLT2 inhibitors can precipitate EUGLYCEMIC DKA (ketoacidosis with glucose often &lt;200–250) via glucosuria-driven low insulin and increased glucagon/ketogenesis, typically triggered by surgery, fasting, illness, or alcohol. Diagnose by the ANION GAP and ketones, NOT glucose. Treatment: IV fluids, insulin infusion WITH dextrose (since glucose is already low/normal), and stop the SGLT2i; hold SGLT2i ~3 days before elective surgery. Mnemonic: 'normal sugar, sky-high gap — think flozin DKA.'</div><div class="rtt">⚠️ Wrong answer: 'a normal blood glucose rules out DKA in a patient on an SGLT2 inhibitor with vomiting and an elevated anion gap.' Discriminator — euglycemic DKA presents with normal/mildly elevated glucose; you must check the anion gap and serum/urine ketones. Don't be falsely reassured by a normal glucose.</div></div><div class="rt"><div class="rtl">11. Combination therapy corner</div><div class="rte">Rational combinations keep metformin as the backbone and add a mechanistically COMPLEMENTARY agent: metformin + SGLT2i (good weight loss, CV/renal benefit), metformin + GLP-1 RA (max weight loss/CV benefit, limits insulin-related gain), metformin + basal insulin (when more glucose lowering is needed). Mnemonic: 'build on metformin with a different mechanism.'</div><div class="rtt">⚠️ Wrong answer: 'combine two agents from the same pathway (e.g., DPP-4i + GLP-1 RA, or SU + glinide) to intensify therapy.' Discriminator — same-pathway combos are redundant (incretin + incretin) or dangerously additive (two secretagogues → hypoglycemia). Stack DIFFERENT mechanisms instead.</div></div><div class="rt"><div class="rtl">12. No SU + glinide combo / repaglinide+insulin</div><div class="rte">Never combine two insulin secretagogues (sulfonylurea + glinide) or a secretagogue plus prandial insulin (repaglinide + mealtime insulin) — they share the K-ATP-closing mechanism, so the effect is redundant and additively raises hypoglycemia risk with no extra efficacy. Mnemonic: 'two insulin-squeezers = double the hypo, none of the benefit.'</div><div class="rtt">⚠️ Wrong answer: 'add a glinide to a patient already on a sulfonylurea for better postprandial control.' Discriminator — both are secretagogues acting via the same channel; combining them just compounds hypoglycemia/weight gain. Add a different-mechanism agent (metformin, SGLT2i, GLP-1 RA) instead.</div></div><div class="rt"><div class="rtl">13. Rosiglitazone vs pioglitazone CV</div><div class="rte">Among TZDs, rosiglitazone raised concern for increased myocardial infarction/CV risk (historic meta-analyses), whereas pioglitazone is CV-NEUTRAL (and may modestly reduce stroke/MI in some data) — making pioglitazone the preferred TZD. BOTH still cause fluid retention/edema, weight gain, fractures, and HF risk; pioglitazone additionally carries a bladder-cancer signal. Mnemonic: 'PIO is the okay one; ROSI raised the red flag.'</div><div class="rtt">⚠️ Wrong answer: 'rosiglitazone is the safer thiazolidinedione for cardiovascular risk.' Discriminator — it's the reverse: pioglitazone is the CV-safer TZD; rosiglitazone carried the increased CV/MI concern. Either way, avoid both in heart failure due to fluid retention.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_classification_hall.html" title="Diabetes — Scene 3: Classification Hall (Pathophys &amp; Dx)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_tx1.html" title="Diabetes — Tx 1: Oral &amp; Injectable Drug Classes">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

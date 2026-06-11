@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD / STEMI — post-MI care &amp; secondary prevention</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Biomarker kitchen — troponin</b> — Board says: 'Troponin normalizes within 24h of an MI.' WRONG. Discriminator: troponin stays elevated for 7–10 days; that is why it cannot reliably detect early REINFARCTION — for a suspected re-MI within days, use CK-MB, which has already returned toward baseline.</li><li><b>Troponin 7–10 days</b> — Board says: 'A patient with chest pain on day 4 post-MI and a still-elevated troponin has definitely reinfarcted.' WRONG. Discriminator: troponin is expected to remain elevated 7–10 days; to confirm reinfarction you need a NEW rise (CK-MB, or ≥20% re-rise in troponin), not just a persistently high value.</li><li><b>CK-MB reinfarction detector</b> — Board says: 'Use troponin rather than CK-MB to detect reinfarction a few days after an MI.' WRONG. Discriminator: troponin is still elevated and uninformative in that window; CK-MB has normalized, so its re-rise specifically flags REINFARCTION — CK-MB is the right tool here.</li><li><b>Onset 6–12H</b> — Board says: 'A single normal troponin at presentation rules out MI.' WRONG. Discriminator: troponin may not rise until 3–12h after symptom onset; a single early normal value does NOT exclude MI — serial troponins (and ECGs) are required.</li><li><b>Secondary prevention shelf</b> — Board says: 'Secondary-prevention medications can be stopped once the patient is discharged and feels well.' WRONG. Discriminator: these agents (aspirin, statin, beta-blocker, ACEi) are continued LONG-TERM/lifelong to reduce reinfarction and death — feeling well is not a reason to stop them.</li><li><b>Aspirin indefinitely</b> — Board says: 'Stop aspirin at 12 months after the MI.' WRONG. Discriminator: it is the P2Y12 INHIBITOR that is typically stopped around 12 months; ASPIRIN is continued INDEFINITELY/lifelong. Stopping aspirin removes the lifelong antiplatelet backbone.</li><li><b>Statin high-intensity</b> — Board says: 'Start a statin only if the LDL is elevated.' WRONG. Discriminator: post-MI, high-intensity statin is indicated for ALL patients regardless of baseline LDL — the benefit is independent of starting cholesterol and includes plaque stabilization.</li><li><b>ACEi if EF ≤40% / HF / DM</b> — Board says: 'ACE inhibitors are contraindicated after MI.' WRONG. Discriminator: ACEi/ARB are guideline-recommended post-MI (class I when EF ≤40%/HF/DM/HTN) and reduce mortality — true contraindications are limited (hyperkalemia, bilateral RAS, pregnancy, angioedema, hypotension), not the MI itself.</li><li><b>Beta-blocker shelf</b> — Board says: 'Beta-blockers are only needed for the first week after an MI.' WRONG. Discriminator: beta-blockers are continued LONG-TERM (especially with reduced EF) for ongoing mortality benefit — they are not a short-course drug. (The acute caution is avoiding them in decompensated HF/shock, not stopping them at one week.)</li><li><b>Electrolyte station K &amp; Mg</b> — Board says: 'Electrolytes no longer matter once the artery is revascularized.' WRONG. Discriminator: even after successful PCI, hypokalemia/hypomagnesemia provoke peri-infarct ventricular arrhythmias — maintaining K+ &gt;4.0 and Mg2+ &gt;2.0 remains important for arrhythmia prevention.</li><li><b>Discharge gate ~24h</b> — Board says: 'Patients need strict bed rest for weeks after a STEMI.' WRONG. Discriminator: prolonged bed rest is outdated and harmful (VTE, deconditioning); current practice is EARLY mobilization and short hospitalization for uncomplicated, reperfused MI.</li><li><b>Sexual activity ~1 week</b> — Board says: 'Sexual activity is prohibited for 6 months after an MI.' WRONG. Discriminator: after an uncomplicated MI, sexual activity may resume in about 1 week once the patient tolerates ~3–5 METs — a blanket 6-month ban is incorrect (the real caveat is no nitrates with PDE5 inhibitors).</li><li><b>Return to work 2–4 weeks</b> — Board says: 'All MI patients must stay off work for 6 months.' WRONG. Discriminator: return to work after an uncomplicated MI is typically 2–4 weeks, individualized to job demands and functional capacity — a universal 6-month restriction is incorrect.</li><li><b>3–5 METs / 2 flights of stairs</b> — Board says: 'No functional assessment is needed before clearing a post-MI patient for activity.' WRONG. Discriminator: activity clearance is based on demonstrated functional capacity (e.g., ~3–5 METs / two flights of stairs, often via exercise testing) and cardiac rehab — not given blindly without assessment.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Biomarker kitchen — troponin</div><div class="rte">Cardiac troponin (I or T) is the most sensitive and specific marker of myocardial necrosis and the preferred test for diagnosing MI. It rises ~3–12h after injury, peaks around 24h, and stays elevated for 7–10 days (troponin T) / 5–7 days (troponin I). Diagnosis requires a rise and/or fall with at least one value above the 99th percentile, plus ischemic context. Mnemonic: 'troponin: up by 3–12h, peaks at a day, lingers a week-plus.'</div><div class="rtt">⚠️ Board says: 'Troponin normalizes within 24h of an MI.' WRONG. Discriminator: troponin stays elevated for 7–10 days; that is why it cannot reliably detect early REINFARCTION — for a suspected re-MI within days, use CK-MB, which has already returned toward baseline.</div></div><div class="rt"><div class="rtl">2. Troponin 7–10 days</div><div class="rte">Because troponin remains elevated for 7–10 days, it is excellent for diagnosing an MI even days after presentation, but POOR for detecting reinfarction during that window (a persistently high level can't distinguish old from new injury). In the reinfarction window, look for a new RISE in CK-MB or a re-rise (≥20%) in troponin from a prior plateau. Mnemonic: 'troponin lingers a week+ → blind to re-MI in that window.'</div><div class="rtt">⚠️ Board says: 'A patient with chest pain on day 4 post-MI and a still-elevated troponin has definitely reinfarcted.' WRONG. Discriminator: troponin is expected to remain elevated 7–10 days; to confirm reinfarction you need a NEW rise (CK-MB, or ≥20% re-rise in troponin), not just a persistently high value.</div></div><div class="rt"><div class="rtl">3. CK-MB reinfarction detector</div><div class="rte">CK-MB rises ~3–6h, peaks at ~24h, and returns to baseline by 48–72h. This short, predictable course makes CK-MB the marker of choice to detect EARLY REINFARCTION: after the first CK-MB normalizes, a new rise indicates fresh myocardial necrosis. Its lower specificity (also in skeletal muscle) is the trade-off. Mnemonic: 'CK-MB clears in 2–3 days → catches the second hit.'</div><div class="rtt">⚠️ Board says: 'Use troponin rather than CK-MB to detect reinfarction a few days after an MI.' WRONG. Discriminator: troponin is still elevated and uninformative in that window; CK-MB has normalized, so its re-rise specifically flags REINFARCTION — CK-MB is the right tool here.</div></div><div class="rt"><div class="rtl">4. Onset 6–12H</div><div class="rte">Biomarkers and ECG findings EVOLVE over the first 6–12h, so SERIAL testing is mandatory — a single early measurement can miss an evolving MI. Obtain troponin at presentation and repeat at 3–6h (and again if needed); follow serial ECGs. The classic 0/1h or 0/3h high-sensitivity troponin protocols exist precisely because of this time-dependence. Mnemonic: 'one normal troponin is not enough — recheck over 6–12h.'</div><div class="rtt">⚠️ Board says: 'A single normal troponin at presentation rules out MI.' WRONG. Discriminator: troponin may not rise until 3–12h after symptom onset; a single early normal value does NOT exclude MI — serial troponins (and ECGs) are required.</div></div><div class="rt"><div class="rtl">5. Secondary prevention shelf</div><div class="rte">Every post-MI patient leaves on a lifelong secondary-prevention bundle: antiplatelet therapy (aspirin indefinitely + P2Y12 inhibitor), high-intensity statin, beta-blocker, and ACE inhibitor/ARB (especially with reduced EF/HF/DM/HTN), plus an aldosterone antagonist if EF ≤40% with HF or DM. Add risk-factor control (BP, glucose, smoking cessation) and cardiac rehab. Mnemonic: 'ABCDE — Aspirin/Antiplatelet, Beta-blocker, Cholesterol (statin)/Cardiac rehab, Diet/Diabetes, Exercise + ACEi.'</div><div class="rtt">⚠️ Board says: 'Secondary-prevention medications can be stopped once the patient is discharged and feels well.' WRONG. Discriminator: these agents (aspirin, statin, beta-blocker, ACEi) are continued LONG-TERM/lifelong to reduce reinfarction and death — feeling well is not a reason to stop them.</div></div><div class="rt"><div class="rtl">6. Aspirin indefinitely</div><div class="rte">Aspirin (81 mg daily) is continued INDEFINITELY after MI. Dual antiplatelet therapy (DAPT) adds a P2Y12 inhibitor — clopidogrel 75 mg, ticagrelor 90 mg BID, or prasugrel 10 mg — for at least 12 months after ACS (shorter if high bleeding risk, longer if high ischemic/low bleeding risk). Antiplatelet therapy gives roughly a 25% relative risk reduction in recurrent vascular events. Mnemonic: 'aspirin forever, the partner (P2Y12) for about a year.'</div><div class="rtt">⚠️ Board says: 'Stop aspirin at 12 months after the MI.' WRONG. Discriminator: it is the P2Y12 INHIBITOR that is typically stopped around 12 months; ASPIRIN is continued INDEFINITELY/lifelong. Stopping aspirin removes the lifelong antiplatelet backbone.</div></div><div class="rt"><div class="rtl">7. Statin high-intensity</div><div class="rte">All post-MI patients get a HIGH-INTENSITY statin (atorvastatin 40–80 mg or rosuvastatin 20–40 mg) regardless of baseline LDL, for both LDL lowering and pleiotropic plaque-stabilizing effects. Goal LDL &lt;70 mg/dL (many guidelines now target &lt;55 mg/dL for very-high-risk patients); add ezetimibe ± a PCSK9 inhibitor if goals are not met. Mnemonic: 'every MI patient gets a high-intensity statin — no LDL excuse.'</div><div class="rtt">⚠️ Board says: 'Start a statin only if the LDL is elevated.' WRONG. Discriminator: post-MI, high-intensity statin is indicated for ALL patients regardless of baseline LDL — the benefit is independent of starting cholesterol and includes plaque stabilization.</div></div><div class="rt"><div class="rtl">8. ACEi if EF ≤40% / HF / DM</div><div class="rte">Start an ACE inhibitor (or ARB if intolerant) within 24h in stable patients, with the greatest benefit when there is LVEF ≤40%, heart failure, anterior MI, hypertension, diabetes, or CKD — it limits adverse remodeling and reduces mortality. Titrate to target while monitoring K+ and creatinine. Add an aldosterone antagonist (spironolactone/eplerenone) if EF ≤40% with HF or DM. Mnemonic: 'ACEi for the weak/diabetic/failing heart — blocks remodeling.'</div><div class="rtt">⚠️ Board says: 'ACE inhibitors are contraindicated after MI.' WRONG. Discriminator: ACEi/ARB are guideline-recommended post-MI (class I when EF ≤40%/HF/DM/HTN) and reduce mortality — true contraindications are limited (hyperkalemia, bilateral RAS, pregnancy, angioedema, hypotension), not the MI itself.</div></div><div class="rt"><div class="rtl">9. Beta-blocker shelf</div><div class="rte">Oral beta-blockers (metoprolol, carvedilol, bisoprolol) are started within 24h in stable patients and continued LONG-TERM; they reduce ischemia, reinfarction, arrhythmia, and mortality, with the largest benefit when EF is reduced. AVOID IV beta-blockers / early initiation in patients with signs of heart failure, hypotension, cardiogenic shock, or high heart-block risk. Mnemonic: 'beta-blocker long-term — but not while the patient is in shock or florid HF.'</div><div class="rtt">⚠️ Board says: 'Beta-blockers are only needed for the first week after an MI.' WRONG. Discriminator: beta-blockers are continued LONG-TERM (especially with reduced EF) for ongoing mortality benefit — they are not a short-course drug. (The acute caution is avoiding them in decompensated HF/shock, not stopping them at one week.)</div></div><div class="rt"><div class="rtl">10. Electrolyte station K &amp; Mg</div><div class="rte">Maintain potassium &gt;4.0 mEq/L and magnesium &gt;2.0 mg/dL after MI to lower the risk of ventricular arrhythmias (VT/VF) in the irritable peri-infarct period. Hypokalemia and hypomagnesemia are correctable arrhythmia triggers, so aggressive repletion is standard. Mnemonic: 'keep K above 4, Mg above 2 — quiet the irritable myocardium.'</div><div class="rtt">⚠️ Board says: 'Electrolytes no longer matter once the artery is revascularized.' WRONG. Discriminator: even after successful PCI, hypokalemia/hypomagnesemia provoke peri-infarct ventricular arrhythmias — maintaining K+ &gt;4.0 and Mg2+ &gt;2.0 remains important for arrhythmia prevention.</div></div><div class="rt"><div class="rtl">11. Discharge gate ~24h</div><div class="rte">Modern post-STEMI care favors EARLY mobilization (out of bed within ~24h) and short stays: an uncomplicated, successfully reperfused STEMI patient is often dischargeable in a few days (sometimes 48–72h for low-risk PCI patients). Early ambulation prevents deconditioning and venous thromboembolism while the secondary-prevention bundle is started. Mnemonic: 'reperfused and uncomplicated → up early, home in days.'</div><div class="rtt">⚠️ Board says: 'Patients need strict bed rest for weeks after a STEMI.' WRONG. Discriminator: prolonged bed rest is outdated and harmful (VTE, deconditioning); current practice is EARLY mobilization and short hospitalization for uncomplicated, reperfused MI.</div></div><div class="rt"><div class="rtl">12. Sexual activity ~1 week</div><div class="rte">Sexual activity can usually be resumed ~1 week after an uncomplicated MI in patients who are asymptomatic and can achieve modest exertion (~3–5 METs, e.g., climbing two flights of stairs without symptoms). Counsel that PDE5 inhibitors are CONTRAINDICATED with nitrates (risk of severe hypotension). Mnemonic: 'two flights of stairs symptom-free → back to the bedroom (~1 week).'</div><div class="rtt">⚠️ Board says: 'Sexual activity is prohibited for 6 months after an MI.' WRONG. Discriminator: after an uncomplicated MI, sexual activity may resume in about 1 week once the patient tolerates ~3–5 METs — a blanket 6-month ban is incorrect (the real caveat is no nitrates with PDE5 inhibitors).</div></div><div class="rt"><div class="rtl">13. Return to work 2–4 weeks</div><div class="rte">Most patients with an uncomplicated MI can return to work in about 2–4 weeks, individualized by job physical demands, LV function, and results of risk stratification (e.g., exercise testing). Physically strenuous jobs may require longer or a graded return; sedentary work can resume sooner. Cardiac rehab supports a safe return. Mnemonic: 'uncomplicated MI → back to work in 2–4 weeks.'</div><div class="rtt">⚠️ Board says: 'All MI patients must stay off work for 6 months.' WRONG. Discriminator: return to work after an uncomplicated MI is typically 2–4 weeks, individualized to job demands and functional capacity — a universal 6-month restriction is incorrect.</div></div><div class="rt"><div class="rtl">14. 3–5 METs / 2 flights of stairs</div><div class="rte">Functional capacity is gauged in METs: climbing two flights of stairs (~3–5 METs) without symptoms is the practical benchmark that the heart can tolerate ordinary activities, including sexual activity and many jobs. Formal exercise/stress testing before discharge or early after can quantify capacity and risk-stratify. Cardiac rehabilitation is a class I recommendation to improve fitness, mortality, and quality of life. Mnemonic: 'two flights of stairs ≈ 3–5 METs ≈ green light for daily activity.'</div><div class="rtt">⚠️ Board says: 'No functional assessment is needed before clearing a post-MI patient for activity.' WRONG. Discriminator: activity clearance is based on demonstrated functional capacity (e.g., ~3–5 METs / two flights of stairs, often via exercise testing) and cardiac rehab — not given blindly without assessment.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_stemi_complications.html" title="IHD / STEMI — mechanical complications, RV &amp; pericarditis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_stemi_reperfusion.html" title="IHD / STEMI — reperfusion (PCI vs fibrinolysis)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

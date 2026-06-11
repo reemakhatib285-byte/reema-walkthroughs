@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Polycythemia / MPN — Polycythemia Vera clinical features &amp; complications</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Aquagenic pruritus</b> — WRONG to call this generic dry skin (xerosis) or atopic dermatitis and skip a CBC. Discriminator: itch tightly time-locked to warm-water exposure with a normal-appearing skin exam, plus a high hematocrit, points to a JAK2-driven MPN rather than a primary dermatologic cause.</li><li><b>Erythromelalgia</b> — WRONG to treat the burning feet as peripheral neuropathy (e.g., diabetic) and start gabapentin. Discriminator: erythromelalgia is visibly red, hot, and aspirin-responsive, whereas neuropathy is typically symmetric, numb/tingling, normal-colored, and does NOT respond to aspirin.</li><li><b>Thrombosis everywhere (red flooded)</b> — WRONG to attribute a young patient's stroke/MI purely to standard atherosclerotic risk factors and miss the MPN. Discriminator: arterial thrombosis at an unusually young age, in unusual sites, or with an elevated Hct/platelets should trigger a JAK2 V617F test.</li><li><b>Budd-Chiari / portal vein</b> — WRONG to stop at 'cirrhosis with portal vein thrombosis' and not screen for an MPN. Discriminator: splanchnic vein thrombosis WITHOUT cirrhosis or an obvious provoking factor mandates JAK2 V617F testing even when the Hct is normal, because hypersplenism can mask the polycythemia.</li><li><b>Splenomegaly</b> — WRONG to call PV-associated splenomegaly a feature of secondary (reactive) polycythemia. Discriminator: secondary erythrocytosis (e.g., from hypoxia, EPO-secreting tumor) does NOT cause splenomegaly, aquagenic pruritus, or thrombocytosis — those features point to a primary clonal MPN.</li><li><b>Hyperviscosity neuro Sx</b> — WRONG to work up these vague neuro symptoms as primary vestibular disease or anxiety while ignoring the CBC. Discriminator: when headache/dizziness/tinnitus coexist with plethora and an elevated Hct, the unifying cause is hyperviscosity from PV, which reverses with phlebotomy.</li><li><b>Systolic HTN</b> — WRONG to manage the hypertension in isolation and overlook plethora/erythrocytosis as the underlying driver. Discriminator: hypertension plus a ruddy complexion and an elevated hematocrit should prompt evaluation for PV rather than being labeled simple essential hypertension.</li><li><b>Acquired vWD / bleeding</b> — WRONG to assume a high platelet count guarantees a clotting tendency and to therefore add aspirin in a patient bleeding with platelets &gt;1,000K. Discriminator: paradoxical bleeding with extreme thrombocytosis = acquired vWD; check vWF activity/multimers and lower the platelet count rather than antiplatelet therapy.</li><li><b>Hyperuricemia / gout</b> — WRONG to label new gout as purely dietary/primary and miss the underlying myeloproliferative disorder. Discriminator: new-onset gout together with an elevated hematocrit, splenomegaly, or thrombocytosis should raise suspicion for an MPN driving the hyperuricemia.</li><li><b>&gt;900K platelets</b> — WRONG to use the platelet count as the marker of thrombotic risk to be normalized in PV. Discriminator: it is the hematocrit (red-cell mass), not the platelet count, that drives thrombosis in PV — phlebotomy targets Hct &lt;45%, while extreme platelet counts mainly raise BLEEDING risk via acquired vWD.</li><li><b>~15% reversible / spleen</b> — WRONG to interpret a normalizing hematocrit in a known PV patient as 'disease resolved' or successful control. Discriminator: a spontaneously falling Hct with new cytopenias, growing spleen, and constitutional symptoms signals progression to post-PV myelofibrosis (marrow failure), not cure.</li><li><b>Transformation to AML</b> — WRONG to choose an alkylating agent or P-32 for long-term cytoreduction in a young PV patient to 'keep counts down.' Discriminator: these agents meaningfully increase leukemic transformation risk — hydroxyurea or interferon (and ruxolitinib) are preferred precisely because they are less leukemogenic.</li><li><b>Young woman presentation</b> — WRONG to attribute splanchnic thrombosis in a young woman solely to oral contraceptives or an inherited thrombophilia and stop there. Discriminator: even with a 'provoking' factor or normal counts, unexplained splanchnic vein thrombosis warrants JAK2 V617F testing to exclude an underlying MPN.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Aquagenic pruritus</div><div class="rte">Aquagenic pruritus = intense itching minutes after contact with warm water (classic 'itch after a hot shower') and is present in up to 40% of PV patients. Mechanism is degranulation of the expanded mast-cell/basophil mass driven by JAK2 V617F, releasing histamine and other mediators. It can be the presenting and most disabling symptom; refractory cases respond to ruxolitinib or interferon. Mnemonic: warm water → wicked itch → think PV.</div><div class="rtt">⚠️ WRONG to call this generic dry skin (xerosis) or atopic dermatitis and skip a CBC. Discriminator: itch tightly time-locked to warm-water exposure with a normal-appearing skin exam, plus a high hematocrit, points to a JAK2-driven MPN rather than a primary dermatologic cause.</div></div><div class="rt"><div class="rtl">2. Erythromelalgia</div><div class="rte">Erythromelalgia = burning, red, warm, painful hands/feet from platelet-mediated microvascular thrombosis in the digital arterioles. It is a hallmark of MPNs (PV and essential thrombocythemia) and dramatically relieved within hours-to-days by low-dose aspirin (81 mg), which blocks the thromboxane-driven platelet aggregation. Untreated it can progress to digital ischemia/gangrene. Mnemonic: ERYTHRO-MEL-ALGIA = red + limb + pain.</div><div class="rtt">⚠️ WRONG to treat the burning feet as peripheral neuropathy (e.g., diabetic) and start gabapentin. Discriminator: erythromelalgia is visibly red, hot, and aspirin-responsive, whereas neuropathy is typically symmetric, numb/tingling, normal-colored, and does NOT respond to aspirin.</div></div><div class="rt"><div class="rtl">3. Thrombosis everywhere (red flooded)</div><div class="rte">Thrombosis is the #1 cause of morbidity and mortality in PV, affecting BOTH arterial (stroke/TIA, MI) and venous (DVT/PE, splanchnic) beds. Driver is hyperviscosity from a raised red-cell mass plus a prothrombotic JAK2-mutant phenotype; risk rises sharply once hematocrit exceeds ~45%. Keeping Hct &lt;45% (CYTO-PV trial) lowers cardiovascular death and major thrombosis fourfold versus &lt;50%. Mnemonic: thick blood clots everywhere — brain, heart, gut.</div><div class="rtt">⚠️ WRONG to attribute a young patient's stroke/MI purely to standard atherosclerotic risk factors and miss the MPN. Discriminator: arterial thrombosis at an unusually young age, in unusual sites, or with an elevated Hct/platelets should trigger a JAK2 V617F test.</div></div><div class="rt"><div class="rtl">4. Budd-Chiari / portal vein</div><div class="rte">PV (and MPNs generally) is the leading cause of Budd-Chiari syndrome (hepatic vein thrombosis) and other splanchnic vein thromboses (portal, mesenteric, splenic). Presentation: new ascites, hepatomegaly, abdominal pain. Critically, splanchnic thrombosis may precede overt blood-count changes because hypersplenism/portal HTN masks the erythrocytosis, so the CBC can look deceptively normal. Always check JAK2 V617F in unexplained Budd-Chiari/portal vein thrombosis.</div><div class="rtt">⚠️ WRONG to stop at 'cirrhosis with portal vein thrombosis' and not screen for an MPN. Discriminator: splanchnic vein thrombosis WITHOUT cirrhosis or an obvious provoking factor mandates JAK2 V617F testing even when the Hct is normal, because hypersplenism can mask the polycythemia.</div></div><div class="rt"><div class="rtl">5. Splenomegaly</div><div class="rte">Splenomegaly occurs in ~30-40% of PV patients, due to extramedullary hematopoiesis and vascular congestion. It can cause early satiety, LUQ fullness/discomfort, and contributes to the symptom burden scored by the MPN-SAF. Massive or progressive splenomegaly is a clue to evolution toward post-PV myelofibrosis. Ruxolitinib produces measurable spleen-volume reduction.</div><div class="rtt">⚠️ WRONG to call PV-associated splenomegaly a feature of secondary (reactive) polycythemia. Discriminator: secondary erythrocytosis (e.g., from hypoxia, EPO-secreting tumor) does NOT cause splenomegaly, aquagenic pruritus, or thrombocytosis — those features point to a primary clonal MPN.</div></div><div class="rt"><div class="rtl">6. Hyperviscosity neuro Sx</div><div class="rte">Hyperviscosity from the elevated red-cell mass impairs cerebral microcirculation, producing headache, dizziness, vertigo, tinnitus, blurred vision, and difficulty concentrating. These are common presenting complaints and improve with phlebotomy as the hematocrit falls below 45%. Severe acute hyperviscosity (esp. with very high counts) is a medical emergency. Mnemonic: thick blood = sluggish brain.</div><div class="rtt">⚠️ WRONG to work up these vague neuro symptoms as primary vestibular disease or anxiety while ignoring the CBC. Discriminator: when headache/dizziness/tinnitus coexist with plethora and an elevated Hct, the unifying cause is hyperviscosity from PV, which reverses with phlebotomy.</div></div><div class="rt"><div class="rtl">7. Systolic HTN</div><div class="rte">Hypertension is common in PV from increased blood volume and viscosity raising systemic vascular resistance and cardiac afterload. It compounds the already-high thrombotic and cardiovascular risk, so blood-pressure control is part of global risk reduction alongside phlebotomy and aspirin.</div><div class="rtt">⚠️ WRONG to manage the hypertension in isolation and overlook plethora/erythrocytosis as the underlying driver. Discriminator: hypertension plus a ruddy complexion and an elevated hematocrit should prompt evaluation for PV rather than being labeled simple essential hypertension.</div></div><div class="rt"><div class="rtl">8. Acquired vWD / bleeding</div><div class="rte">Extreme thrombocytosis (typically platelets &gt;1,000-1,500K) causes acquired von Willebrand disease: the huge platelet mass adsorbs and proteolyzes the largest, most hemostatically active vWF multimers, lowering ristocetin cofactor activity and producing mucocutaneous BLEEDING despite a high platelet count. This is why aspirin is used cautiously at very high platelet counts. Treat with cytoreduction (lower the platelets) ± tranexamic acid; desmopressin gives transient benefit.</div><div class="rtt">⚠️ WRONG to assume a high platelet count guarantees a clotting tendency and to therefore add aspirin in a patient bleeding with platelets &gt;1,000K. Discriminator: paradoxical bleeding with extreme thrombocytosis = acquired vWD; check vWF activity/multimers and lower the platelet count rather than antiplatelet therapy.</div></div><div class="rt"><div class="rtl">9. Hyperuricemia / gout</div><div class="rte">High cell turnover in PV increases purine catabolism, raising serum uric acid and causing secondary gout and uric-acid nephrolithiasis. Hydroxyurea and tumor-lysis-type turnover can further elevate urate; allopurinol is used for prophylaxis/treatment. Mnemonic: fast-dividing marrow → purine breakdown → urate crystals.</div><div class="rtt">⚠️ WRONG to label new gout as purely dietary/primary and miss the underlying myeloproliferative disorder. Discriminator: new-onset gout together with an elevated hematocrit, splenomegaly, or thrombocytosis should raise suspicion for an MPN driving the hyperuricemia.</div></div><div class="rt"><div class="rtl">10. &gt;900K platelets</div><div class="rte">Marked thrombocytosis frequently accompanies PV because the JAK2-mutant clone also drives megakaryopoiesis. Counts can exceed 900K-1,000K, the threshold at which acquired von Willebrand disease and paradoxical bleeding become a concern. The platelet count is part of monitoring and informs the decision and intensity of cytoreduction.</div><div class="rtt">⚠️ WRONG to use the platelet count as the marker of thrombotic risk to be normalized in PV. Discriminator: it is the hematocrit (red-cell mass), not the platelet count, that drives thrombosis in PV — phlebotomy targets Hct &lt;45%, while extreme platelet counts mainly raise BLEEDING risk via acquired vWD.</div></div><div class="rt"><div class="rtl">11. ~15% reversible / spleen</div><div class="rte">Roughly 10-15% of PV patients progress over years to a 'spent phase' / post-PV myelofibrosis, marked by marrow fibrosis, hematopoietic stem-cell failure, falling counts (the Hct may even normalize or drop), worsening splenomegaly, and constitutional symptoms. This is detected on serial CBCs and marrow biopsy. JAK inhibitors and, in eligible patients, allogeneic transplant address the fibrotic phase.</div><div class="rtt">⚠️ WRONG to interpret a normalizing hematocrit in a known PV patient as 'disease resolved' or successful control. Discriminator: a spontaneously falling Hct with new cytopenias, growing spleen, and constitutional symptoms signals progression to post-PV myelofibrosis (marrow failure), not cure.</div></div><div class="rt"><div class="rtl">12. Transformation to AML</div><div class="rte">PV carries a small but serious risk (~3-5% over time) of transformation to acute myeloid leukemia, often associated with TP53 mutations and accelerated by leukemogenic therapies. This is why alkylating agents and radioactive phosphorus (P-32) are avoided. Transformation presents with rising blasts, worsening cytopenias, and constitutional decline; prognosis is poor.</div><div class="rtt">⚠️ WRONG to choose an alkylating agent or P-32 for long-term cytoreduction in a young PV patient to 'keep counts down.' Discriminator: these agents meaningfully increase leukemic transformation risk — hydroxyurea or interferon (and ruxolitinib) are preferred precisely because they are less leukemogenic.</div></div><div class="rt"><div class="rtl">13. Young woman presentation</div><div class="rte">An unexplained splanchnic (Budd-Chiari, portal, mesenteric) vein thrombosis in a YOUNG patient — classically a young woman — is a flagship presentation of an occult MPN. Because hypersplenism/portal hypertension can mask the erythrocytosis, the CBC may be normal, so JAK2 V617F testing is mandatory in this scenario regardless of counts.</div><div class="rtt">⚠️ WRONG to attribute splanchnic thrombosis in a young woman solely to oral contraceptives or an inherited thrombophilia and stop there. Discriminator: even with a 'provoking' factor or normal counts, unexplained splanchnic vein thrombosis warrants JAK2 V617F testing to exclude an underlying MPN.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcv_myelofibrosis_treatment.html" title="Polycythemia / MPN — Myelofibrosis treatment">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcv_polycythemia_vera.html" title="Polycythemia / MPN — Polycythemia Vera pathophysiology (JAK2)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

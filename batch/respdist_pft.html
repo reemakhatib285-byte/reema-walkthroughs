@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Respiratory Disturbance — PFT Workshop (Volumes &amp; FEV₁/FVC Algorithm)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>PFT algorithm board</b> — ALWAYS start with the FEV1/FVC RATIO, not the absolute FEV1 — a low FEV1 alone does not define obstruction (FEV1 falls in restriction too). The ratio is the first branch point.</li><li><b>Pseudo-restriction node</b> — Spirometry alone CANNOT diagnose restriction — a low FVC only suggests it; you need lung volumes (TLC) to confirm. Low FVC + normal TLC = pseudo-restriction.</li><li><b>Restrictive causes shelf</b> — DLCO splits them: LOW DLCO in parenchymal fibrosis vs NORMAL DLCO in chest wall / neuromuscular / obesity. This is the single most useful next step after confirming low TLC.</li><li><b>STIFF (restrictive) man</b> — Stiff/low-compliance lungs = restriction; do not confuse with the floppy, high-compliance lungs of emphysema (opposite end of the compliance spectrum).</li><li><b>RV–FRC–TLC safe</b> — RV, FRC, and TLC CANNOT be measured by spirometry (because RV never leaves the lung) — they require body plethysmography or gas dilution (helium dilution / nitrogen washout).</li><li><b>FRC weights</b> — Obesity lowers FRC and ERV FIRST (the outward chest-wall force is overwhelmed by mass) before other volumes change — the earliest obesity PFT abnormality.</li><li><b>RESTRICTIVE values</b> — The FEV1/FVC ratio is NORMAL or HIGH in restriction — a LOW ratio rules restriction out (it indicates obstruction or a mixed pattern).</li><li><b>FLOPPY (obstructive) clown</b> — Floppy/high-compliance = obstruction (emphysema), the exact opposite of stiff/low-compliance restriction. Compliance and recoil move in opposite directions in these two patterns.</li><li><b>Obstructive causes shelf</b> — Asthma obstruction REVERSES with bronchodilator (FEV1 rise ≥12% AND ≥200 mL); fixed COPD does not — reversibility testing is the discriminator.</li><li><b>OBSTRUCTIVE values</b> — An elevated RV/TLC in obstruction reflects air TRAPPING/hyperinflation — don't misread the high volumes as restriction (restriction LOWERS volumes).</li><li><b>Air trapping / fast restriction</b> — A low FVC in an obstructive patient is pseudo-restriction from air trapping, NOT coexisting true restriction — confirm by measuring TLC (high = trapping, low = true restriction).</li><li><b>Lungs-in vs chest-out arrows</b> — Recoil direction predicts the volume change — but increased recoil ≠ obstruction. Increased recoil is the RESTRICTIVE (fibrotic) direction; decreased recoil is the obstructive (emphysematous) direction.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. PFT algorithm board</div><div class="rte">PFT interpretation algorithm. Step 1: is FEV1/FVC &lt; 0.7 (or below the lower limit of normal)? YES → OBSTRUCTIVE. If NO, step 2: is FVC low? YES → possible RESTRICTION (confirm with TLC); NO → normal. Step 3 for obstruction: assess severity by FEV1 % predicted and check bronchodilator reversibility.</div><div class="rtt">⚠️ ALWAYS start with the FEV1/FVC RATIO, not the absolute FEV1 — a low FEV1 alone does not define obstruction (FEV1 falls in restriction too). The ratio is the first branch point.</div></div><div class="rt"><div class="rtl">2. Pseudo-restriction node</div><div class="rte">When FVC is low but the ratio is not obstructive, check TLC. NORMAL/high TLC with low FVC = PSEUDO-restriction (air trapping, submaximal effort, or coexisting obstruction), NOT true restriction. True restriction requires a LOW TLC.</div><div class="rtt">⚠️ Spirometry alone CANNOT diagnose restriction — a low FVC only suggests it; you need lung volumes (TLC) to confirm. Low FVC + normal TLC = pseudo-restriction.</div></div><div class="rt"><div class="rtl">3. Restrictive causes shelf</div><div class="rte">Causes of restriction split into PARENCHYMAL (fibrosis/ILD) and EXTRApulmonary (chest-wall disease like kyphoscoliosis/ankylosing spondylitis, neuromuscular weakness, obesity, pleural disease).</div><div class="rtt">⚠️ DLCO splits them: LOW DLCO in parenchymal fibrosis vs NORMAL DLCO in chest wall / neuromuscular / obesity. This is the single most useful next step after confirming low TLC.</div></div><div class="rt"><div class="rtl">4. STIFF (restrictive) man</div><div class="rte">Restrictive (fibrotic) lungs are STIFF: low compliance and INCREASED elastic recoil make them hard to expand, so all volumes shrink. The increased recoil is why the FEV1/FVC ratio is normal or high — airways are pulled open.</div><div class="rtt">⚠️ Stiff/low-compliance lungs = restriction; do not confuse with the floppy, high-compliance lungs of emphysema (opposite end of the compliance spectrum).</div></div><div class="rt"><div class="rtl">5. RV–FRC–TLC safe</div><div class="rte">Lung volume definitions: TLC = total air at maximal inhalation; FRC = resting volume at end of a normal exhalation (ERV + RV); RV = air remaining after maximal exhalation. RV, FRC, and TLC all include RV.</div><div class="rtt">⚠️ RV, FRC, and TLC CANNOT be measured by spirometry (because RV never leaves the lung) — they require body plethysmography or gas dilution (helium dilution / nitrogen washout).</div></div><div class="rt"><div class="rtl">6. FRC weights</div><div class="rte">FRC is the equilibrium point where the inward elastic recoil of the lung exactly balances the outward recoil of the chest wall (net zero pressure, no muscle effort). Emphysema (↓recoil) raises FRC; fibrosis (↑recoil) lowers it.</div><div class="rtt">⚠️ Obesity lowers FRC and ERV FIRST (the outward chest-wall force is overwhelmed by mass) before other volumes change — the earliest obesity PFT abnormality.</div></div><div class="rt"><div class="rtl">7. RESTRICTIVE values</div><div class="rte">Restrictive pattern: ↓TLC, ↓FVC, ↓RV, with a NORMAL or HIGH FEV1/FVC ratio and increased elastic recoil. FEV1 is reduced but FVC falls proportionally more, keeping the ratio up.</div><div class="rtt">⚠️ The FEV1/FVC ratio is NORMAL or HIGH in restriction — a LOW ratio rules restriction out (it indicates obstruction or a mixed pattern).</div></div><div class="rt"><div class="rtl">8. FLOPPY (obstructive) clown</div><div class="rte">Obstructive (emphysematous) lungs are FLOPPY: HIGH compliance and LOW elastic recoil. Loss of recoil lets airways collapse on expiration → air trapping → hyperinflation (↑RV, ↑TLC).</div><div class="rtt">⚠️ Floppy/high-compliance = obstruction (emphysema), the exact opposite of stiff/low-compliance restriction. Compliance and recoil move in opposite directions in these two patterns.</div></div><div class="rt"><div class="rtl">9. Obstructive causes shelf</div><div class="rte">Causes of obstruction (FEV1/FVC &lt;0.7): asthma, COPD/emphysema, chronic bronchitis, and bronchiectasis. DLCO subdivides them: low in emphysema, normal/high in asthma and chronic bronchitis.</div><div class="rtt">⚠️ Asthma obstruction REVERSES with bronchodilator (FEV1 rise ≥12% AND ≥200 mL); fixed COPD does not — reversibility testing is the discriminator.</div></div><div class="rt"><div class="rtl">10. OBSTRUCTIVE values</div><div class="rte">Obstructive pattern: ↓FEV1/FVC (&lt;0.7), ↑RV, ↑TLC (hyperinflation), ↑FRC, and reduced elastic recoil. A scooped/concave expiratory flow-volume limb accompanies it.</div><div class="rtt">⚠️ An elevated RV/TLC in obstruction reflects air TRAPPING/hyperinflation — don't misread the high volumes as restriction (restriction LOWERS volumes).</div></div><div class="rt"><div class="rtl">11. Air trapping / fast restriction</div><div class="rte">Severe obstruction with marked air trapping raises RV so much that FVC falls, mimicking restriction (pseudo-restriction). The distinguishing feature: TLC is HIGH in obstruction vs LOW in true restriction.</div><div class="rtt">⚠️ A low FVC in an obstructive patient is pseudo-restriction from air trapping, NOT coexisting true restriction — confirm by measuring TLC (high = trapping, low = true restriction).</div></div><div class="rt"><div class="rtl">12. Lungs-in vs chest-out arrows</div><div class="rte">Elastic recoil determines resting volumes: LOSS of recoil (emphysema) shifts the balance outward → ↑FRC and ↑RV (hyperinflation); INCREASED recoil (fibrosis) pulls everything inward → ↓FRC, ↓RV, ↓TLC.</div><div class="rtt">⚠️ Recoil direction predicts the volume change — but increased recoil ≠ obstruction. Increased recoil is the RESTRICTIVE (fibrotic) direction; decreased recoil is the obstructive (emphysematous) direction.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="respdist_hypoxemia.html" title="Respiratory Disturbance — Hypoxemia, A–a Gradient &amp; Shunt (Gas-Exchange Factory)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="scene_A.html" title="Acid–Base A — Diagnostic Approach (Winter&#x27;s, Δ-Δ, AG correction)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

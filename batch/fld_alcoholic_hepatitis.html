@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Fatty Liver — Alcoholic hepatitis severity &amp; steroids cellar</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>18</em></summary><ol class="traps"><li><b>Severity gate</b> — WRONG move: jumping straight to corticosteroids for any patient with alcoholic hepatitis. Discriminator: only SEVERE disease (Maddrey DF ≥32 or MELD &gt;20) gets steroids; treating mild AH with steroids adds infection/GI-bleed risk with no survival benefit.</li><li><b>Maddrey DF formula</b> — WRONG: using the absolute patient PT or the INR in the formula. Discriminator: Maddrey uses the DIFFERENCE between patient and control PT in seconds; plugging in absolute PT inflates the score artificially.</li><li><b>MDF ≥32 = severe</b> — WRONG: labeling a patient with DF 25 as severe and starting steroids. Discriminator: the severe threshold is ≥32; DF &lt;32 is non-severe and steroids cause net harm (infection) without benefit.</li><li><b>MELD &gt;20</b> — WRONG: relying only on transaminase levels to gauge severity. Discriminator: AST/ALT magnitude does NOT predict mortality in AH (they're often only modestly elevated); severity is defined by DF ≥32 or MELD &gt;20, which capture synthetic and excretory failure.</li><li><b>PT diff not absolute</b> — WRONG: plugging the patient's absolute PT (e.g., 18 sec) directly into Maddrey. Discriminator: subtract the control PT first; only the prolongation over control belongs in the 4.6 × term.</li><li><b>Stop alcohol</b> — WRONG: restricting protein to prevent encephalopathy in a malnourished AH patient. Discriminator: protein restriction worsens outcomes; aggressive nutrition (oral/enteral) plus abstinence is correct, and abstinence outweighs steroids for long-term survival.</li><li><b>Pentoxifylline crossed</b> — WRONG answer: choosing pentoxifylline for severe alcoholic hepatitis (especially when worried about renal failure). Discriminator: STOPAH disproved it; the evidence-based drug is prednisolone 40 mg/day for severe disease without contraindications.</li><li><b>TNF ≠ mortality</b> — WRONG: selecting infliximab/etanercept because TNF-α mediates AH inflammation. Discriminator: anti-TNF biologics raised infection-related mortality; corticosteroids remain the only agent with a (modest, short-term) survival signal.</li><li><b>Prednisolone 40mg/day</b> — WRONG: prescribing prednisONE in severe AH. Discriminator: prednisone needs hepatic activation that a failing liver can't perform reliably; prednisoLONE is already active and is the correct choice.</li><li><b>28-day course</b> — WRONG: continuing steroids indefinitely or beyond 28 days without reassessment. Discriminator: reassess with Lille at day 7; complete 28 days only in responders, then taper — prolonged steroids just add infection risk.</li><li><b>Lille score day 7</b> — WRONG: assessing steroid response by transaminase trend or at the wrong time. Discriminator: response is judged by the Lille score at DAY 7 (bilirubin-driven), not by AST/ALT and not at day 28.</li><li><b>Lille &lt;0.45 continue</b> — WRONG: stopping steroids in a day-7 responder because the patient is 'still sick.' Discriminator: Lille &lt;0.45 means it's working — continue to 28 days; premature discontinuation forfeits the survival benefit.</li><li><b>Lille ≥0.45 stop</b> — WRONG: continuing or escalating steroids in a Lille ≥0.45 non-responder. Discriminator: Lille ≥0.45 = futility — discontinue steroids and shift to transplant evaluation/palliative care, not more immunosuppression.</li><li><b>Early transplant</b> — WRONG: refusing transplant evaluation solely because the patient hasn't completed 6 months of abstinence. Discriminator: modern protocols permit early LT in carefully selected first-episode non-responders; the rigid 6-month rule is no longer absolute.</li><li><b>+NAC 1-month benefit</b> — WRONG: giving NAC alone as primary therapy for severe AH. Discriminator: NAC is an ADJUNCT to prednisolone with only a 1-month benefit; the backbone for severe disease remains prednisolone 40 mg/day.</li><li><b>80% have cirrhosis</b> — WRONG: assuming AH is fully reversible because it is 'acute.' Discriminator: most patients already have cirrhosis, so even survivors carry ongoing portal-hypertension and HCC risk; abstinence — not steroids — drives long-term outcome.</li><li><b>~30% 30-day mortality</b> — WRONG: reassuring a severe-AH patient that prognosis is good. Discriminator: severe AH 30-day mortality is ~30-50%; the steroid benefit is modest and short-term only, so prognosis remains guarded and infection surveillance is essential.</li><li><b>No survival &gt;20%</b> — WRONG: believing steroids produce a large, durable survival improvement. Discriminator: the benefit is a small short-term (28-day) mortality reduction only — no long-term survival advantage — which is why abstinence and early-LT for non-responders matter most.</li></ol></details><details class="panel"><summary>📖 Read-through — all 18 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Severity gate</div><div class="rte">Alcoholic hepatitis is a clinical syndrome (recent heavy drinking, rapid-onset jaundice with bilirubin &gt;3, AST &lt;300-400 and AST:ALT &gt;1.5-2:1, often fever and neutrophilic leukocytosis) — not just a lab abnormality. Management forks entirely on SEVERITY scoring at the gate: you must classify severe vs non-severe before any steroid decision, because steroids only help severe disease and add infection risk in mild disease. The two gatekeeper scores are the Maddrey Discriminant Function (DF) and MELD.</div><div class="rtt">⚠️ WRONG move: jumping straight to corticosteroids for any patient with alcoholic hepatitis. Discriminator: only SEVERE disease (Maddrey DF ≥32 or MELD &gt;20) gets steroids; treating mild AH with steroids adds infection/GI-bleed risk with no survival benefit.</div></div><div class="rt"><div class="rtl">2. Maddrey DF formula</div><div class="rte">Maddrey Discriminant Function = 4.6 × (patient PT − control PT in seconds) + total bilirubin (mg/dL). It is the classic prognostic score for alcoholic hepatitis and the original trigger for steroid therapy. The two inputs — prolonged PT and rising bilirubin — both reflect failing hepatic synthetic/excretory function. Mnemonic: 'Maddrey = 4.6 × delta-PT + bili.'</div><div class="rtt">⚠️ WRONG: using the absolute patient PT or the INR in the formula. Discriminator: Maddrey uses the DIFFERENCE between patient and control PT in seconds; plugging in absolute PT inflates the score artificially.</div></div><div class="rt"><div class="rtl">3. MDF ≥32 = severe</div><div class="rte">Maddrey DF ≥32 defines SEVERE alcoholic hepatitis, the threshold above which untreated 30-day mortality runs 30-50% and corticosteroids are considered. Below 32, disease is non-severe — steroids are not indicated and abstinence plus supportive care suffices. The ≥32 cutoff is the single most testable number in this topic.</div><div class="rtt">⚠️ WRONG: labeling a patient with DF 25 as severe and starting steroids. Discriminator: the severe threshold is ≥32; DF &lt;32 is non-severe and steroids cause net harm (infection) without benefit.</div></div><div class="rt"><div class="rtl">4. MELD &gt;20</div><div class="rte">MELD &gt;20 is the modern alternative marker of severe alcoholic hepatitis and high 90-day mortality, increasingly favored over Maddrey because it is objective and uses INR/bilirubin/creatinine. Either DF ≥32 OR MELD &gt;20 qualifies a patient as severe and steroid-eligible. MELD also tracks renal dysfunction, which Maddrey ignores.</div><div class="rtt">⚠️ WRONG: relying only on transaminase levels to gauge severity. Discriminator: AST/ALT magnitude does NOT predict mortality in AH (they're often only modestly elevated); severity is defined by DF ≥32 or MELD &gt;20, which capture synthetic and excretory failure.</div></div><div class="rt"><div class="rtl">5. PT diff not absolute</div><div class="rte">Maddrey requires the PT prolongation (patient PT minus laboratory control PT, in seconds), NOT the raw absolute PT value. Different labs have different control PTs, so the delta normalizes for inter-lab variation. Using the absolute PT overestimates the discriminant function and can falsely upgrade a patient to 'severe.'</div><div class="rtt">⚠️ WRONG: plugging the patient's absolute PT (e.g., 18 sec) directly into Maddrey. Discriminator: subtract the control PT first; only the prolongation over control belongs in the 4.6 × term.</div></div><div class="rt"><div class="rtl">6. Stop alcohol</div><div class="rte">Absolute alcohol abstinence is the single most important intervention and the strongest predictor of long-term survival in alcoholic hepatitis — more impactful than any drug. It should be paired with nutritional support (these patients are catabolic; target ~1.5 g/kg protein and 35 kcal/kg) and thiamine/folate repletion. Pharmacotherapy (e.g., baclofen, acamprosate, naltrexone — naltrexone avoided in active hepatitis) and counseling support sustained abstinence.</div><div class="rtt">⚠️ WRONG: restricting protein to prevent encephalopathy in a malnourished AH patient. Discriminator: protein restriction worsens outcomes; aggressive nutrition (oral/enteral) plus abstinence is correct, and abstinence outweighs steroids for long-term survival.</div></div><div class="rt"><div class="rtl">7. Pentoxifylline crossed</div><div class="rte">Pentoxifylline (a TNF-inhibiting phosphodiesterase inhibitor once given for its theoretical hepatorenal protection) is NOT effective and is no longer recommended. The landmark STOPAH trial showed no mortality benefit, and it is inferior to prednisolone. It has been removed from guidelines as monotherapy or add-on.</div><div class="rtt">⚠️ WRONG answer: choosing pentoxifylline for severe alcoholic hepatitis (especially when worried about renal failure). Discriminator: STOPAH disproved it; the evidence-based drug is prednisolone 40 mg/day for severe disease without contraindications.</div></div><div class="rt"><div class="rtl">8. TNF ≠ mortality</div><div class="rte">Anti-TNF agents (infliximab, etanercept) were trialed because TNF-α drives alcoholic hepatitis inflammation, but they do NOT improve mortality and actually INCREASE serious infections and death in trials. They are contraindicated in alcoholic hepatitis. This is a classic 'mechanism sounds right but outcome is harm' trap.</div><div class="rtt">⚠️ WRONG: selecting infliximab/etanercept because TNF-α mediates AH inflammation. Discriminator: anti-TNF biologics raised infection-related mortality; corticosteroids remain the only agent with a (modest, short-term) survival signal.</div></div><div class="rt"><div class="rtl">9. Prednisolone 40mg/day</div><div class="rte">Prednisolone 40 mg/day orally is first-line for severe alcoholic hepatitis (DF ≥32 or MELD &gt;20) once contraindications are excluded. Use prednisoLONE, not prednisone: prednisone requires hepatic 11-β conversion to its active form, which is impaired in severe liver failure, so the already-active prednisolone is preferred. It confers a short-term (28-day) survival benefit only.</div><div class="rtt">⚠️ WRONG: prescribing prednisONE in severe AH. Discriminator: prednisone needs hepatic activation that a failing liver can't perform reliably; prednisoLONE is already active and is the correct choice.</div></div><div class="rt"><div class="rtl">10. 28-day course</div><div class="rte">The prednisolone course runs 28 days (4 weeks) in responders, typically followed by a taper. Response is reassessed at day 7 with the Lille score to decide whether completing the full 28 days is worthwhile or futile. The benefit is confined to short-term (28- to 90-day) mortality; there is no proven 1-year survival advantage.</div><div class="rtt">⚠️ WRONG: continuing steroids indefinitely or beyond 28 days without reassessment. Discriminator: reassess with Lille at day 7; complete 28 days only in responders, then taper — prolonged steroids just add infection risk.</div></div><div class="rt"><div class="rtl">11. Lille score day 7</div><div class="rte">The Lille score, calculated on day 7 of steroids, predicts whether to continue therapy based primarily on the drop in bilirubin (plus age, albumin, creatinine, baseline/day-7 bilirubin, and PT). It distinguishes responders from non-responders, sparing non-responders the infection risk of ongoing steroids. Day 7 is the testable timepoint.</div><div class="rtt">⚠️ WRONG: assessing steroid response by transaminase trend or at the wrong time. Discriminator: response is judged by the Lille score at DAY 7 (bilirubin-driven), not by AST/ALT and not at day 28.</div></div><div class="rt"><div class="rtl">12. Lille &lt;0.45 continue</div><div class="rte">A Lille score &lt;0.45 marks a steroid RESPONDER (bilirubin falling) → continue prednisolone to complete the full 28-day course. Responders have substantially better 6-month survival than non-responders. The &lt;0.45 cutoff is the decision point that justifies finishing therapy.</div><div class="rtt">⚠️ WRONG: stopping steroids in a day-7 responder because the patient is 'still sick.' Discriminator: Lille &lt;0.45 means it's working — continue to 28 days; premature discontinuation forfeits the survival benefit.</div></div><div class="rt"><div class="rtl">13. Lille ≥0.45 stop</div><div class="rte">A Lille score ≥0.45 marks a NON-responder (bilirubin not improving) → STOP steroids. Continuing is futile, predicts ~75% 6-month mortality, and only adds infection risk. These selected non-responders are the candidates to evaluate for early liver transplantation.</div><div class="rtt">⚠️ WRONG: continuing or escalating steroids in a Lille ≥0.45 non-responder. Discriminator: Lille ≥0.45 = futility — discontinue steroids and shift to transplant evaluation/palliative care, not more immunosuppression.</div></div><div class="rt"><div class="rtl">14. Early transplant</div><div class="rte">Early liver transplantation in highly selected steroid non-responders (Lille ≥0.45) dramatically improves survival (from ~25% to ~75% at 6 months in landmark studies) and is increasingly offered without the traditional 6-month abstinence rule when psychosocial criteria are met. Selection requires strong support systems and first-presentation disease. It is the only intervention that helps Lille non-responders.</div><div class="rtt">⚠️ WRONG: refusing transplant evaluation solely because the patient hasn't completed 6 months of abstinence. Discriminator: modern protocols permit early LT in carefully selected first-episode non-responders; the rigid 6-month rule is no longer absolute.</div></div><div class="rt"><div class="rtl">15. +NAC 1-month benefit</div><div class="rte">Adding N-acetylcysteine (an antioxidant that replenishes glutathione) to prednisolone showed a 1-month survival benefit and fewer infections/hepatorenal events in a trial, though the 6-month difference was not significant. It is a reasonable adjunct in severe AH but is not a substitute for steroids. Benefit is short-term only.</div><div class="rtt">⚠️ WRONG: giving NAC alone as primary therapy for severe AH. Discriminator: NAC is an ADJUNCT to prednisolone with only a 1-month benefit; the backbone for severe disease remains prednisolone 40 mg/day.</div></div><div class="rt"><div class="rtl">16. 80% have cirrhosis</div><div class="rte">The majority of patients presenting with alcoholic hepatitis (~70-80%) already have underlying cirrhosis on biopsy, meaning AH is usually acute-on-chronic liver injury rather than an isolated event. This drives the high mortality and the relevance of decompensation features (ascites, encephalopathy, varices). It also explains why long-term prognosis hinges on abstinence.</div><div class="rtt">⚠️ WRONG: assuming AH is fully reversible because it is 'acute.' Discriminator: most patients already have cirrhosis, so even survivors carry ongoing portal-hypertension and HCC risk; abstinence — not steroids — drives long-term outcome.</div></div><div class="rt"><div class="rtl">17. ~30% 30-day mortality</div><div class="rte">Severe alcoholic hepatitis carries roughly 30-50% mortality at 30-90 days — one of the highest short-term death rates in hepatology. Death is usually from infection/sepsis, hepatorenal syndrome, or multiorgan failure. This lethality is what justifies the risk of corticosteroids in severe disease.</div><div class="rtt">⚠️ WRONG: reassuring a severe-AH patient that prognosis is good. Discriminator: severe AH 30-day mortality is ~30-50%; the steroid benefit is modest and short-term only, so prognosis remains guarded and infection surveillance is essential.</div></div><div class="rt"><div class="rtl">18. No survival &gt;20%</div><div class="rte">Even with corticosteroids, the absolute survival gain is modest and limited to the short term (28-day mortality reduction); there is NO proven improvement in 90-day or 1-year survival in pooled analyses. Steroids buy time, not cure. Long-term survival depends on abstinence and, in non-responders, transplantation.</div><div class="rtt">⚠️ WRONG: believing steroids produce a large, durable survival improvement. Discriminator: the benefit is a small short-term (28-day) mortality reduction only — no long-term survival advantage — which is why abstinence and early-LT for non-responders matter most.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dili_valproate.html" title="DILI — Valproate Mitochondrial Hepatotoxicity">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="fld_ald_diagnosis.html" title="Fatty Liver — Alcoholic liver disease labs &amp; steroid contraindications">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

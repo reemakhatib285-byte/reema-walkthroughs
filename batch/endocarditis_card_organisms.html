@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Infective Endocarditis — Organisms</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Viridans strep (community)</b> — WRONG answer: 'an indolent subacute IE after a dental cleaning is S. aureus.' Discriminator: S. aureus causes ACUTE IE on normal valves; viridans strep cause SUBACUTE IE on abnormal valves with an oral/dental source. Optochin resistance separates viridans from S. pneumoniae.</li><li><b>S. aureus (healthcare/acute)</b> — WRONG answer: 'S. aureus IE only occurs on previously diseased valves.' Discriminator: S. aureus characteristically attacks NORMAL valves acutely; viridans needs a damaged valve. Also: never treat MSSA with vancomycin if the patient tolerates nafcillin — beta-lactams are superior for MSSA.</li><li><b>CoNS — early PVE</b> — WRONG answer: 'a single CoNS-positive culture always means contamination.' In a patient with a prosthetic valve, CoNS is the leading pathogen and must be taken seriously. Discriminator: CoNS in a native-valve patient with one positive set is often a contaminant; in a prosthetic-valve patient it is the prime suspect for early PVE.</li><li><b>Late PVE = community</b> — WRONG answer: 'all prosthetic valve IE is caused by coagulase-negative staph.' Discriminator: timing matters — EARLY PVE (&lt;12 mo) = CoNS/S. aureus (nosocomial/biofilm); LATE PVE (&gt;12 mo) = community organisms (strep, enterococcus, HACEK).</li><li><b>S. aureus IVDU / tricuspid</b> — WRONG answer: 'an IVDU with IE will have systemic/brain emboli and a loud regurgitant murmur.' Discriminator: right-sided (tricuspid) IVDU emboli go to the LUNGS, not the systemic circulation/brain, and tricuspid IE is often murmurless. Chest CT showing multiple cavitary nodules in an IVDU = septic pulmonary emboli.</li><li><b>Coxiella burnetii (Q fever)</b> — WRONG answer: 'order more blood cultures to grow the organism.' Coxiella is culture-NEGATIVE on routine media — it won't grow. Discriminator: culture-negative IE + farm/livestock exposure → send Coxiella phase I serology and treat with doxycycline + hydroxychloroquine, not a standard 4–6 week regimen.</li><li><b>Bartonella</b> — WRONG answer: 'negative cultures exclude Bartonella as a cause.' Bartonella is culture-negative; diagnosis needs serology/PCR. Discriminator: culture-negative IE — sort by exposure: cats → B. henselae, homeless/body lice → B. quintana, livestock → Coxiella.</li><li><b>S. gallolyticus → colon</b> — WRONG answer: 'treat S. bovis IE with antibiotics and discharge.' Discriminator: S. gallolyticus (bovis) bacteremia/IE = obligatory colonoscopy to find an underlying colorectal cancer — missing the cancer workup is the classic trap. Mnemonic: 'bovis in the blood, cancer in the colon.'</li><li><b>HACEK group</b> — WRONG answer: 'HACEK IE is culture-negative and needs weeks of special incubation.' Discriminator: with MODERN automated culture systems HACEK organisms grow within the standard ~5-day incubation; prolonged incubation is no longer required, and ceftriaxone is the treatment of choice.</li><li><b>Enterococcus challenge</b> — WRONG answer: 'a young patient with enterococcal IE — look for a colon cancer.' Discriminator: the GI-source organism linked to colorectal cancer is S. gallolyticus/bovis. Enterococcus points to a GU/GI source in OLDER patients (post-instrumentation), not specifically colon cancer.</li><li><b>Ampicillin + ceftriaxone</b> — WRONG answer: 'treat enterococcal IE with a single beta-lactam such as ampicillin alone.' Enterococci are only inhibited (not killed) by a single cell-wall agent, so monotherapy relapses. Discriminator: enterococcal IE needs COMBINATION synergy — ampicillin + ceftriaxone (preferred, renal-sparing) or ampicillin + gentamicin.</li><li><b>MSSA vs MRSA</b> — WRONG answer: 'use vancomycin for MSSA IE because it covers staph.' Discriminator: vancomycin is INFERIOR to nafcillin/oxacillin/cefazolin for MSSA (slower clearance, more failures) — reserve vancomycin for MRSA or true severe beta-lactam allergy.</li><li><b>Rifampin rule (PVE only)</b> — WRONG answer: 'add rifampin to native-valve S. aureus IE.' Discriminator: rifampin is for PROSTHETIC valve staph IE (biofilm), not native valve. Adding it to native-valve disease offers no benefit and risks resistance, hepatotoxicity, and drug interactions.</li><li><b>Q fever long-course</b> — WRONG answer: 'treat Coxiella IE with a standard 4–6 week antibiotic course.' Discriminator: Coxiella requires 18–24 months of doxycycline + hydroxychloroquine with serologic follow-up — anything shorter relapses. Monotherapy with doxycycline (no hydroxychloroquine) is also insufficient.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Viridans strep (community)</div><div class="rte">Viridans group streptococci (S. sanguinis, S. mutans, S. mitis) are alpha-hemolytic, optochin-RESISTANT oral flora and the classic cause of SUBACUTE native-valve IE, typically on a previously abnormal/damaged valve. Source is the mouth — dental procedures or poor dentition. They produce dextran that lets them adhere to valves. Penicillin-susceptible strains are treated with penicillin G or ceftriaxone for 4 weeks (2 weeks if combined with gentamicin synergy).</div><div class="rtt">⚠️ WRONG answer: 'an indolent subacute IE after a dental cleaning is S. aureus.' Discriminator: S. aureus causes ACUTE IE on normal valves; viridans strep cause SUBACUTE IE on abnormal valves with an oral/dental source. Optochin resistance separates viridans from S. pneumoniae.</div></div><div class="rt"><div class="rtl">2. S. aureus (healthcare/acute)</div><div class="rte">Staphylococcus aureus (gram-positive cocci in clusters, catalase +, coagulase +) is the #1 OVERALL cause of IE and the leading healthcare-associated cause (lines, catheters, hemodialysis). It causes ACUTE, rapidly destructive IE on NORMAL valves with high rates of abscess, embolism, and death. Any S. aureus bacteremia should prompt echo to exclude IE. Treat MSSA with nafcillin/oxacillin (or cefazolin); MRSA with vancomycin or daptomycin.</div><div class="rtt">⚠️ WRONG answer: 'S. aureus IE only occurs on previously diseased valves.' Discriminator: S. aureus characteristically attacks NORMAL valves acutely; viridans needs a damaged valve. Also: never treat MSSA with vancomycin if the patient tolerates nafcillin — beta-lactams are superior for MSSA.</div></div><div class="rt"><div class="rtl">3. CoNS — early PVE</div><div class="rte">Coagulase-NEGATIVE staphylococci (chiefly S. epidermidis) are the #1 cause of EARLY prosthetic valve endocarditis (within 2 months, and up to ~12 months of surgery), seeded perioperatively. They form biofilm on the prosthetic material and are frequently methicillin-resistant. Treatment of prosthetic staph IE: vancomycin + RIFAMPIN (biofilm penetration) + gentamicin, for ≥6 weeks.</div><div class="rtt">⚠️ WRONG answer: 'a single CoNS-positive culture always means contamination.' In a patient with a prosthetic valve, CoNS is the leading pathogen and must be taken seriously. Discriminator: CoNS in a native-valve patient with one positive set is often a contaminant; in a prosthetic-valve patient it is the prime suspect for early PVE.</div></div><div class="rt"><div class="rtl">4. Late PVE = community</div><div class="rte">LATE prosthetic valve endocarditis (&gt;12 months postop) is caused by the SAME organisms as community native-valve IE — viridans streptococci, S. aureus, enterococci, and HACEK — because by then the prosthesis is endothelialized and seeding is hematogenous (e.g., dental, GU) rather than perioperative.</div><div class="rtt">⚠️ WRONG answer: 'all prosthetic valve IE is caused by coagulase-negative staph.' Discriminator: timing matters — EARLY PVE (&lt;12 mo) = CoNS/S. aureus (nosocomial/biofilm); LATE PVE (&gt;12 mo) = community organisms (strep, enterococcus, HACEK).</div></div><div class="rt"><div class="rtl">5. S. aureus IVDU / tricuspid</div><div class="rte">In people who inject drugs, S. aureus is the dominant organism and the TRICUSPID (right-sided) valve is most commonly affected because venous blood hits it first. Right-sided IE seeds the LUNGS, producing septic pulmonary emboli (multiple peripheral nodules/cavities, pleuritic chest pain, cough) and often NO murmur. Right-sided S. aureus IE may respond to medical therapy; large vegetations or persistent infection need surgery.</div><div class="rtt">⚠️ WRONG answer: 'an IVDU with IE will have systemic/brain emboli and a loud regurgitant murmur.' Discriminator: right-sided (tricuspid) IVDU emboli go to the LUNGS, not the systemic circulation/brain, and tricuspid IE is often murmurless. Chest CT showing multiple cavitary nodules in an IVDU = septic pulmonary emboli.</div></div><div class="rt"><div class="rtl">6. Coxiella burnetii (Q fever)</div><div class="rte">Coxiella burnetii (Q fever) is an intracellular, BLOOD-CULTURE-NEGATIVE cause of chronic IE linked to livestock exposure (cattle, sheep, goats; parturient animals) and prosthetic valves. Diagnosis is serologic — phase I IgG ≥1:800 is a standalone major criterion. Treat with doxycycline 100 mg BID + hydroxychloroquine for 18–24 months with serial titers.</div><div class="rtt">⚠️ WRONG answer: 'order more blood cultures to grow the organism.' Coxiella is culture-NEGATIVE on routine media — it won't grow. Discriminator: culture-negative IE + farm/livestock exposure → send Coxiella phase I serology and treat with doxycycline + hydroxychloroquine, not a standard 4–6 week regimen.</div></div><div class="rt"><div class="rtl">7. Bartonella</div><div class="rte">Bartonella is a fastidious, BLOOD-CULTURE-NEGATIVE gram-negative cause of IE. B. henselae is associated with CAT exposure (scratch/flea); B. quintana with homelessness, poor hygiene, and the body louse. Diagnosis is by serology (high IgG titer = major criterion) or PCR of valve tissue. Treatment typically doxycycline + an aminoglycoside (gentamicin) ± ceftriaxone, with valve surgery often required.</div><div class="rtt">⚠️ WRONG answer: 'negative cultures exclude Bartonella as a cause.' Bartonella is culture-negative; diagnosis needs serology/PCR. Discriminator: culture-negative IE — sort by exposure: cats → B. henselae, homeless/body lice → B. quintana, livestock → Coxiella.</div></div><div class="rt"><div class="rtl">8. S. gallolyticus → colon</div><div class="rte">Streptococcus gallolyticus subsp. gallolyticus (formerly S. bovis biotype I) is a gram-positive coccus from the GI tract. Its IE has a strong, well-documented association with colorectal NEOPLASIA (adenoma/carcinoma) and other GI lesions. Any S. gallolyticus/bovis bacteremia or IE mandates COLONOSCOPY to exclude colorectal cancer.</div><div class="rtt">⚠️ WRONG answer: 'treat S. bovis IE with antibiotics and discharge.' Discriminator: S. gallolyticus (bovis) bacteremia/IE = obligatory colonoscopy to find an underlying colorectal cancer — missing the cancer workup is the classic trap. Mnemonic: 'bovis in the blood, cancer in the colon.'</div></div><div class="rt"><div class="rtl">9. HACEK group</div><div class="rte">HACEK = Haemophilus/Aggregatibacter (aphrophilus), Aggregatibacter actinomycetemcomitans, Cardiobacterium hominis, Eikenella corrodens, Kingella kingae — fastidious gram-negative coccobacilli of the oral/upper respiratory flora that cause subacute IE, sometimes with large vegetations. First-line treatment is ceftriaxone (they may produce beta-lactamase, so penicillin is avoided empirically).</div><div class="rtt">⚠️ WRONG answer: 'HACEK IE is culture-negative and needs weeks of special incubation.' Discriminator: with MODERN automated culture systems HACEK organisms grow within the standard ~5-day incubation; prolonged incubation is no longer required, and ceftriaxone is the treatment of choice.</div></div><div class="rt"><div class="rtl">10. Enterococcus challenge</div><div class="rte">Enterococcus (E. faecalis &gt;&gt; E. faecium) is a gram-positive coccus from the GI/GU tract. Enterococcal IE classically affects OLDER MEN after genitourinary instrumentation/procedures (and women after obstetric procedures). It is intrinsically tolerant to many antibiotics, so cure requires SYNERGISTIC combination (cell-wall agent + a second drug), not monotherapy.</div><div class="rtt">⚠️ WRONG answer: 'a young patient with enterococcal IE — look for a colon cancer.' Discriminator: the GI-source organism linked to colorectal cancer is S. gallolyticus/bovis. Enterococcus points to a GU/GI source in OLDER patients (post-instrumentation), not specifically colon cancer.</div></div><div class="rt"><div class="rtl">11. Ampicillin + ceftriaxone</div><div class="rte">For E. faecalis IE, the preferred regimen is the DOUBLE BETA-LACTAM ampicillin + ceftriaxone for 6 weeks. The two beta-lactams saturate complementary penicillin-binding proteins to achieve synergy WITHOUT an aminoglycoside — ideal when there is high-level aminoglycoside resistance or renal impairment. The traditional alternative is ampicillin (or penicillin) + gentamicin.</div><div class="rtt">⚠️ WRONG answer: 'treat enterococcal IE with a single beta-lactam such as ampicillin alone.' Enterococci are only inhibited (not killed) by a single cell-wall agent, so monotherapy relapses. Discriminator: enterococcal IE needs COMBINATION synergy — ampicillin + ceftriaxone (preferred, renal-sparing) or ampicillin + gentamicin.</div></div><div class="rt"><div class="rtl">12. MSSA vs MRSA</div><div class="rte">Staph IE therapy is driven by methicillin susceptibility: MSSA → nafcillin or oxacillin (cefazolin if penicillin-allergic, non-anaphylactic), the most effective agents. MRSA → vancomycin (target trough/AUC appropriately) or daptomycin (≥8 mg/kg for bacteremia/IE, not for pneumonia as surfactant inactivates it). Native-valve staph IE is treated ~6 weeks IV.</div><div class="rtt">⚠️ WRONG answer: 'use vancomycin for MSSA IE because it covers staph.' Discriminator: vancomycin is INFERIOR to nafcillin/oxacillin/cefazolin for MSSA (slower clearance, more failures) — reserve vancomycin for MRSA or true severe beta-lactam allergy.</div></div><div class="rt"><div class="rtl">13. Rifampin rule (PVE only)</div><div class="rte">Rifampin is added to staphylococcal PROSTHETIC valve endocarditis regimens (with vancomycin/nafcillin + gentamicin) because it penetrates biofilm on foreign material. It is NOT used routinely in native-valve staph IE. Rifampin should be started only after bacteremia is controlled (to limit resistance) and watch for drug interactions (potent CYP450 inducer) and hepatotoxicity.</div><div class="rtt">⚠️ WRONG answer: 'add rifampin to native-valve S. aureus IE.' Discriminator: rifampin is for PROSTHETIC valve staph IE (biofilm), not native valve. Adding it to native-valve disease offers no benefit and risks resistance, hepatotoxicity, and drug interactions.</div></div><div class="rt"><div class="rtl">14. Q fever long-course</div><div class="rte">Coxiella (Q fever) IE is treated with doxycycline 100 mg BID PLUS hydroxychloroquine for 18–24 months. Hydroxychloroquine raises phagolysosomal pH so doxycycline becomes bactericidal against this intracellular organism. Cure is monitored by serial phase I IgG titers (looking for a ≥4-fold decline); relapse is common with shorter courses.</div><div class="rtt">⚠️ WRONG answer: 'treat Coxiella IE with a standard 4–6 week antibiotic course.' Discriminator: Coxiella requires 18–24 months of doxycycline + hydroxychloroquine with serologic follow-up — anything shorter relapses. Monotherapy with doxycycline (no hydroxychloroquine) is also insufficient.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="endocarditis_2.html" title="Infective Endocarditis — Duke Criteria Diagnosis &amp; Treatment Apothecary">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="endocarditis_1.html" title="Infective Endocarditis — Pathogenesis, Organism Entry Doors &amp; Clinical Manifestations">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

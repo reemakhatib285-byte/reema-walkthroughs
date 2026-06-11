@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">COPD — Air Traffic Control Tower (Diagnosis, Gas Exchange &amp; GOLD Staging)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>10</em></summary><ol class="traps"><li><b>V/Q mismatch radar</b> — The main cause of low PaO2 in COPD is V/Q mismatch — NOT pure hypoventilation, a diffusion defect, or an anatomic shunt. A normal A-a gradient (pure hypoventilation) is the wrong attribution.</li><li><b>Responds to O2 / shunt crossed out</b> — A true right-to-left SHUNT does NOT correct with 100% O2; COPD hypoxemia does respond. If supplemental O2 fails to raise PaO2, think shunt physiology (e.g., pneumonia/ARDS, intracardiac shunt), not simple COPD.</li><li><b>FEV1/FVC &lt; 0.7 monitor</b> — Diagnosis hinges on the post-bronchodilator FEV1/FVC RATIO, not FEV1 alone, not symptoms, and not the pre-bronchodilator value. Using a fixed 0.7 cutoff can over-diagnose the elderly and under-diagnose the young (where lower-limit-of-normal is more accurate) — a nuance occasionally tested.</li><li><b>No entry without spirometry</b> — Do NOT diagnose COPD on chest X-ray, CT, or symptoms alone — a hyperinflated CXR or barrel chest without confirmatory spirometry is insufficient for diagnosis.</li><li><b>Irreversible / does not normalize</b> — Significant reversibility that NORMALIZES the FEV1/FVC (or &gt;12% and &gt;200 mL FEV1 improvement with full normalization) points to ASTHMA, not COPD. Note: a positive bronchodilator response does not by itself exclude COPD (asthma-COPD overlap exists).</li><li><b>PaCO2 rises gauge</b> — Early COPD usually has low or normal PaCO2 (from increased ventilation); a RISING PaCO2 signals advanced disease. Acute CO2 rise with acidosis (pH &lt;7.35) signals an exacerbation needing NIPPV, not chronic compensated retention.</li><li><b>Cor pulmonale alarm</b> — Cor pulmonale is RIGHT-heart failure caused by lung disease — not left ventricular failure. Edema in advanced COPD is right-sided in origin; don't attribute it to LV dysfunction by default.</li><li><b>ABG with renal compensation</b> — Elevated HCO3 with high PCO2 and near-normal pH = CHRONIC compensated respiratory acidosis, not an acute respiratory acidosis (which would show a sharply low pH with normal HCO3). Misreading this as a primary metabolic alkalosis is a classic trap.</li><li><b>GOLD 1 — Mild (FEV1 &gt;=80%)</b> — Remember the ratio criterion still applies — FEV1 &gt;=80% only counts as COPD if FEV1/FVC is &lt;0.7. GOLD grade alone doesn't dictate the inhaler regimen (the ABE groups do).</li><li><b>BODE index trophy</b> — FEV1 alone is an INFERIOR mortality predictor compared with the composite BODE index — picking 'FEV1 best predicts survival' is the trap.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. V/Q mismatch radar</div><div class="rte">Ventilation-perfusion (V/Q) mismatch is the PRIMARY mechanism of hypoxemia in COPD: destroyed alveolar units and uneven airflow create regions of low V/Q (perfusion without ventilation) and high V/Q (dead space). This widens the A-a gradient. As disease advances, alveolar hypoventilation and reduced DLCO (in emphysema) contribute, but mismatch dominates early hypoxemia.</div><div class="rtt">⚠️ The main cause of low PaO2 in COPD is V/Q mismatch — NOT pure hypoventilation, a diffusion defect, or an anatomic shunt. A normal A-a gradient (pure hypoventilation) is the wrong attribution.</div></div><div class="rt"><div class="rtl">2. Responds to O2 / shunt crossed out</div><div class="rte">Hypoxemia from V/Q mismatch CORRECTS with supplemental oxygen because raising inspired O2 overcomes the low-V/Q units. This is the key physiologic distinction from a true right-to-left shunt, where deoxygenated blood bypasses ventilated alveoli entirely.</div><div class="rtt">⚠️ A true right-to-left SHUNT does NOT correct with 100% O2; COPD hypoxemia does respond. If supplemental O2 fails to raise PaO2, think shunt physiology (e.g., pneumonia/ARDS, intracardiac shunt), not simple COPD.</div></div><div class="rt"><div class="rtl">3. FEV1/FVC &lt; 0.7 monitor</div><div class="rte">The diagnosis of COPD REQUIRES a POST-bronchodilator FEV1/FVC &lt; 0.70 on spirometry — this fixed ratio defines persistent airflow obstruction. The flow-volume loop shows a scooped/concave expiratory limb. FEV1 % predicted is then used to grade severity (GOLD 1-4), not to make the diagnosis.</div><div class="rtt">⚠️ Diagnosis hinges on the post-bronchodilator FEV1/FVC RATIO, not FEV1 alone, not symptoms, and not the pre-bronchodilator value. Using a fixed 0.7 cutoff can over-diagnose the elderly and under-diagnose the young (where lower-limit-of-normal is more accurate) — a nuance occasionally tested.</div></div><div class="rt"><div class="rtl">4. No entry without spirometry</div><div class="rte">Spirometry is MANDATORY to confirm COPD; clinical suspicion, symptoms, and imaging cannot substitute. Spirometry also quantifies severity and tracks decline over time. Supporting findings include increased TLC and RV (air trapping/hyperinflation) and reduced DLCO when emphysema predominates.</div><div class="rtt">⚠️ Do NOT diagnose COPD on chest X-ray, CT, or symptoms alone — a hyperinflated CXR or barrel chest without confirmatory spirometry is insufficient for diagnosis.</div></div><div class="rt"><div class="rtl">5. Irreversible / does not normalize</div><div class="rte">COPD airflow obstruction is largely FIXED — after bronchodilator the FEV1/FVC does not fully normalize (stays &lt;0.7). Some bronchodilator response can occur, but it does not return the ratio to normal. This distinguishes COPD from asthma, where obstruction is typically reversible.</div><div class="rtt">⚠️ Significant reversibility that NORMALIZES the FEV1/FVC (or &gt;12% and &gt;200 mL FEV1 improvement with full normalization) points to ASTHMA, not COPD. Note: a positive bronchodilator response does not by itself exclude COPD (asthma-COPD overlap exists).</div></div><div class="rt"><div class="rtl">6. PaO2 drops gauge</div><div class="rte">Hypoxemia (falling PaO2) develops and worsens as COPD progresses from V/Q mismatch. Resting hypoxemia is the trigger for evaluating long-term oxygen therapy. Sustained hypoxemia drives pulmonary vasoconstriction and secondary erythrocytosis.</div></div><div class="rt"><div class="rtl">7. PaCO2 rises gauge</div><div class="rte">Hypercapnia is a LATE finding, typically appearing once FEV1 falls below ~25-35% predicted, when ventilatory capacity can no longer eliminate CO2. Chronic CO2 retention is buffered by renal bicarbonate retention, keeping pH near normal.</div><div class="rtt">⚠️ Early COPD usually has low or normal PaCO2 (from increased ventilation); a RISING PaCO2 signals advanced disease. Acute CO2 rise with acidosis (pH &lt;7.35) signals an exacerbation needing NIPPV, not chronic compensated retention.</div></div><div class="rt"><div class="rtl">8. Cor pulmonale alarm</div><div class="rte">Chronic alveolar hypoxia causes pulmonary arteriolar vasoconstriction (and remodeling) → pulmonary hypertension → pressure overload of the RIGHT ventricle = cor pulmonale, manifesting as JVD, hepatomegaly, and peripheral edema. Long-term oxygen therapy can blunt this progression.</div><div class="rtt">⚠️ Cor pulmonale is RIGHT-heart failure caused by lung disease — not left ventricular failure. Edema in advanced COPD is right-sided in origin; don't attribute it to LV dysfunction by default.</div></div><div class="rt"><div class="rtl">9. ABG with renal compensation</div><div class="rte">Chronic respiratory acidosis is buffered by renal RETENTION of bicarbonate, raising HCO3 to keep pH near normal. The compensation is metabolic and takes 3-5 days to fully develop. A pH of ~7.32 with PCO2 65 and high HCO3 reflects partial compensation of chronic hypercapnia.</div><div class="rtt">⚠️ Elevated HCO3 with high PCO2 and near-normal pH = CHRONIC compensated respiratory acidosis, not an acute respiratory acidosis (which would show a sharply low pH with normal HCO3). Misreading this as a primary metabolic alkalosis is a classic trap.</div></div><div class="rt"><div class="rtl">10. GOLD 1 — Mild (FEV1 &gt;=80%)</div><div class="rte">GOLD 1 (mild): post-bronchodilator FEV1 &gt;= 80% predicted, in a patient who already meets FEV1/FVC &lt;0.70. Severity grading by FEV1 informs prognosis and monitoring but, importantly, does NOT by itself select initial pharmacotherapy.</div><div class="rtt">⚠️ Remember the ratio criterion still applies — FEV1 &gt;=80% only counts as COPD if FEV1/FVC is &lt;0.7. GOLD grade alone doesn't dictate the inhaler regimen (the ABE groups do).</div></div><div class="rt"><div class="rtl">11. GOLD 2 — Moderate (50-79%)</div><div class="rte">GOLD 2 (moderate): post-bronchodilator FEV1 50-79% predicted. This is often when patients first present with exertional dyspnea and seek care.</div></div><div class="rt"><div class="rtl">12. GOLD 3 — Severe (30-49%)</div><div class="rte">GOLD 3 (severe): post-bronchodilator FEV1 30-49% predicted. Hypoxemia and exacerbations become more frequent in this range.</div></div><div class="rt"><div class="rtl">13. GOLD 4 — Very severe (&lt;30%)</div><div class="rte">GOLD 4 (very severe): post-bronchodilator FEV1 &lt; 30% predicted. This is where chronic hypercapnia, cor pulmonale, and the need for LTOT and advanced therapies (LVRS, transplant) most commonly arise.</div></div><div class="rt"><div class="rtl">14. BODE index trophy</div><div class="rte">The BODE index combines BMI, airflow Obstruction (FEV1), Dyspnea (mMRC scale), and Exercise capacity (6-minute walk distance) into a multidimensional score that predicts mortality better than FEV1 alone. A low BMI, worse dyspnea, and shorter walk distance each worsen prognosis.</div><div class="rtt">⚠️ FEV1 alone is an INFERIOR mortality predictor compared with the composite BODE index — picking 'FEV1 best predicts survival' is the trap.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="endocarditis_3.html" title="Infective Endocarditis — Surgical Indications, Neurologic Timing &amp; Prophylaxis/Prognosis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="copd_3.html" title="COPD — Armory (GOLD ABE Treatment Ladder, Alpha-1 &amp; Complications)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

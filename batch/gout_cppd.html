@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Gout/CPPD — CPPD (Pseudogout), Calcium Apatite &amp; Oxalate Crystal Diseases</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>CPPD villain (left)</b> — WRONG answer: assuming an acutely hot joint in an elderly patient is automatically gout or just 'a flare.' You must aspirate to distinguish CPPD from MSU gout and to exclude SEPTIC arthritis — the discriminator is crystal morphology/birefringence plus Gram stain and culture.</li><li><b>Rhomboid positive crystal</b> — WRONG answer: describing the crystals as needle-shaped and negatively birefringent (yellow when parallel). That is monosodium urate (GOUT) — the discriminator is shape (rhomboid vs needle) and the birefringence color when parallel to the compensator (blue = CPPD, yellow = gout).</li><li><b>Knee target joint</b> — WRONG answer: expecting first-MTP (great toe) involvement. Podagra at the 1st metatarsophalangeal joint is the classic site of GOUT, not pseudogout — the discriminator is target-joint distribution (knee/wrist for CPPD vs podagra for gout).</li><li><b>Chondrocalcinosis X-ray</b> — WRONG answer: reading 'punched-out, overhanging erosions' as CPPD. Those rat-bite/overhanging-margin erosions are chronic GOUT; CPPD shows cartilage calcification (chondrocalcinosis) — the discriminator is calcified cartilage vs erosive bone changes on radiograph.</li><li><b>Hemochromatosis dragon</b> — WRONG answer: ignoring secondary causes and labeling early-onset CPPD as idiopathic. CPPD before ~50-60 should trigger a workup for hemochromatosis, hyperparathyroidism, hypomagnesemia, and hypophosphatasia — the discriminator is young age plus metabolic clues (high ferritin, high calcium, low magnesium).</li><li><b>HyperPTH / parathyroid</b> — WRONG answer: attributing CPPD-associated hypercalcemia to gout's urate biology. CPPD links to calcium/PTH metabolism (hyperparathyroidism), whereas gout links to purine/urate metabolism — the discriminator is the metabolic axis (calcium-PTH for CPPD vs urate for gout).</li><li><b>Low magnesium</b> — WRONG answer: expecting HYPERmagnesemia or assuming electrolytes are irrelevant. It is LOW magnesium that predisposes to CPPD — the discriminator is recalling the pyrophosphatase-cofactor role of magnesium, opposite to the lay assumption.</li><li><b>Apatite ghost (Milwaukee)</b> — WRONG answer: trying to identify apatite crystals on routine polarized microscopy. Apatite crystals are NON-birefringent and too small to resolve on light microscopy — they require special stains such as alizarin red S; the discriminator is that you cannot see them under polarized light the way you see MSU or CPPD.</li><li><b>&lt;2K cell count</b> — WRONG answer: expecting a highly inflammatory aspirate to match the severe imaging damage. Apatite/Milwaukee fluid is paradoxically non-inflammatory (&lt;2,000 WBC) — the discriminator is the dissociation between destructive imaging and bland, low-cell-count fluid.</li><li><b>Oxalate goblin</b> — WRONG answer: assuming a crystal arthritis in a dialysis patient must be gout or pseudogout. Chronic dialysis/ESRD specifically predisposes to calcium OXALATE (and apatite) deposition — the discriminator is the bipyramidal 'envelope' crystal morphology and the dialysis context.</li><li><b>Dialysis machine</b> — WRONG answer: forgetting that renal failure changes the crystal differential. While urate also rises in CKD, the board cue of dialysis-associated arthropathy points to oxalate/apatite deposition — the discriminator is matching the renal-failure context to the calcium-based crystals.</li><li><b>Liver (secondary oxalate)</b> — WRONG answer: localizing the primary hyperoxaluria defect to the kidney. The enzymatic defect is in the LIVER (peroxisomal AGT), and the kidney is the downstream victim — the discriminator is recognizing the hepatic enzyme origin, which is why liver transplant can be curative.</li><li><b>Bipyramidal oxalate crystal</b> — WRONG answer: confusing the 'envelope' oxalate crystal with CPPD's rhomboid. Although both can be positively birefringent, oxalate is bipyramidal/envelope-shaped while CPPD is rhomboid/rod-shaped — the discriminator is the distinct crystal geometry plus the clinical (dialysis/hyperoxaluria) context.</li><li><b>Crystal legend bar</b> — WRONG answer: mixing up the birefringence sign/color pairs. The high-yield discriminator is 'gout = needle, negative, yellow-when-parallel' vs 'CPPD = rhomboid, positive, blue-when-parallel' — reversing either the shape or the parallel color is the classic distractor.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. CPPD villain (left)</div><div class="rte">Calcium pyrophosphate dihydrate (CPPD) deposition disease — 'pseudogout' — is acute crystal arthritis from CPP crystals deposited in cartilage and then shed into the joint. It classically strikes older adults (prevalence rises sharply after age 60) and can mimic gout, septic arthritis, or osteoarthritis. Acute flares are managed like gout: NSAIDs, intra-articular or systemic corticosteroids, or colchicine (e.g., 0.6 mg once or twice daily for prophylaxis); there is no agent that dissolves the crystals.</div><div class="rtt">⚠️ WRONG answer: assuming an acutely hot joint in an elderly patient is automatically gout or just 'a flare.' You must aspirate to distinguish CPPD from MSU gout and to exclude SEPTIC arthritis — the discriminator is crystal morphology/birefringence plus Gram stain and culture.</div></div><div class="rt"><div class="rtl">2. Rhomboid positive crystal</div><div class="rte">CPPD crystals are RHOMBOID or rod-shaped and POSITIVELY birefringent: they appear BLUE when aligned parallel to the red compensator axis and yellow when perpendicular. Mnemonic — 'Positive = Parallel = Blue' for CPPD. They are often weakly birefringent and harder to see than MSU, so careful polarized microscopy is needed.</div><div class="rtt">⚠️ WRONG answer: describing the crystals as needle-shaped and negatively birefringent (yellow when parallel). That is monosodium urate (GOUT) — the discriminator is shape (rhomboid vs needle) and the birefringence color when parallel to the compensator (blue = CPPD, yellow = gout).</div></div><div class="rt"><div class="rtl">3. Knee target joint</div><div class="rte">Pseudogout preferentially involves LARGE joints — the KNEE is the most common site, followed by the wrist (especially the triangular fibrocartilage), shoulder, and MCP joints. Distribution overlapping osteoarthritis-prone joints, plus chondrocalcinosis, helps point to CPPD over gout.</div><div class="rtt">⚠️ WRONG answer: expecting first-MTP (great toe) involvement. Podagra at the 1st metatarsophalangeal joint is the classic site of GOUT, not pseudogout — the discriminator is target-joint distribution (knee/wrist for CPPD vs podagra for gout).</div></div><div class="rt"><div class="rtl">4. Chondrocalcinosis X-ray</div><div class="rte">Chondrocalcinosis is linear or punctate calcification of cartilage and fibrocartilage (menisci of the knee, triangular fibrocartilage of the wrist, symphysis pubis) on plain X-ray — the hallmark imaging clue of CPPD. It can be present without acute symptoms, so its presence supports but does not by itself confirm an acute CPPD flare; aspiration remains definitive.</div><div class="rtt">⚠️ WRONG answer: reading 'punched-out, overhanging erosions' as CPPD. Those rat-bite/overhanging-margin erosions are chronic GOUT; CPPD shows cartilage calcification (chondrocalcinosis) — the discriminator is calcified cartilage vs erosive bone changes on radiograph.</div></div><div class="rt"><div class="rtl">5. Hemochromatosis dragon</div><div class="rte">A key secondary association of CPPD is HEMOCHROMATOSIS (iron overload), which also classically causes a degenerative arthropathy of the 2nd and 3rd MCP joints with hook-shaped osteophytes. Suspect underlying hemochromatosis in a younger patient (&lt;50-60) with CPPD/chondrocalcinosis and check ferritin/transferrin saturation.</div><div class="rtt">⚠️ WRONG answer: ignoring secondary causes and labeling early-onset CPPD as idiopathic. CPPD before ~50-60 should trigger a workup for hemochromatosis, hyperparathyroidism, hypomagnesemia, and hypophosphatasia — the discriminator is young age plus metabolic clues (high ferritin, high calcium, low magnesium).</div></div><div class="rt"><div class="rtl">6. HyperPTH / parathyroid</div><div class="rte">Primary HYPERPARATHYROIDISM (with resulting hypercalcemia) is a classic metabolic association of CPPD — the chronic calcium derangement promotes CPP crystal formation. Workup of secondary CPPD therefore includes serum calcium and PTH; treating the underlying parathyroid disease does not necessarily reverse established chondrocalcinosis.</div><div class="rtt">⚠️ WRONG answer: attributing CPPD-associated hypercalcemia to gout's urate biology. CPPD links to calcium/PTH metabolism (hyperparathyroidism), whereas gout links to purine/urate metabolism — the discriminator is the metabolic axis (calcium-PTH for CPPD vs urate for gout).</div></div><div class="rt"><div class="rtl">7. Low magnesium</div><div class="rte">HYPOMAGNESEMIA (and hypophosphatasia/low alkaline phosphatase) is a metabolic association of CPPD — magnesium is a cofactor for pyrophosphatase, so its deficiency raises local pyrophosphate and promotes CPP crystal deposition. Think of CPPD with the metabolic mnemonic of 'the 4 H's': Hemochromatosis, Hyperparathyroidism, Hypomagnesemia, Hypophosphatasia (and consider Hypothyroidism on some lists).</div><div class="rtt">⚠️ WRONG answer: expecting HYPERmagnesemia or assuming electrolytes are irrelevant. It is LOW magnesium that predisposes to CPPD — the discriminator is recalling the pyrophosphatase-cofactor role of magnesium, opposite to the lay assumption.</div></div><div class="rt"><div class="rtl">8. Apatite ghost (Milwaukee)</div><div class="rte">Basic calcium phosphate (hydroxyapatite) deposition causes 'Milwaukee shoulder' — a destructive, often rotator-cuff-deficient arthropathy of the shoulder in elderly women, with surprisingly bland (low-cell-count) joint fluid despite marked destruction. Apatite can also cause acute periarthritis/calcific tendinitis.</div><div class="rtt">⚠️ WRONG answer: trying to identify apatite crystals on routine polarized microscopy. Apatite crystals are NON-birefringent and too small to resolve on light microscopy — they require special stains such as alizarin red S; the discriminator is that you cannot see them under polarized light the way you see MSU or CPPD.</div></div><div class="rt"><div class="rtl">9. &lt;2K cell count</div><div class="rte">Milwaukee shoulder / apatite arthropathy fluid is typically NON-inflammatory: WBC often &lt;2,000/microL despite dramatic joint destruction, frequently with blood-tinged fluid. This low-cell count contrasts with the inflammatory fluid (often &gt;2,000, up to 50,000) seen in gout and CPPD flares.</div><div class="rtt">⚠️ WRONG answer: expecting a highly inflammatory aspirate to match the severe imaging damage. Apatite/Milwaukee fluid is paradoxically non-inflammatory (&lt;2,000 WBC) — the discriminator is the dissociation between destructive imaging and bland, low-cell-count fluid.</div></div><div class="rt"><div class="rtl">10. Oxalate goblin</div><div class="rte">Calcium OXALATE crystal arthritis occurs in primary hyperoxaluria (inherited hepatic enzyme defect) and in patients on long-term HEMODIALYSIS/ESRD, where oxalate accumulates and deposits in joints and soft tissue. Secondary oxalosis also follows ethylene glycol ingestion and excessive vitamin C intake. It can mimic other crystal arthropathies and is often refractory.</div><div class="rtt">⚠️ WRONG answer: assuming a crystal arthritis in a dialysis patient must be gout or pseudogout. Chronic dialysis/ESRD specifically predisposes to calcium OXALATE (and apatite) deposition — the discriminator is the bipyramidal 'envelope' crystal morphology and the dialysis context.</div></div><div class="rt"><div class="rtl">11. Dialysis machine</div><div class="rte">End-stage renal disease and chronic dialysis impair clearance of oxalate and phosphate, predisposing to oxalate and apatite deposition arthropathy as well as secondary hyperparathyroidism. The dialysis context is the visual anchor for thinking 'oxalate/apatite' rather than urate when a dialysis patient develops crystal arthritis.</div><div class="rtt">⚠️ WRONG answer: forgetting that renal failure changes the crystal differential. While urate also rises in CKD, the board cue of dialysis-associated arthropathy points to oxalate/apatite deposition — the discriminator is matching the renal-failure context to the calcium-based crystals.</div></div><div class="rt"><div class="rtl">12. Liver (secondary oxalate)</div><div class="rte">Primary hyperoxaluria is a HEPATIC enzyme defect (deficiency of alanine-glyoxylate aminotransferase in type 1) causing massive endogenous oxalate overproduction, recurrent calcium-oxalate kidney stones, nephrocalcinosis, and systemic oxalosis. Secondary oxalate elevation comes from ethylene glycol poisoning and high-dose vitamin C; definitive treatment of severe primary disease may require liver-kidney transplant.</div><div class="rtt">⚠️ WRONG answer: localizing the primary hyperoxaluria defect to the kidney. The enzymatic defect is in the LIVER (peroxisomal AGT), and the kidney is the downstream victim — the discriminator is recognizing the hepatic enzyme origin, which is why liver transplant can be curative.</div></div><div class="rt"><div class="rtl">13. Bipyramidal oxalate crystal</div><div class="rte">Calcium oxalate crystals are bipyramidal — the classic 'envelope' shape — and are weakly POSITIVELY birefringent. This morphology distinguishes them from MSU needles, CPPD rhomboids, and the invisible apatite crystals on synovial fluid analysis.</div><div class="rtt">⚠️ WRONG answer: confusing the 'envelope' oxalate crystal with CPPD's rhomboid. Although both can be positively birefringent, oxalate is bipyramidal/envelope-shaped while CPPD is rhomboid/rod-shaped — the discriminator is the distinct crystal geometry plus the clinical (dialysis/hyperoxaluria) context.</div></div><div class="rt"><div class="rtl">14. Crystal legend bar</div><div class="rte">Quick comparison of the four crystal arthropathies: MSU = NEEDLE, negatively birefringent (yellow when parallel) = gout; CPPD = RHOMBOID, positively birefringent (blue when parallel) = pseudogout; apatite = non-birefringent, invisible on light microscopy (alizarin red stain) = Milwaukee shoulder; oxalate = bipyramidal/envelope, weakly positive = dialysis/hyperoxaluria.</div><div class="rtt">⚠️ WRONG answer: mixing up the birefringence sign/color pairs. The high-yield discriminator is 'gout = needle, negative, yellow-when-parallel' vs 'CPPD = rhomboid, positive, blue-when-parallel' — reversing either the shape or the parallel color is the classic distractor.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="gout_treatment.html" title="Gout/CPPD — Acute Flare Treatment &amp; Urate-Lowering Therapy">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="gout_diagnosis.html" title="Gout/CPPD — Diagnosis, MSU Crystals, Synovial Fluid, Imaging, Tophi">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

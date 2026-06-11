@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Thyroid — Uptake &amp; Thyrotoxicosis Workup</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>10</em></summary><ol class="traps"><li><b>Low TSH + high FT4/T3</b> — Ordering a RAIU scan before confirming biochemical thyrotoxicosis — the scan only interprets a confirmed thyrotoxic state and is wasted (or contraindicated, e.g. pregnancy) otherwise.</li><li><b>RAIU scan decides cause</b> — Doing RAIU in pregnancy/lactation — radioiodine crosses the placenta and is excreted in milk; it is absolutely contraindicated.</li><li><b>Low uptake = not making hormone</b> — Giving methimazole/PTU for thyroiditis or factitious thyrotoxicosis — there is no excess synthesis to block; treatment is supportive (beta-blocker), and for factitious it is stopping the hormone.</li><li><b>Toxic adenoma (high, focal)</b> — Performing FNA on a hot (autonomous) nodule — it is virtually never cancer; treat the hyperthyroidism instead.</li><li><b>Thyroiditis (low uptake)</b> — Expecting high uptake because the patient is thyrotoxic — destructive thyroiditis has LOW uptake; the high free hormone is leaked, not synthesized.</li><li><b>Factitious (low uptake)</b> — Confusing factitious with thyroiditis — both are low-uptake, but thyroiditis has HIGH Tg while factitious has LOW Tg; Tg is the discriminator.</li><li><b>Thyroglobulin: high vs low</b> — Failing to check Tg in a low-uptake thyrotoxic patient — without it you cannot separate thyroiditis from factitious ingestion.</li><li><b>Gestational thyrotoxicosis</b> — Doing a RAIU scan or starting RAI in pregnancy — radioiodine is contraindicated; differentiate gestational thyrotoxicosis from Graves' clinically and with TRAb, and if treatment is needed in Graves' use PTU in the first trimester.</li><li><b>Normal TSH + normal FT4</b> — Stopping at a normal free T4 when TSH is low and the patient is symptomatic — you can miss T3 toxicosis, which requires a free T3 to detect.</li><li><b>T3 toxicosis</b> — Calling a low-TSH/normal-FT4 patient euthyroid or 'subclinical' without measuring T3 — that misses T3 toxicosis.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Low TSH + high FT4/T3</div><div class="rte">Step 1 is always biochemical confirmation: a suppressed TSH with elevated free T4 and/or T3 confirms thyrotoxicosis before any imaging. TSH is the most sensitive screen (suppressed except in the rare TSH-secreting adenoma). Only AFTER confirming low TSH + high free hormone do you proceed to a radioiodine uptake scan to find the cause.</div><div class="rtt">⚠️ Ordering a RAIU scan before confirming biochemical thyrotoxicosis — the scan only interprets a confirmed thyrotoxic state and is wasted (or contraindicated, e.g. pregnancy) otherwise.</div></div><div class="rt"><div class="rtl">2. RAIU scan decides cause</div><div class="rte">The radioactive iodine uptake (RAIU) scan is the pivotal test that splits thyrotoxicosis into HIGH-uptake (the gland is actively making hormone) versus LOW-uptake (hormone is being released or comes from outside the gland). This single branch determines whether antithyroid drugs/RAI will work. RAIU is contraindicated in pregnancy and breastfeeding — use the clinical picture and TRAb instead.</div><div class="rtt">⚠️ Doing RAIU in pregnancy/lactation — radioiodine crosses the placenta and is excreted in milk; it is absolutely contraindicated.</div></div><div class="rt"><div class="rtl">3. High uptake = gland making hormone</div><div class="rte">HIGH uptake means the gland is autonomously synthesizing hormone — the causes are Graves' (diffuse), toxic multinodular goiter (patchy), and toxic adenoma (focal). Because synthesis is the problem, thionamides (methimazole/PTU) and radioactive-iodine ablation are effective. High uptake also tells you RAI therapy will be taken up and work.</div></div><div class="rt"><div class="rtl">4. Low uptake = not making hormone</div><div class="rte">LOW uptake means the gland is NOT synthesizing — the thyrotoxicosis comes from destruction (thyroiditis releasing preformed hormone), exogenous hormone (factitious), or an iodine load (incl. amiodarone) that suppresses uptake. Antithyroid drugs do NOT work here (no synthesis to block), and RAI can't be taken up. Manage symptoms with beta-blockers ± steroids depending on cause.</div><div class="rtt">⚠️ Giving methimazole/PTU for thyroiditis or factitious thyrotoxicosis — there is no excess synthesis to block; treatment is supportive (beta-blocker), and for factitious it is stopping the hormone.</div></div><div class="rt"><div class="rtl">5. Graves' (high, diffuse)</div><div class="rte">High, DIFFUSE, homogeneous uptake = Graves' disease, autoimmune TSI/TRAb-mediated stimulation of the TSH receptor. Clues: ophthalmopathy (proptosis — the bug-eyed king), pretibial myxedema, diffuse non-tender goiter with a bruit, and positive TRAb. It is the most common cause of hyperthyroidism, typically in younger women.</div></div><div class="rt"><div class="rtl">6. Toxic MNG (high, patchy)</div><div class="rte">High, PATCHY uptake with multiple hot and cold areas = toxic multinodular goiter — multiple autonomous nodules, classically in older patients with a long-standing goiter. Often precipitated into overt thyrotoxicosis by an iodine load (Jod-Basedow, e.g., contrast/amiodarone). No eye disease and TRAb-negative (distinguishing from Graves').</div></div><div class="rt"><div class="rtl">7. Toxic adenoma (high, focal)</div><div class="rte">High, FOCAL uptake — a single hot nodule suppressing the surrounding gland = toxic adenoma, usually from an activating somatic TSHR (or Gs) mutation. A hot nodule is essentially never malignant, so no FNA is needed; treat the hyperthyroidism with RAI or surgery.</div><div class="rtt">⚠️ Performing FNA on a hot (autonomous) nodule — it is virtually never cancer; treat the hyperthyroidism instead.</div></div><div class="rt"><div class="rtl">8. Thyroiditis (low uptake)</div><div class="rte">Low uptake from glandular destruction releasing preformed hormone = thyroiditis (subacute de Quervain's — painful, high ESR; silent/postpartum — painless, TPO+). Thyroglobulin is HIGH (released from damaged follicles). Self-limited triphasic course (thyrotoxic → hypothyroid → recovery); treat with beta-blockers ± NSAIDs/steroids, NOT thionamides.</div><div class="rtt">⚠️ Expecting high uptake because the patient is thyrotoxic — destructive thyroiditis has LOW uptake; the high free hormone is leaked, not synthesized.</div></div><div class="rt"><div class="rtl">9. Factitious (low uptake)</div><div class="rte">Exogenous thyroid hormone ingestion (factitious, often surreptitious for weight loss, or iatrogenic over-replacement) gives LOW uptake AND LOW thyroglobulin — the key combination, because the suppressed native gland makes little Tg while exogenous T4/T3 supplies the hormone. No goiter. Differentiate from thyroiditis (high Tg) by checking thyroglobulin.</div><div class="rtt">⚠️ Confusing factitious with thyroiditis — both are low-uptake, but thyroiditis has HIGH Tg while factitious has LOW Tg; Tg is the discriminator.</div></div><div class="rt"><div class="rtl">10. Iodine / amiodarone load</div><div class="rte">A large iodine load (iodinated contrast, amiodarone, kelp/supplements) causes low-uptake thyrotoxicosis: the excess iodine saturates the gland and suppresses radioiodine uptake. In an abnormal gland it can also drive synthesis (Jod-Basedow). Amiodarone-induced thyrotoxicosis (AIT) is the classic example — distinguish Type 1 (synthesis) vs Type 2 (destruction) by Doppler.</div></div><div class="rt"><div class="rtl">11. Thyroglobulin: high vs low</div><div class="rte">Within the LOW-uptake group, serum thyroglobulin is the deciding test: HIGH Tg = thyroiditis or iodine-induced (hormone leaking from a gland), LOW Tg = factitious/exogenous (the native gland is suppressed and quiet). This Tg split is one of the most tested points in low-uptake thyrotoxicosis.</div><div class="rtt">⚠️ Failing to check Tg in a low-uptake thyrotoxic patient — without it you cannot separate thyroiditis from factitious ingestion.</div></div><div class="rt"><div class="rtl">12. Gestational thyrotoxicosis</div><div class="rte">In early pregnancy, hCG (which shares an alpha subunit with TSH) weakly stimulates the TSH receptor, causing transient gestational thyrotoxicosis — often with hyperemesis gravidarum and a molar pregnancy giving exaggerated hCG. It is usually mild, self-limited (resolves by ~14–18 weeks), TRAb-negative, and managed supportively; distinguish from Graves' (TRAb+, eye disease, persists).</div><div class="rtt">⚠️ Doing a RAIU scan or starting RAI in pregnancy — radioiodine is contraindicated; differentiate gestational thyrotoxicosis from Graves' clinically and with TRAb, and if treatment is needed in Graves' use PTU in the first trimester.</div></div><div class="rt"><div class="rtl">13. Struma ovarii / ectopic</div><div class="rte">Struma ovarii is ectopic functioning thyroid tissue within an ovarian teratoma — the neck shows LOW uptake while a whole-body radioiodine scan reveals abnormal PELVIC uptake. A rare cause of thyrotoxicosis to consider when the neck scan is unrevealing.</div></div><div class="rt"><div class="rtl">14. Normal TSH + normal FT4</div><div class="rte">A normal TSH with a normal free T4 effectively excludes thyrotoxicosis — TSH is the most sensitive index, and a truly normal TSH off interfering substances rules out overt hyperthyroidism. (If symptoms persist with low TSH but normal free T4, check free/total T3 for T3 toxicosis before excluding the diagnosis.)</div><div class="rtt">⚠️ Stopping at a normal free T4 when TSH is low and the patient is symptomatic — you can miss T3 toxicosis, which requires a free T3 to detect.</div></div><div class="rt"><div class="rtl">15. T3 toxicosis</div><div class="rte">T3 toxicosis is early/mild hyperthyroidism (often early Graves' or an autonomous nodule) where TSH is suppressed and free T4 is still NORMAL but free/total T3 is elevated — because the overactive gland preferentially secretes T3. Always check T3 when TSH is low and free T4 is normal to avoid missing it.</div><div class="rtt">⚠️ Calling a low-TSH/normal-FT4 patient euthyroid or 'subclinical' without measuring T3 — that misses T3 toxicosis.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="thy_storm.html" title="Thyroid — Thyroid Storm &amp; Amiodarone (AIT)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pbone_chapter1.html" title="Parathyroid/Bone — Chapter 1: Bone Formation &amp; the BMU (Stonemason Guild)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Kidney Transplant — CMV Diagnosis, Treatment &amp; Prophylaxis (CMV 2)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Plasma PCR = best initial test</b> — WRONG answer: ordering CMV IgM/IgG serology to diagnose active disease. Serology only establishes prior exposure (used pre-transplant for risk stratification), not active replication — an immunosuppressed patient may not mount an antibody response, so serology can be falsely negative during true disease. Discriminator: quantitative PCR viral load is the only blood test that proves and quantifies active CMV.</li><li><b>Tissue biopsy if PCR negative</b> — WRONG answer: ruling out GI CMV because the plasma PCR came back negative and treating empirically as graft rejection or C. diff. A negative plasma PCR does NOT exclude tissue-invasive GI CMV — up to ~15% of biopsy-proven GI CMV has undetectable blood viral load. Discriminator: in a transplant patient with GI symptoms and negative/low PCR, proceed to endoscopy with biopsy.</li><li><b>Valganciclovir (PO mild)</b> — WRONG answer: starting oral valganciclovir for severe/tissue-invasive disease or in a patient with vomiting/ileus/malabsorption. Oral absorption is unreliable in severe GI disease and inadequate for life-threatening infection. Discriminator: route is dictated by severity and gut function — PO valgan only for mild disease with intact absorption.</li><li><b>IV ganciclovir (severe)</b> — WRONG answer: choosing oral valganciclovir for CMV pneumonitis or severe colitis. Severe/tissue-invasive disease mandates IV ganciclovir for guaranteed therapeutic levels. Discriminator: 'severe,' 'pneumonitis,' 'cannot tolerate PO,' or 'hemodynamically ill' → IV ganciclovir, not PO valganciclovir.</li><li><b>Treat until PCR negative</b> — WRONG answer: discontinuing antivirals once fever and symptoms resolve, before the viral load clears. This is the classic relapse trap — symptomatic improvement precedes virologic clearance, and early stopping causes recurrent viremia and resistance. Discriminator: the stop signal is two negative PCRs, not the temperature curve.</li><li><b>SOT prophylaxis pillar</b> — WRONG answer: giving no CMV prevention to a D+/R- kidney recipient, or stopping prophylaxis at 1 month. D+/R- is the highest-risk group and requires the longest prophylaxis (≥6 months). Discriminator: high-risk serostatus and lymphocyte-depleting induction extend, not shorten, the prophylaxis duration.</li><li><b>HCT preemptive strategy</b> — WRONG answer: assuming every transplant uses the same CMV strategy. Discriminator: SOT (kidney) → favor universal valganciclovir prophylaxis; HCT → favor preemptive PCR-guided therapy (with letermovir increasingly used for primary prophylaxis in CMV-seropositive HCT).</li><li><b>Universal vs preemptive</b> — WRONG answer: calling preemptive therapy 'treatment of established disease.' Preemptive means treating asymptomatic early viremia detected on surveillance PCR to PREVENT disease — distinct from treating symptomatic tissue-invasive disease. Discriminator: preemptive = asymptomatic threshold-triggered; treatment = symptomatic/organ disease.</li><li><b>Letermovir gap</b> — WRONG answer: assuming a patient on letermovir is protected against HSV/VZV reactivation. Letermovir covers only CMV — leaving HSV/VZV uncovered causes reactivation (oral/genital HSV, shingles). Discriminator: letermovir requires ADDING acyclovir/valacyclovir for HSV/VZV; only ganciclovir/valganciclovir cover the whole herpes group at once.</li><li><b>Valganciclovir covers HSV/VZV</b> — WRONG answer: adding acyclovir on top of valganciclovir 'to cover shingles.' This is redundant — valganciclovir already covers HSV/VZV. Discriminator: valganciclovir/ganciclovir = pan-herpes coverage (no extra HSV/VZV drug needed); letermovir = CMV only (extra HSV/VZV drug required).</li><li><b>Resistance lab</b> — WRONG answer: simply continuing or empirically increasing the ganciclovir dose when viral load fails to fall after 2 weeks. Persistent/rising load signals possible resistance — escalating ganciclovir without genotyping wastes time and worsens toxicity. Discriminator: refractory at ~2 weeks → send UL97/UL54 resistance genotype, don't just push more ganciclovir.</li><li><b>Foscarnet / resistance Tx</b> — WRONG answer: responding to documented ganciclovir resistance by giving higher-dose ganciclovir or valganciclovir. A UL97-resistant virus won't respond to more of the same drug. Discriminator: ganciclovir-resistant CMV → switch agent (foscarnet first-line for resistance), not a higher dose of ganciclovir.</li><li><b>4-virus comparison alcove</b> — WRONG answer: treating BK virus nephropathy with an antiviral (e.g. cidofovir/ganciclovir) like you would CMV. BK has no proven antiviral cure — the cornerstone is REDUCING immunosuppression. Discriminator: CMV/HSV/VZV = antiviral drugs; BK and EBV/PTLD = lower the immunosuppression first.</li><li><b>Boards decision band</b> — WRONG answer: managing CMV with antivirals alone while leaving immunosuppression untouched. Reducing immunosuppression is a co-equal pillar of CMV management. Discriminator: every CMV treatment answer pairs the correct antiviral with a reduction in immunosuppression.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Plasma PCR = best initial test</div><div class="rte">Quantitative plasma CMV PCR (viral load, reported in IU/mL) is the best initial AND best monitoring test for active CMV disease — it detects replicating virus, guides preemptive therapy, and a falling load confirms treatment response. CMV is the single most important opportunistic infection after solid-organ transplant, classically presenting weeks 1–6 months post-transplant once prophylaxis stops with fever, malaise, leukopenia/thrombocytopenia, and transaminitis. Highest-risk serostatus is D+/R- (donor seropositive, recipient seronegative — naive recipient gets primary infection); R+ is intermediate, D-/R- is lowest. Mnemonic: 'PCR Picks up Circulating Replication.'</div><div class="rtt">⚠️ WRONG answer: ordering CMV IgM/IgG serology to diagnose active disease. Serology only establishes prior exposure (used pre-transplant for risk stratification), not active replication — an immunosuppressed patient may not mount an antibody response, so serology can be falsely negative during true disease. Discriminator: quantitative PCR viral load is the only blood test that proves and quantifies active CMV.</div></div><div class="rt"><div class="rtl">2. Tissue biopsy if PCR negative</div><div class="rte">Tissue-invasive CMV (especially GI tract — esophagitis, gastritis, colitis) can occur with a NEGATIVE or low plasma PCR because virus is compartmentalized in mucosa rather than circulating. Diagnosis requires endoscopic biopsy showing the pathognomonic owl's-eye intranuclear inclusions (and intracytoplasmic inclusions) on H&amp;E, confirmed by CMV immunohistochemistry. CMV colitis presents with diarrhea, abdominal pain, hematochezia; esophagitis with odynophagia and large/linear ulcers (vs the small punched-out ulcers of HSV). Pneumonitis (more common in HCT) shows bilateral interstitial infiltrates with hypoxemia.</div><div class="rtt">⚠️ WRONG answer: ruling out GI CMV because the plasma PCR came back negative and treating empirically as graft rejection or C. diff. A negative plasma PCR does NOT exclude tissue-invasive GI CMV — up to ~15% of biopsy-proven GI CMV has undetectable blood viral load. Discriminator: in a transplant patient with GI symptoms and negative/low PCR, proceed to endoscopy with biopsy.</div></div><div class="rt"><div class="rtl">3. Valganciclovir (PO mild)</div><div class="rte">Mild-to-moderate, non-life-threatening CMV in a patient who can absorb oral meds → oral valganciclovir 900 mg PO BID (treatment dose; prophylaxis dose is 900 mg daily). Valganciclovir is the oral prodrug of ganciclovir with excellent bioavailability (~60%), so it achieves serum levels comparable to IV ganciclovir for non-severe disease. Both drugs work by inhibiting viral DNA polymerase after activation by the CMV UL97 kinase. Always pair antiviral treatment with reduction of immunosuppression (especially the antiproliferative agent, e.g. mycophenolate) to let the patient's own immunity recover.</div><div class="rtt">⚠️ WRONG answer: starting oral valganciclovir for severe/tissue-invasive disease or in a patient with vomiting/ileus/malabsorption. Oral absorption is unreliable in severe GI disease and inadequate for life-threatening infection. Discriminator: route is dictated by severity and gut function — PO valgan only for mild disease with intact absorption.</div></div><div class="rt"><div class="rtl">4. IV ganciclovir (severe)</div><div class="rte">Severe, life-threatening, or tissue-invasive CMV (pneumonitis, severe colitis, CNS disease) or any patient who cannot reliably absorb oral medication → IV ganciclovir 5 mg/kg IV q12h (renally dosed). The dose-limiting toxicity is myelosuppression — neutropenia/leukopenia — which is compounded by mycophenolate and TMP-SMX, so monitor CBC closely and consider G-CSF. Continue until clinical resolution plus two consecutive negative/undetectable PCRs, then often step down to oral valganciclovir for secondary prophylaxis.</div><div class="rtt">⚠️ WRONG answer: choosing oral valganciclovir for CMV pneumonitis or severe colitis. Severe/tissue-invasive disease mandates IV ganciclovir for guaranteed therapeutic levels. Discriminator: 'severe,' 'pneumonitis,' 'cannot tolerate PO,' or 'hemodynamically ill' → IV ganciclovir, not PO valganciclovir.</div></div><div class="rt"><div class="rtl">5. Treat until PCR negative</div><div class="rte">Antiviral therapy must continue until BOTH clinical resolution AND virologic clearance — two consecutive weekly plasma PCRs that are negative/undetectable (minimum ~2 weeks of therapy). Weekly PCR is the metric that tells you when to stop. Stopping based on symptom improvement alone leaves residual replication and drives relapse, which also selects for ganciclovir resistance. After treatment, give a course of secondary (suppressive) prophylaxis with valganciclovir.</div><div class="rtt">⚠️ WRONG answer: discontinuing antivirals once fever and symptoms resolve, before the viral load clears. This is the classic relapse trap — symptomatic improvement precedes virologic clearance, and early stopping causes recurrent viremia and resistance. Discriminator: the stop signal is two negative PCRs, not the temperature curve.</div></div><div class="rt"><div class="rtl">6. SOT prophylaxis pillar</div><div class="rte">Solid-organ transplant (kidney) standard is UNIVERSAL prophylaxis: valganciclovir 900 mg PO daily (renally adjusted) given to all moderate/high-risk recipients for 3–6 months post-transplant (often 6 months and longer for D+/R- or after lymphocyte-depleting induction like anti-thymocyte globulin). Universal prophylaxis reduces CMV disease, indirect effects, and all-cause mortality. The trade-off vs preemptive therapy is more drug exposure and a risk of LATE-onset CMV once prophylaxis is stopped — so PCR monitoring continues after the prophylaxis window.</div><div class="rtt">⚠️ WRONG answer: giving no CMV prevention to a D+/R- kidney recipient, or stopping prophylaxis at 1 month. D+/R- is the highest-risk group and requires the longest prophylaxis (≥6 months). Discriminator: high-risk serostatus and lymphocyte-depleting induction extend, not shorten, the prophylaxis duration.</div></div><div class="rt"><div class="rtl">7. HCT preemptive strategy</div><div class="rte">Hematopoietic-cell-transplant (HCT/bone marrow) patients more often use a PREEMPTIVE strategy: surveillance plasma PCR roughly weekly, and antiviral treatment (valganciclovir/ganciclovir or, for primary prevention, letermovir) is started only when the viral load crosses a defined threshold — before symptomatic disease develops. This minimizes drug toxicity (myelosuppression is especially dangerous in a recovering marrow) by treating only those who actually start replicating virus, at the cost of needing reliable weekly lab follow-up.</div><div class="rtt">⚠️ WRONG answer: assuming every transplant uses the same CMV strategy. Discriminator: SOT (kidney) → favor universal valganciclovir prophylaxis; HCT → favor preemptive PCR-guided therapy (with letermovir increasingly used for primary prophylaxis in CMV-seropositive HCT).</div></div><div class="rt"><div class="rtl">8. Universal vs preemptive</div><div class="rte">Two prevention paradigms: (1) UNIVERSAL prophylaxis — antiviral given to all at-risk recipients regardless of viral load, lowering both direct CMV disease and indirect immunomodulatory effects (graft loss, bacterial/fungal superinfection), best for the highest-risk D+/R-; (2) PREEMPTIVE — no drug until surveillance PCR crosses a threshold, sparing drug toxicity but demanding tight weekly monitoring and missing some indirect effects. Both are guideline-acceptable; choice depends on risk group, ability to monitor, and drug-toxicity concerns.</div><div class="rtt">⚠️ WRONG answer: calling preemptive therapy 'treatment of established disease.' Preemptive means treating asymptomatic early viremia detected on surveillance PCR to PREVENT disease — distinct from treating symptomatic tissue-invasive disease. Discriminator: preemptive = asymptomatic threshold-triggered; treatment = symptomatic/organ disease.</div></div><div class="rt"><div class="rtl">9. Letermovir gap</div><div class="rte">Letermovir inhibits the CMV terminase complex (UL56) — a mechanism unique to CMV — and is used for CMV prophylaxis (notably in CMV-seropositive HCT). It is well tolerated with minimal myelosuppression and no renal dosing penalty, but its spectrum is CMV-ONLY: it has NO activity against HSV, VZV, EBV, or any other herpesvirus. So a patient on letermovir still needs separate HSV/VZV prophylaxis (acyclovir or valacyclovir). Letermovir is also a CYP3A inhibitor and raises calcineurin-inhibitor levels.</div><div class="rtt">⚠️ WRONG answer: assuming a patient on letermovir is protected against HSV/VZV reactivation. Letermovir covers only CMV — leaving HSV/VZV uncovered causes reactivation (oral/genital HSV, shingles). Discriminator: letermovir requires ADDING acyclovir/valacyclovir for HSV/VZV; only ganciclovir/valganciclovir cover the whole herpes group at once.</div></div><div class="rt"><div class="rtl">10. Valganciclovir covers HSV/VZV</div><div class="rte">Ganciclovir and its prodrug valganciclovir are broad anti-herpesvirus agents: they cover CMV AND HSV/VZV (and EBV) simultaneously. Therefore a patient already receiving valganciclovir for CMV prophylaxis or treatment does NOT need a separate acyclovir/valacyclovir for HSV/VZV — the coverage is built in. This is the key contrast with letermovir, whose CMV-only spectrum leaves an HSV/VZV gap that must be filled.</div><div class="rtt">⚠️ WRONG answer: adding acyclovir on top of valganciclovir 'to cover shingles.' This is redundant — valganciclovir already covers HSV/VZV. Discriminator: valganciclovir/ganciclovir = pan-herpes coverage (no extra HSV/VZV drug needed); letermovir = CMV only (extra HSV/VZV drug required).</div></div><div class="rt"><div class="rtl">11. Resistance lab</div><div class="rte">Refractory CMV = persistent or rising plasma viral load after ≥2 weeks of appropriately dosed antiviral therapy, or worsening clinical disease on treatment. Risk factors: high viral loads, D+/R- serostatus, prolonged sub-therapeutic ganciclovir exposure, and intense immunosuppression. The next step is genotypic resistance testing for mutations in UL97 (ganciclovir-activating kinase — most common) and UL54 (DNA polymerase — can confer cross-resistance to ganciclovir, cidofovir, foscarnet). Also confirm adequate dosing/adherence and reduce immunosuppression.</div><div class="rtt">⚠️ WRONG answer: simply continuing or empirically increasing the ganciclovir dose when viral load fails to fall after 2 weeks. Persistent/rising load signals possible resistance — escalating ganciclovir without genotyping wastes time and worsens toxicity. Discriminator: refractory at ~2 weeks → send UL97/UL54 resistance genotype, don't just push more ganciclovir.</div></div><div class="rt"><div class="rtl">12. Foscarnet / resistance Tx</div><div class="rte">Ganciclovir-resistant CMV (usually UL97 mutation) → switch to foscarnet, which inhibits viral DNA polymerase directly and does NOT require UL97 activation, so it works on UL97-resistant strains. Foscarnet's major toxicities are nephrotoxicity and electrolyte wasting (hypo/hypercalcemia, hypomagnesemia, hypokalemia, hypophosphatemia) — requires saline pre-hydration and electrolyte monitoring. Alternatives: cidofovir (also nephrotoxic) and maribavir (oral, for refractory/resistant CMV; do NOT co-administer with ganciclovir as it antagonizes UL97).</div><div class="rtt">⚠️ WRONG answer: responding to documented ganciclovir resistance by giving higher-dose ganciclovir or valganciclovir. A UL97-resistant virus won't respond to more of the same drug. Discriminator: ganciclovir-resistant CMV → switch agent (foscarnet first-line for resistance), not a higher dose of ganciclovir.</div></div><div class="rt"><div class="rtl">13. 4-virus comparison alcove</div><div class="rte">High-yield transplant-virus contrast — (1) CMV → fever/cytopenias/colitis; diagnose by plasma PCR (+ biopsy for tissue disease); treat with ganciclovir/valganciclovir (foscarnet if resistant). (2) BK polyomavirus → rising Cr/graft dysfunction and viral cystitis; NO reliable antiviral — treat by REDUCING immunosuppression. (3) EBV → drives PTLD (B-cell proliferation); reduce immunosuppression ± rituximab. (4) HSV/VZV → mucocutaneous/zoster; treat/prevent with acyclovir/valacyclovir.</div><div class="rtt">⚠️ WRONG answer: treating BK virus nephropathy with an antiviral (e.g. cidofovir/ganciclovir) like you would CMV. BK has no proven antiviral cure — the cornerstone is REDUCING immunosuppression. Discriminator: CMV/HSV/VZV = antiviral drugs; BK and EBV/PTLD = lower the immunosuppression first.</div></div><div class="rt"><div class="rtl">14. Boards decision band</div><div class="rte">One-line algorithm: diagnose active CMV with quantitative plasma PCR (biopsy for tissue-invasive/GI disease with negative PCR) → mild disease, intact gut: oral valganciclovir 900 mg BID → severe/tissue-invasive or can't absorb: IV ganciclovir 5 mg/kg q12h → treat until 2 negative PCRs, then secondary prophylaxis → letermovir prevents CMV but is CMV-only, so pair it with acyclovir/valacyclovir for HSV/VZV → refractory after 2 weeks: UL97/UL54 resistance testing → resistant: foscarnet (or cidofovir/maribavir). Always reduce immunosuppression alongside antiviral therapy.</div><div class="rtt">⚠️ WRONG answer: managing CMV with antivirals alone while leaving immunosuppression untouched. Reducing immunosuppression is a co-equal pillar of CMV management. Discriminator: every CMV treatment answer pairs the correct antiviral with a reduction in immunosuppression.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nref_sediment.html" title="Renal Reference — Urine Sediment Cheat Sheet">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ktx_infection_timeline.html" title="Kidney Transplant — CMV Risk, Timing &amp; Clinical Spectrum (CMV 1)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

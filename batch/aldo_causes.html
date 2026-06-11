@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Primary Aldosteronism — The Aldosterone Causes Gallery</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Sporadic = 94-99%</b> — Familial forms are rare — don't over-attribute PA to genetics. But DO suspect a familial form in young/early-onset patients with a strong family history.</li><li><b>Bilateral hyperplasia (most common)</b> — Sending bilateral hyperplasia to surgery is the classic error — it is managed MEDICALLY with an MRA. AVS (not CT) is what proves the disease is bilateral and spares the patient an unnecessary adrenalectomy.</li><li><b>Conn adenoma (unilateral)</b> — A unilateral 'adenoma' on CT may be a non-functioning incidentaloma — lateralization must be confirmed by AVS before resection, especially in patients ≥35.</li><li><b>Channel mutation mosaic</b> — These are SOMATIC (tumor) mutations in sporadic adenomas — distinct from the GERMLINE versions (e.g. germline KCNJ5 = FH type 3; germline CACNA1D = PASNA/FH type 4) that cause familial disease.</li><li><b>Familial = 1-6%</b> — Consider genetic testing/familial PA in any patient with PA onset before ~20 or a family history of early-onset HTN or stroke — easy to miss if you only think 'adenoma vs hyperplasia.'</li><li><b>Type 1 GRA</b> — GRA is the one PA treated with low-dose glucocorticoid (dexamethasone), NOT primarily an MRA — though an MRA can be added. Suspect it in young patients with a family history of early stroke.</li><li><b>Type 2</b> — FH-2 looks exactly like sporadic PA — the only clue is the family history; don't expect a dexamethasone response (that's FH-1/GRA).</li><li><b>Type 3 (KCNJ5 germline)</b> — Same gene (KCNJ5) as the common SOMATIC adenoma mutation, but germline → far more severe, childhood-onset, bilateral disease. Don't conflate the somatic and germline phenotypes.</li><li><b>Type 4 / PASNA</b> — The neuro features (seizures, developmental delay) are the giveaway that aldosteronism is part of a germline channelopathy (CACNA1D), not isolated adrenal disease.</li><li><b>Adrenocortical carcinoma</b> — A large, hormonally mixed adrenal mass causing aldosterone excess is ACC until proven otherwise — don't assume a benign Conn adenoma based on the biochemistry alone.</li><li><b>Ectopic / progesterone-induced</b> — In this MR-mutation syndrome spironolactone is an MR AGONIST (not antagonist) and worsens HTN — a classic pharmacology twist; HTN flaring in pregnancy is the clue.</li><li><b>Clinical pearl</b> — Two highest-yield points: (1) most common = bilateral hyperplasia → MRA, not surgery; (2) the one familial form treated with glucocorticoid is FH-1 / GRA.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Sporadic = 94-99%</div><div class="rte">The overwhelming majority of primary aldosteronism (94–99%) is SPORADIC, not inherited. Within sporadic disease the two big buckets are bilateral idiopathic hyperplasia and unilateral aldosterone-producing adenoma (Conn). The clinical hallmark of all PA: autonomous aldosterone → HTN, suppressed renin, ± hypokalemia/metabolic alkalosis.</div><div class="rtt">⚠️ Familial forms are rare — don't over-attribute PA to genetics. But DO suspect a familial form in young/early-onset patients with a strong family history.</div></div><div class="rt"><div class="rtl">2. Bilateral hyperplasia (most common)</div><div class="rte">Bilateral adrenal (idiopathic) hyperplasia is the SINGLE MOST COMMON cause of PA (~60–70%). Because BOTH glands over-secrete, surgery is not curative — management is lifelong medical therapy with a mineralocorticoid-receptor antagonist (spironolactone first-line, eplerenone if side effects).</div><div class="rtt">⚠️ Sending bilateral hyperplasia to surgery is the classic error — it is managed MEDICALLY with an MRA. AVS (not CT) is what proves the disease is bilateral and spares the patient an unnecessary adrenalectomy.</div></div><div class="rt"><div class="rtl">3. Conn adenoma (unilateral)</div><div class="rte">Aldosterone-producing adenoma (Conn syndrome) is unilateral (~30–40% of PA) and is SURGICALLY CURABLE by laparoscopic adrenalectomy after AVS confirms lateralization. Tends to present with more florid biochemistry (lower K+, higher aldosterone) than bilateral hyperplasia.</div><div class="rtt">⚠️ A unilateral 'adenoma' on CT may be a non-functioning incidentaloma — lateralization must be confirmed by AVS before resection, especially in patients ≥35.</div></div><div class="rt"><div class="rtl">4. Channel mutation mosaic</div><div class="rte">Somatic mutations in ion channels/pumps drive autonomous aldosterone synthesis by depolarizing the glomerulosa cell and raising intracellular calcium (the trigger for CYP11B2/aldosterone synthase). KCNJ5 (a GIRK potassium channel) is the MOST COMMON somatic mutation in adenomas; others: CACNA1D, ATP1A1, ATP2B3, CLCN2.</div><div class="rtt">⚠️ These are SOMATIC (tumor) mutations in sporadic adenomas — distinct from the GERMLINE versions (e.g. germline KCNJ5 = FH type 3; germline CACNA1D = PASNA/FH type 4) that cause familial disease.</div></div><div class="rt"><div class="rtl">5. Familial = 1-6%</div><div class="rte">Familial hyperaldosteronism is uncommon (1–6%) but important: it presents YOUNG, often with severe/resistant HTN and a strong family history of early HTN or hemorrhagic stroke. Four recognized types (FH-I through FH-IV).</div><div class="rtt">⚠️ Consider genetic testing/familial PA in any patient with PA onset before ~20 or a family history of early-onset HTN or stroke — easy to miss if you only think 'adenoma vs hyperplasia.'</div></div><div class="rt"><div class="rtl">6. Type 1 GRA</div><div class="rte">FH type 1 = glucocorticoid-remediable aldosteronism (GRA): an unequal crossover creates a CYP11B1/CYP11B2 CHIMERIC gene placing aldosterone synthase under ACTH control. Aldosterone is therefore ACTH-driven and SUPPRESSIBLE by low-dose dexamethasone (which lowers ACTH). Associated with early hemorrhagic stroke from cerebral aneurysms.</div><div class="rtt">⚠️ GRA is the one PA treated with low-dose glucocorticoid (dexamethasone), NOT primarily an MRA — though an MRA can be added. Suspect it in young patients with a family history of early stroke.</div></div><div class="rt"><div class="rtl">7. Type 2</div><div class="rte">FH type 2 is the MOST COMMON familial form. It is clinically indistinguishable from sporadic PA (adenoma or hyperplasia), is NOT dexamethasone-suppressible, and is linked to germline CLCN2 mutations. Managed like sporadic PA (MRA or adrenalectomy depending on lateralization).</div><div class="rtt">⚠️ FH-2 looks exactly like sporadic PA — the only clue is the family history; don't expect a dexamethasone response (that's FH-1/GRA).</div></div><div class="rt"><div class="rtl">8. Type 3 (KCNJ5 germline)</div><div class="rte">FH type 3 = GERMLINE KCNJ5 mutation causing severe, very-early-onset PA with massive bilateral adrenal hyperplasia, often refractory to medical therapy and requiring bilateral adrenalectomy.</div><div class="rtt">⚠️ Same gene (KCNJ5) as the common SOMATIC adenoma mutation, but germline → far more severe, childhood-onset, bilateral disease. Don't conflate the somatic and germline phenotypes.</div></div><div class="rt"><div class="rtl">9. Type 4 / PASNA</div><div class="rte">FH type 4 / PASNA syndrome = germline CACNA1D (L-type calcium channel) mutation causing Primary Aldosteronism with Seizures and Neurologic Abnormalities (developmental delay, neuromuscular features).</div><div class="rtt">⚠️ The neuro features (seizures, developmental delay) are the giveaway that aldosteronism is part of a germline channelopathy (CACNA1D), not isolated adrenal disease.</div></div><div class="rt"><div class="rtl">10. Adrenocortical carcinoma</div><div class="rte">Rare causes (&lt;1%): an aldosterone-secreting adrenocortical CARCINOMA. Suspect ACC when the adrenal mass is large (&gt;4–6 cm), heterogeneous, high-attenuation on CT, and/or co-secretes other steroids (cortisol, androgens).</div><div class="rtt">⚠️ A large, hormonally mixed adrenal mass causing aldosterone excess is ACC until proven otherwise — don't assume a benign Conn adenoma based on the biochemistry alone.</div></div><div class="rt"><div class="rtl">11. Ectopic / progesterone-induced</div><div class="rte">Very rare: a gain-of-function mineralocorticoid-receptor (NR3C2) mutation (Geller mutation) makes the MR aberrantly activated by PROGESTERONE, causing severe HTN that paradoxically WORSENS in pregnancy when progesterone surges.</div><div class="rtt">⚠️ In this MR-mutation syndrome spironolactone is an MR AGONIST (not antagonist) and worsens HTN — a classic pharmacology twist; HTN flaring in pregnancy is the clue.</div></div><div class="rt"><div class="rtl">12. Clinical pearl</div><div class="rte">One-line summary: bilateral idiopathic hyperplasia is the MOST COMMON cause (treat medically with an MRA); Conn adenoma is unilateral and surgically curable (after AVS); familial forms (FH 1–4) are rare but hit young and hard — remember GRA is dexamethasone-suppressible.</div><div class="rtt">⚠️ Two highest-yield points: (1) most common = bilateral hyperplasia → MRA, not surgery; (2) the one familial form treated with glucocorticoid is FH-1 / GRA.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aldo_diagnosis_arr.html" title="Primary Aldosteronism — The ARR Detective Lab">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aldo_physiology.html" title="Primary Aldosteronism — The Aldosterone Salt Factory">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

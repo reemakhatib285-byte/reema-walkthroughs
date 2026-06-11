@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">ILD — Treatment by Responsiveness &amp; Drug-Induced Causes</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>5-year survival gauge</b> — WRONG answer: 'all ILD has a uniformly poor prognosis.' Discriminator — the pattern stratifies outcome; steroid-responsive cellular ILDs can have near-normal survival, so lumping them with IPF underestimates a treatable disease.</li><li><b>Cellular NSIP (responds)</b> — WRONG answer: 'treat cellular NSIP with antifibrotics like IPF.' Discriminator — cellular = inflammatory = immunosuppression; antifibrotics are for the fibrotic/UIP end. Misclassifying a treatable inflammatory ILD as fibrotic withholds effective steroids.</li><li><b>Fibrotic (poor) figure</b> — WRONG answer: 'a course of high-dose steroids will reverse fibrotic NSIP/UIP.' Discriminator — established fibrosis does not regress with steroids; expect at best stabilization with antifibrotics, and recall PANTHER showed immunosuppression harms IPF.</li><li><b>Prednisone (conveyor start)</b> — WRONG answer: 'give prednisone for IPF/UIP.' Discriminator — steroids do not help IPF and the PANTHER-IPF trial showed prednisone + azathioprine + NAC INCREASED death and hospitalization; the responsive vs non-responsive split is the whole point.</li><li><b>Cytotoxics step</b> — WRONG answer: 'add azathioprine/mycophenolate to treat idiopathic UIP/IPF.' Discriminator — these are correct only with an inflammatory/CTD substrate; in idiopathic UIP immunosuppression is ineffective and harmful, so confirm the inflammatory pattern first.</li><li><b>Biologics step</b> — WRONG answer: 'use rituximab as first-line for any ILD.' Discriminator — biologics are last-line, reserved for refractory CTD-ILD; using them upfront (or in IPF) skips the evidence-based ladder and is incorrect.</li><li><b>Antifibrotic for progressive fibrosis</b> — WRONG answer: 'escalate immunosuppression in a progressive fibrosing ILD that keeps worsening on steroids.' Discriminator — once a fibrotic ILD demonstrates progression (falling FVC despite immunosuppression), the answer shifts to ADD an antifibrotic, not more immunosuppression.</li><li><b>Atoll sign = good prognosis (COP)</b> — WRONG answer: 'the atoll sign indicates IPF / give antifibrotics.' Discriminator — the atoll/reversed-halo sign is COP, an inflammatory steroid-responsive disease; treating it as fibrotic IPF withholds the highly effective steroids.</li><li><b>Migratory infiltrates</b> — WRONG answer: 'persistent unchanged basal reticulation is migratory and therefore COP.' Discriminator — true migratory infiltrates move/resolve and recur; fixed, progressive basal honeycombing is UIP/IPF, an entirely different prognosis and treatment.</li><li><b>Responsive ILDs (COP/NSIP/HP/sarcoid)</b> — WRONG answer: 'chronic fibrotic HP behaves like the responsive group.' Discriminator — chronic FIBROTIC HP (upper-lobe fibrosis, mosaic attenuation, air trapping) can mimic UIP and respond poorly; only the cellular/inflammatory forms reliably respond to steroids, and antigen avoidance is essential.</li><li><b>IPF grows worse</b> — WRONG answer: 'IPF is steroid-responsive like the pink-zone ILDs.' Discriminator — IPF is the non-responder; the PANTHER-IPF trial showed steroids + azathioprine + NAC increased mortality, so immunosuppression is contraindicated and may harm.</li><li><b>Amiodarone (drug-induced ILD)</b> — WRONG answer: 'continue amiodarone and call the new ILD idiopathic.' Discriminator — drug-induced ILD can reverse if the agent is stopped early; always reconcile the med list before labeling ILD idiopathic, and amiodarone is the classic offender.</li><li><b>Bleomycin (drug-induced ILD)</b> — WRONG answer: 'give high-flow/100% oxygen liberally to a bleomycin-exposed patient.' Discriminator — high FiO2 potentiates bleomycin lung injury; the high-yield trap is liberal perioperative oxygen, which can precipitate fatal fibrosis/ARDS.</li><li><b>Methotrexate / Nitrofurantoin / Rituximab</b> — WRONG answer: 'an RA patient on methotrexate with new infiltrates always has RA-ILD progression.' Discriminator — distinguish METHOTREXATE pneumonitis (drug toxicity — stop the drug) from RA-ILD itself and from opportunistic infection (PCP); the management diverges, and missing the drug cause is the trap.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. 5-year survival gauge</div><div class="rte">Prognosis in ILD is dictated by the histologic/radiographic pattern: inflammatory/CELLULAR disease (COP, cellular NSIP, HP, sarcoid) is treatable and lives longer, whereas FIBROTIC UIP/IPF is progressive with a median survival of only ~3–5 years. The single most important branch point on any ILD question is 'inflammatory vs fibrotic.'</div><div class="rtt">⚠️ WRONG answer: 'all ILD has a uniformly poor prognosis.' Discriminator — the pattern stratifies outcome; steroid-responsive cellular ILDs can have near-normal survival, so lumping them with IPF underestimates a treatable disease.</div></div><div class="rt"><div class="rtl">2. Cellular NSIP (responds)</div><div class="rte">Cellular NSIP is the inflammatory, ground-glass-predominant subtype (soft pink lung) that is corticosteroid-responsive with a good prognosis, often CTD-associated. First-line is prednisone, with steroid-sparing mycophenolate or azathioprine for maintenance. The trophy = best ILD prognosis.</div><div class="rtt">⚠️ WRONG answer: 'treat cellular NSIP with antifibrotics like IPF.' Discriminator — cellular = inflammatory = immunosuppression; antifibrotics are for the fibrotic/UIP end. Misclassifying a treatable inflammatory ILD as fibrotic withholds effective steroids.</div></div><div class="rt"><div class="rtl">3. Fibrotic (poor) figure</div><div class="rte">Fibrotic NSIP/UIP (grey stiff lung) responds POORLY to immunosuppression and behaves like IPF — it is the progressive fibrosing phenotype where antifibrotics (nintedanib/pirfenidone) slow decline. The grey color contrasts with cellular pink to remind you fibrosis = poor steroid response.</div><div class="rtt">⚠️ WRONG answer: 'a course of high-dose steroids will reverse fibrotic NSIP/UIP.' Discriminator — established fibrosis does not regress with steroids; expect at best stabilization with antifibrotics, and recall PANTHER showed immunosuppression harms IPF.</div></div><div class="rt"><div class="rtl">4. Prednisone (conveyor start)</div><div class="rte">Corticosteroids (prednisone) are FIRST-LINE for steroid-responsive ILDs — COP (dramatic response), cellular NSIP, sarcoidosis, and hypersensitivity pneumonitis (plus antigen avoidance). The conveyor escalates from steroids to steroid-sparing agents as needed. Mnemonic for responders: 'COP NSIP HP Sarcoid respond.'</div><div class="rtt">⚠️ WRONG answer: 'give prednisone for IPF/UIP.' Discriminator — steroids do not help IPF and the PANTHER-IPF trial showed prednisone + azathioprine + NAC INCREASED death and hospitalization; the responsive vs non-responsive split is the whole point.</div></div><div class="rt"><div class="rtl">5. Cytotoxics step</div><div class="rte">Steroid-sparing immunosuppressants — azathioprine and mycophenolate mofetil (and cyclophosphamide in severe scleroderma-ILD per the Scleroderma Lung Studies) — are second-line for CTD-ILD and refractory inflammatory ILD, allowing taper of chronic steroids. They target ongoing inflammation, not fibrosis.</div><div class="rtt">⚠️ WRONG answer: 'add azathioprine/mycophenolate to treat idiopathic UIP/IPF.' Discriminator — these are correct only with an inflammatory/CTD substrate; in idiopathic UIP immunosuppression is ineffective and harmful, so confirm the inflammatory pattern first.</div></div><div class="rt"><div class="rtl">6. Biologics step</div><div class="rte">Biologics — chiefly RITUXIMAB (anti-CD20) — are reserved for refractory or rapidly progressive CTD-ILD (e.g., anti-synthetase/antisynthetase syndrome, severe RA-ILD, refractory scleroderma-ILD). They sit late on the escalation conveyor after steroids and conventional immunosuppressants fail.</div><div class="rtt">⚠️ WRONG answer: 'use rituximab as first-line for any ILD.' Discriminator — biologics are last-line, reserved for refractory CTD-ILD; using them upfront (or in IPF) skips the evidence-based ladder and is incorrect.</div></div><div class="rt"><div class="rtl">7. Antifibrotic for progressive fibrosis</div><div class="rte">Antifibrotics (nintedanib 150 mg BID; pirfenidone titrated to 801 mg TID) are for IPF AND for any PROGRESSIVE FIBROSING ILD phenotype regardless of underlying cause (INBUILD established nintedanib for progressive non-IPF fibrotic ILD; SENSCIS for scleroderma-ILD). They slow FVC decline, never reverse it.</div><div class="rtt">⚠️ WRONG answer: 'escalate immunosuppression in a progressive fibrosing ILD that keeps worsening on steroids.' Discriminator — once a fibrotic ILD demonstrates progression (falling FVC despite immunosuppression), the answer shifts to ADD an antifibrotic, not more immunosuppression.</div></div><div class="rt"><div class="rtl">8. Atoll sign = good prognosis (COP)</div><div class="rte">The ATOLL / reversed-halo sign (central ground-glass ringed by denser consolidation) plus a green-check good prognosis is the signature of cryptogenic organizing pneumonia, which responds rapidly and well to corticosteroids. COP often follows infection or presents as a 'pneumonia that won't clear on antibiotics.'</div><div class="rtt">⚠️ WRONG answer: 'the atoll sign indicates IPF / give antifibrotics.' Discriminator — the atoll/reversed-halo sign is COP, an inflammatory steroid-responsive disease; treating it as fibrotic IPF withholds the highly effective steroids.</div></div><div class="rt"><div class="rtl">9. Migratory infiltrates</div><div class="rte">MIGRATORY / shifting infiltrates (opacities that resolve in one area and appear in another over serial films) are characteristic of organizing pneumonia (COP) and also seen in chronic eosinophilic pneumonia. The wandering pattern + steroid response distinguishes it from fixed fibrotic disease.</div><div class="rtt">⚠️ WRONG answer: 'persistent unchanged basal reticulation is migratory and therefore COP.' Discriminator — true migratory infiltrates move/resolve and recur; fixed, progressive basal honeycombing is UIP/IPF, an entirely different prognosis and treatment.</div></div><div class="rt"><div class="rtl">10. Responsive ILDs (COP/NSIP/HP/sarcoid)</div><div class="rte">The pink 'responds' zone groups the steroid-responsive, better-prognosis ILDs: COP, cellular NSIP, hypersensitivity pneumonitis (acute/subacute — plus antigen avoidance), and sarcoidosis. These are the diseases where immunosuppression changes outcome — the opposite of the IPF red zone.</div><div class="rtt">⚠️ WRONG answer: 'chronic fibrotic HP behaves like the responsive group.' Discriminator — chronic FIBROTIC HP (upper-lobe fibrosis, mosaic attenuation, air trapping) can mimic UIP and respond poorly; only the cellular/inflammatory forms reliably respond to steroids, and antigen avoidance is essential.</div></div><div class="rt"><div class="rtl">11. IPF grows worse</div><div class="rte">The red 'grows worse' zone is IPF/UIP — progressive, non-responsive to immunosuppression, where antifibrotics only slow decline and transplant is the only definitive therapy. The color split (pink responds / red worsens) is the core decision tree of the whole scene.</div><div class="rtt">⚠️ WRONG answer: 'IPF is steroid-responsive like the pink-zone ILDs.' Discriminator — IPF is the non-responder; the PANTHER-IPF trial showed steroids + azathioprine + NAC increased mortality, so immunosuppression is contraindicated and may harm.</div></div><div class="rt"><div class="rtl">12. Amiodarone (drug-induced ILD)</div><div class="rte">Amiodarone causes drug-induced pneumonitis/pulmonary fibrosis (lightning bolt = the antiarrhythmic). Toxicity is dose- and duration-related; a FALLING DLCO is the most sensitive early monitor. Management is stopping the drug ± corticosteroids; CT may show high-attenuation (iodine-rich) infiltrates.</div><div class="rtt">⚠️ WRONG answer: 'continue amiodarone and call the new ILD idiopathic.' Discriminator — drug-induced ILD can reverse if the agent is stopped early; always reconcile the med list before labeling ILD idiopathic, and amiodarone is the classic offender.</div></div><div class="rt"><div class="rtl">13. Bleomycin (drug-induced ILD)</div><div class="rte">Bleomycin (the crab = chemotherapy for lymphoma/germ-cell tumors) causes DOSE-DEPENDENT pulmonary fibrosis, worsened by HIGH FiO2 (give the lowest tolerable supplemental oxygen perioperatively) and by older age and renal impairment. Monitor DLCO during treatment.</div><div class="rtt">⚠️ WRONG answer: 'give high-flow/100% oxygen liberally to a bleomycin-exposed patient.' Discriminator — high FiO2 potentiates bleomycin lung injury; the high-yield trap is liberal perioperative oxygen, which can precipitate fatal fibrosis/ARDS.</div></div><div class="rt"><div class="rtl">14. Methotrexate / Nitrofurantoin / Rituximab</div><div class="rte">Classic drug causes of ILD/pneumonitis: METHOTREXATE (hypersensitivity pneumonitis-like, often early, may improve with steroids and drug cessation), NITROFURANTOIN (acute hypersensitivity OR chronic fibrosis from long-term UTI prophylaxis in older women), and others. Notably some of these agents BOTH cause and treat ILD depending on context.</div><div class="rtt">⚠️ WRONG answer: 'an RA patient on methotrexate with new infiltrates always has RA-ILD progression.' Discriminator — distinguish METHOTREXATE pneumonitis (drug toxicity — stop the drug) from RA-ILD itself and from opportunistic infection (PCP); the management diverges, and missing the drug cause is the trap.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ild_1.html" title="ILD — IPF Treatment &amp; the Antifibrotic Paradigm Shift">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pneumonia_3.html" title="Pneumonia — CAP severity (CURB-65, ICU criteria) &amp; diagnostics">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

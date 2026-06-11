@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Reference — Intrinsic AKI by Compartment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Tubules row</b> — Prerenal AKI and ATN are unrelated diagnoses. WRONG — they are a continuum; untreated prerenal hypoperfusion progresses to ischemic ATN once tubular cells die. The discriminator is reversibility with fluids (prerenal) vs not (ATN) plus muddy-brown casts and FENa &gt;2% in ATN.</li><li><b>Tubules triggers</b> — Vancomycin and aminoglycoside nephrotoxicity look identical. WRONG — aminoglycoside ATN is classically NONoliguric with proximal tubular wasting (hypoMg, hypoK); pinning the mechanism requires the exposure timeline and urine sediment, not assuming all 'antibiotic AKI' is the same.</li><li><b>Tubules urine clue</b> — FENa is always &gt;2% in ATN. WRONG — early sepsis, contrast-induced AKI, and pigment nephropathy are intrinsic/tubular but keep FENa &lt;1%; muddy-brown casts and clinical context, not FENa alone, clinch ATN.</li><li><b>Interstitium row</b> — Absence of the fever-rash-eosinophilia triad rules out AIN. WRONG — the full triad appears in a minority of cases; AIN remains the diagnosis with a compatible drug exposure, WBC casts/sterile pyuria, and AKI. Renal biopsy is definitive when needed.</li><li><b>Interstitium triggers</b> — Stopping the offending drug and giving steroids isn't urgent in AIN. WRONG — the key intervention is prompt withdrawal of the culprit drug; early corticosteroids may aid recovery, and delay risks irreversible interstitial fibrosis.</li><li><b>Interstitium urine clue</b> — Negative urine eosinophils excludes AIN, and positive eosinophiluria confirms it. WRONG on both counts — eosinophiluria has poor sensitivity AND specificity (also seen in atheroembolic disease, UTI, GN); diagnosis rests on drug history, sterile pyuria/WBC casts, and biopsy when needed.</li><li><b>Glomeruli row</b> — Glomerular AKI is identified by FENa/urine Na like ATN. WRONG — GN often shows a prerenal-pattern FENa &lt;1% despite intrinsic injury; the discriminator is the ACTIVE sediment (RBC casts, dysmorphic RBCs) plus serologies, not the sodium indices.</li><li><b>Glomeruli triggers</b> — A young adult with hematuria days after a sore throat has post-streptococcal GN. WRONG — synpharyngitic hematuria (within 1–5 days of URI) is IgA nephropathy; post-strep GN has a 1–3 WEEK latency with LOW complement that normalizes by ~8 weeks. Complement levels and timing separate them.</li><li><b>Glomeruli urine clue</b> — Hematuria with RBC casts could be from a kidney stone or bladder cancer. WRONG — RBC casts form only in the tubules and signal GLOMERULAR bleeding; isomorphic RBCs without casts suggest a urologic (stone/tumor) source. The presence of casts redirects the workup to GN, not urology.</li><li><b>Renal vessels row</b> — Microangiopathic anemia with low platelets and AKI is automatically TTP needing plasma exchange. WRONG — distinguish TTP (ADAMTS13 &lt;10%, neuro signs) from HUS (Shiga-toxin diarrhea/E. coli O157, children — supportive care, NOT routine plasma exchange) and atypical HUS (complement → eculizumab). Treatment diverges sharply.</li><li><b>Renal vessels clue</b> — AKI plus eosinophilia after a cardiac catheterization is contrast nephropathy or AIN. WRONG — cholesterol (atheroembolic) AKI presents days-to-weeks post-procedure with blue toes, livedo, transient eosinophilia, and low complement; contrast AKI peaks at 3–5 days and resolves, and AIN is drug-triggered. The skin findings and timing distinguish them.</li><li><b>Pigment injury row</b> — Pigment (rhabdo) AKI shows a high BUN:Cr and high FENa like typical ATN. WRONG — rhabdo gives a LOW/normal BUN:Cr (direct creatinine release) and can show FENa &lt;1% (intact tubular avidity early); the giveaways are CK elevation and heme-positive dipstick without RBCs.</li><li><b>Pigment urine clue</b> — A heme-positive dipstick always means true hematuria. WRONG — myoglobin and free hemoglobin also turn the dipstick positive; if microscopy shows no RBCs, think pigment nephropathy and send CK, haptoglobin, and LDH rather than chasing a urologic bleeding source.</li><li><b>Board meaning column</b> — You can localize intrinsic AKI from FENa and BUN:Cr alone. WRONG — those indices mainly separate prerenal vs ATN and have many exceptions; the URINE SEDIMENT is what distinguishes ATN vs AIN vs GN vs vascular vs pigment. Always examine the sediment in intrinsic AKI.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Tubules row</div><div class="rte">The tubular compartment = acute tubular necrosis (ATN), the single most common cause of hospital-acquired intrinsic AKI. ATN has two flavors: ISCHEMIC (prolonged prerenal hypoperfusion that crosses into tubular cell death) and NEPHROTOXIC (direct toxins). It evolves through initiation → maintenance (oliguric, days–weeks) → recovery (polyuric) phases.</div><div class="rtt">⚠️ Prerenal AKI and ATN are unrelated diagnoses. WRONG — they are a continuum; untreated prerenal hypoperfusion progresses to ischemic ATN once tubular cells die. The discriminator is reversibility with fluids (prerenal) vs not (ATN) plus muddy-brown casts and FENa &gt;2% in ATN.</div></div><div class="rt"><div class="rtl">2. Tubules triggers</div><div class="rte">Ischemic triggers: hypotension/shock, sepsis, major surgery, hemorrhage. Nephrotoxic triggers: contrast, aminoglycosides (5–10 day lag, nonoliguric, with Mg/K wasting), amphotericin B, cisplatin, vancomycin, and endogenous pigments (myoglobin in rhabdo, hemoglobin in hemolysis). Tumor lysis (uric acid) and ethylene glycol (oxalate crystals) also injure tubules.</div><div class="rtt">⚠️ Vancomycin and aminoglycoside nephrotoxicity look identical. WRONG — aminoglycoside ATN is classically NONoliguric with proximal tubular wasting (hypoMg, hypoK); pinning the mechanism requires the exposure timeline and urine sediment, not assuming all 'antibiotic AKI' is the same.</div></div><div class="rt"><div class="rtl">3. Tubules urine clue</div><div class="rte">Hallmark sediment: MUDDY-BROWN granular casts and renal tubular epithelial cell casts. Indices favor ATN: FENa &gt;2%, urine Na &gt;40, urine osm ~300 (isosthenuria — injured tubules can't concentrate), BUN:Cr ~10–15 (normal). Note the important exceptions where ATN shows FENa &lt;1%: early sepsis, contrast, and rhabdo/pigment.</div><div class="rtt">⚠️ FENa is always &gt;2% in ATN. WRONG — early sepsis, contrast-induced AKI, and pigment nephropathy are intrinsic/tubular but keep FENa &lt;1%; muddy-brown casts and clinical context, not FENa alone, clinch ATN.</div></div><div class="rt"><div class="rtl">4. Interstitium row</div><div class="rte">The interstitial compartment = acute interstitial nephritis (AIN), an immune/hypersensitivity inflammation of the renal interstitium. Classic (but present in &lt;10–30%) triad: fever, rash, eosinophilia. Onset is typically days to weeks after a new drug; AKI is often accompanied by sterile pyuria and mild proteinuria.</div><div class="rtt">⚠️ Absence of the fever-rash-eosinophilia triad rules out AIN. WRONG — the full triad appears in a minority of cases; AIN remains the diagnosis with a compatible drug exposure, WBC casts/sterile pyuria, and AKI. Renal biopsy is definitive when needed.</div></div><div class="rt"><div class="rtl">5. Interstitium triggers</div><div class="rte">Drug-induced (most common): PPIs, NSAIDs, beta-lactams (penicillins, cephalosporins), sulfonamides, rifampin, allopurinol, and immune-checkpoint inhibitors (a growing oncology cause). Also infections (Legionella, Leptospira) and autoimmune (sarcoidosis, Sjögren, lupus, TINU). NSAID-AIN is unique in causing AIN PLUS nephrotic-range proteinuria (minimal change).</div><div class="rtt">⚠️ Stopping the offending drug and giving steroids isn't urgent in AIN. WRONG — the key intervention is prompt withdrawal of the culprit drug; early corticosteroids may aid recovery, and delay risks irreversible interstitial fibrosis.</div></div><div class="rt"><div class="rtl">6. Interstitium urine clue</div><div class="rte">Sediment: WBC casts and sterile pyuria (pyuria with negative culture) ± hematuria and mild proteinuria. Urine eosinophils (Hansel stain) are the classic teaching clue but are neither sensitive nor specific. AKI with a bland-to-pyuric sediment after a new PPI/NSAID/antibiotic should raise AIN.</div><div class="rtt">⚠️ Negative urine eosinophils excludes AIN, and positive eosinophiluria confirms it. WRONG on both counts — eosinophiluria has poor sensitivity AND specificity (also seen in atheroembolic disease, UTI, GN); diagnosis rests on drug history, sterile pyuria/WBC casts, and biopsy when needed.</div></div><div class="rt"><div class="rtl">7. Glomeruli row</div><div class="rte">The glomerular compartment = glomerulonephritis / vasculitis, a NEPHRITIC process: inflammation of the glomerular tuft causing hematuria with RBC casts, dysmorphic RBCs, hypertension, edema, and sub-nephrotic proteinuria. Rapidly progressive GN (RPGN) with crescents is the can't-miss emergency requiring urgent biopsy and immunosuppression.</div><div class="rtt">⚠️ Glomerular AKI is identified by FENa/urine Na like ATN. WRONG — GN often shows a prerenal-pattern FENa &lt;1% despite intrinsic injury; the discriminator is the ACTIVE sediment (RBC casts, dysmorphic RBCs) plus serologies, not the sodium indices.</div></div><div class="rt"><div class="rtl">8. Glomeruli triggers</div><div class="rte">Serologic workup localizes the GN: ANCA (granulomatosis with polyangiitis, microscopic polyangiitis — pauci-immune); anti-GBM (Goodpasture — linear IgG, hemoptysis + AKI); ANA/dsDNA + LOW complement (lupus nephritis); low complement also in post-strep GN (recent pharyngitis/impetigo, weeks prior) and MPGN/cryoglobulinemia (hepatitis C). Normal complement: IgA nephropathy, ANCA, anti-GBM.</div><div class="rtt">⚠️ A young adult with hematuria days after a sore throat has post-streptococcal GN. WRONG — synpharyngitic hematuria (within 1–5 days of URI) is IgA nephropathy; post-strep GN has a 1–3 WEEK latency with LOW complement that normalizes by ~8 weeks. Complement levels and timing separate them.</div></div><div class="rt"><div class="rtl">9. Glomeruli urine clue</div><div class="rte">Hallmark: RBC casts and DYSMORPHIC (acanthocyte) RBCs = true glomerular bleeding (nephritic). Proteinuria is usually sub-nephrotic (&lt;3.5 g/day); nephrotic-range with bland sediment instead points to a non-inflammatory glomerulopathy (membranous, FSGS, minimal change). RBC casts are essentially pathognomonic for GN/vasculitis.</div><div class="rtt">⚠️ Hematuria with RBC casts could be from a kidney stone or bladder cancer. WRONG — RBC casts form only in the tubules and signal GLOMERULAR bleeding; isomorphic RBCs without casts suggest a urologic (stone/tumor) source. The presence of casts redirects the workup to GN, not urology.</div></div><div class="rt"><div class="rtl">10. Renal vessels row</div><div class="rte">The vascular compartment splits into MICROvascular (thrombotic microangiopathy — TTP, HUS, DIC, scleroderma renal crisis, malignant HTN, APS) and MACROvascular (atheroembolic/cholesterol emboli, renal artery thrombosis/dissection, large-vessel occlusion). Each has distinct systemic clues beyond the kidney.</div><div class="rtt">⚠️ Microangiopathic anemia with low platelets and AKI is automatically TTP needing plasma exchange. WRONG — distinguish TTP (ADAMTS13 &lt;10%, neuro signs) from HUS (Shiga-toxin diarrhea/E. coli O157, children — supportive care, NOT routine plasma exchange) and atypical HUS (complement → eculizumab). Treatment diverges sharply.</div></div><div class="rt"><div class="rtl">11. Renal vessels clue</div><div class="rte">TMA clues: microangiopathic hemolytic anemia (schistocytes), thrombocytopenia, elevated LDH, low haptoglobin, normal coags (vs DIC). Atheroembolic clues: livedo reticularis, blue/purple toes with intact pulses, EOSINOPHILIA + low complement + eosinophiluria, days–weeks AFTER a vascular procedure/angiography or anticoagulation. Malignant HTN: BP often &gt;180/120 with retinal/CNS findings.</div><div class="rtt">⚠️ AKI plus eosinophilia after a cardiac catheterization is contrast nephropathy or AIN. WRONG — cholesterol (atheroembolic) AKI presents days-to-weeks post-procedure with blue toes, livedo, transient eosinophilia, and low complement; contrast AKI peaks at 3–5 days and resolves, and AIN is drug-triggered. The skin findings and timing distinguish them.</div></div><div class="rt"><div class="rtl">12. Pigment injury row</div><div class="rte">Pigment nephropathy is a TUBULAR subtype: rhabdomyolysis releases myoglobin (or massive hemolysis releases hemoglobin) which is directly tubulotoxic, forms casts with Tamm-Horsfall protein, and causes intrarenal vasoconstriction. Clues to rhabdo: CK in the thousands–hundreds of thousands, hyperkalemia, hyperphosphatemia, early HYPOcalcemia then late hypercalcemia, and a LOW/normal BUN:Cr (muscle dumps creatinine).</div><div class="rtt">⚠️ Pigment (rhabdo) AKI shows a high BUN:Cr and high FENa like typical ATN. WRONG — rhabdo gives a LOW/normal BUN:Cr (direct creatinine release) and can show FENa &lt;1% (intact tubular avidity early); the giveaways are CK elevation and heme-positive dipstick without RBCs.</div></div><div class="rt"><div class="rtl">13. Pigment urine clue</div><div class="rte">Signature finding: a dipstick POSITIVE for blood/heme but FEW or NO RBCs on microscopy — because the dipstick detects the heme moiety of myoglobin and hemoglobin, not intact erythrocytes. Pair with red-brown ('tea/cola-colored') urine, markedly elevated CK (rhabdo) or low haptoglobin/high LDH (hemolysis) to confirm.</div><div class="rtt">⚠️ A heme-positive dipstick always means true hematuria. WRONG — myoglobin and free hemoglobin also turn the dipstick positive; if microscopy shows no RBCs, think pigment nephropathy and send CK, haptoglobin, and LDH rather than chasing a urologic bleeding source.</div></div><div class="rt"><div class="rtl">14. Board meaning column</div><div class="rte">The exam logic: each compartment maps to a SIGNATURE sediment, so the urine microscopy IS the localizing test for intrinsic AKI — muddy-brown casts = ATN (tubules); WBC casts/sterile pyuria = AIN (interstitium); RBC casts/dysmorphic RBCs = GN (glomeruli); schistocytes/blue toes = vascular; heme-positive without RBCs = pigment. Order: assess pre/post-renal first, then use sediment to pin the intrinsic compartment.</div><div class="rtt">⚠️ You can localize intrinsic AKI from FENa and BUN:Cr alone. WRONG — those indices mainly separate prerenal vs ATN and have many exceptions; the URINE SEDIMENT is what distinguishes ATN vs AIN vs GN vs vascular vs pigment. Always examine the sediment in intrinsic AKI.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nref_fluids.html" title="Renal Reference — IV Fluid Types">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nref_intrinsic_figure.html" title="Renal Reference — Intrinsic Renal Failure Figure (Harrison)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

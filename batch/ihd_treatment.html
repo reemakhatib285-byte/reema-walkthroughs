@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD — Antianginal Treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Beta-blocker first-line</b> — WRONG: a calcium channel blocker or nitrate is the first-line antianginal of choice in stable angina. Discriminator: beta-blockers are first-line (and uniquely lower mortality post-MI/in HFrEF); CCBs and nitrates are add-ons or alternatives when beta-blockers are contraindicated or insufficient.</li><li><b>BB abrupt stop → rebound</b> — WRONG: beta-blockers can be stopped abruptly without consequence (e.g., before surgery). Discriminator: abrupt withdrawal triggers rebound tachycardia/ischemia and can precipitate MI — taper over 1–2 weeks; this withdrawal hazard is a favorite exam point.</li><li><b>Long-acting nitrate</b> — WRONG: long-acting nitrates reduce mortality in stable IHD. Discriminator: nitrates are purely symptomatic (no survival benefit) — only beta-blockers, and revascularization in select anatomy, affect mortality; nitrates are for angina relief.</li><li><b>Nitrate-free interval</b> — WRONG: dosing long-acting nitrates around the clock for steady coverage is optimal. Discriminator: continuous dosing causes tolerance and loss of effect — you must include a daily 10–14h nitrate-free interval; round-the-clock nitrates defeat the therapy.</li><li><b>Sublingual NTG (acute)</b> — WRONG: sublingual nitroglycerin is safe to give a patient who recently took sildenafil for chest pain. Discriminator: nitrate + PDE5 inhibitor → profound, potentially fatal hypotension — always ask about sildenafil/tadalafil before any nitrate (sublingual or IV).</li><li><b>DHP CCB (amlodipine)</b> — WRONG: dihydropyridine CCBs slow the heart rate and shouldn't be combined with beta-blockers. Discriminator: DHPs (amlodipine) have minimal AV-node effect — they don't slow HR (may cause reflex tachycardia) and combine SAFELY with beta-blockers; it's the NON-DHP CCBs (verapamil/diltiazem) that are dangerous with beta-blockers.</li><li><b>Amlodipine safe with BB</b> — WRONG: adding amlodipine to a beta-blocker risks heart block and bradycardia. Discriminator: DHP + beta-blocker is a safe, synergistic combination (the beta-blocker offsets reflex tachycardia) — the heart-block danger belongs to verapamil/diltiazem + beta-blocker, not amlodipine.</li><li><b>Avoid short-acting nifedipine</b> — WRONG: short-acting nifedipine is a good rapid-acting antianginal/antihypertensive. Discriminator: immediate-release nifedipine causes reflex tachycardia and can precipitate MI (harm, not benefit) — only long-acting DHPs are used in IHD.</li><li><b>Non-DHP CCB + BB danger</b> — WRONG: verapamil or diltiazem can be safely added to a beta-blocker for better rate control in angina. Discriminator: non-DHP CCB + beta-blocker → additive AV block/bradycardia/HF — this combination is dangerous; if a patient is on a beta-blocker and needs a CCB, use a DHP (amlodipine).</li><li><b>Verapamil = rebound if stopped</b> — WRONG: non-DHP CCBs are safe and beneficial in patients with reduced-EF heart failure. Discriminator: verapamil/diltiazem are negative inotropes contraindicated in HFrEF (they worsen decompensation) — only DHPs (amlodipine/felodipine) are tolerated in HFrEF if a CCB is needed.</li><li><b>Ranolazine (add-on)</b> — WRONG: ranolazine works by lowering heart rate and blood pressure like a beta-blocker. Discriminator: ranolazine's distinguishing feature is NO effect on HR or BP (it blocks the late Na current) — that's exactly why it's chosen when low HR/BP preclude other antianginals.</li><li><b>Ranolazine QT / interactions</b> — WRONG: ranolazine is free of significant drug interactions and QT effects. Discriminator: ranolazine is a CYP3A substrate that prolongs QT — watch for interactions (verapamil/diltiazem, azoles, macrolides, grapefruit) and avoid stacking QT-prolonging drugs.</li><li><b>Ivabradine (if EF normal, sinus)</b> — WRONG: ivabradine works in atrial fibrillation and also boosts contractility/blood pressure. Discriminator: ivabradine only works in SINUS rhythm (it acts on the SA node — useless in AF) and purely slows HR with no inotropic or BP effect.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Beta-blocker first-line</div><div class="rte">Beta-blockers (metoprolol succinate 25–200 mg/day, atenolol, bisoprolol, carvedilol) are FIRST-LINE antianginal therapy: by blocking beta-1 receptors they lower heart rate and contractility, reducing myocardial oxygen demand (↓MVO2), and the slower HR lengthens diastole to improve coronary perfusion. Titrate to a resting HR of ~55–60 bpm. They are the only antianginal class with proven mortality benefit post-MI and in HFrEF, so they are preferred when a comorbidity (prior MI, low EF) coexists.</div><div class="rtt">⚠️ WRONG: a calcium channel blocker or nitrate is the first-line antianginal of choice in stable angina. Discriminator: beta-blockers are first-line (and uniquely lower mortality post-MI/in HFrEF); CCBs and nitrates are add-ons or alternatives when beta-blockers are contraindicated or insufficient.</div></div><div class="rt"><div class="rtl">2. BB abrupt stop → rebound</div><div class="rte">Never stop beta-blockers abruptly in IHD: chronic blockade upregulates beta-receptors, so sudden withdrawal causes rebound tachycardia, hypertension, and ↑MVO2 that can precipitate angina, MI, or arrhythmia. Taper gradually over ~1–2 weeks. This rebound phenomenon is also why beta-blockers should generally be continued perioperatively rather than discontinued.</div><div class="rtt">⚠️ WRONG: beta-blockers can be stopped abruptly without consequence (e.g., before surgery). Discriminator: abrupt withdrawal triggers rebound tachycardia/ischemia and can precipitate MI — taper over 1–2 weeks; this withdrawal hazard is a favorite exam point.</div></div><div class="rt"><div class="rtl">3. Long-acting nitrate</div><div class="rte">Long-acting nitrates (isosorbide mononitrate, isosorbide dinitrate, transdermal nitroglycerin patch) are add-on antianginals. Nitrates donate NO → venodilation that reduces preload and ventricular wall stress (lowering MVO2), with some epicardial coronary dilation. They relieve symptoms but have NO mortality benefit. Add when a beta-blocker alone is insufficient or as initial therapy if beta-blockers are contraindicated.</div><div class="rtt">⚠️ WRONG: long-acting nitrates reduce mortality in stable IHD. Discriminator: nitrates are purely symptomatic (no survival benefit) — only beta-blockers, and revascularization in select anatomy, affect mortality; nitrates are for angina relief.</div></div><div class="rt"><div class="rtl">4. Nitrate-free interval</div><div class="rte">Continuous nitrate exposure causes tolerance (tachyphylaxis) within ~24h via depleted sulfhydryl groups / oxidative stress, abolishing efficacy. Prevent it by building in a daily nitrate-free interval of 10–14 hours (e.g., remove the patch overnight, dose isosorbide mononitrate once daily / dinitrate in an asymmetric schedule). The nitrate-free window is usually scheduled at night when angina risk is lowest.</div><div class="rtt">⚠️ WRONG: dosing long-acting nitrates around the clock for steady coverage is optimal. Discriminator: continuous dosing causes tolerance and loss of effect — you must include a daily 10–14h nitrate-free interval; round-the-clock nitrates defeat the therapy.</div></div><div class="rt"><div class="rtl">5. Sublingual NTG (acute)</div><div class="rte">Sublingual nitroglycerin (0.3–0.4 mg tablet or spray) is for ACUTE angina relief or prophylaxis just before exertion; onset is 1–3 min. Instruct: one dose, repeat every 5 min up to 3 doses; if pain persists after the first dose, call emergency services. Absolute contraindication: recent PDE5 inhibitor use (sildenafil/tadalafil/vardenafil) — the combination causes life-threatening hypotension.</div><div class="rtt">⚠️ WRONG: sublingual nitroglycerin is safe to give a patient who recently took sildenafil for chest pain. Discriminator: nitrate + PDE5 inhibitor → profound, potentially fatal hypotension — always ask about sildenafil/tadalafil before any nitrate (sublingual or IV).</div></div><div class="rt"><div class="rtl">6. DHP CCB (amlodipine)</div><div class="rte">Dihydropyridine CCBs (amlodipine 5–10 mg, felodipine, long-acting nifedipine) are add-on antianginals that cause arterial/coronary vasodilation, reducing afterload and MVO2. Long-acting DHPs are preferred (smooth, sustained effect). They are first choice for vasospastic (Prinzmetal) angina and useful when beta-blockers are contraindicated or angina persists despite them.</div><div class="rtt">⚠️ WRONG: dihydropyridine CCBs slow the heart rate and shouldn't be combined with beta-blockers. Discriminator: DHPs (amlodipine) have minimal AV-node effect — they don't slow HR (may cause reflex tachycardia) and combine SAFELY with beta-blockers; it's the NON-DHP CCBs (verapamil/diltiazem) that are dangerous with beta-blockers.</div></div><div class="rt"><div class="rtl">7. Amlodipine safe with BB</div><div class="rte">Long-acting DHP CCBs (amlodipine) combine SAFELY with beta-blockers because they have negligible effect on the SA/AV node — the beta-blocker conveniently blunts any reflex tachycardia from the DHP's vasodilation, making the pairing complementary. This is a common, effective two-drug antianginal regimen when monotherapy fails.</div><div class="rtt">⚠️ WRONG: adding amlodipine to a beta-blocker risks heart block and bradycardia. Discriminator: DHP + beta-blocker is a safe, synergistic combination (the beta-blocker offsets reflex tachycardia) — the heart-block danger belongs to verapamil/diltiazem + beta-blocker, not amlodipine.</div></div><div class="rt"><div class="rtl">8. Avoid short-acting nifedipine</div><div class="rte">Immediate-release (short-acting) nifedipine causes rapid vasodilation and a surge of reflex sympathetic activation → tachycardia and ↑MVO2 that can WORSEN ischemia and precipitate MI; it increased mortality in trials. Always use long-acting DHP formulations in IHD. (Short-acting nifedipine is also no longer used for hypertensive urgency for the same reason.)</div><div class="rtt">⚠️ WRONG: short-acting nifedipine is a good rapid-acting antianginal/antihypertensive. Discriminator: immediate-release nifedipine causes reflex tachycardia and can precipitate MI (harm, not benefit) — only long-acting DHPs are used in IHD.</div></div><div class="rt"><div class="rtl">9. Non-DHP CCB + BB danger</div><div class="rte">Non-dihydropyridine CCBs (verapamil, diltiazem) act on the SA/AV node to slow HR and depress contractility. Combined with a beta-blocker their effects are ADDITIVE → high risk of severe bradycardia, high-grade AV block, and decompensated heart failure. Avoid this combination; non-DHPs are also contraindicated in HFrEF because of their negative inotropy.</div><div class="rtt">⚠️ WRONG: verapamil or diltiazem can be safely added to a beta-blocker for better rate control in angina. Discriminator: non-DHP CCB + beta-blocker → additive AV block/bradycardia/HF — this combination is dangerous; if a patient is on a beta-blocker and needs a CCB, use a DHP (amlodipine).</div></div><div class="rt"><div class="rtl">10. Verapamil = rebound if stopped</div><div class="rte">Non-DHP CCBs (verapamil/diltiazem) lower HR and contractility for rate control and are an alternative antianginal when beta-blockers are contraindicated (e.g., severe asthma) — but in HFrEF they worsen failure, and like beta-blockers their abrupt cessation can cause rebound ↑HR/↑MVO2 and ischemia. Verapamil also causes constipation and can raise digoxin levels.</div><div class="rtt">⚠️ WRONG: non-DHP CCBs are safe and beneficial in patients with reduced-EF heart failure. Discriminator: verapamil/diltiazem are negative inotropes contraindicated in HFrEF (they worsen decompensation) — only DHPs (amlodipine/felodipine) are tolerated in HFrEF if a CCB is needed.</div></div><div class="rt"><div class="rtl">11. Ranolazine (add-on)</div><div class="rte">Ranolazine inhibits the late inward sodium current, reducing Na/Ca overload and improving diastolic relaxation/coronary flow — an antianginal that does NOT lower heart rate or blood pressure. This makes it ideal as add-on therapy when angina persists but HR/BP are already low and limit beta-blockers, nitrates, or CCBs. It has no proven mortality benefit.</div><div class="rtt">⚠️ WRONG: ranolazine works by lowering heart rate and blood pressure like a beta-blocker. Discriminator: ranolazine's distinguishing feature is NO effect on HR or BP (it blocks the late Na current) — that's exactly why it's chosen when low HR/BP preclude other antianginals.</div></div><div class="rt"><div class="rtl">12. Ranolazine QT / interactions</div><div class="rte">Ranolazine is metabolized by CYP3A4, so strong CYP3A inhibitors (diltiazem, verapamil, ketoconazole, macrolides, grapefruit) raise its levels — and it prolongs the QT interval. Avoid with other QT-prolonging drugs and in significant hepatic impairment; reduce the dose with moderate CYP3A inhibitors. Despite QT prolongation it has not been shown to cause torsades clinically.</div><div class="rtt">⚠️ WRONG: ranolazine is free of significant drug interactions and QT effects. Discriminator: ranolazine is a CYP3A substrate that prolongs QT — watch for interactions (verapamil/diltiazem, azoles, macrolides, grapefruit) and avoid stacking QT-prolonging drugs.</div></div><div class="rt"><div class="rtl">13. Ivabradine (if EF normal, sinus)</div><div class="rte">Ivabradine selectively inhibits the SA-node 'funny' (If) current, lowering heart rate WITHOUT affecting contractility or blood pressure. It is an add-on antianginal for patients in SINUS rhythm with HR still &gt;70 despite a maximally tolerated beta-blocker, or when beta-blockers are not tolerated. Side effects: visual phosphenes (luminous brightness) and bradycardia. It has a role in chronic HFrEF (EF ≤35%, sinus, HR ≥70).</div><div class="rtt">⚠️ WRONG: ivabradine works in atrial fibrillation and also boosts contractility/blood pressure. Discriminator: ivabradine only works in SINUS rhythm (it acts on the SA node — useless in AF) and purely slows HR with no inotropic or BP effect.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_stemi_stents_dapt.html" title="IHD / STEMI — stents &amp; DAPT">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_beta_blocker.html" title="IHD — Beta-Blockers &amp; Antianginal Safety">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

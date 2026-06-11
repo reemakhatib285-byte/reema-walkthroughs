@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypernatremia — Diagnostic Algorithm</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Assess volume</b> — WRONG answer: 'just measure urine sodium first to work up hypernatremia.' The first branch point is clinical VOLUME status, then urine osmolality; urine Na is a secondary clue within volume categories. Discriminator: follow the ordered sequence volume → Uosm → DDAVP rather than jumping to a single lab value.</li><li><b>Hypovolemic</b> — WRONG answer: 'a hypovolemic hypernatremic patient has lost mostly salt and needs aggressive sodium repletion.' They have lost MORE water than salt (hypotonic loss) — they need volume resuscitation followed by FREE WATER, not added sodium. Discriminator: hypovolemic hyperNa = hypotonic fluid loss; replace volume (NS) then water, don't load salt.</li><li><b>Euvolemic</b> — WRONG answer: 'diabetes insipidus presents as a markedly hypovolemic, shocked patient.' DI is classically EUVOLEMIC (pure water loss) — patients compensate by drinking and only become hypernatremic/hypovolemic when access to water fails. Discriminator: euvolemic hyperNa with large dilute urine = DI; overt hypovolemia points more to GI/osmotic losses.</li><li><b>Hypervolemic</b> — WRONG answer: 'hypervolemic hypernatremia is treated like other hypernatremias with isotonic saline.' Adding NaCl worsens the sodium load; the treatment is free water (D5W) ± a loop diuretic to remove excess sodium and volume. Discriminator: hypervolemic/edematous + high urine Na = sodium gain — remove sodium, give water, diurese; don't give saline.</li><li><b>Na GAIN</b> — WRONG answer: 'a high urine sodium in hypernatremia always indicates the kidney is the source of water loss.' In sodium GAIN the urine Na is high because the kidney is appropriately dumping an exogenous sodium load — interpret urine Na together with volume status and urine osmolality. Discriminator: high urine Na + hypervolemia = sodium gain, not renal water wasting.</li><li><b>Urine osm gauge</b> — WRONG answer: 'any concentrated-looking urine rules out a renal cause of hypernatremia.' Partial DI and osmotic diuresis can give intermediate Uosm; the key is whether Uosm is MAXIMAL/appropriate for the degree of hyperosmolality, and osmotic diuresis raises urine osm via solute while still wasting water. Discriminator: judge Uosm against the expected maximal concentration, and check for urinary solute (glucose/urea) to catch osmotic diuresis.</li><li><b>Uosm &gt;800</b> — WRONG answer: 'a hypernatremic patient with maximally concentrated urine probably has diabetes insipidus.' Maximal Uosm EXCLUDES DI (the kidney is concentrating fine) and points to extrarenal water loss or sodium gain. Discriminator: high Uosm = appropriate renal response → look outside the kidney (GI, skin, lungs) or for a sodium load.</li><li><b>Uosm &lt;800</b> — WRONG answer: 'dilute urine in a hypernatremic patient is reassuring and just means good hydration.' Dilute urine when serum is hyperosmolar is the OPPOSITE of normal — it signals renal water wasting (DI or osmotic diuresis) and requires further workup. Discriminator: low Uosm + high serum osm = inappropriate → DI vs osmotic diuresis; proceed to DDAVP trial.</li><li><b>Extra-renal</b> — WRONG answer: 'high urine osmolality with low urine sodium points to a renal cause of the hypernatremia.' That combination indicates the kidney is appropriately conserving both water and sodium against an EXTRARENAL loss. Discriminator: high Uosm + low urine Na = extrarenal water loss; the kidney is the hero, not the culprit.</li><li><b>Renal</b> — WRONG answer: 'inappropriately dilute urine in hypernatremia always means diabetes insipidus.' Osmotic diuresis also wastes renal water but is driven by excess urinary SOLUTE (glucose, urea, mannitol), not an AVP problem, and won't respond to DDAVP. Discriminator: measure urinary solute/glucose — high solute output = osmotic diuresis; truly free-water diuresis with low solute = DI.</li><li><b>DDAVP test</b> — WRONG answer: 'do a full overnight water-deprivation test before ever giving DDAVP in a hypernatremic DI patient.' If the patient is already hyperosmolar with dilute urine, go straight to the DDAVP trial — withholding water further is dangerous. Discriminator: hypernatremic + dilute urine → DDAVP trial directly; water deprivation is only for the normonatremic polyuric patient.</li><li><b>Central DI ↑Uosm</b> — WRONG answer: 'only a doubling or complete normalization of Uosm counts as a positive DDAVP response for central DI.' A rise of &gt;50% in urine osmolality after DDAVP is sufficient to indicate central DI (partial central DI gives an intermediate but clear rise). Discriminator: any substantial (&gt;50%) Uosm increase after DDAVP = central DI.</li><li><b>Nephrogenic no rise</b> — WRONG answer: 'a flat Uosm response to DDAVP means the test failed and should be repeated with central DI assumed.' A negligible rise IS the diagnostic result — it confirms NEPHROGENIC DI. Discriminator: no/blunted Uosm rise after DDAVP = nephrogenic (AVP-resistant); the failure to respond is the answer, not a failed test.</li><li><b>No water = never fix</b> — WRONG answer: 'once you identify and treat the renal or extrarenal cause, the water-access status doesn't matter.' If the patient still cannot sense thirst or reach water, hypernatremia will recur regardless of the primary cause being treated. Discriminator: always answer 'why couldn't this patient drink enough water?' — the access/thirst barrier is the common final pathway in persistent hypernatremia.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Assess volume</div><div class="rte">The diagnostic workup of hypernatremia follows three steps in order, shown by the bottom arrow: (1) assess VOLUME status (hypo-, eu-, or hypervolemic) to sort the broad mechanism; (2) measure URINE OSMOLALITY to ask whether the kidney is concentrating appropriately; (3) if DI is suspected, give DDAVP and recheck Uosm to split central from nephrogenic. Volume → Uosm → DDAVP is the spine of the whole algorithm.</div><div class="rtt">⚠️ WRONG answer: 'just measure urine sodium first to work up hypernatremia.' The first branch point is clinical VOLUME status, then urine osmolality; urine Na is a secondary clue within volume categories. Discriminator: follow the ordered sequence volume → Uosm → DDAVP rather than jumping to a single lab value.</div></div><div class="rt"><div class="rtl">2. Hypovolemic</div><div class="rte">Hypovolemic hypernatremia means water loss EXCEEDS sodium loss (net loss of hypotonic fluid). Exam shows volume depletion — dry cracked lips/mucosa, tachycardia, orthostasis, poor skin turgor. Causes: GI losses (osmotic diarrhea, vomiting, NG suction), osmotic diuresis (hyperglycemia, mannitol, urea), excessive sweating/burns, and renal losses including diuretics. Treatment restores volume with isotonic saline first, then free water.</div><div class="rtt">⚠️ WRONG answer: 'a hypovolemic hypernatremic patient has lost mostly salt and needs aggressive sodium repletion.' They have lost MORE water than salt (hypotonic loss) — they need volume resuscitation followed by FREE WATER, not added sodium. Discriminator: hypovolemic hyperNa = hypotonic fluid loss; replace volume (NS) then water, don't load salt.</div></div><div class="rt"><div class="rtl">3. Euvolemic</div><div class="rte">Euvolemic hypernatremia reflects nearly PURE water loss with little change in total body sodium, so volume status looks roughly normal early on. The classic causes are diabetes insipidus (central or nephrogenic) and insensible/respiratory losses. Because sodium content is normal, these patients are not grossly volume-depleted unless they also cannot replace the water — the monk (calm, dry, no overt volume change) embodies the euvolemic picture.</div><div class="rtt">⚠️ WRONG answer: 'diabetes insipidus presents as a markedly hypovolemic, shocked patient.' DI is classically EUVOLEMIC (pure water loss) — patients compensate by drinking and only become hypernatremic/hypovolemic when access to water fails. Discriminator: euvolemic hyperNa with large dilute urine = DI; overt hypovolemia points more to GI/osmotic losses.</div></div><div class="rt"><div class="rtl">4. Hypervolemic</div><div class="rte">Hypervolemic hypernatremia is caused by SODIUM GAIN — total body sodium and volume both rise. Sources are almost entirely iatrogenic: hypertonic (3%) saline, repeated NaHCO3 during resuscitation, hypertonic tube feeds, and hyperaldosteronism/Cushing (mild). Patients are volume-overloaded (edema, high urine Na). Management removes the source, gives free water (D5W), and may add a loop diuretic ± dialysis if renal function is impaired.</div><div class="rtt">⚠️ WRONG answer: 'hypervolemic hypernatremia is treated like other hypernatremias with isotonic saline.' Adding NaCl worsens the sodium load; the treatment is free water (D5W) ± a loop diuretic to remove excess sodium and volume. Discriminator: hypervolemic/edematous + high urine Na = sodium gain — remove sodium, give water, diurese; don't give saline.</div></div><div class="rt"><div class="rtl">5. Na GAIN</div><div class="rte">The 'Na GAIN' tag with an IV bag is the clue for the hypervolemic branch: an exogenous sodium load (hypertonic saline, NaHCO3, hypertonic feeds) raises both serum sodium and extracellular volume simultaneously. This is the rarest mechanism overall and is almost always iatrogenic in hospitalized patients. Urine sodium is HIGH because the kidney tries to excrete the excess sodium.</div><div class="rtt">⚠️ WRONG answer: 'a high urine sodium in hypernatremia always indicates the kidney is the source of water loss.' In sodium GAIN the urine Na is high because the kidney is appropriately dumping an exogenous sodium load — interpret urine Na together with volume status and urine osmolality. Discriminator: high urine Na + hypervolemia = sodium gain, not renal water wasting.</div></div><div class="rt"><div class="rtl">6. Urine osm gauge</div><div class="rte">Urine osmolality is the pivotal lab. In a hyperosmolar patient a normal kidney should maximally concentrate urine (Uosm up to ~800–1200 mOsm/kg) to retain water. The gauge splits the algorithm: Uosm &gt;700–800 means the kidney is responding appropriately (so the water loss is extrarenal, or there is sodium gain); a dilute Uosm &lt;700–800 in the face of high serum osm is INAPPROPRIATE and points to renal water wasting (DI or osmotic diuresis).</div><div class="rtt">⚠️ WRONG answer: 'any concentrated-looking urine rules out a renal cause of hypernatremia.' Partial DI and osmotic diuresis can give intermediate Uosm; the key is whether Uosm is MAXIMAL/appropriate for the degree of hyperosmolality, and osmotic diuresis raises urine osm via solute while still wasting water. Discriminator: judge Uosm against the expected maximal concentration, and check for urinary solute (glucose/urea) to catch osmotic diuresis.</div></div><div class="rt"><div class="rtl">7. Uosm &gt;800</div><div class="rte">A high urine osmolality (&gt;700–800, green check) means the kidney's concentrating mechanism is intact and AVP is acting appropriately — so the body is correctly trying to conserve water. This directs you to EXTRARENAL water loss (GI, skin/sweat, insensible/respiratory) or to sodium gain. The concentrating defect of DI is excluded when the urine is maximally concentrated.</div><div class="rtt">⚠️ WRONG answer: 'a hypernatremic patient with maximally concentrated urine probably has diabetes insipidus.' Maximal Uosm EXCLUDES DI (the kidney is concentrating fine) and points to extrarenal water loss or sodium gain. Discriminator: high Uosm = appropriate renal response → look outside the kidney (GI, skin, lungs) or for a sodium load.</div></div><div class="rt"><div class="rtl">8. Uosm &lt;800</div><div class="rte">An inappropriately DILUTE urine (Uosm &lt;700–800, red X) in a patient who is hyperosmolar is pathologic — a healthy kidney should be concentrating maximally. This identifies RENAL water wasting and narrows to diabetes insipidus (failure of AVP signaling) or osmotic diuresis (glucose, urea, mannitol dragging water out). The next step is to look for urinary solute and then trial DDAVP.</div><div class="rtt">⚠️ WRONG answer: 'dilute urine in a hypernatremic patient is reassuring and just means good hydration.' Dilute urine when serum is hyperosmolar is the OPPOSITE of normal — it signals renal water wasting (DI or osmotic diuresis) and requires further workup. Discriminator: low Uosm + high serum osm = inappropriate → DI vs osmotic diuresis; proceed to DDAVP trial.</div></div><div class="rt"><div class="rtl">9. Extra-renal</div><div class="rte">Extrarenal water loss is the diagnosis when Uosm is HIGH (kidney concentrating maximally): the water is leaving by a non-renal route — diarrhea/vomiting/NG suction (GI), sweating/burns/fever (skin), and insensible/respiratory losses. Urine Na is typically low here because the volume-depleted kidney is avidly reabsorbing sodium too. Treatment replaces free water and addresses the source of loss.</div><div class="rtt">⚠️ WRONG answer: 'high urine osmolality with low urine sodium points to a renal cause of the hypernatremia.' That combination indicates the kidney is appropriately conserving both water and sodium against an EXTRARENAL loss. Discriminator: high Uosm + low urine Na = extrarenal water loss; the kidney is the hero, not the culprit.</div></div><div class="rt"><div class="rtl">10. Renal</div><div class="rte">Renal water loss is the diagnosis when Uosm is inappropriately LOW: the kidney itself is wasting water. The two categories are diabetes insipidus (defective AVP production or response → dilute urine) and osmotic diuresis (excess filtered solute — glucose in DKA/HHS, urea after high-protein feeds or recovering ATN, mannitol — that obligates water excretion). Distinguish them by checking urine for solute and by the DDAVP trial (DI responds depending on type; osmotic diuresis does not).</div><div class="rtt">⚠️ WRONG answer: 'inappropriately dilute urine in hypernatremia always means diabetes insipidus.' Osmotic diuresis also wastes renal water but is driven by excess urinary SOLUTE (glucose, urea, mannitol), not an AVP problem, and won't respond to DDAVP. Discriminator: measure urinary solute/glucose — high solute output = osmotic diuresis; truly free-water diuresis with low solute = DI.</div></div><div class="rt"><div class="rtl">11. DDAVP test</div><div class="rte">Once renal water wasting points to DI, the desmopressin (DDAVP) trial separates the two types: administer DDAVP and re-measure urine osmolality. This works because central DI has intact kidneys that respond to supplied hormone, while nephrogenic DI is resistant downstream. In an already-hypernatremic patient this trial replaces the dangerous water-deprivation test.</div><div class="rtt">⚠️ WRONG answer: 'do a full overnight water-deprivation test before ever giving DDAVP in a hypernatremic DI patient.' If the patient is already hyperosmolar with dilute urine, go straight to the DDAVP trial — withholding water further is dangerous. Discriminator: hypernatremic + dilute urine → DDAVP trial directly; water deprivation is only for the normonatremic polyuric patient.</div></div><div class="rt"><div class="rtl">12. Central DI ↑Uosm</div><div class="rte">Central DI: after DDAVP, urine osmolality RISES substantially — by &gt;50% (often &gt;100% in complete central DI) — because the kidney was always able to respond and merely lacked the hormone. This rise is the defining positive test for central DI and confirms the lesion is in AVP production/release, not the kidney. It also predicts a good therapeutic response to maintenance desmopressin.</div><div class="rtt">⚠️ WRONG answer: 'only a doubling or complete normalization of Uosm counts as a positive DDAVP response for central DI.' A rise of &gt;50% in urine osmolality after DDAVP is sufficient to indicate central DI (partial central DI gives an intermediate but clear rise). Discriminator: any substantial (&gt;50%) Uosm increase after DDAVP = central DI.</div></div><div class="rt"><div class="rtl">13. Nephrogenic no rise</div><div class="rte">Nephrogenic DI: after DDAVP there is LITTLE or NO rise in urine osmolality (&lt;50%, often negligible) because the collecting duct is resistant to AVP — the V2 receptor or aquaporin-2 channel is the broken link, so adding hormone changes nothing. This flat response confirms the defect is renal and directs treatment to thiazide ± amiloride ± low-salt diet and removing the cause (lithium, hypercalcemia, hypokalemia).</div><div class="rtt">⚠️ WRONG answer: 'a flat Uosm response to DDAVP means the test failed and should be repeated with central DI assumed.' A negligible rise IS the diagnostic result — it confirms NEPHROGENIC DI. Discriminator: no/blunted Uosm rise after DDAVP = nephrogenic (AVP-resistant); the failure to respond is the answer, not a failed test.</div></div><div class="rt"><div class="rtl">14. No water = never fix</div><div class="rte">The overarching message (red X over the man at the locked door): whatever the mechanism, hypernatremia only PERSISTS when thirst is impaired or access to water is blocked, because an intact thirst-and-access system normally corrects water deficits quickly. So in every case you must identify and fix the water-access barrier — give water, treat adipsia, and address why the patient could not drink — or the hypernatremia recurs.</div><div class="rtt">⚠️ WRONG answer: 'once you identify and treat the renal or extrarenal cause, the water-access status doesn't matter.' If the patient still cannot sense thirst or reach water, hypernatremia will recur regardless of the primary cause being treated. Discriminator: always answer 'why couldn't this patient drink enough water?' — the access/thirst barrier is the common final pathway in persistent hypernatremia.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperna_di_treatment.html" title="Hypernatremia — DI Treatment Specifics">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperna_fluid_choice.html" title="Hypernatremia — Fluid Choice Algorithm">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

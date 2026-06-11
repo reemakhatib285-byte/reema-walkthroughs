@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Infective Endocarditis — Duke Criteria</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Major: typical organism</b> — WRONG answer: 'one positive blood culture for a typical organism is a major criterion.' A SINGLE positive culture is only a minor (microbiologic) criterion — you need 2 separate sets. Discriminator: the lone exception is Coxiella burnetii, where a single positive culture or phase I IgG ≥1:800 counts as a major criterion by itself.</li><li><b>Q fever = single major</b> — WRONG answer: 'Coxiella needs 2 positive cultures like other typical organisms.' Coxiella is the one bug where a single positive culture or high phase I IgG titer alone = major. Discriminator: culture-negative IE + farm-animal exposure → check Coxiella phase I serology, do not wait for blood cultures.</li><li><b>Bartonella major</b> — WRONG answer: 'negative blood cultures rule out Bartonella IE.' Bartonella is culture-negative — diagnosis relies on serology/PCR. Discriminator: culture-negative IE with cat exposure (henselae) or homelessness/body lice (quintana) → send Bartonella serology, not just repeat cultures.</li><li><b>Criteria combinations</b> — WRONG answer: 'you must have at least one major criterion to call it definite IE.' FIVE minor criteria with NO major still equals definite IE. Discriminator: don't dismiss a culture-negative, echo-negative patient — count the minors (predisposition, fever, vascular, immunologic, micro) and 5 of them clinch the diagnosis.</li><li><b>Possible IE</b> — WRONG answer: 'possible IE means stop the workup / no need for echo.' Possible IE specifically mandates further evaluation (TEE, repeat cultures) to reclassify as definite or rejected. Discriminator: 3 minor criteria = possible, not negative — keep investigating.</li><li><b>HACEK culture rule</b> — WRONG answer: 'HACEK requires prolonged (&gt;2 week) incubation to recover.' Modern blood culture systems detect HACEK within ~5 days; prolonged incubation is generally unnecessary now. Discriminator: HACEK in 2 sets = major criterion; treat with ceftriaxone.</li><li><b>Echo: vegetation (major)</b> — WRONG answer: 'worsening of a pre-existing murmur counts as the major imaging criterion.' Only NEW regurgitation (on echo) or a structural lesion qualifies — increase in a pre-existing murmur does not. Discriminator: new regurgitation/vegetation/abscess on imaging = major; an old murmur getting louder is not.</li><li><b>New murmur = minor</b> — WRONG answer: 'a new murmur on physical exam is a major Duke criterion.' Discriminator: NEW VALVULAR REGURGITATION on echo = MAJOR; a new murmur heard on auscultation without echo confirmation does not meet the major bar — get the echo.</li><li><b>Predisposition (minor)</b> — WRONG answer: 'IV drug use is a vascular phenomenon.' IVDU and predisposing cardiac conditions are the PREDISPOSITION minor criterion, a distinct category. Discriminator: don't double-count — predisposition (substrate) ≠ vascular phenomena (embolic/immune sequelae).</li><li><b>Fever &gt;38°C (minor)</b> — WRONG answer: 'absence of fever excludes IE.' Subacute IE (e.g., viridans strep) and elderly/immunosuppressed patients may be afebrile or low-grade. Discriminator: fever ≥38°C is a minor criterion when present, but its absence does not rule out IE.</li><li><b>Immunologic phenomena</b> — WRONG answer: 'Janeway lesions and Osler nodes are both immunologic.' Discriminator: OSLER nodes (painful) and ROTH spots are IMMUNOLOGIC/minor; JANEWAY lesions (painless, palms/soles) are VASCULAR/minor. Mnemonic: Osler = Ouch (immune); Janeway = painless (vascular/septic emboli).</li><li><b>Vascular phenomena</b> — WRONG answer: 'Janeway lesions are painful and immune-mediated.' Discriminator: JANEWAY = painless, VASCULAR (septic emboli), palms/soles; OSLER = painful, IMMUNOLOGIC, finger/toe pulp. Mixing them up is the classic Duke board trap.</li><li><b>Cultures not meeting major</b> — WRONG answer: 'a single positive culture for coagulase-negative staph is automatically a criterion.' Common skin contaminants (e.g., CoNS, diphtheroids) in a single set are usually dismissed as contamination, not counted. Discriminator: a single positive culture counts as minor only when the organism is plausibly causative — beware single positives that are contaminants.</li><li><b>TTE first, then TEE</b> — WRONG answer: 'a negative TTE rules out endocarditis.' A negative TTE does NOT exclude IE — go to TEE, and repeat in 3–5 days if still suspicious. Discriminator: prosthetic valve or suspected abscess mandates TEE up front; never stop at a normal TTE when pretest probability is high.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Major: typical organism</div><div class="rte">MAJOR microbiologic criterion: a TYPICAL IE organism grown from 2 SEPARATE blood culture sets — viridans streptococci, Streptococcus gallolyticus (bovis), HACEK group, Staphylococcus aureus, or community-acquired enterococci without a primary focus. 'Separate' means drawn from different venipuncture sites/times. Alternatively, persistently positive cultures (≥2 sets &gt;12 h apart, or majority of ≥3 sets) with any organism also satisfies the major criterion. Definite IE needs 2 major, OR 1 major + 3 minor, OR 5 minor.</div><div class="rtt">⚠️ WRONG answer: 'one positive blood culture for a typical organism is a major criterion.' A SINGLE positive culture is only a minor (microbiologic) criterion — you need 2 separate sets. Discriminator: the lone exception is Coxiella burnetii, where a single positive culture or phase I IgG ≥1:800 counts as a major criterion by itself.</div></div><div class="rt"><div class="rtl">2. Q fever = single major</div><div class="rte">Coxiella burnetii (Q fever) is the special microbiologic exception: a SINGLE positive blood culture OR a phase I IgG antibody titer ≥1:800 counts as a STANDALONE major Duke criterion. This exists because Coxiella is a culture-negative, intracellular organism diagnosed serologically rather than by routine culture. Exposure clue: livestock (cattle, sheep, goats).</div><div class="rtt">⚠️ WRONG answer: 'Coxiella needs 2 positive cultures like other typical organisms.' Coxiella is the one bug where a single positive culture or high phase I IgG titer alone = major. Discriminator: culture-negative IE + farm-animal exposure → check Coxiella phase I serology, do not wait for blood cultures.</div></div><div class="rt"><div class="rtl">3. Bartonella major</div><div class="rte">Bartonella (B. henselae from cats, B. quintana in homeless/body-louse exposure) is another culture-negative cause of IE diagnosed serologically. High-titer Bartonella IgG (≥1:800) or positive PCR serves as a major microbiologic criterion under the modified/ISCVID Duke criteria, since the organism is fastidious and usually does not grow on routine media.</div><div class="rtt">⚠️ WRONG answer: 'negative blood cultures rule out Bartonella IE.' Bartonella is culture-negative — diagnosis relies on serology/PCR. Discriminator: culture-negative IE with cat exposure (henselae) or homelessness/body lice (quintana) → send Bartonella serology, not just repeat cultures.</div></div><div class="rt"><div class="rtl">4. Criteria combinations</div><div class="rte">DEFINITE clinical IE requires ANY of: 2 MAJOR criteria, OR 1 major + 3 minor, OR 5 minor criteria. Major = typical organism in 2 sets (or Coxiella single/serology) PLUS endocardial involvement on imaging (vegetation, abscess, fistula, new prosthetic dehiscence, or new valvular regurgitation). Minor (5 categories) = Predisposition, Fever ≥38°C, Vascular phenomena, Immunologic phenomena, Microbiologic evidence not meeting major.</div><div class="rtt">⚠️ WRONG answer: 'you must have at least one major criterion to call it definite IE.' FIVE minor criteria with NO major still equals definite IE. Discriminator: don't dismiss a culture-negative, echo-negative patient — count the minors (predisposition, fever, vascular, immunologic, micro) and 5 of them clinch the diagnosis.</div></div><div class="rt"><div class="rtl">5. Possible IE</div><div class="rte">POSSIBLE IE = 1 major + 1 minor, OR 3 minor criteria. This intermediate category means the picture is suggestive but not definite — it warrants continued workup (repeat cultures, TEE) rather than dismissal. REJECTED IE = firm alternative diagnosis, resolution with ≤4 days of antibiotics, or no pathologic evidence at surgery/autopsy after ≤4 days of antibiotics.</div><div class="rtt">⚠️ WRONG answer: 'possible IE means stop the workup / no need for echo.' Possible IE specifically mandates further evaluation (TEE, repeat cultures) to reclassify as definite or rejected. Discriminator: 3 minor criteria = possible, not negative — keep investigating.</div></div><div class="rt"><div class="rtl">6. HACEK culture rule</div><div class="rte">HACEK organisms (Haemophilus/Aggregatibacter, Aggregatibacter actinomycetemcomitans, Cardiobacterium, Eikenella, Kingella) are fastidious gram-negative oral-flora bacteria. Growth in 2 separate blood culture sets satisfies the typical-organism MAJOR criterion. With modern automated culture systems they usually grow within standard 5-day incubation, so prolonged incubation is no longer routinely required.</div><div class="rtt">⚠️ WRONG answer: 'HACEK requires prolonged (&gt;2 week) incubation to recover.' Modern blood culture systems detect HACEK within ~5 days; prolonged incubation is generally unnecessary now. Discriminator: HACEK in 2 sets = major criterion; treat with ceftriaxone.</div></div><div class="rt"><div class="rtl">7. Echo: vegetation (major)</div><div class="rte">MAJOR imaging/endocardial criterion: echocardiographic evidence of a VEGETATION, abscess, pseudoaneurysm, intracardiac fistula, valve perforation/aneurysm, new prosthetic dehiscence, OR new valvular regurgitation. The 2023 Duke-ISCVID update also accepts abnormal periprosthetic activity on PET/CT or paravalvular defects on cardiac CT as major imaging findings.</div><div class="rtt">⚠️ WRONG answer: 'worsening of a pre-existing murmur counts as the major imaging criterion.' Only NEW regurgitation (on echo) or a structural lesion qualifies — increase in a pre-existing murmur does not. Discriminator: new regurgitation/vegetation/abscess on imaging = major; an old murmur getting louder is not.</div></div><div class="rt"><div class="rtl">8. New murmur = minor</div><div class="rte">A new regurgitant murmur detected by AUSCULTATION alone is NOT sufficient as a major criterion — it must be confirmed as new regurgitation on echocardiography to count as major imaging. By itself, the clinical exam finding contributes only as supportive evidence and does not equal the echo-based major criterion.</div><div class="rtt">⚠️ WRONG answer: 'a new murmur on physical exam is a major Duke criterion.' Discriminator: NEW VALVULAR REGURGITATION on echo = MAJOR; a new murmur heard on auscultation without echo confirmation does not meet the major bar — get the echo.</div></div><div class="rt"><div class="rtl">9. Predisposition (minor)</div><div class="rte">MINOR criterion #1 — Predisposition: a predisposing heart condition (prosthetic valve, prior IE, congenital heart disease, significant regurgitant/stenotic valve lesions, hypertrophic cardiomyopathy) OR injection (IV) drug use. This is the structural/behavioral substrate that lets organisms seed the endocardium.</div><div class="rtt">⚠️ WRONG answer: 'IV drug use is a vascular phenomenon.' IVDU and predisposing cardiac conditions are the PREDISPOSITION minor criterion, a distinct category. Discriminator: don't double-count — predisposition (substrate) ≠ vascular phenomena (embolic/immune sequelae).</div></div><div class="rt"><div class="rtl">10. Fever &gt;38°C (minor)</div><div class="rte">MINOR criterion #2 — Fever: temperature ≥38.0°C (100.4°F). Fever is present in the large majority of IE cases and is one of the easiest minors to satisfy, but on its own it is nonspecific — it must be combined with other criteria to reach possible or definite IE.</div><div class="rtt">⚠️ WRONG answer: 'absence of fever excludes IE.' Subacute IE (e.g., viridans strep) and elderly/immunosuppressed patients may be afebrile or low-grade. Discriminator: fever ≥38°C is a minor criterion when present, but its absence does not rule out IE.</div></div><div class="rt"><div class="rtl">11. Immunologic phenomena</div><div class="rte">MINOR criterion #3 — Immunologic phenomena (immune-complex mediated): OSLER nodes (painful, pulp of fingers/toes — 'Ouch, Osler'), ROTH spots (retinal hemorrhages with pale centers), glomerulonephritis, and a positive rheumatoid factor. These reflect circulating immune complexes, typical of SUBACUTE IE.</div><div class="rtt">⚠️ WRONG answer: 'Janeway lesions and Osler nodes are both immunologic.' Discriminator: OSLER nodes (painful) and ROTH spots are IMMUNOLOGIC/minor; JANEWAY lesions (painless, palms/soles) are VASCULAR/minor. Mnemonic: Osler = Ouch (immune); Janeway = painless (vascular/septic emboli).</div></div><div class="rt"><div class="rtl">12. Vascular phenomena</div><div class="rte">MINOR criterion #4 — Vascular phenomena (embolic): major arterial emboli, septic pulmonary infarcts, infectious (mycotic) aneurysm, intracranial hemorrhage, conjunctival hemorrhages, and JANEWAY lesions (painless erythematous macules on palms/soles from septic microemboli). These reflect embolization of vegetation fragments.</div><div class="rtt">⚠️ WRONG answer: 'Janeway lesions are painful and immune-mediated.' Discriminator: JANEWAY = painless, VASCULAR (septic emboli), palms/soles; OSLER = painful, IMMUNOLOGIC, finger/toe pulp. Mixing them up is the classic Duke board trap.</div></div><div class="rt"><div class="rtl">13. Cultures not meeting major</div><div class="rte">MINOR criterion #5 — Microbiologic evidence not meeting a major criterion: e.g., a single positive blood culture (excluding common skin contaminants and excluding the Coxiella exception), or serologic evidence of active infection with an organism consistent with IE that doesn't reach the major threshold.</div><div class="rtt">⚠️ WRONG answer: 'a single positive culture for coagulase-negative staph is automatically a criterion.' Common skin contaminants (e.g., CoNS, diphtheroids) in a single set are usually dismissed as contamination, not counted. Discriminator: a single positive culture counts as minor only when the organism is plausibly causative — beware single positives that are contaminants.</div></div><div class="rt"><div class="rtl">14. TTE first, then TEE</div><div class="rte">Imaging algorithm: start with transthoracic echo (TTE) — fast, noninvasive, but sensitivity only ~50–70% for native valves. If TTE is non-diagnostic with ongoing suspicion, or for PROSTHETIC valves, suspected abscess/perivalvular extension, or device leads, proceed to transesophageal echo (TEE), sensitivity &gt;90% and the test of choice. Repeat TEE in 3–7 days if initially negative but suspicion persists.</div><div class="rtt">⚠️ WRONG answer: 'a negative TTE rules out endocarditis.' A negative TTE does NOT exclude IE — go to TEE, and repeat in 3–5 days if still suspicious. Discriminator: prosthetic valve or suspected abscess mandates TEE up front; never stop at a normal TTE when pretest probability is high.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="endocarditis_card_clinical.html" title="Infective Endocarditis — Clinical &amp; Complications">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="endocarditis_2.html" title="Infective Endocarditis — Duke Criteria Diagnosis &amp; Treatment Apothecary">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

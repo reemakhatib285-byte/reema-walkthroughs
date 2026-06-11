@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CKD — Cardiovascular Mortality (#1 Killer)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>CV mortality 10–200x banner</b> — Stem: what is the most likely cause of death in a CKD patient, or what is the most common OUTCOME of CKD — wrong answer is 'progression to ESRD/dialysis' or 'uremia.' Discriminator: most CKD patients DIE of cardiovascular disease BEFORE ever reaching dialysis. CKD is far more likely to kill via CV events than to progress to renal replacement therapy.</li><li><b>Reverse epidemiology man</b> — Stem: dialysis patient with low cholesterol, low BP, and weight loss is described as having 'good cardiovascular risk-factor profile' — wrong answer is to reassure or to aggressively lower numbers further. Discriminator: in advanced CKD these low values signal frailty/inflammation/malnutrition (MIA) and worse prognosis (reverse epidemiology) — they are NOT markers of low CV risk as they would be in the general population.</li><li><b>Traditional risk factors army</b> — Stem asks why a CKD patient with well-controlled BP, lipids, and glucose still has very high CV mortality — wrong answer is 'their traditional risk factors must be poorly controlled.' Discriminator: NON-traditional, CKD-specific factors (vascular calcification, LVH, FGF-23, anemia, inflammation, hyperphosphatemia) drive much of the excess risk beyond what traditional factors explain.</li><li><b>LVH muscle heart</b> — Stem: CKD patient with dyspnea, normal coronaries, preserved EF, and LVH on echo — wrong answer is to attribute all CKD cardiac death to atherosclerotic CAD/MI. Discriminator: much CKD cardiac death is from LVH-related diastolic dysfunction, heart failure, arrhythmia, and SUDDEN CARDIAC DEATH (the single largest cardiac mode of death in dialysis), not solely coronary atherosclerosis.</li><li><b>Low-pressure pulmonary edema lungs</b> — Stem: anuric/oligo dialysis patient with flash pulmonary edema not responding to IV furosemide — wrong answer is to keep escalating loop diuretics. Discriminator: in advanced CKD/ESRD with little urine output, diuretics fail; the treatment is ULTRAFILTRATION/urgent dialysis to remove volume. Diuretics work only if the kidney can still respond.</li><li><b>Uremic pericarditis station</b> — Stem: uremic patient with chest pain and a friction rub — wrong answer is to treat with NSAIDs/colchicine as you would viral pericarditis. Discriminator: uremic pericarditis is an INDICATION FOR URGENT/INTENSIFIED DIALYSIS (part of the AEIOU dialysis indications); NSAIDs are avoided in CKD and don't address the cause, and anticoagulation/heparin should be minimized given hemorrhagic-effusion/tamponade risk.</li><li><b>Troponin chronic high / trend</b> — Stem: dialysis patient with vague symptoms and a single troponin above the reference limit — wrong answer is to diagnose MI off that one value (or to dismiss all elevations as 'just renal'). Discriminator: chronic baseline elevation is expected in CKD; you need a SERIAL troponin trend (significant delta) plus clinical/ECG correlation to call ACS. A flat, persistently elevated troponin favors chronic renal retention over acute MI.</li><li><b>High-output / AV fistula heart risk</b> — Stem: dialysis patient with a high-flow brachial fistula develops heart failure with high cardiac output and warm extremities — wrong answer is to treat purely as low-output/fluid-overload HFrEF. Discriminator: consider HIGH-OUTPUT failure from the AV access (positive Branham sign, high-flow on access duplex); management may include flow-reducing fistula revision/banding, not just diuretics/afterload reduction.</li><li><b>SGLT2 add-on shelf</b> — Stem: non-diabetic CKD patient with proteinuria — wrong answer is to withhold an SGLT2 inhibitor because the patient 'isn't diabetic' or because eGFR dipped after starting it. Discriminator: SGLT2i benefit is NOT limited to diabetics (proven in non-diabetic CKD and HF), and the small early eGFR dip is hemodynamic and expected — not a reason to stop.</li><li><b>Statin — CKD-specific note</b> — Stem: stable hemodialysis patient with no prior statin is started on atorvastatin for primary CV prevention — wrong answer is that this clearly reduces mortality. Discriminator: do NOT initiate statins de novo for primary prevention in DIALYSIS patients (4D/AURORA showed no benefit); however, patients already on a statin when they start dialysis are generally continued, and non-dialysis CKD patients DO benefit (SHARP).</li><li><b>ACEi/ARB first-line knight</b> — Stem: proteinuric CKD patient started on an ACEi has creatinine rise 20% and potassium 5.1 — wrong answer is to stop the drug immediately. Discriminator: a creatinine rise up to ~30% (and mild hyperkalemia) is EXPECTED and acceptable — continue and monitor; stop/work up only if the rise exceeds ~30% (suspect bilateral renal artery stenosis/volume depletion). Also: do NOT combine ACEi + ARB (more AKI/hyperkalemia, no outcome benefit — ONTARGET).</li><li><b>CCB add-on</b> — Stem: proteinuric CKD patient with uncontrolled BP and an antiproteinuric goal — wrong answer is to add a dihydropyridine (amlodipine) WITHOUT a RAAS blocker on board. Discriminator: dihydropyridine CCBs lower BP but can increase intraglomerular pressure/proteinuria when used alone; pair them with an ACEi/ARB, or choose a NON-dihydropyridine (diltiazem/verapamil) when an antiproteinuric add-on is the goal.</li><li><b>Salt restriction chamber</b> — Stem: CKD patient with persistent proteinuria/HTN despite a maximized ACEi, eating a high-sodium diet — wrong answer is to immediately add a third agent before addressing diet. Discriminator: a high-salt intake BLUNTS RAAS-blocker effect; sodium restriction (and/or a diuretic) restores efficacy and should be optimized before escalating pharmacotherapy.</li><li><b>Loop diuretic</b> — Stem: volume-overloaded CKD patient at eGFR 25 prescribed hydrochlorothiazide for edema with poor response — wrong answer is to keep relying on the thiazide. Discriminator: thiazides lose efficacy as monotherapy at low GFR (roughly eGFR &lt;30); switch to a LOOP diuretic for volume control in advanced CKD (a thiazide may be ADDED to a loop for sequential nephron blockade in diuretic resistance, but not used alone).</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. CV mortality 10–200x banner</div><div class="rte">Cardiovascular disease is the #1 cause of death in CKD across all stages. CV risk rises as eGFR falls and albuminuria rises (each is an INDEPENDENT CV risk factor), with relative CV mortality up to ~10–20x normal in advanced CKD and reaching ~100–200x in young dialysis patients. CKD is considered a coronary-disease 'risk equivalent.' Mnemonic: in CKD, the heart kills before the kidney does.</div><div class="rtt">⚠️ Stem: what is the most likely cause of death in a CKD patient, or what is the most common OUTCOME of CKD — wrong answer is 'progression to ESRD/dialysis' or 'uremia.' Discriminator: most CKD patients DIE of cardiovascular disease BEFORE ever reaching dialysis. CKD is far more likely to kill via CV events than to progress to renal replacement therapy.</div></div><div class="rt"><div class="rtl">2. Reverse epidemiology man</div><div class="rte">In ADVANCED CKD/dialysis, classic risk relationships invert ('reverse epidemiology'): LOW BMI, LOW cholesterol, and LOW blood pressure predict WORSE survival, because they mark the Malnutrition-Inflammation-Atherosclerosis (MIA) syndrome / protein-energy wasting rather than cardiovascular health. Mnemonic: in dialysis, 'skinny/low numbers' = sick, not healthy.</div><div class="rtt">⚠️ Stem: dialysis patient with low cholesterol, low BP, and weight loss is described as having 'good cardiovascular risk-factor profile' — wrong answer is to reassure or to aggressively lower numbers further. Discriminator: in advanced CKD these low values signal frailty/inflammation/malnutrition (MIA) and worse prognosis (reverse epidemiology) — they are NOT markers of low CV risk as they would be in the general population.</div></div><div class="rt"><div class="rtl">3. Traditional risk factors army</div><div class="rte">Traditional Framingham risk factors (hypertension, diabetes, dyslipidemia, smoking, age) are highly prevalent in CKD and contribute to CV disease, but they UNDER-predict the excess risk. Non-traditional/uremia-related factors fill the gap: vascular calcification (CKD-MBD), volume overload/LVH, anemia, inflammation, oxidative stress, hyperphosphatemia/FGF-23, and uremic toxins. Mnemonic: 'traditional soldiers aren't enough — uremia brings its own army.'</div><div class="rtt">⚠️ Stem asks why a CKD patient with well-controlled BP, lipids, and glucose still has very high CV mortality — wrong answer is 'their traditional risk factors must be poorly controlled.' Discriminator: NON-traditional, CKD-specific factors (vascular calcification, LVH, FGF-23, anemia, inflammation, hyperphosphatemia) drive much of the excess risk beyond what traditional factors explain.</div></div><div class="rt"><div class="rtl">4. LVH muscle heart</div><div class="rte">Left ventricular hypertrophy is the MOST common cardiac structural abnormality in CKD, driven by pressure overload (hypertension, arterial stiffness), volume overload (salt/water retention, anemia, AV fistula), and uremic/FGF-23-mediated myocardial remodeling/fibrosis. It predisposes to both HFpEF (diastolic, more common) and HFrEF, arrhythmia, and sudden cardiac death. Mnemonic: the CKD heart is 'overworked muscle,' not just clogged arteries.</div><div class="rtt">⚠️ Stem: CKD patient with dyspnea, normal coronaries, preserved EF, and LVH on echo — wrong answer is to attribute all CKD cardiac death to atherosclerotic CAD/MI. Discriminator: much CKD cardiac death is from LVH-related diastolic dysfunction, heart failure, arrhythmia, and SUDDEN CARDIAC DEATH (the single largest cardiac mode of death in dialysis), not solely coronary atherosclerosis.</div></div><div class="rt"><div class="rtl">5. Low-pressure pulmonary edema lungs</div><div class="rte">Uremia increases pulmonary capillary permeability ('uremic lung'/leaky capillaries), so pulmonary edema can occur even at near-normal left-atrial filling pressures, on top of volume overload from impaired sodium/water excretion. It is fluid-overload-driven and clears with FLUID REMOVAL (ultrafiltration/dialysis). Mnemonic: 'wet lungs even when the pressures look dry' — clear it by pulling fluid off.</div><div class="rtt">⚠️ Stem: anuric/oligo dialysis patient with flash pulmonary edema not responding to IV furosemide — wrong answer is to keep escalating loop diuretics. Discriminator: in advanced CKD/ESRD with little urine output, diuretics fail; the treatment is ULTRAFILTRATION/urgent dialysis to remove volume. Diuretics work only if the kidney can still respond.</div></div><div class="rt"><div class="rtl">6. Uremic pericarditis station</div><div class="rte">Uremic pericarditis presents with pleuritic chest pain and a pericardial FRICTION RUB; classically the ECG LACKS the diffuse ST elevation of typical viral pericarditis (because inflammation spares the myocardium). It signals severe uremia and carries risk of hemorrhagic effusion/tamponade. Mnemonic: 'rub + rising BUN = dialyze now.'</div><div class="rtt">⚠️ Stem: uremic patient with chest pain and a friction rub — wrong answer is to treat with NSAIDs/colchicine as you would viral pericarditis. Discriminator: uremic pericarditis is an INDICATION FOR URGENT/INTENSIFIED DIALYSIS (part of the AEIOU dialysis indications); NSAIDs are avoided in CKD and don't address the cause, and anticoagulation/heparin should be minimized given hemorrhagic-effusion/tamponade risk.</div></div><div class="rt"><div class="rtl">7. Troponin chronic high / trend</div><div class="rte">Troponin (especially high-sensitivity troponin T) is CHRONICALLY elevated at baseline in CKD due to reduced renal clearance, subclinical myocardial injury, and LVH — so a single elevated value is NOT diagnostic of acute MI. Diagnose ACS by a significant DELTA/rise-and-fall on SERIAL troponins over hours, integrated with symptoms and ECG. Mnemonic: in CKD read the troponin TREND, not the number.</div><div class="rtt">⚠️ Stem: dialysis patient with vague symptoms and a single troponin above the reference limit — wrong answer is to diagnose MI off that one value (or to dismiss all elevations as 'just renal'). Discriminator: chronic baseline elevation is expected in CKD; you need a SERIAL troponin trend (significant delta) plus clinical/ECG correlation to call ACS. A flat, persistently elevated troponin favors chronic renal retention over acute MI.</div></div><div class="rt"><div class="rtl">8. High-output / AV fistula heart risk</div><div class="rte">A large arteriovenous (dialysis) fistula shunts blood directly from artery to vein, increasing venous return and cardiac output; a high-flow fistula (especially &gt;2 L/min or flow &gt;20–30% of cardiac output) can cause HIGH-OUTPUT heart failure and aggravate LVH. Diagnosed by the Nicoladoni-Branham sign (heart rate slows with fistula compression). Mnemonic: the access that saves the kidney can overload the heart.</div><div class="rtt">⚠️ Stem: dialysis patient with a high-flow brachial fistula develops heart failure with high cardiac output and warm extremities — wrong answer is to treat purely as low-output/fluid-overload HFrEF. Discriminator: consider HIGH-OUTPUT failure from the AV access (positive Branham sign, high-flow on access duplex); management may include flow-reducing fistula revision/banding, not just diuretics/afterload reduction.</div></div><div class="rt"><div class="rtl">9. SGLT2 add-on shelf</div><div class="rte">SGLT2 inhibitors (dapagliflozin, empagliflozin) reduce heart-failure hospitalizations and CV death AND slow CKD progression — benefits proven even in NON-diabetic proteinuric CKD (DAPA-CKD, EMPA-KIDNEY) and in HFpEF/HFrEF regardless of diabetes. They cause a small, expected, reversible early eGFR 'dip.' GLP-1 agonists add CV/renal/weight benefit. Mnemonic: SGLT2i = the cardio-renal cornerstone (protects heart AND kidney).</div><div class="rtt">⚠️ Stem: non-diabetic CKD patient with proteinuria — wrong answer is to withhold an SGLT2 inhibitor because the patient 'isn't diabetic' or because eGFR dipped after starting it. Discriminator: SGLT2i benefit is NOT limited to diabetics (proven in non-diabetic CKD and HF), and the small early eGFR dip is hemodynamic and expected — not a reason to stop.</div></div><div class="rt"><div class="rtl">10. Statin — CKD-specific note</div><div class="rte">Statins (often statin + ezetimibe, per SHARP) reduce atherosclerotic CV events in NON-dialysis CKD and are recommended for most CKD patients ≥50 (and selected younger ones). BUT trials of INITIATING statins in DIALYSIS patients (4D in diabetics on HD, AURORA) showed NO clear reduction in CV mortality — reflecting non-atherosclerotic mechanisms of death (sudden cardiac death, HF, calcification). Mnemonic: 'statins help the kidney patient — until they start dialysis.'</div><div class="rtt">⚠️ Stem: stable hemodialysis patient with no prior statin is started on atorvastatin for primary CV prevention — wrong answer is that this clearly reduces mortality. Discriminator: do NOT initiate statins de novo for primary prevention in DIALYSIS patients (4D/AURORA showed no benefit); however, patients already on a statin when they start dialysis are generally continued, and non-dialysis CKD patients DO benefit (SHARP).</div></div><div class="rt"><div class="rtl">11. ACEi/ARB first-line knight</div><div class="rte">ACE inhibitors/ARBs are first-line in CKD for BP control AND renoprotection, especially with albuminuria/proteinuria — they dilate the efferent arteriole, lowering intraglomerular pressure and proteinuria. Expect (and tolerate) an early creatinine rise up to ~30% and a small potassium rise. Mnemonic: a little creatinine bump means the drug is doing its job (lowering glomerular pressure).</div><div class="rtt">⚠️ Stem: proteinuric CKD patient started on an ACEi has creatinine rise 20% and potassium 5.1 — wrong answer is to stop the drug immediately. Discriminator: a creatinine rise up to ~30% (and mild hyperkalemia) is EXPECTED and acceptable — continue and monitor; stop/work up only if the rise exceeds ~30% (suspect bilateral renal artery stenosis/volume depletion). Also: do NOT combine ACEi + ARB (more AKI/hyperkalemia, no outcome benefit — ONTARGET).</div></div><div class="rt"><div class="rtl">12. CCB add-on</div><div class="rte">Calcium channel blockers are effective add-on antihypertensives in CKD. Dihydropyridines (amlodipine) are potent BP-lowering agents but can WORSEN proteinuria if used without RAAS blockade (afferent vasodilation raises glomerular pressure). Non-dihydropyridines (diltiazem, verapamil) additionally REDUCE proteinuria. Mnemonic: 'non-DHP also helps the protein leak.'</div><div class="rtt">⚠️ Stem: proteinuric CKD patient with uncontrolled BP and an antiproteinuric goal — wrong answer is to add a dihydropyridine (amlodipine) WITHOUT a RAAS blocker on board. Discriminator: dihydropyridine CCBs lower BP but can increase intraglomerular pressure/proteinuria when used alone; pair them with an ACEi/ARB, or choose a NON-dihydropyridine (diltiazem/verapamil) when an antiproteinuric add-on is the goal.</div></div><div class="rt"><div class="rtl">13. Salt restriction chamber</div><div class="rte">Dietary sodium restriction (target ~&lt;2 g sodium/day) is foundational in CKD: it lowers BP, reduces volume/edema, and crucially POTENTIATES the antiproteinuric and antihypertensive effect of ACEi/ARB and diuretics. A high-salt diet blunts RAAS-blocker efficacy. Mnemonic: 'salt sabotages your ACE inhibitor.'</div><div class="rtt">⚠️ Stem: CKD patient with persistent proteinuria/HTN despite a maximized ACEi, eating a high-sodium diet — wrong answer is to immediately add a third agent before addressing diet. Discriminator: a high-salt intake BLUNTS RAAS-blocker effect; sodium restriction (and/or a diuretic) restores efficacy and should be optimized before escalating pharmacotherapy.</div></div><div class="rt"><div class="rtl">14. Loop diuretic</div><div class="rte">Loop diuretics (furosemide, torsemide, bumetanide) are the diuretics of choice for volume/edema and volume-dependent hypertension as GFR declines, because they still work at low eGFR (often needing HIGHER doses to reach the tubular site of action). They also help manage hyperkalemia and metabolic load. Mnemonic: 'loops keep working when the GFR is low.'</div><div class="rtt">⚠️ Stem: volume-overloaded CKD patient at eGFR 25 prescribed hydrochlorothiazide for edema with poor response — wrong answer is to keep relying on the thiazide. Discriminator: thiazides lose efficacy as monotherapy at low GFR (roughly eGFR &lt;30); switch to a LOOP diuretic for volume control in advanced CKD (a thiazide may be ADDED to a loop for sequential nephron blockade in diuretic resistance, but not used alone).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ckd_bone_mineral.html" title="CKD — Bone, Phosphate &amp; Calcium (CKD-MBD)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ckd_definition_kdigo.html" title="CKD — Definition &amp; KDIGO Staging">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

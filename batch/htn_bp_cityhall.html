@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypertension — The BP City Hall (Physiology, Classification &amp; Measurement)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>16</em></summary><ol class="traps"><li><b>BP = CO × TPR</b> — WRONG: assuming BP is set by heart rate alone, so any tachycardia means hypertension. Discriminator — BP depends on the PRODUCT of CO and TPR; a high HR with low stroke volume or low resistance need not raise BP, and chronic essential HTN is usually a TPR (resistance) problem, not a rate problem.</li><li><b>Cardiac output</b> — WRONG: thinking volume-mediated (high-CO) HTN responds best to a vasodilator. Discriminator — when HTN is volume/sodium-driven (CKD, primary aldosteronism, salt sensitivity), a diuretic that reduces preload/CO is far more effective than simply vasodilating; match the drug to the dominant lever.</li><li><b>Peripheral resistance</b> — WRONG: expecting structural arterial stiffening to reverse quickly once a vasodilator is started. Discriminator — functional vasoconstriction reverses fast, but structural remodeling/stiffening responds slowly and incompletely; this underlies isolated systolic HTN in the elderly and the lag in BP control.</li><li><b>Na &amp; kidney</b> — WRONG: believing a perfectly functioning kidney can sustain chronic hypertension without resetting its natriuresis curve. Discriminator — Guyton's principle holds that the kidney would normally correct any sustained BP rise; chronic HTN requires a shifted pressure-natriuresis relationship, so secondary renal/adrenal causes deserve consideration.</li><li><b>BP classification pyramid</b> — WRONG: using the older JNC7 threshold of 140/90 to define hypertension. Discriminator — ACC/AHA lowered Stage 1 to 130-139/80-89, so a patient at 135/85 is hypertensive (Stage 1) by current US criteria, even though older guidelines called it 'prehypertension.'</li><li><b>Take higher category</b> — WRONG: staging 138/92 as Stage 1 because the systolic falls in the 130-139 range. Discriminator — the diastolic of 92 is Stage 2 (&gt;=90), and the rule is to take the higher category, so this patient is Stage 2 and warrants Stage 2 management.</li><li><b>Accurate BP technique</b> — WRONG: diagnosing HTN and starting drugs from a single elevated reading taken with the patient just arrived, talking, arm dangling. Discriminator — technique errors and white-coat effect inflate a one-off reading; diagnosis requires correctly measured, averaged readings across multiple visits or out-of-office confirmation.</li><li><b>Correct cuff size</b> — WRONG: diagnosing hypertension in an obese patient measured with a standard (too-small) cuff. Discriminator — an undersized cuff falsely RAISES the reading; before labeling such a patient hypertensive, re-measure with a large/thigh cuff sized to the arm.</li><li><b>Office BP limited</b> — WRONG: titrating drugs solely on office readings while ignoring discordant home values. Discriminator — office readings can over- (white coat) or under-estimate (masked) true BP; out-of-office monitoring should reconcile discordance before escalating or de-escalating therapy.</li><li><b>White-coat HTN</b> — WRONG: starting/intensifying antihypertensives based on high clinic readings in a patient whose home BP is normal. Discriminator — this is white-coat HTN; treating it risks overtreatment and hypotension. Confirm with out-of-office monitoring; observe and address lifestyle instead of adding drugs.</li><li><b>Masked HTN</b> — WRONG: reassuring a patient with normal office BP but LVH/proteinuria that they don't have hypertension. Discriminator — those end-organ findings point to MASKED HTN; out-of-office monitoring will reveal elevated BP that the clinic missed, and treatment is warranted.</li><li><b>HBPM</b> — WRONG: applying the office &gt;=140/90 cutoff to home readings. Discriminator — out-of-office thresholds are LOWER (home/ABPM-daytime &gt;=130/80); using the office number to interpret home values under-diagnoses true hypertension.</li><li><b>ABPM</b> — WRONG: ignoring a 'non-dipping' nocturnal pattern as clinically irrelevant. Discriminator — loss of the normal &gt;=10% nighttime BP fall (non-dipping/reverse dipping) is an independent predictor of cardiovascular events and may signal secondary causes such as OSA, CKD, or autonomic dysfunction.</li><li><b>Age trends</b> — WRONG: leaving isolated systolic HTN untreated in an elderly patient because the diastolic is normal/low. Discriminator — ISH is a treatable, high-risk condition (SPRINT-supported benefit of SBP lowering in older adults); a low DBP does not make a high SBP benign, though one avoids dropping DBP too far.</li><li><b>RAAS cascade</b> — WRONG: expecting renin to be HIGH in primary aldosteronism. Discriminator — in Conn syndrome aldosterone is autonomously high so renin is SUPPRESSED (high aldosterone:renin ratio); high renin instead points to secondary causes like renovascular disease, where reduced renal perfusion drives renin up.</li><li><b>Baroreceptor reflex</b> — WRONG: relying on the baroreflex to explain why chronic hypertension should self-correct. Discriminator — baroreceptors handle SHORT-term fluctuations and reset to a higher setpoint in chronic HTN; long-term BP is set by the kidney (pressure natriuresis), which is why the reflex cannot fix sustained hypertension.</li></ol></details><details class="panel"><summary>📖 Read-through — all 16 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. BP = CO × TPR</div><div class="rte">Mean arterial pressure = cardiac output × total peripheral resistance (MAP = CO × TPR). These are the two master levers every antihypertensive drug pulls: drugs lower CO (beta-blockers, non-DHP CCBs, diuretics via volume) and/or lower TPR (ACEi/ARB, DHP CCBs, alpha-blockers, vasodilators). MAP ≈ DBP + 1/3 pulse pressure. Essential HTN (~90-95% of cases) is driven chiefly by increased TPR.</div><div class="rtt">⚠️ WRONG: assuming BP is set by heart rate alone, so any tachycardia means hypertension. Discriminator — BP depends on the PRODUCT of CO and TPR; a high HR with low stroke volume or low resistance need not raise BP, and chronic essential HTN is usually a TPR (resistance) problem, not a rate problem.</div></div><div class="rt"><div class="rtl">2. Cardiac output</div><div class="rte">CO = stroke volume × heart rate. Stroke volume rises with preload (venous return/volume) and contractility and falls with afterload. Volume expansion (excess sodium/aldosterone, renal failure) and sympathetic drive raise CO. Diuretics lower CO by reducing preload; beta-blockers lower it by reducing HR and contractility.</div><div class="rtt">⚠️ WRONG: thinking volume-mediated (high-CO) HTN responds best to a vasodilator. Discriminator — when HTN is volume/sodium-driven (CKD, primary aldosteronism, salt sensitivity), a diuretic that reduces preload/CO is far more effective than simply vasodilating; match the drug to the dominant lever.</div></div><div class="rt"><div class="rtl">3. Peripheral resistance</div><div class="rte">TPR is governed by arteriolar tone. It rises from FUNCTIONAL vasoconstriction (sympathetic alpha-1 tone, angiotensin II, endothelin, low nitric oxide) and from STRUCTURAL remodeling (arteriolar wall hypertrophy, arterial stiffening). Poiseuille's law: resistance is exquisitely sensitive to radius (∝ 1/r⁴), so small caliber changes greatly affect BP. Most essential HTN is a high-TPR state.</div><div class="rtt">⚠️ WRONG: expecting structural arterial stiffening to reverse quickly once a vasodilator is started. Discriminator — functional vasoconstriction reverses fast, but structural remodeling/stiffening responds slowly and incompletely; this underlies isolated systolic HTN in the elderly and the lag in BP control.</div></div><div class="rt"><div class="rtl">4. Na &amp; kidney</div><div class="rte">The kidney sets LONG-TERM BP through pressure natriuresis: when BP rises, the kidney excretes more sodium and water, dropping volume and BP back toward setpoint. Any defect that shifts this curve rightward (reduced nephron number, excess aldosterone, renal artery stenosis, high salt intake in salt-sensitive people) sustains hypertension. This is why sodium handling and the kidney are central to chronic BP.</div><div class="rtt">⚠️ WRONG: believing a perfectly functioning kidney can sustain chronic hypertension without resetting its natriuresis curve. Discriminator — Guyton's principle holds that the kidney would normally correct any sustained BP rise; chronic HTN requires a shifted pressure-natriuresis relationship, so secondary renal/adrenal causes deserve consideration.</div></div><div class="rt"><div class="rtl">5. BP classification pyramid</div><div class="rte">ACC/AHA 2017 categories: Normal &lt;120 AND &lt;80; Elevated 120-129 AND &lt;80; Stage 1 130-139 OR 80-89; Stage 2 &gt;=140 OR &gt;=90. Hypertensive crisis is &gt;180 and/or &gt;120 (urgency without, emergency with end-organ damage). Diagnosis requires the average of &gt;=2 readings on &gt;=2 separate occasions. General treatment target &lt;130/80.</div><div class="rtt">⚠️ WRONG: using the older JNC7 threshold of 140/90 to define hypertension. Discriminator — ACC/AHA lowered Stage 1 to 130-139/80-89, so a patient at 135/85 is hypertensive (Stage 1) by current US criteria, even though older guidelines called it 'prehypertension.'</div></div><div class="rt"><div class="rtl">6. Take higher category</div><div class="rte">When systolic and diastolic readings fall in different stages, classify by the HIGHER category. Example: 138/92 -&gt; SBP is Stage 1 but DBP is Stage 2, so the patient is Stage 2. This 'whichever is worse' rule ensures the more severe value drives staging and treatment intensity.</div><div class="rtt">⚠️ WRONG: staging 138/92 as Stage 1 because the systolic falls in the 130-139 range. Discriminator — the diastolic of 92 is Stage 2 (&gt;=90), and the rule is to take the higher category, so this patient is Stage 2 and warrants Stage 2 management.</div></div><div class="rt"><div class="rtl">7. Accurate BP technique</div><div class="rte">Proper measurement: no caffeine/smoking/exercise for 30 min before, empty bladder, rest seated 5 min, back supported, feet flat on floor (uncrossed legs), arm supported at HEART level, correct cuff, no talking, and average &gt;=2 readings on &gt;=2 visits. Errors inflate readings (e.g., unsupported back/arm, crossed legs, talking each add several mmHg).</div><div class="rtt">⚠️ WRONG: diagnosing HTN and starting drugs from a single elevated reading taken with the patient just arrived, talking, arm dangling. Discriminator — technique errors and white-coat effect inflate a one-off reading; diagnosis requires correctly measured, averaged readings across multiple visits or out-of-office confirmation.</div></div><div class="rt"><div class="rtl">8. Correct cuff size</div><div class="rte">Cuff bladder should encircle ~80% of arm circumference. A cuff that is too SMALL (or applied over a large arm) OVERestimates BP; a cuff too LARGE underestimates it. Always use an appropriately sized cuff on a validated/calibrated device, positioned at heart level.</div><div class="rtt">⚠️ WRONG: diagnosing hypertension in an obese patient measured with a standard (too-small) cuff. Discriminator — an undersized cuff falsely RAISES the reading; before labeling such a patient hypertensive, re-measure with a large/thigh cuff sized to the arm.</div></div><div class="rt"><div class="rtl">9. Office BP limited</div><div class="rte">Office BP is the least reliable setting — subject to white-coat effect, technique error, and single-time-point variability. Current guidance favors confirming a new diagnosis and assessing control with OUT-of-office measurement (HBPM or ABPM) before committing to lifelong therapy.</div><div class="rtt">⚠️ WRONG: titrating drugs solely on office readings while ignoring discordant home values. Discriminator — office readings can over- (white coat) or under-estimate (masked) true BP; out-of-office monitoring should reconcile discordance before escalating or de-escalating therapy.</div></div><div class="rt"><div class="rtl">10. White-coat HTN</div><div class="rte">White-coat hypertension = elevated OFFICE BP but NORMAL out-of-office (home/ambulatory) BP, due to alerting response in clinic. It carries lower (but not zero) CV risk than sustained HTN. Confirm with ABPM/HBPM before treating; manage with lifestyle and monitoring rather than reflexive drug therapy.</div><div class="rtt">⚠️ WRONG: starting/intensifying antihypertensives based on high clinic readings in a patient whose home BP is normal. Discriminator — this is white-coat HTN; treating it risks overtreatment and hypotension. Confirm with out-of-office monitoring; observe and address lifestyle instead of adding drugs.</div></div><div class="rt"><div class="rtl">11. Masked HTN</div><div class="rte">Masked hypertension = NORMAL office BP but ELEVATED out-of-office BP. It is dangerous because it is easily missed yet carries cardiovascular risk similar to sustained HTN (target-organ damage, events). Suspect it with normal office readings but signs of end-organ damage (LVH, retinopathy, proteinuria) or high-risk profile; confirm with ABPM/HBPM and treat.</div><div class="rtt">⚠️ WRONG: reassuring a patient with normal office BP but LVH/proteinuria that they don't have hypertension. Discriminator — those end-organ findings point to MASKED HTN; out-of-office monitoring will reveal elevated BP that the clinic missed, and treatment is warranted.</div></div><div class="rt"><div class="rtl">12. HBPM</div><div class="rte">Home BP monitoring (HBPM): patient self-measures with a validated upper-arm device, typically 2 readings AM and PM over ~7 days, discarding day 1, then averaging. Home HTN threshold is &gt;=130/80 (lower than the office &gt;=140/90 reference). HBPM confirms diagnosis, detects white-coat/masked patterns, improves adherence, and tracks control.</div><div class="rtt">⚠️ WRONG: applying the office &gt;=140/90 cutoff to home readings. Discriminator — out-of-office thresholds are LOWER (home/ABPM-daytime &gt;=130/80); using the office number to interpret home values under-diagnoses true hypertension.</div></div><div class="rt"><div class="rtl">13. ABPM</div><div class="rte">Ambulatory BP monitoring (ABPM) is the GOLD STANDARD to confirm the diagnosis: a cuff records BP every 15-30 min over 24 hours, giving daytime, nighttime, and 24-hour averages. It uniquely detects white-coat and masked HTN and nocturnal dipping. Thresholds: 24h average &gt;=125/75, daytime &gt;=130/80, nighttime &gt;=110/65. Non-dipping (night BP not falling &gt;=10%) predicts worse CV outcomes.</div><div class="rtt">⚠️ WRONG: ignoring a 'non-dipping' nocturnal pattern as clinically irrelevant. Discriminator — loss of the normal &gt;=10% nighttime BP fall (non-dipping/reverse dipping) is an independent predictor of cardiovascular events and may signal secondary causes such as OSA, CKD, or autonomic dysfunction.</div></div><div class="rt"><div class="rtl">14. Age trends</div><div class="rte">With aging, large arteries stiffen: SBP keeps RISING throughout life while DBP rises until ~50-60 then FALLS, widening the pulse pressure. The result is isolated systolic hypertension (ISH: SBP &gt;=130 with DBP &lt;80), the dominant HTN pattern in the elderly and a strong CV risk marker. Preferred agents in ISH: thiazides and DHP CCBs.</div><div class="rtt">⚠️ WRONG: leaving isolated systolic HTN untreated in an elderly patient because the diastolic is normal/low. Discriminator — ISH is a treatable, high-risk condition (SPRINT-supported benefit of SBP lowering in older adults); a low DBP does not make a high SBP benign, though one avoids dropping DBP too far.</div></div><div class="rt"><div class="rtl">15. RAAS cascade</div><div class="rte">NEW: The renin-angiotensin-aldosterone system is the key humoral BP regulator. Low renal perfusion/Na delivery or sympathetic (beta-1) stimulation -&gt; juxtaglomerular cells release RENIN -&gt; angiotensinogen to angiotensin I -&gt; ACE (lung) to angiotensin II. Angiotensin II constricts arterioles (raises TPR), constricts the efferent arteriole (maintains GFR), stimulates thirst/ADH, and triggers ALDOSTERONE (Na/water retention, K+ excretion). This cascade is the drug target of ACEi, ARBs, MRAs, beta-blockers, and renin inhibitors.</div><div class="rtt">⚠️ WRONG: expecting renin to be HIGH in primary aldosteronism. Discriminator — in Conn syndrome aldosterone is autonomously high so renin is SUPPRESSED (high aldosterone:renin ratio); high renin instead points to secondary causes like renovascular disease, where reduced renal perfusion drives renin up.</div></div><div class="rt"><div class="rtl">16. Baroreceptor reflex</div><div class="rte">NEW: Baroreceptors in the carotid sinus (CN IX) and aortic arch (CN X) provide rapid, SECOND-to-second BP control. A BP rise stretches them -&gt; increased afferent firing -&gt; medulla decreases sympathetic and increases vagal tone -&gt; lower HR, contractility, and vasoconstriction, normalizing BP (and vice versa for a fall). This reflex buffers acute changes (e.g., standing) but RESETS to defend a higher BP in chronic HTN, so it does not correct sustained hypertension.</div><div class="rtt">⚠️ WRONG: relying on the baroreflex to explain why chronic hypertension should self-correct. Discriminator — baroreceptors handle SHORT-term fluctuations and reset to a higher setpoint in chronic HTN; long-term BP is set by the kidney (pressure natriuresis), which is why the reflex cannot fix sustained hypertension.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="htn_secondary.html" title="Hypertension — Secondary HTN (Causes, Red Flags &amp; Workup)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="htn_3.html" title="Hypertension — Thiazides, Resistant HTN &amp; Potassium Management">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Reference — Polyuria DDx (With vs Without AKI)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>10</em></summary><ol class="traps"><li><b>Post-obstructive diuresis (WITH AKI)</b> — WRONG: chasing every mL of urine 1:1 with IV fluid after relieving obstruction. Aggressive matched replacement perpetuates a diuresis that should resolve on its own. Discriminator: separate appropriate (clears retained solute, self-limits) from pathologic (true tubular defect) — replace partially and trend weight, Na, K, Mg, and volume status.</li><li><b>Recovery phase of ATN (WITH AKI)</b> — WRONG: easing off monitoring once creatinine starts dropping. The polyuric recovery phase can cause severe volume and K/Mg/PO4 depletion exactly when the team assumes recovery is complete. Discriminator: rising output + falling creatinine after ATN = recovery diuresis — keep replacing fluids/electrolytes and rechecking labs.</li><li><b>Nephrotoxic nonoliguric ATN (WITH AKI)</b> — WRONG: AKI must be oliguric, so brisk output excludes tubular injury. Nephrotoxic ATN is frequently NON-oliguric — high urine output does not exclude necrosis. Discriminator: granular casts/RTE cells + a nephrotoxin + rising creatinine confirm ATN regardless of output.</li><li><b>AIN / tubulointerstitial (WITH AKI)</b> — WRONG: ruling out AIN because there is no fever, rash, or eosinophilia. The classic triad is INCOMPLETE/absent in the large majority of cases (especially PPI- and checkpoint-inhibitor-induced). Discriminator: subacute AKI + sterile pyuria + WBC casts + a new drug is sufficient to suspect AIN and stop the agent.</li><li><b>Osmotic diuresis (WITH or WITHOUT AKI)</b> — WRONG: treating osmotic-diuresis polyuria as a primary ADH/water-handling defect (chasing DI). The driver is solute, not ADH. Discriminator: high urine osm/solute excretion with an obvious solute source (glucose, mannitol, urea) = osmotic diuresis; correct the solute and replace volume rather than working up DI.</li><li><b>Diabetes insipidus (WITHOUT AKI)</b> — WRONG: confusing DI with primary polydipsia by sodium. DI gives dilute urine with HIGH/high-normal serum sodium, whereas primary polydipsia gives dilute urine with LOW/low-normal sodium. Discriminator: a water-deprivation test then DDAVP separates central DI (concentrates after DDAVP), nephrogenic DI (no response to DDAVP), and polydipsia (concentrates with deprivation).</li><li><b>Primary polydipsia (WITHOUT AKI)</b> — WRONG: starting DDAVP empirically for dilute polyuria. In primary polydipsia, DDAVP plus continued heavy drinking risks acute hyponatremia. Discriminator: a water-deprivation test concentrates the urine in polydipsia (kidney works) but fails to in DI — confirm before treating.</li><li><b>Diuretics (WITHOUT AKI)</b> — WRONG: launching a full DI/polyuria workup before reviewing the medication list. Diuretics (including OTC/herbal and surreptitious use) reproduce many polyuria patterns. Discriminator: a urine diuretic screen + careful med reconciliation can short-circuit an expensive workup.</li><li><b>Hypercalcemia / hypokalemia (WITHOUT AKI)</b> — WRONG: treating the polyuria itself instead of the electrolyte. These cause a REVERSIBLE acquired nephrogenic DI — correct the calcium or potassium and the concentrating defect/polyuria resolves. Discriminator: dilute polyuria + hypercalcemia or hypokalemia → fix the electrolyte first, don't reach for DDAVP.</li><li><b>CKD concentrating defect (WITHOUT AKI)</b> — WRONG: dismissing new nocturia/polyuria as benign aging or BPH because the creatinine is still normal. Loss of concentrating ability is an EARLY CKD sign that PRECEDES a measurable creatinine rise. Discriminator: persistent nocturia with iso-osthenuric urine warrants checking for underlying CKD/tubulointerstitial disease.</li></ol></details><details class="panel"><summary>📖 Read-through — all 10 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Post-obstructive diuresis (WITH AKI)</div><div class="rte">After relief of obstruction (Foley for BPH, ureteral stent, percutaneous nephrostomy, stone passage), the kidney offloads retained salt, water, and urea (appropriate component) on top of a transient tubular concentrating defect (pathologic component). Output may exceed 200 mL/h. Risks: dehydration, hypokalemia, hypomagnesemia, hypotension. Replace only ~half to two-thirds of output with isotonic fluid so an appropriate diuresis can self-limit.</div><div class="rtt">⚠️ WRONG: chasing every mL of urine 1:1 with IV fluid after relieving obstruction. Aggressive matched replacement perpetuates a diuresis that should resolve on its own. Discriminator: separate appropriate (clears retained solute, self-limits) from pathologic (true tubular defect) — replace partially and trend weight, Na, K, Mg, and volume status.</div></div><div class="rt"><div class="rtl">2. Recovery phase of ATN (WITH AKI)</div><div class="rte">In recovering ATN the GFR (filtration) returns before the tubules regain reabsorptive/concentrating capacity, and accumulated urea adds an osmotic load → a brisk polyuric phase. Creatinine stabilizes then falls as urine output rises. This phase carries genuine risk of hypovolemia and hypokalemia/hypophosphatemia/hypomagnesemia.</div><div class="rtt">⚠️ WRONG: easing off monitoring once creatinine starts dropping. The polyuric recovery phase can cause severe volume and K/Mg/PO4 depletion exactly when the team assumes recovery is complete. Discriminator: rising output + falling creatinine after ATN = recovery diuresis — keep replacing fluids/electrolytes and rechecking labs.</div></div><div class="rt"><div class="rtl">3. Nephrotoxic nonoliguric ATN (WITH AKI)</div><div class="rte">Direct tubular toxins necrose cells while urine flow stays preserved/increased. Aminoglycosides are the classic culprit (non-oliguric, Mg/K wasting, onset ~5–10 days, dose once-daily and follow troughs); also cisplatin (Mg wasting), amphotericin B (distal RTA + K/Mg wasting; lipid formulations less toxic), ifosfamide (Fanconi), and tenofovir (proximal/Fanconi). Sediment: muddy-brown granular casts + renal tubular epithelial cells.</div><div class="rtt">⚠️ WRONG: AKI must be oliguric, so brisk output excludes tubular injury. Nephrotoxic ATN is frequently NON-oliguric — high urine output does not exclude necrosis. Discriminator: granular casts/RTE cells + a nephrotoxin + rising creatinine confirm ATN regardless of output.</div></div><div class="rt"><div class="rtl">4. AIN / tubulointerstitial (WITH AKI)</div><div class="rte">Interstitial inflammation impairs the medullary gradient and tubular ADH responsiveness → concentrating defect and polyuria, with subacute AKI. Top drug triggers: PPIs, NSAIDs, beta-lactams, sulfa, allopurinol, rifampin, and immune checkpoint inhibitors. Sediment: WBCs, WBC casts, sterile pyuria; eosinophiluria is unreliable. First step: stop the culprit drug; add steroids if no recovery within ~5–7 days.</div><div class="rtt">⚠️ WRONG: ruling out AIN because there is no fever, rash, or eosinophilia. The classic triad is INCOMPLETE/absent in the large majority of cases (especially PPI- and checkpoint-inhibitor-induced). Discriminator: subacute AKI + sterile pyuria + WBC casts + a new drug is sufficient to suspect AIN and stop the agent.</div></div><div class="rt"><div class="rtl">5. Osmotic diuresis (WITH or WITHOUT AKI)</div><div class="rte">A non-reabsorbed solute load (hyperglycemia in DKA/HHS once filtered glucose exceeds the reabsorptive threshold, mannitol, or a high urea load from catabolism/GI bleed/TPN) holds water in the tubule → solute-rich diuresis. It straddles both columns: mild = polyuria without AKI; severe = volume depletion → prerenal AKI → ATN. Urine osm is not maximally dilute and daily solute excretion is high.</div><div class="rtt">⚠️ WRONG: treating osmotic-diuresis polyuria as a primary ADH/water-handling defect (chasing DI). The driver is solute, not ADH. Discriminator: high urine osm/solute excretion with an obvious solute source (glucose, mannitol, urea) = osmotic diuresis; correct the solute and replace volume rather than working up DI.</div></div><div class="rt"><div class="rtl">6. Diabetes insipidus (WITHOUT AKI)</div><div class="rte">DI is a free-WATER diuresis from failure of ADH signaling. Central DI = deficient ADH (pituitary surgery, trauma, tumor, infiltrative disease) → responds to desmopressin/DDAVP. Nephrogenic DI = collecting-duct resistance to ADH (lithium, hypercalcemia, hypokalemia, congenital) → does NOT respond to DDAVP; manage with low-salt diet + thiazide ± amiloride (for lithium), and treat the cause. Urine is very dilute (osm often &lt;300, sometimes &lt;100); serum Na rises if water access is restricted.</div><div class="rtt">⚠️ WRONG: confusing DI with primary polydipsia by sodium. DI gives dilute urine with HIGH/high-normal serum sodium, whereas primary polydipsia gives dilute urine with LOW/low-normal sodium. Discriminator: a water-deprivation test then DDAVP separates central DI (concentrates after DDAVP), nephrogenic DI (no response to DDAVP), and polydipsia (concentrates with deprivation).</div></div><div class="rt"><div class="rtl">7. Primary polydipsia (WITHOUT AKI)</div><div class="rte">Compulsive/psychogenic water intake (or a low-solute 'tea-and-toast'/beer-potomania pattern) suppresses ADH appropriately → dilute polyuria. Serum sodium is low/low-normal because the excess water dilutes plasma. The kidney is normal and CAN concentrate urine once water intake is restricted.</div><div class="rtt">⚠️ WRONG: starting DDAVP empirically for dilute polyuria. In primary polydipsia, DDAVP plus continued heavy drinking risks acute hyponatremia. Discriminator: a water-deprivation test concentrates the urine in polydipsia (kidney works) but fails to in DI — confirm before treating.</div></div><div class="rt"><div class="rtl">8. Diuretics (WITHOUT AKI)</div><div class="rte">Loop (furosemide, bumetanide, torsemide) and thiazide diuretics force a Na+/water diuresis. They also invalidate the FENa for AKI workup (forced natriuresis falsely elevates FENa) — use FEUrea &lt;35% instead when diuretics are on board. Surreptitious or unlisted diuretic use is a classic exam twist.</div><div class="rtt">⚠️ WRONG: launching a full DI/polyuria workup before reviewing the medication list. Diuretics (including OTC/herbal and surreptitious use) reproduce many polyuria patterns. Discriminator: a urine diuretic screen + careful med reconciliation can short-circuit an expensive workup.</div></div><div class="rt"><div class="rtl">9. Hypercalcemia / hypokalemia (WITHOUT AKI)</div><div class="rte">Both electrolyte disturbances cause an ACQUIRED nephrogenic DI by impairing collecting-duct ADH responsiveness/aquaporin-2 trafficking and the medullary gradient → dilute polyuria. Hypercalcemia (think malignancy, primary hyperparathyroidism) and chronic hypokalemia are the testable culprits.</div><div class="rtt">⚠️ WRONG: treating the polyuria itself instead of the electrolyte. These cause a REVERSIBLE acquired nephrogenic DI — correct the calcium or potassium and the concentrating defect/polyuria resolves. Discriminator: dilute polyuria + hypercalcemia or hypokalemia → fix the electrolyte first, don't reach for DDAVP.</div></div><div class="rt"><div class="rtl">10. CKD concentrating defect (WITHOUT AKI)</div><div class="rte">Tubulointerstitial scarring and nephron loss in CKD impair urinary concentration EARLY — often presenting as nocturia/polyuria with a fixed iso-osthenuric urine osm (~300) before the serum creatinine rises appreciably. Loss of concentrating ability is one of the earliest functional signs of chronic kidney damage.</div><div class="rtt">⚠️ WRONG: dismissing new nocturia/polyuria as benign aging or BPH because the creatinine is still normal. Loss of concentrating ability is an EARLY CKD sign that PRECEDES a measurable creatinine rise. Discriminator: persistent nocturia with iso-osthenuric urine warrants checking for underlying CKD/tubulointerstitial disease.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nref_sediment_micro.html" title="Renal Reference — Muddy Brown Granular Cast (Microscopy)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nref_polyuria_aki.html" title="Renal Reference — Polyuria in AKI">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

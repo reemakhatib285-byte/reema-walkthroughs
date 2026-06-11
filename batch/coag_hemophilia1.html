@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Coagulation — Hemophilia A &amp; B (presentation, labs, dosing)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Hemarthrosis — hallmark</b> — Hemophilia causes DEEP bleeding — hemarthroses, intramuscular hematomas (iliopsoas → femoral nerve palsy, retroperitoneal), and delayed bleeding after trauma/surgery — NOT the immediate mucocutaneous bleeding (epistaxis, petechiae, menorrhagia, gum bleeding) of platelet disorders and von Willebrand disease. Mucocutaneous pattern → think platelet/vWF, not hemophilia.</li><li><b>Intracranial bleed danger</b> — Do NOT delay factor replacement to obtain imaging or labs in a hemophiliac with suspected ICH or major bleed — 'treat first, image second' is the tested principle; ordering the CT before giving factor is the wrong answer.</li><li><b>Factor VIII = Hemophilia A</b> — Hemophilia A = factor VIII (the more common 'A'), NOT factor IX; mixing up A=VIII vs B=IX is the most basic and most tested distinction — mnemonic: A comes first alphabetically and is the more common/8.</li><li><b>Factor IX = Hemophilia B</b> — Hemophilia B = factor IX (Christmas disease), not VIII; you CANNOT distinguish A from B by history, exam or routine coags — the board answer when asked to differentiate is 'specific factor VIII and IX activity assays.' Also note DDAVP does not work in B.</li><li><b>X-linked recessive</b> — Hemophilia is X-LINKED RECESSIVE, not autosomal — the absence of male-to-male transmission and presence of affected maternal uncles is the pedigree giveaway; females are usually asymptomatic carriers but can be symptomatic with extreme lyonization.</li><li><b>Prolonged aPTT, normal PT</b> — PT is NORMAL in hemophilia — an abnormal PT points elsewhere (DIC, liver disease, vitamin K deficiency, warfarin); and if the mixing study does NOT correct, suspect an inhibitor (acquired hemophilia or alloantibody), not simple deficiency.</li><li><b>Severity by factor level</b> — Mild hemophilia (&gt;5% activity) can have an aPTT that looks nearly normal and may first present only at surgery, dental extraction or major trauma — a normal-appearing screening aPTT does not exclude mild hemophilia; a strong bleeding history warrants factor assays.</li><li><b>~30% de novo mutations</b> — Absence of a family history does NOT rule out hemophilia — roughly 30% are de novo mutations; do not dismiss a male infant with hemarthrosis/circumcision bleeding because 'no one in the family has it.'</li><li><b>vWF protects FVIII</b> — Always EXCLUDE von Willebrand disease before labeling an isolated low FVIII as hemophilia A — vWD is far more common, can lower FVIII, and (unlike hemophilia) shows mucocutaneous bleeding and abnormal vWF/ristocetin testing; type 2N vWD in particular masquerades as mild hemophilia A.</li><li><b>FVIII dosing rule</b> — The multipliers differ between factors — FVIII uses the ×0.5 factor (1 IU/kg → ~2% rise); applying the FIX dosing constant to FVIII (or vice versa) under- or over-doses the patient. Know that FVIII raises level twice as efficiently per IU/kg as FIX.</li><li><b>FIX raises ~1% per IU/kg</b> — Do NOT use the FVIII multiplier for factor IX — FIX needs about twice the dose per kg for the same percentage rise because of its larger distribution volume; this dosing-constant swap is a favorite calculation trap.</li><li><b>Desmopressin (DDAVP) mild A</b> — DDAVP works ONLY in mild/moderate hemophilia A — it does NOTHING in hemophilia B (no FIX to release) and is ineffective in SEVERE hemophilia A (there is essentially no FVIII to release); offering DDAVP for a severe-A or any-B bleed is wrong.</li><li><b>Carrier / pregnancy FVIII rises</b> — Normal FVIII levels during pregnancy do NOT exclude carrier status or mild hemophilia A — measure at baseline (non-pregnant) and remember the postpartum drop predisposes to delayed bleeding; reassure-and-discharge based on a third-trimester FVIII is a trap.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Hemarthrosis — hallmark</div><div class="rte">Hemarthrosis — recurrent spontaneous bleeding into large weight-bearing joints (knees, ankles, elbows) — is the hallmark of severe hemophilia. Repeated bleeds cause synovial iron deposition (hemosiderin), chronic synovitis and cartilage destruction, producing a 'target joint' and crippling hemophilic arthropathy. Acute episodes present with a warm, swollen, painful joint held in flexion.</div><div class="rtt">⚠️ Hemophilia causes DEEP bleeding — hemarthroses, intramuscular hematomas (iliopsoas → femoral nerve palsy, retroperitoneal), and delayed bleeding after trauma/surgery — NOT the immediate mucocutaneous bleeding (epistaxis, petechiae, menorrhagia, gum bleeding) of platelet disorders and von Willebrand disease. Mucocutaneous pattern → think platelet/vWF, not hemophilia.</div></div><div class="rt"><div class="rtl">2. Intracranial bleed danger</div><div class="rte">Intracranial hemorrhage is the leading cause of bleeding death in hemophilia and can occur spontaneously or after minor head trauma. The rule: give factor replacement IMMEDIATELY to a level of ~80–100% for any suspected serious or CNS bleed — do this BEFORE and without waiting for CT or neuro consultation.</div><div class="rtt">⚠️ Do NOT delay factor replacement to obtain imaging or labs in a hemophiliac with suspected ICH or major bleed — 'treat first, image second' is the tested principle; ordering the CT before giving factor is the wrong answer.</div></div><div class="rt"><div class="rtl">3. Factor VIII = Hemophilia A</div><div class="rte">Hemophilia A = factor VIII deficiency, the most common severe inherited bleeding disorder, ~1 in 5,000 male births and ~80–85% of hemophilia cases. It is X-linked recessive, so it overwhelmingly affects males. FVIII is part of the intrinsic pathway, so its deficiency prolongs the aPTT.</div><div class="rtt">⚠️ Hemophilia A = factor VIII (the more common 'A'), NOT factor IX; mixing up A=VIII vs B=IX is the most basic and most tested distinction — mnemonic: A comes first alphabetically and is the more common/8.</div></div><div class="rt"><div class="rtl">4. Factor IX = Hemophilia B</div><div class="rte">Hemophilia B (Christmas disease) = factor IX deficiency, ~1 in 30,000 males, also X-linked recessive. It is clinically INDISTINGUISHABLE from hemophilia A — same hemarthrosis, same deep bleeds, same prolonged aPTT with normal PT — so only a specific factor assay can tell them apart.</div><div class="rtt">⚠️ Hemophilia B = factor IX (Christmas disease), not VIII; you CANNOT distinguish A from B by history, exam or routine coags — the board answer when asked to differentiate is 'specific factor VIII and IX activity assays.' Also note DDAVP does not work in B.</div></div><div class="rt"><div class="rtl">5. X-linked recessive</div><div class="rte">Both hemophilia A and B are X-linked recessive. Affected fathers cannot pass it to sons (sons get the Y) but all daughters become obligate carriers; carrier mothers pass it to ~50% of sons (affected) and ~50% of daughters (carriers). Rarely, carrier females bleed due to lyonization (skewed X-inactivation).</div><div class="rtt">⚠️ Hemophilia is X-LINKED RECESSIVE, not autosomal — the absence of male-to-male transmission and presence of affected maternal uncles is the pedigree giveaway; females are usually asymptomatic carriers but can be symptomatic with extreme lyonization.</div></div><div class="rt"><div class="rtl">6. Prolonged aPTT, normal PT</div><div class="rte">The lab signature of hemophilia is an isolated prolonged aPTT with a NORMAL PT, normal platelet count, and normal bleeding time/PFA. A mixing study CORRECTS (1:1 mix with normal plasma normalizes the aPTT), confirming a factor DEFICIENCY rather than an inhibitor. PT stays normal because FVIII/FIX are intrinsic-pathway factors.</div><div class="rtt">⚠️ PT is NORMAL in hemophilia — an abnormal PT points elsewhere (DIC, liver disease, vitamin K deficiency, warfarin); and if the mixing study does NOT correct, suspect an inhibitor (acquired hemophilia or alloantibody), not simple deficiency.</div></div><div class="rt"><div class="rtl">7. Severity by factor level</div><div class="rte">Severity is graded by residual factor activity: &lt;1% = severe (spontaneous hemarthroses, frequent bleeds), 1–5% = moderate (bleeds with minor trauma), &gt;5–40% = mild (bleeds only with significant trauma or surgery). This is why severe disease presents in infancy and mild disease may go unrecognized for decades.</div><div class="rtt">⚠️ Mild hemophilia (&gt;5% activity) can have an aPTT that looks nearly normal and may first present only at surgery, dental extraction or major trauma — a normal-appearing screening aPTT does not exclude mild hemophilia; a strong bleeding history warrants factor assays.</div></div><div class="rt"><div class="rtl">8. ~30% de novo mutations</div><div class="rte">About one-third of hemophilia cases (~30%) arise from NEW (de novo) spontaneous mutations with no prior family history. The most common severe FVIII mutation is the intron 22 inversion. Thus a negative family history is common and does not argue against the diagnosis.</div><div class="rtt">⚠️ Absence of a family history does NOT rule out hemophilia — roughly 30% are de novo mutations; do not dismiss a male infant with hemarthrosis/circumcision bleeding because 'no one in the family has it.'</div></div><div class="rt"><div class="rtl">9. vWF protects FVIII</div><div class="rte">Von Willebrand factor is the plasma carrier that binds and stabilizes FVIII; free (unbound) FVIII has a half-life of only ~12 hours, but bound to vWF it is protected from clearance. Consequently, in von Willebrand disease (especially type 2N and severe type 3), FVIII is also low because its chaperone is missing.</div><div class="rtt">⚠️ Always EXCLUDE von Willebrand disease before labeling an isolated low FVIII as hemophilia A — vWD is far more common, can lower FVIII, and (unlike hemophilia) shows mucocutaneous bleeding and abnormal vWF/ristocetin testing; type 2N vWD in particular masquerades as mild hemophilia A.</div></div><div class="rt"><div class="rtl">10. FVIII dosing rule</div><div class="rte">FVIII dosing: dose (IU) ≈ weight(kg) × 0.5 × (target% − baseline%), because 1 IU/kg of FVIII raises the plasma level by ~2%. FVIII half-life is ~8–12h, so it is dosed roughly twice daily for ongoing bleeds. Targets: ~30–50% for minor bleeds, ~50–80% for major, ~80–100% for life-threatening/CNS bleeds or major surgery.</div><div class="rtt">⚠️ The multipliers differ between factors — FVIII uses the ×0.5 factor (1 IU/kg → ~2% rise); applying the FIX dosing constant to FVIII (or vice versa) under- or over-doses the patient. Know that FVIII raises level twice as efficiently per IU/kg as FIX.</div></div><div class="rt"><div class="rtl">11. FIX raises ~1% per IU/kg</div><div class="rte">FIX dosing: dose (IU) ≈ weight(kg) × 1 × (target% − baseline%), because 1 IU/kg of FIX raises the level only ~1% — FIX has a larger volume of distribution (binds collagen/endothelium) so you need roughly DOUBLE the units per kg compared with FVIII. FIX half-life is longer (~18–24h), allowing once-daily dosing.</div><div class="rtt">⚠️ Do NOT use the FVIII multiplier for factor IX — FIX needs about twice the dose per kg for the same percentage rise because of its larger distribution volume; this dosing-constant swap is a favorite calculation trap.</div></div><div class="rt"><div class="rtl">12. Desmopressin (DDAVP) mild A</div><div class="rte">Desmopressin (DDAVP) triggers release of stored FVIII and vWF from endothelial Weibel-Palade bodies, transiently raising FVIII ~2–4 fold — useful for MILD (and some moderate) hemophilia A and type 1 vWD. It avoids blood-product exposure. Tachyphylaxis develops after repeated doses (stores deplete), and watch for hyponatremia/fluid retention.</div><div class="rtt">⚠️ DDAVP works ONLY in mild/moderate hemophilia A — it does NOTHING in hemophilia B (no FIX to release) and is ineffective in SEVERE hemophilia A (there is essentially no FVIII to release); offering DDAVP for a severe-A or any-B bleed is wrong.</div></div><div class="rt"><div class="rtl">13. Carrier / pregnancy FVIII rises</div><div class="rte">Pregnancy physiologically raises FVIII and vWF 2–3 fold (estrogen effect), which can normalize the FVIII of a mild-hemophilia-A carrier and even an affected woman during gestation, providing hemostatic cover for delivery. After delivery these levels fall rapidly, creating a postpartum/secondary hemorrhage danger window.</div><div class="rtt">⚠️ Normal FVIII levels during pregnancy do NOT exclude carrier status or mild hemophilia A — measure at baseline (non-pregnant) and remember the postpartum drop predisposes to delayed bleeding; reassure-and-discharge based on a third-trimester FVIII is a trap.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="coag_dic2.html" title="Coagulation — DIC (scoring, treatment, mimics)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="coag_hemophilia2.html" title="Coagulation — Hemophilia: Inhibitors, Emicizumab &amp; Rare Factors">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

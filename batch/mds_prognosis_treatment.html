@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">MDS — The MDS Scoreboard &amp; Arsenal (Prognosis &amp; Treatment)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>IPSS-R scoreboard</b> — Two patients with the same blast count get the same drug. WRONG answer: treat by blast count or symptoms alone. Discriminator: therapy is RISK-ADAPTED by IPSS-R — lower-risk MDS is managed with ESAs/luspatercept/lenalidomide/supportive care to improve cytopenias, while higher-risk gets azacitidine and transplant evaluation; conflating the two is the core MDS treatment error.</li><li><b>IPSS-M / DNA sequencing</b> — A patient is 'low-risk' by IPSS-R, so transplant is deferred indefinitely. WRONG answer: rely on cytogenetics-only scoring when molecular data exist. Discriminator: an adverse mutation profile (e.g., multi-hit TP53, ASXL1/RUNX1/EZH2) can upstage an apparently low-risk IPSS-R patient on IPSS-M — molecular testing can change the recommendation toward earlier transplant.</li><li><b>Blasts / cytogenetics / Hb / PLT+ANC</b> — Vignette adds CRAB/end-organ criteria into the MDS score. WRONG answer: include calcium/renal/lytic-lesion criteria. Discriminator: IPSS-R uses ONLY blasts, cytogenetics, Hb, platelets, and ANC — CRAB belongs to myeloma; importing it into MDS prognostication is a distractor.</li><li><b>Cytogenetic risk (del5q / complex / chr7)</b> — Any chromosome-5 finding labeled favorable. WRONG answer: assume −5 in a complex karyotype is good prognosis. Discriminator: ISOLATED del(5q) is a GOOD-prognosis, lenalidomide-responsive subtype, but −5 within a complex (≥3) karyotype and monosomy 7 are HIGH-risk — never lump them together.</li><li><b>Pancytopenia / CRAB</b> — Question lists 'CRAB criteria met' as evidence of high-risk MDS. WRONG answer: use CRAB to risk-stratify MDS. Discriminator: CRAB defines myeloma end-organ damage; MDS prognosis is scored by cytopenias, blast %, and cytogenetics (IPSS-R) — seeing CRAB should redirect you to a plasma-cell disorder, not MDS staging.</li><li><b>Therapy-related MDS</b> — t-MDS managed the same as de novo low-risk MDS with watchful waiting. WRONG answer: treat t-MDS as ordinary low-risk disease. Discriminator: therapy-related MDS carries an inherently worse prognosis driven by TP53/complex karyotype — it should be staged aggressively and referred for transplant rather than observed like de novo lower-risk MDS.</li><li><b>Refractory AML</b> — Secondary AML from prior MDS treated with standard 7+3 with expectation of de novo cure rates. WRONG answer: expect typical AML outcomes. Discriminator: AML evolving from MDS is chemo-refractory with MDS-related genetics — CPX-351 (fit patients) or azacitidine+venetoclax (unfit) outperforms conventional induction, and transplant is the goal for durable control.</li><li><b>HSCT — only cure</b> — A higher-risk, fit 60-year-old is offered azacitidine as definitive 'cure.' WRONG answer: call HMAs or supportive care curative. Discriminator: ONLY allogeneic transplant cures MDS — HMAs and ESAs modify disease/symptoms but are not curative, so an eligible higher-risk patient should be referred for transplant rather than left on lifelong HMA.</li><li><b>Azacitidine / decitabine (HMA)</b> — Patient deemed an HMA non-responder after 2 cycles and switched off. WRONG answer: abandon the HMA prematurely. Also WRONG: presenting HMAs as curative. Discriminator: HMAs require ≥4–6 cycles for response and are disease-modifying/survival-prolonging but NOT curative — they bridge or palliate, never replace allogeneic transplant in eligible higher-risk patients.</li><li><b>Lenalidomide for del(5q)</b> — Low-risk isolated-del(5q) anemia started on azacitidine first-line. WRONG answer: reflexively use an HMA for low-risk del(5q). Discriminator: del(5q) → lenalidomide (after/instead of ESA depending on EPO level and transfusion burden); HMAs are for higher-risk disease, not low-risk isolated del(5q).</li><li><b>Luspatercept / SF3B1</b> — Anemic lower-risk patient with high serum EPO and transfusion dependence given another ESA. WRONG answer: keep pushing ESAs when EPO is already high. Discriminator: luspatercept works distinct from EPO (it boosts terminal erythroid maturation, not progenitor proliferation) and is the preferred choice for ring-sideroblast/SF3B1 anemia and for ESA-unsuitable patients — not a redundant ESA.</li><li><b>EPO (ESA) for low-risk anemia</b> — Transfusion-dependent lower-risk patient with serum EPO 900 started on epoetin. WRONG answer: use an ESA when endogenous EPO is high. Discriminator: ESA efficacy depends on a LOW baseline EPO (&lt;500) and low transfusion need — with high EPO or heavy transfusion dependence, response is poor and luspatercept (or lenalidomide for del(5q)) is preferred.</li><li><b>Immunosuppression (ATG)</b> — Older patient with hypercellular high-risk MDS offered ATG. WRONG answer: use immunosuppression broadly in MDS. Discriminator: ATG/cyclosporine is reserved for the AA-like, HYPOcellular, low-risk, younger subset — it has no role in typical hypercellular or higher-risk MDS, which need HMAs/transplant.</li><li><b>Transfusions + iron chelation</b> — Prophylactic platelet transfusions and broad iron chelation for every MDS patient. WRONG answer: chelate everyone and transfuse platelets prophylactically without thresholds. Discriminator: platelets are given for bleeding or below threshold (not routinely for all), and chelation is selective — for transfusion-dependent LOWER-risk/transplant-eligible patients, not short-prognosis higher-risk disease where it offers no benefit.</li><li><b>Novel agents (ivosidenib, venetoclax, imetelstat)</b> — IDH inhibitor given to an MDS patient without testing IDH mutation status. WRONG answer: use targeted agents empirically. Discriminator: ivosidenib/enasidenib require a documented IDH1/IDH2 mutation, and imetelstat is for ESA-refractory transfusion-dependent LOWER-risk disease — these are biomarker- and risk-specific, not one-size-fits-all, and still do not replace allogeneic transplant for cure.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. IPSS-R scoreboard</div><div class="rte">The revised IPSS-R is the standard MDS prognostic tool, scoring five variables — marrow blast %, cytogenetic risk group, hemoglobin, platelets, and ANC — into five risk tiers (very-low, low, intermediate, high, very-high) with markedly different median survivals (years for very-low vs &lt;1 year for very-high). The practical split is LOWER-risk (very-low/low, sometimes intermediate) → treat the cytopenias; HIGHER-risk → alter natural history with HMAs/transplant.</div><div class="rtt">⚠️ Two patients with the same blast count get the same drug. WRONG answer: treat by blast count or symptoms alone. Discriminator: therapy is RISK-ADAPTED by IPSS-R — lower-risk MDS is managed with ESAs/luspatercept/lenalidomide/supportive care to improve cytopenias, while higher-risk gets azacitidine and transplant evaluation; conflating the two is the core MDS treatment error.</div></div><div class="rt"><div class="rtl">2. IPSS-M / DNA sequencing</div><div class="rte">IPSS-M (molecular, 2022) refines IPSS-R by adding ~31 gene mutations. Adverse-weighted mutations include TP53 (multi-hit), ASXL1, RUNX1, EZH2, NRAS, and FLT3; SF3B1 (without other adverse features) is favorable. It reclassifies a substantial fraction of patients up or down a risk tier versus IPSS-R, sharpening transplant timing decisions.</div><div class="rtt">⚠️ A patient is 'low-risk' by IPSS-R, so transplant is deferred indefinitely. WRONG answer: rely on cytogenetics-only scoring when molecular data exist. Discriminator: an adverse mutation profile (e.g., multi-hit TP53, ASXL1/RUNX1/EZH2) can upstage an apparently low-risk IPSS-R patient on IPSS-M — molecular testing can change the recommendation toward earlier transplant.</div></div><div class="rt"><div class="rtl">3. Blasts / cytogenetics / Hb / PLT+ANC</div><div class="rte">These are the five IPSS-R inputs. Marrow blast % (≤2 / &gt;2–&lt;5 / 5–10 / &gt;10) and cytogenetic group carry the most weight; hemoglobin, platelets, and ANC capture cytopenia depth. Higher blasts and adverse cytogenetics dominate the score and predict AML transformation, while the cytopenia thresholds (e.g., Hb &lt;8, platelets &lt;50, ANC &lt;0.8) modulate it.</div><div class="rtt">⚠️ Vignette adds CRAB/end-organ criteria into the MDS score. WRONG answer: include calcium/renal/lytic-lesion criteria. Discriminator: IPSS-R uses ONLY blasts, cytogenetics, Hb, platelets, and ANC — CRAB belongs to myeloma; importing it into MDS prognostication is a distractor.</div></div><div class="rt"><div class="rtl">4. Cytogenetic risk (del5q / complex / chr7)</div><div class="rte">Cytogenetics anchor prognosis: isolated del(5q) and −Y are very-good/good; normal karyotype is good; monosomy 7/del(7q) is poor; and complex karyotype (≥3 abnormalities, especially with TP53) is very-poor. The five IPSS-R cytogenetic groups independently predict both survival and time to AML.</div><div class="rtt">⚠️ Any chromosome-5 finding labeled favorable. WRONG answer: assume −5 in a complex karyotype is good prognosis. Discriminator: ISOLATED del(5q) is a GOOD-prognosis, lenalidomide-responsive subtype, but −5 within a complex (≥3) karyotype and monosomy 7 are HIGH-risk — never lump them together.</div></div><div class="rt"><div class="rtl">5. Pancytopenia / CRAB</div><div class="rte">In MDS, the depth and number of cytopenias drive symptoms (fatigue/anemia, infection from neutropenia, bleeding from thrombocytopenia) and feed the IPSS-R. The CRAB acronym (hyperCalcemia, Renal failure, Anemia, Bone lesions) is the end-organ criteria for symptomatic MULTIPLE MYELOMA, not MDS, and is a common look-alike distractor.</div><div class="rtt">⚠️ Question lists 'CRAB criteria met' as evidence of high-risk MDS. WRONG answer: use CRAB to risk-stratify MDS. Discriminator: CRAB defines myeloma end-organ damage; MDS prognosis is scored by cytopenias, blast %, and cytogenetics (IPSS-R) — seeing CRAB should redirect you to a plasma-cell disorder, not MDS staging.</div></div><div class="rt"><div class="rtl">6. Therapy-related MDS</div><div class="rte">Therapy-related MDS (post alkylator/radiation or topoisomerase-II inhibitor) is biologically aggressive — enriched for TP53 mutations and complex/−5/−7 karyotypes — with poor response to chemotherapy and a high rate of AML transformation. It generally falls into higher IPSS-R/M tiers and favors early transplant evaluation when the patient is eligible.</div><div class="rtt">⚠️ t-MDS managed the same as de novo low-risk MDS with watchful waiting. WRONG answer: treat t-MDS as ordinary low-risk disease. Discriminator: therapy-related MDS carries an inherently worse prognosis driven by TP53/complex karyotype — it should be staged aggressively and referred for transplant rather than observed like de novo lower-risk MDS.</div></div><div class="rt"><div class="rtl">7. Refractory AML</div><div class="rte">Higher-risk MDS progresses to secondary AML in a large share of patients. AML arising from antecedent MDS ('secondary/AML-MR' with MDS-related cytogenetics or mutations) responds poorly to conventional 7+3 induction and has inferior survival compared with de novo AML; CPX-351 (liposomal daunorubicin/cytarabine) and HMA+venetoclax are preferred in eligible patients.</div><div class="rtt">⚠️ Secondary AML from prior MDS treated with standard 7+3 with expectation of de novo cure rates. WRONG answer: expect typical AML outcomes. Discriminator: AML evolving from MDS is chemo-refractory with MDS-related genetics — CPX-351 (fit patients) or azacitidine+venetoclax (unfit) outperforms conventional induction, and transplant is the goal for durable control.</div></div><div class="rt"><div class="rtl">8. HSCT — only cure</div><div class="rte">Allogeneic hematopoietic stem-cell transplant is the ONLY potentially curative therapy for MDS, acting through both myeloablation and a graft-versus-leukemia effect, with roughly ~30–50% long-term disease-free survival depending on risk. It is reserved for higher-risk, transplant-eligible patients (fitness, donor, organ function); HMAs may be used as a bridge to transplant.</div><div class="rtt">⚠️ A higher-risk, fit 60-year-old is offered azacitidine as definitive 'cure.' WRONG answer: call HMAs or supportive care curative. Discriminator: ONLY allogeneic transplant cures MDS — HMAs and ESAs modify disease/symptoms but are not curative, so an eligible higher-risk patient should be referred for transplant rather than left on lifelong HMA.</div></div><div class="rt"><div class="rtl">9. Azacitidine / decitabine (HMA)</div><div class="rte">Hypomethylating agents (HMAs) — azacitidine and decitabine — are first-line for HIGHER-risk MDS not proceeding immediately to transplant. They are cytidine-analog DNMT inhibitors that hypomethylate and re-express silenced genes. Azacitidine (75 mg/m²/day SC ×7 days q28d) improved overall survival vs conventional care in higher-risk MDS; responses take 4–6 cycles, so don't stop early. Oral decitabine/cedazuridine is also available.</div><div class="rtt">⚠️ Patient deemed an HMA non-responder after 2 cycles and switched off. WRONG answer: abandon the HMA prematurely. Also WRONG: presenting HMAs as curative. Discriminator: HMAs require ≥4–6 cycles for response and are disease-modifying/survival-prolonging but NOT curative — they bridge or palliate, never replace allogeneic transplant in eligible higher-risk patients.</div></div><div class="rt"><div class="rtl">10. Lenalidomide for del(5q)</div><div class="rte">Lenalidomide is the treatment of choice for transfusion-dependent anemia in LOWER-risk MDS with isolated del(5q) (5q− syndrome). At 10 mg/day (21 of 28 days) it achieves transfusion independence in ~60–70% and cytogenetic responses in many by selectively suppressing the del(5q) clone (via CK1α/casein-kinase degradation). Monitor for neutropenia/thrombocytopenia early in therapy.</div><div class="rtt">⚠️ Low-risk isolated-del(5q) anemia started on azacitidine first-line. WRONG answer: reflexively use an HMA for low-risk del(5q). Discriminator: del(5q) → lenalidomide (after/instead of ESA depending on EPO level and transfusion burden); HMAs are for higher-risk disease, not low-risk isolated del(5q).</div></div><div class="rt"><div class="rtl">11. Luspatercept / SF3B1</div><div class="rte">Luspatercept is an erythroid-maturation agent (activin-receptor-IIB ligand trap) that sequesters TGF-β-superfamily ligands (GDF11/activin) to promote late-stage erythroid maturation. It treats anemia in lower-risk MDS, with the strongest benefit in ring-sideroblast/SF3B1-mutated disease; it is now used first-line for lower-risk anemia in many patients (COMMANDS data) regardless of ring sideroblasts.</div><div class="rtt">⚠️ Anemic lower-risk patient with high serum EPO and transfusion dependence given another ESA. WRONG answer: keep pushing ESAs when EPO is already high. Discriminator: luspatercept works distinct from EPO (it boosts terminal erythroid maturation, not progenitor proliferation) and is the preferred choice for ring-sideroblast/SF3B1 anemia and for ESA-unsuitable patients — not a redundant ESA.</div></div><div class="rt"><div class="rtl">12. EPO (ESA) for low-risk anemia</div><div class="rte">Erythropoiesis-stimulating agents (epoetin/darbepoetin) are first-line for anemia in LOWER-risk MDS, working best when endogenous serum EPO is LOW (&lt;500 mU/mL, ideally &lt;200) and the transfusion burden is light (&lt;2 units/month). Adding G-CSF can synergize for erythroid response, particularly in ring-sideroblast subtypes.</div><div class="rtt">⚠️ Transfusion-dependent lower-risk patient with serum EPO 900 started on epoetin. WRONG answer: use an ESA when endogenous EPO is high. Discriminator: ESA efficacy depends on a LOW baseline EPO (&lt;500) and low transfusion need — with high EPO or heavy transfusion dependence, response is poor and luspatercept (or lenalidomide for del(5q)) is preferred.</div></div><div class="rt"><div class="rtl">13. Immunosuppression (ATG)</div><div class="rte">Immunosuppressive therapy — antithymocyte globulin (ATG) ± cyclosporine — benefits a selected minority of LOWER-risk MDS that behaves like aplastic anemia: younger patients (&lt;60), HYPOcellular marrow, low blasts, normal cytogenetics, PNH clone, and/or HLA-DR15 positivity. It targets the T-cell-mediated marrow suppression in hypoplastic MDS.</div><div class="rtt">⚠️ Older patient with hypercellular high-risk MDS offered ATG. WRONG answer: use immunosuppression broadly in MDS. Discriminator: ATG/cyclosporine is reserved for the AA-like, HYPOcellular, low-risk, younger subset — it has no role in typical hypercellular or higher-risk MDS, which need HMAs/transplant.</div></div><div class="rt"><div class="rtl">14. Transfusions + iron chelation</div><div class="rte">Supportive care is the backbone for many patients: RBC transfusions for symptomatic anemia (with leukoreduced/irradiated products to limit alloimmunization and TA-GVHD, especially pre-transplant) and platelets for bleeding. Chronic RBC transfusion (often &gt;20–25 units or rising ferritin &gt;1000–2500) causes iron overload; chelation (deferasirox) is used in transfusion-dependent LOWER-risk patients with reasonable life expectancy and transplant candidates.</div><div class="rtt">⚠️ Prophylactic platelet transfusions and broad iron chelation for every MDS patient. WRONG answer: chelate everyone and transfuse platelets prophylactically without thresholds. Discriminator: platelets are given for bleeding or below threshold (not routinely for all), and chelation is selective — for transfusion-dependent LOWER-risk/transplant-eligible patients, not short-prognosis higher-risk disease where it offers no benefit.</div></div><div class="rt"><div class="rtl">15. Novel agents (ivosidenib, venetoclax, imetelstat)</div><div class="rte">Targeted/emerging options: ivosidenib (IDH1 inhibitor) and enasidenib (IDH2) for IDH-mutated MDS; venetoclax (BCL-2 inhibitor) combined with HMAs for higher-risk MDS/secondary AML; and imetelstat (telomerase inhibitor) for transfusion-dependent LOWER-risk MDS refractory to ESAs. These extend the arsenal beyond HMAs and supportive care but are not curative substitutes for transplant.</div><div class="rtt">⚠️ IDH inhibitor given to an MDS patient without testing IDH mutation status. WRONG answer: use targeted agents empirically. Discriminator: ivosidenib/enasidenib require a documented IDH1/IDH2 mutation, and imetelstat is for ESA-refractory transfusion-dependent LOWER-risk disease — these are biomarker- and risk-specific, not one-size-fits-all, and still do not replace allogeneic transplant for cure.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="mds_clinic.html" title="MDS — The MDS Clinic (Presentation, Workup &amp; Exclusions)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aml_apl.html" title="AML — APL (M3, t(15;17))">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

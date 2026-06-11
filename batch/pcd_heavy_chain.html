@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Plasma Cell — Heavy Chain Diseases (Gamma/Alpha/Mu)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>HCD defect</b> — WRONG to expect a normal intact monoclonal protein on routine SPEP. The truncated heavy chain often migrates as a broad/abnormal band, and the defining clue is an isolated heavy chain with NO light chain on immunofixation/immunoselection. Discriminator: absence of an associated light chain across all HCD types separates them from typical myeloma/MGUS (which have light chains).</li><li><b>Gamma HCD</b> — WRONG to mistake gamma HCD for multiple myeloma because of an IgG band. Franklin disease is a lymphoplasmacytic lymphoma-like process (nodes, spleen, Waldeyer ring), not a lytic-bone marrow plasma-cell tumor, and the heavy chain lacks a light chain. Discriminator: lymphadenopathy/palatal edema + truncated IgG with no light chain = Franklin gamma HCD, not myeloma.</li><li><b>Gamma palatal edema</b> — WRONG to attribute palatal/uvular edema in this setting to angioedema or infection. In a patient with lymphadenopathy and an abnormal heavy-chain band, palatal edema is the Waldeyer-ring clue to gamma (Franklin) HCD. Discriminator: palatal edema + Waldeyer ring + truncated IgG = gamma HCD.</li><li><b>Gamma autoimmune link</b> — WRONG to assume a monoclonal heavy chain in a patient with rheumatoid arthritis is merely a reactive paraprotein. Gamma HCD has a recognized association with autoimmune disease and can be missed. Discriminator: a new abnormal heavy-chain band in an RA/Sjögren patient warrants immunofixation to look for HCD.</li><li><b>Alpha HCD</b> — WRONG to confuse alpha HCD demographics/site with gamma HCD. Alpha HCD targets the GI tract (small bowel/mesenteric nodes) in young Mediterranean/Middle-Eastern adults, whereas gamma HCD targets systemic lymphoid tissue/Waldeyer ring. Discriminator: GI/IPSID + IgA truncated heavy chain = alpha (Seligmann); nodes/palate + IgG = gamma (Franklin).</li><li><b>Mediterranean / young</b> — WRONG to anchor on elderly-patient assumptions used for myeloma. Alpha HCD strikes YOUNG adults in endemic Mediterranean/Middle-Eastern regions. Discriminator: a young Mediterranean patient with chronic diarrhea/malabsorption and an IgA abnormality should raise IPSID/alpha HCD, not classic myeloma.</li><li><b>GI malabsorption</b> — WRONG to chalk up the malabsorption to celiac or tropical sprue without considering IPSID in an endemic young patient. Discriminator: chronic malabsorption in a young Mediterranean adult plus an IgA heavy-chain abnormality and dense plasma-cell small-bowel infiltrate = IPSID/alpha HCD; small-bowel biopsy with immunofixation distinguishes it.</li><li><b>C. jejuni / antibiotics</b> — WRONG to give chemotherapy to early-stage alpha HCD/IPSID, or to give antibiotics to advanced/overt lymphoma expecting a response. Discriminator: early antigen-driven IPSID (analogous to H. pylori MALT) responds to antibiotics alone; only transformed/advanced disease needs chemo — stage determines treatment.</li><li><b>Mu HCD</b> — WRONG to expect lymphadenopathy as in gamma HCD. Mu HCD usually presents with hepatosplenomegaly and a CLL-like marrow but WITHOUT prominent peripheral nodes. Discriminator: rarest HCD + CLL/lymphoproliferative background + vacuolated marrow plasma cells = mu HCD.</li><li><b>Mu vacuolated cells</b> — WRONG to overlook vacuolated marrow plasma cells as nonspecific. In a CLL-like picture, vacuolated plasma cells are the morphologic clue to mu HCD. Discriminator: vacuolated marrow plasma cells + CLL background + IgM heavy chain without light chain in serum = mu HCD.</li><li><b>Mu kappa light chain in urine</b> — WRONG to exclude a 'heavy chain disease' because the patient has urinary kappa light chains. The kappa-urine paradox is specifically characteristic of mu HCD. Discriminator: isolated serum mu heavy chain (no light chain) PLUS free kappa in the urine = mu HCD, not light-chain myeloma.</li><li><b>Ultracentrifugation/IFE</b> — WRONG to rule out HCD on a normal or merely 'abnormal broad band' SPEP. Discriminator: HCD diagnosis hinges on immunofixation/immunoselection showing heavy chain WITHOUT light chain — order these specialized studies rather than relying on SPEP appearance.</li><li><b>No NSAIDs / supportive</b> — WRONG to manage HCD with NSAIDs for pain in a paraproteinemic patient — NSAIDs add nephrotoxic insult to paraprotein-stressed kidneys. Discriminator: treat the underlying clone and use NSAID-sparing analgesia; supportive care addresses malabsorption, bone, and renal protection.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. HCD defect</div><div class="rte">Heavy chain diseases (HCDs) are rare B-cell lymphoproliferative disorders in which a clone secretes a TRUNCATED, incomplete immunoglobulin heavy chain that CANNOT bind a light chain. The deleted portion is usually part of the variable/CH1 region, so the defective heavy chain assembles no light chain. Three types are named by isotype: gamma (Franklin), alpha (Seligmann, most common), and mu (rarest).</div><div class="rtt">⚠️ WRONG to expect a normal intact monoclonal protein on routine SPEP. The truncated heavy chain often migrates as a broad/abnormal band, and the defining clue is an isolated heavy chain with NO light chain on immunofixation/immunoselection. Discriminator: absence of an associated light chain across all HCD types separates them from typical myeloma/MGUS (which have light chains).</div></div><div class="rt"><div class="rtl">2. Gamma HCD</div><div class="rte">Gamma (IgG) heavy chain disease = Franklin disease, a heterogeneous lymphoplasmacytic disorder resembling lymphoplasmacytic lymphoma. Presents with constitutional symptoms, lymphadenopathy, hepatosplenomegaly, and anemia; course ranges from indolent to aggressive lymphoma. Treat the underlying lymphoproliferative disease (chemo/immunotherapy) when symptomatic.</div><div class="rtt">⚠️ WRONG to mistake gamma HCD for multiple myeloma because of an IgG band. Franklin disease is a lymphoplasmacytic lymphoma-like process (nodes, spleen, Waldeyer ring), not a lytic-bone marrow plasma-cell tumor, and the heavy chain lacks a light chain. Discriminator: lymphadenopathy/palatal edema + truncated IgG with no light chain = Franklin gamma HCD, not myeloma.</div></div><div class="rt"><div class="rtl">3. Gamma palatal edema</div><div class="rte">Gamma HCD classically causes palatal/uvular edema due to lymphoid infiltration of Waldeyer's ring (tonsillar/pharyngeal lymphoid tissue), which can threaten the airway. This is the signature physical-exam buzzword for Franklin disease.</div><div class="rtt">⚠️ WRONG to attribute palatal/uvular edema in this setting to angioedema or infection. In a patient with lymphadenopathy and an abnormal heavy-chain band, palatal edema is the Waldeyer-ring clue to gamma (Franklin) HCD. Discriminator: palatal edema + Waldeyer ring + truncated IgG = gamma HCD.</div></div><div class="rt"><div class="rtl">4. Gamma autoimmune link</div><div class="rte">Gamma HCD is associated with autoimmune disease, most notably rheumatoid arthritis and Sjögren syndrome; HCD can be diagnosed during workup of an autoimmune patient. The chronic immune stimulation is thought to drive the clonal expansion.</div><div class="rtt">⚠️ WRONG to assume a monoclonal heavy chain in a patient with rheumatoid arthritis is merely a reactive paraprotein. Gamma HCD has a recognized association with autoimmune disease and can be missed. Discriminator: a new abnormal heavy-chain band in an RA/Sjögren patient warrants immunofixation to look for HCD.</div></div><div class="rt"><div class="rtl">5. Alpha HCD</div><div class="rte">Alpha (IgA) heavy chain disease = Seligmann disease, the MOST COMMON HCD. It is essentially the secretory phenotype of immunoproliferative small-intestinal disease (IPSID), a MALT-type lymphoma of the proximal small bowel. The clone infiltrates intestinal lamina propria and mesenteric nodes.</div><div class="rtt">⚠️ WRONG to confuse alpha HCD demographics/site with gamma HCD. Alpha HCD targets the GI tract (small bowel/mesenteric nodes) in young Mediterranean/Middle-Eastern adults, whereas gamma HCD targets systemic lymphoid tissue/Waldeyer ring. Discriminator: GI/IPSID + IgA truncated heavy chain = alpha (Seligmann); nodes/palate + IgG = gamma (Franklin).</div></div><div class="rt"><div class="rtl">6. Mediterranean / young</div><div class="rte">Alpha HCD/IPSID classically affects young adults (often 2nd–3rd decade) of Mediterranean, Middle-Eastern, and North African origin, in areas of poor sanitation and chronic enteric infection — highly relevant epidemiology for a Middle-Eastern/Israeli board exam.</div><div class="rtt">⚠️ WRONG to anchor on elderly-patient assumptions used for myeloma. Alpha HCD strikes YOUNG adults in endemic Mediterranean/Middle-Eastern regions. Discriminator: a young Mediterranean patient with chronic diarrhea/malabsorption and an IgA abnormality should raise IPSID/alpha HCD, not classic myeloma.</div></div><div class="rt"><div class="rtl">7. GI malabsorption</div><div class="rte">Alpha HCD = IPSID presents with chronic diarrhea, steatorrhea, malabsorption, abdominal pain, weight loss, and finger clubbing from diffuse small-bowel lymphoplasmacytic infiltration. Endoscopic biopsy shows dense lamina-propria plasma-cell/lymphoid infiltrate; the truncated alpha heavy chain may be detected in serum and intestinal secretions.</div><div class="rtt">⚠️ WRONG to chalk up the malabsorption to celiac or tropical sprue without considering IPSID in an endemic young patient. Discriminator: chronic malabsorption in a young Mediterranean adult plus an IgA heavy-chain abnormality and dense plasma-cell small-bowel infiltrate = IPSID/alpha HCD; small-bowel biopsy with immunofixation distinguishes it.</div></div><div class="rt"><div class="rtl">8. C. jejuni / antibiotics</div><div class="rte">Early-stage IPSID is antigen-driven and linked to Campylobacter jejuni infection. Like H. pylori-driven gastric MALT lymphoma, EARLY IPSID can regress with antibiotics alone (e.g., tetracycline) — eradicating the antigenic stimulus. Advanced disease that has progressed to overt lymphoma requires chemotherapy.</div><div class="rtt">⚠️ WRONG to give chemotherapy to early-stage alpha HCD/IPSID, or to give antibiotics to advanced/overt lymphoma expecting a response. Discriminator: early antigen-driven IPSID (analogous to H. pylori MALT) responds to antibiotics alone; only transformed/advanced disease needs chemo — stage determines treatment.</div></div><div class="rt"><div class="rtl">9. Mu HCD</div><div class="rte">Mu (IgM) heavy chain disease is the RAREST HCD, typically arising in the setting of chronic lymphocytic leukemia (CLL) or another chronic lymphoproliferative disorder. Course mirrors the underlying CLL/lymphoma; hepatosplenomegaly is common while peripheral lymphadenopathy is often absent.</div><div class="rtt">⚠️ WRONG to expect lymphadenopathy as in gamma HCD. Mu HCD usually presents with hepatosplenomegaly and a CLL-like marrow but WITHOUT prominent peripheral nodes. Discriminator: rarest HCD + CLL/lymphoproliferative background + vacuolated marrow plasma cells = mu HCD.</div></div><div class="rt"><div class="rtl">10. Mu vacuolated cells</div><div class="rte">Mu HCD shows characteristic VACUOLATED plasma cells in the bone marrow — a morphologic hallmark on aspirate. Combined with a CLL-like lymphocytosis, these vacuolated plasma cells point to the diagnosis.</div><div class="rtt">⚠️ WRONG to overlook vacuolated marrow plasma cells as nonspecific. In a CLL-like picture, vacuolated plasma cells are the morphologic clue to mu HCD. Discriminator: vacuolated marrow plasma cells + CLL background + IgM heavy chain without light chain in serum = mu HCD.</div></div><div class="rt"><div class="rtl">11. Mu kappa light chain in urine</div><div class="rte">Mu HCD paradoxically DOES often produce free kappa light chains that appear in the urine (Bence-Jones proteinuria), even though the serum defect is an isolated, truncated mu heavy chain that cannot assemble with light chains. The light chains are made but not incorporated into intact Ig.</div><div class="rtt">⚠️ WRONG to exclude a 'heavy chain disease' because the patient has urinary kappa light chains. The kappa-urine paradox is specifically characteristic of mu HCD. Discriminator: isolated serum mu heavy chain (no light chain) PLUS free kappa in the urine = mu HCD, not light-chain myeloma.</div></div><div class="rt"><div class="rtl">12. Ultracentrifugation/IFE</div><div class="rte">Definitive diagnosis of any HCD requires demonstrating an isolated heavy chain with NO associated light chain — done by serum/urine immunofixation electrophoresis and immunoselection (specialized techniques like immunoselection or ultracentrifugation/gel filtration to isolate the abnormal heavy chain). Routine SPEP alone is often inadequate because the truncated protein may not form a typical sharp spike.</div><div class="rtt">⚠️ WRONG to rule out HCD on a normal or merely 'abnormal broad band' SPEP. Discriminator: HCD diagnosis hinges on immunofixation/immunoselection showing heavy chain WITHOUT light chain — order these specialized studies rather than relying on SPEP appearance.</div></div><div class="rt"><div class="rtl">13. No NSAIDs / supportive</div><div class="rte">Management is treating the underlying lymphoproliferative disorder (antibiotics for early IPSID; chemoimmunotherapy for advanced/aggressive disease) plus supportive care. Avoid nephrotoxic NSAIDs (paraprotein-associated renal vulnerability) and support bone/nutritional health (calcium, vitamin D) and malabsorption.</div><div class="rtt">⚠️ WRONG to manage HCD with NSAIDs for pain in a paraproteinemic patient — NSAIDs add nephrotoxic insult to paraprotein-stressed kidneys. Discriminator: treat the underlying clone and use NSAID-sparing analgesia; supportive care addresses malabsorption, bone, and renal protection.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcd_myeloma_crab.html" title="Plasma Cell — Giant Crab (CRAB Criteria &amp; Complications)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcd_mspike_diagnosis.html" title="Plasma Cell — M-Spike &amp; Quality Control Lab (SPEP/UPEP/FLC)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

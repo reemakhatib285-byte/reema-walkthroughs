@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — SCENE 2 — HF EVALUATION &amp; NYHA</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>JVP / elevated JVD</b> — A board stem will show a dyspneic patient and ask you to confirm a 'cardiac' cause vs. pulmonary disease — the wrong move is to call elevated JVD nonspecific and order CT chest first. Discriminator: elevated JVP plus an S3 has a high likelihood ratio for elevated filling pressures and HF; isolated COPD/pulmonary HTN can elevate JVP too, but the combination with orthopnea, displaced PMI, and S3 points to LV failure.</li><li><b>Hepatojugular reflux</b> — Trap answer: 'a positive hepatojugular reflux diagnoses tricuspid regurgitation.' Wrong — TR classically produces a pulsatile liver and large CV waves, not specifically a positive HJR. A sustained positive HJR is a marker of high right-sided/biventricular filling pressures and is most useful for confirming a cardiac (vs pulmonary) cause of dyspnea, not for diagnosing a specific valve lesion.</li><li><b>Kussmaul sign</b> — High-yield trap: Kussmaul sign is offered as the answer for cardiac tamponade. WRONG — tamponade gives pulsus paradoxus (≥10 mmHg inspiratory drop in systolic BP) and is typically Kussmaul-NEGATIVE. Kussmaul sign is the discriminator that points you toward constrictive pericarditis (or RV infarct) rather than tamponade.</li><li><b>S3 gallop = poor prognosis</b> — Trap: the stem describes an S3 and asks you to label the patient as HFpEF/diastolic dysfunction. WRONG — S3 is the VOLUME/systolic sound (HFrEF), whereas S4 is the stiff-ventricle sound of HFpEF/diastolic dysfunction. Discriminator: S3 = rapid filling into a dilated volume-overloaded LV (poor prognosis marker); S4 = atrial kick into a non-compliant ventricle and is absent in atrial fibrillation.</li><li><b>S4 = HFpEF (stiff)</b> — Trap answer: an S4 is heard in a patient who is in atrial fibrillation. WRONG/impossible — S4 depends on the atrial kick, which is lost in AF. If a stem gives AF, eliminate any choice invoking S4. Conversely, an S4 in a hypertensive elderly woman with preserved EF supports HFpEF/diastolic dysfunction rather than systolic HF.</li><li><b>Pulsus alternans</b> — Trap: confusing pulsus alternans with pulsus paradoxus. Pulsus alternans is alternating amplitude at a REGULAR rhythm and indicates severe LV systolic dysfunction; pulsus paradoxus is an exaggerated (&gt;10 mmHg) inspiratory FALL in systolic BP and points to tamponade, severe asthma/COPD, or constriction. Don't pick pulsus alternans for a tamponade or asthma stem.</li><li><b>NYHA I — no symptoms</b> — Trap: equating NYHA I with ACC/AHA Stage A. WRONG — Stage A is at-risk with NO structural disease and NO symptoms (e.g., HTN/diabetes), whereas NYHA I requires established HF (structural disease, i.e., Stage C) that is currently asymptomatic. Discriminator: NYHA describes symptoms in patients who already have HF; ACC stages describe the disease continuum including pre-HF risk.</li><li><b>NYHA II — mild</b> — Trap: a stem with a NYHA II HFrEF patient and the choice 'MRA not yet indicated, wait for class III–IV.' WRONG — MRA mortality benefit (EMPHASIS-HF) is established starting at NYHA II. Don't withhold an MRA in mildly symptomatic HFrEF as long as K+ &lt;5.0 and eGFR &gt;30.</li><li><b>NYHA III — moderate</b> — Trap: offering CRT for any symptomatic HFrEF patient regardless of QRS. WRONG — CRT benefit is greatest with a wide QRS (≥150 ms) and LBBB morphology; a narrow QRS predicts no benefit (and possible harm, as in EchoCRT). Discriminator: it's the LBBB + wide QRS, not the NYHA class alone, that drives CRT selection.</li><li><b>NYHA IV — severe (at rest)</b> — Trap: 'NYHA staging is irreversible/progressive like the ACC/AHA stages.' WRONG — NYHA class FLUCTUATES; a decompensated NYHA IV patient can improve to NYHA II after diuresis and GDMT. ONLY the ACC/AHA stages (A→B→C→D) are one-directional and never regress. This A-vs-B contrast (functional/reversible vs. structural/irreversible) is the classic exam discriminator.</li><li><b>Orthopnea / PND</b> — Trap: attributing PND-like nocturnal awakening with cough/wheeze to asthma and ordering an inhaler. Discriminator: cardiac PND is relieved by sitting/standing within minutes and accompanies orthopnea, elevated JVP, and an S3; nocturnal asthma is relieved by bronchodilators and lacks congestion signs. 'Cardiac asthma' (wheeze from pulmonary edema) can mimic asthma — treat the failure, not just the bronchospasm.</li><li><b>Pink frothy sputum / pulm edema</b> — Trap: a hypertensive flash pulmonary edema stem where the chosen answer is large-volume IV fluids or beta-blocker uptitration. WRONG — acute decompensated/flash edema needs PRELOAD and AFTERLOAD reduction (nitrates, diuretic, NIV); do NOT initiate or uptitrate a beta-blocker during acute decompensation and do not fluid-load. Discriminator: pink frothy sputum + high wedge = congestion, not hypovolemia.</li><li><b>Pitting edema / pulsatile liver</b> — Trap: a patient with isolated lower-extremity pitting edema labeled as HF and started on a loop diuretic. WRONG without corroboration — bilateral leg edema is nonspecific (venous insufficiency, nephrotic syndrome, cirrhosis, CCB, hypoalbuminemia). Discriminator: HF edema is accompanied by ELEVATED JVP/positive HJR; if the JVP is normal, look for a non-cardiac cause before diuresing.</li><li><b>Cool extremities / low output</b> — Trap: in a 'cold &amp; wet' low-output patient with marginal BP, the chosen answer is to aggressively diurese alone or to start/uptitrate a beta-blocker. WRONG — pure aggressive diuresis can drop output further and beta-blockers are contraindicated in acute low-output/cardiogenic shock; these patients often need inotropic support first. Discriminator: cool extremities + narrow pulse pressure + oliguria = LOW OUTPUT, manage perfusion before (or alongside) decongestion.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. JVP / elevated JVD</div><div class="rte">Elevated JVP reflects raised right atrial / central venous pressure. Measure as vertical height above the sternal angle: normal is ≤3 cm, so &gt;3 cm above the angle (add 5 cm for distance to the RA = &gt;8 cm H2O) is abnormal. The internal jugular is preferred (no valves, biphasic waveform that varies with respiration/position); examine at 45°. Elevated JVP is the single most useful bedside sign of volume overload and predicts HF hospitalization and death.</div><div class="rtt">⚠️ A board stem will show a dyspneic patient and ask you to confirm a 'cardiac' cause vs. pulmonary disease — the wrong move is to call elevated JVD nonspecific and order CT chest first. Discriminator: elevated JVP plus an S3 has a high likelihood ratio for elevated filling pressures and HF; isolated COPD/pulmonary HTN can elevate JVP too, but the combination with orthopnea, displaced PMI, and S3 points to LV failure.</div></div><div class="rt"><div class="rtl">2. Hepatojugular reflux</div><div class="rte">Hepatojugular (abdominojugular) reflux: apply firm sustained pressure over the RUQ/mid-abdomen for 10–15 seconds; a sustained JVP rise of &gt;3 cm (or &gt;4 cm) that persists during compression is positive, indicating the right heart cannot accommodate the augmented venous return = volume overload / RV dysfunction / elevated PCWP. A normal heart shows only a transient rise. It correlates with PCWP &gt;15 mmHg and supports a cardiac cause of dyspnea.</div><div class="rtt">⚠️ Trap answer: 'a positive hepatojugular reflux diagnoses tricuspid regurgitation.' Wrong — TR classically produces a pulsatile liver and large CV waves, not specifically a positive HJR. A sustained positive HJR is a marker of high right-sided/biventricular filling pressures and is most useful for confirming a cardiac (vs pulmonary) cause of dyspnea, not for diagnosing a specific valve lesion.</div></div><div class="rt"><div class="rtl">3. Kussmaul sign</div><div class="rte">Kussmaul sign = paradoxical RISE (or failure to fall) of the JVP during inspiration. Normally inspiration drops intrathoracic pressure and JVP falls; when the right heart cannot accept augmented venous return, JVP rises instead. Classic for constrictive pericarditis; also seen in restrictive cardiomyopathy, RV infarction, severe RV failure, and tricuspid stenosis.</div><div class="rtt">⚠️ High-yield trap: Kussmaul sign is offered as the answer for cardiac tamponade. WRONG — tamponade gives pulsus paradoxus (≥10 mmHg inspiratory drop in systolic BP) and is typically Kussmaul-NEGATIVE. Kussmaul sign is the discriminator that points you toward constrictive pericarditis (or RV infarct) rather than tamponade.</div></div><div class="rt"><div class="rtl">4. S3 gallop = poor prognosis</div><div class="rte">S3 (ventricular gallop, 'Ken-tuc-ky') is a low-pitched early-diastolic sound from rapid passive ventricular filling into a volume-overloaded/dilated ventricle; best heard at the apex in left lateral decubitus with the bell. In an adult it strongly suggests elevated LV filling pressure and systolic HF (HFrEF); it is one of the highest specificity bedside signs and an independent predictor of poor prognosis, hospitalization, and death. (A physiologic S3 can be normal in children, athletes, and pregnancy.)</div><div class="rtt">⚠️ Trap: the stem describes an S3 and asks you to label the patient as HFpEF/diastolic dysfunction. WRONG — S3 is the VOLUME/systolic sound (HFrEF), whereas S4 is the stiff-ventricle sound of HFpEF/diastolic dysfunction. Discriminator: S3 = rapid filling into a dilated volume-overloaded LV (poor prognosis marker); S4 = atrial kick into a non-compliant ventricle and is absent in atrial fibrillation.</div></div><div class="rt"><div class="rtl">5. S4 = HFpEF (stiff)</div><div class="rte">S4 (atrial gallop, 'Ten-nes-see') is a late-diastolic sound produced when the atrium contracts ('atrial kick') against a stiff, non-compliant ventricle — the hallmark of diastolic dysfunction/HFpEF, LVH (HTN, aortic stenosis), and ischemia. Best heard at the apex with the bell. Because it requires organized atrial contraction, an S4 CANNOT exist in atrial fibrillation.</div><div class="rtt">⚠️ Trap answer: an S4 is heard in a patient who is in atrial fibrillation. WRONG/impossible — S4 depends on the atrial kick, which is lost in AF. If a stem gives AF, eliminate any choice invoking S4. Conversely, an S4 in a hypertensive elderly woman with preserved EF supports HFpEF/diastolic dysfunction rather than systolic HF.</div></div><div class="rt"><div class="rtl">6. Pulsus alternans</div><div class="rte">Pulsus alternans = regular rhythm with alternating strong and weak pulse amplitude (and alternating systolic BP) beat-to-beat, due to cyclic variation in stroke volume from severely depressed LV systolic function. Best detected by slowly deflating a BP cuff (Korotkoff sounds appear in alternate beats). It signals advanced/severe HFrEF and carries a poor prognosis.</div><div class="rtt">⚠️ Trap: confusing pulsus alternans with pulsus paradoxus. Pulsus alternans is alternating amplitude at a REGULAR rhythm and indicates severe LV systolic dysfunction; pulsus paradoxus is an exaggerated (&gt;10 mmHg) inspiratory FALL in systolic BP and points to tamponade, severe asthma/COPD, or constriction. Don't pick pulsus alternans for a tamponade or asthma stem.</div></div><div class="rt"><div class="rtl">7. NYHA I — no symptoms</div><div class="rte">NYHA Class I: no limitation of physical activity; ordinary activity causes no dyspnea, fatigue, or palpitations. NYHA is a FUNCTIONAL classification of current symptom burden and can move up or down with treatment, unlike ACC/AHA stages which only progress. A Stage C patient (structural disease + prior symptoms) who is now asymptomatic on GDMT can be NYHA I.</div><div class="rtt">⚠️ Trap: equating NYHA I with ACC/AHA Stage A. WRONG — Stage A is at-risk with NO structural disease and NO symptoms (e.g., HTN/diabetes), whereas NYHA I requires established HF (structural disease, i.e., Stage C) that is currently asymptomatic. Discriminator: NYHA describes symptoms in patients who already have HF; ACC stages describe the disease continuum including pre-HF risk.</div></div><div class="rt"><div class="rtl">8. NYHA II — mild</div><div class="rte">NYHA Class II: slight limitation of physical activity; comfortable at rest, but ORDINARY activity (e.g., climbing stairs, brisk walking) produces dyspnea, fatigue, or palpitations. NYHA class II–IV is a key gate for therapies: MRAs (spironolactone/eplerenone) are indicated in NYHA II–IV HFrEF, and ARNI/BB/SGLT2i benefit across symptomatic classes.</div><div class="rtt">⚠️ Trap: a stem with a NYHA II HFrEF patient and the choice 'MRA not yet indicated, wait for class III–IV.' WRONG — MRA mortality benefit (EMPHASIS-HF) is established starting at NYHA II. Don't withhold an MRA in mildly symptomatic HFrEF as long as K+ &lt;5.0 and eGFR &gt;30.</div></div><div class="rt"><div class="rtl">9. NYHA III — moderate</div><div class="rte">NYHA Class III: marked limitation; comfortable at rest but LESS-than-ordinary activity (e.g., walking short distances, dressing) causes symptoms. NYHA III (often subdivided IIIa/IIIb) is the threshold for device therapy consideration: CRT for LVEF ≤35% with LBBB and QRS ≥150 ms on GDMT, and ICD for primary prevention in symptomatic HFrEF.</div><div class="rtt">⚠️ Trap: offering CRT for any symptomatic HFrEF patient regardless of QRS. WRONG — CRT benefit is greatest with a wide QRS (≥150 ms) and LBBB morphology; a narrow QRS predicts no benefit (and possible harm, as in EchoCRT). Discriminator: it's the LBBB + wide QRS, not the NYHA class alone, that drives CRT selection.</div></div><div class="rt"><div class="rtl">10. NYHA IV — severe (at rest)</div><div class="rte">NYHA Class IV: symptoms at REST and inability to carry out any physical activity without discomfort. Advanced/refractory NYHA IV (Stage D) triggers evaluation for advanced therapies: inotropes (bridge/palliative), LVAD, transplant, or palliative/hospice care. ARNI initiation is cautioned in decompensated NYHA IV/hypotension.</div><div class="rtt">⚠️ Trap: 'NYHA staging is irreversible/progressive like the ACC/AHA stages.' WRONG — NYHA class FLUCTUATES; a decompensated NYHA IV patient can improve to NYHA II after diuresis and GDMT. ONLY the ACC/AHA stages (A→B→C→D) are one-directional and never regress. This A-vs-B contrast (functional/reversible vs. structural/irreversible) is the classic exam discriminator.</div></div><div class="rt"><div class="rtl">11. Orthopnea / PND</div><div class="rte">Orthopnea = dyspnea on lying flat, relieved by sitting up (quantified by number of pillows, e.g., ≥2–3); due to redistribution of splanchnic/lower-extremity blood to the central circulation increasing pulmonary venous pressure. PND = paroxysmal nocturnal dyspnea, waking abruptly gasping 1–2 hours after falling asleep, relieved by standing/opening a window. Both are specific symptoms of elevated LV filling pressure/pulmonary congestion.</div><div class="rtt">⚠️ Trap: attributing PND-like nocturnal awakening with cough/wheeze to asthma and ordering an inhaler. Discriminator: cardiac PND is relieved by sitting/standing within minutes and accompanies orthopnea, elevated JVP, and an S3; nocturnal asthma is relieved by bronchodilators and lacks congestion signs. 'Cardiac asthma' (wheeze from pulmonary edema) can mimic asthma — treat the failure, not just the bronchospasm.</div></div><div class="rt"><div class="rtl">12. Pink frothy sputum / pulm edema</div><div class="rte">Pink frothy sputum + markedly elevated PCWP (&gt;18, often &gt;25 mmHg) = acute cardiogenic pulmonary edema from acute LV failure/flash edema. Exam shows bilateral crackles, S3, hypoxemia, and CXR with cephalization, Kerley B lines, perihilar 'bat-wing' edema, and effusions. Treat with sit upright + oxygen/NIV, IV loop diuretic, and IV nitrates/vasodilators if BP allows (afterload reduction).</div><div class="rtt">⚠️ Trap: a hypertensive flash pulmonary edema stem where the chosen answer is large-volume IV fluids or beta-blocker uptitration. WRONG — acute decompensated/flash edema needs PRELOAD and AFTERLOAD reduction (nitrates, diuretic, NIV); do NOT initiate or uptitrate a beta-blocker during acute decompensation and do not fluid-load. Discriminator: pink frothy sputum + high wedge = congestion, not hypovolemia.</div></div><div class="rt"><div class="rtl">13. Pitting edema / pulsatile liver</div><div class="rte">Dependent pitting edema, ascites, and a tender/pulsatile hepatomegaly with elevated JVP indicate RIGHT-sided / systemic venous congestion (and functional tricuspid regurgitation when the liver is pulsatile). Chronic passive congestion causes 'cardiac cirrhosis'/congestive hepatopathy with elevated bilirubin and transaminases. The most common cause of right heart failure is LEFT heart failure.</div><div class="rtt">⚠️ Trap: a patient with isolated lower-extremity pitting edema labeled as HF and started on a loop diuretic. WRONG without corroboration — bilateral leg edema is nonspecific (venous insufficiency, nephrotic syndrome, cirrhosis, CCB, hypoalbuminemia). Discriminator: HF edema is accompanied by ELEVATED JVP/positive HJR; if the JVP is normal, look for a non-cardiac cause before diuresing.</div></div><div class="rt"><div class="rtl">14. Cool extremities / low output</div><div class="rte">Cool, mottled extremities, narrow pulse pressure, oliguria, and confusion = the 'cold' low-output/hypoperfusion profile of advanced HF (Stevenson profiles: warm/cold × wet/dry; 'cold &amp; wet' is the worst). Cold + congested signals consideration of inotropes (dobutamine/milrinone), and if hypotensive with end-organ hypoperfusion, cardiogenic shock — needs ICU, possibly mechanical support.</div><div class="rtt">⚠️ Trap: in a 'cold &amp; wet' low-output patient with marginal BP, the chosen answer is to aggressively diurese alone or to start/uptitrate a beta-blocker. WRONG — pure aggressive diuresis can drop output further and beta-blockers are contraindicated in acute low-output/cardiogenic shock; these patients often need inotropic support first. Discriminator: cool extremities + narrow pulse pressure + oliguria = LOW OUTPUT, manage perfusion before (or alongside) decongestion.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_causes.html" title="Heart Failure — SCENE 1 — HF CAUSES &amp; PATHOGENESIS">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_diagnosis_bnp.html" title="Heart Failure — SCENE 3 — HF DIAGNOSIS, BNP TRAPS &amp; DDx">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Adrenal — Cushing Diagnostic Lab</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Need 2 positive tests</b> — A single abnormal screen is NOT enough — pseudo-Cushing (alcohol, obesity, depression, illness) causes false positives. Never localize (ACTH, imaging) until cortisol excess is biochemically confirmed on ≥2 tests.</li><li><b>24h urinary free cortisol</b> — High fluid intake (&gt;5 L/day) and incomplete or over-collection give false results — always verify completeness with urine creatinine. Mild hypercortisolism may give a normal UFC, so a single normal collection doesn't exclude it.</li><li><b>Late-night salivary cortisol</b> — Shift work, irregular sleep, smoking/chewing tobacco, and acute stress disrupt the circadian rhythm and cause false positives — ensure a normal sleep-wake schedule before relying on this test.</li><li><b>1mg overnight dexamethasone</b> — FALSE POSITIVES from CYP3A4 inducers that speed dex metabolism (phenytoin, rifampin, carbamazepine) and from raised cortisol-binding globulin (estrogen/OCPs, pregnancy). FALSE NEGATIVES with CYP3A4 inhibitors. Stop estrogen ~6 weeks prior or measure free cortisol.</li><li><b>Prove cortisol then ACTH</b> — ACTH is labile (degrades quickly) — must be collected cold and processed promptly or you get a falsely low value that mislabels a case as adrenal. An inappropriately NORMAL ACTH with proven cortisol excess counts as ACTH-DEPENDENT.</li><li><b>ACTH high/normal → dependent</b> — An 'inappropriately normal' ACTH in the face of high cortisol is abnormal and counts as ACTH-DEPENDENT — autonomous adrenal disease would have fully SUPPRESSED ACTH. Don't read a normal-range ACTH as reassuring here.</li><li><b>ACTH low → independent</b> — Low ACTH means SKIP the pituitary/dynamic tests entirely and image the adrenals — ordering high-dose dex or CRH in a suppressed-ACTH patient is a wasted, wrong step.</li><li><b>High-dose dex / CRH</b> — Bronchial CARCINOID is the classic exception — it can suppress with high-dose dex and respond to CRH, mimicking pituitary disease and fooling these tests. That discordance is exactly why IPSS is the gold standard tie-breaker.</li><li><b>Pituitary MRI</b> — Most corticotroph adenomas are MICROadenomas (&lt;6 mm) and up to ~40% are NOT visible on MRI — a normal MRI does NOT exclude Cushing disease. Conversely, incidental non-functioning pituitary lesions are common, so a small MRI 'lesion' isn't automatically the culprit; confirm with IPSS.</li><li><b>IPSS gold standard</b> — If MRI shows a small lesion but the biochemistry is discordant, IPSS overrides imaging — IPSS WINS TIES. A 'lesion' on MRI without a central gradient on IPSS is likely an incidentaloma, not the source.</li><li><b>Ectopic source hunt</b> — If the source can't be found or surgery isn't possible, control hypercortisolism medically (ketoconazole, metyrapone, osilodrostat, etomidate IV for crisis) or by bilateral adrenalectomy — don't leave severe hypercortisolism untreated while hunting the tumor.</li><li><b>Adrenal CT for independent</b> — After unilateral adrenalectomy the suppressed contralateral gland is atrophic → expect POST-OP ADRENAL INSUFFICIENCY; give perioperative steroids and taper slowly. Don't forget glucocorticoid replacement.</li><li><b>Etomidate IV (crisis control)</b> — Etomidate suppresses cortisol so effectively it can precipitate ADRENAL INSUFFICIENCY — it must be titrated with cortisol monitoring and a 'block-and-replace' strategy, not given blindly.</li><li><b>Mitotane (adrenolytic in ACC)</b> — Mitotane induces hepatic CYP3A4 and raises cortisol-binding globulin, so patients need HIGHER-than-usual hydrocortisone replacement doses — under-replacing precipitates adrenal crisis. It is specific to ACC, not a treatment for benign adenoma or pituitary disease.</li><li><b>Clinical pearl</b> — The recurring board traps: imaging BEFORE biochemical confirmation, checking ACTH before proving cortisol, trusting a normal pituitary MRI to exclude Cushing disease, and being fooled by a bronchial carcinoid that mimics pituitary on dynamic tests — IPSS settles that last one.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Need 2 positive tests</div><div class="rte">STEP 1 of the algorithm: confirm hypercortisolism with at least TWO abnormal FIRST-LINE screening tests before doing anything to localize. The three first-line screens are the 1 mg overnight dexamethasone suppression test, late-night salivary cortisol, and 24-h urine free cortisol. Requiring two reduces false positives from pseudo-Cushing states. Step 0 (implicit) is always excluding EXOGENOUS glucocorticoids by history first.</div><div class="rtt">⚠️ A single abnormal screen is NOT enough — pseudo-Cushing (alcohol, obesity, depression, illness) causes false positives. Never localize (ACTH, imaging) until cortisol excess is biochemically confirmed on ≥2 tests.</div></div><div class="rt"><div class="rtl">2. 24h urinary free cortisol</div><div class="rte">24-hour urine free cortisol measures total unbound cortisol excreted over a day, integrating across cortisol's pulsatile secretion. A value ≥2-4x the upper limit of normal is strongly diagnostic; collect 2-3 separate collections for reliability and check creatinine to confirm complete collection. Useful but can miss mild/cyclic Cushing.</div><div class="rtt">⚠️ High fluid intake (&gt;5 L/day) and incomplete or over-collection give false results — always verify completeness with urine creatinine. Mild hypercortisolism may give a normal UFC, so a single normal collection doesn't exclude it.</div></div><div class="rt"><div class="rtl">3. Late-night salivary cortisol</div><div class="rte">Late-night (23:00–24:00) salivary cortisol captures the EARLIEST biochemical abnormality in Cushing: loss of the normal circadian NADIR (cortisol should be lowest near midnight). Saliva reflects free, biologically active cortisol; the test is non-invasive and done at home on 2 separate nights — excellent for screening, including cyclic Cushing.</div><div class="rtt">⚠️ Shift work, irregular sleep, smoking/chewing tobacco, and acute stress disrupt the circadian rhythm and cause false positives — ensure a normal sleep-wake schedule before relying on this test.</div></div><div class="rt"><div class="rtl">4. 1mg overnight dexamethasone</div><div class="rte">1 mg overnight LOW-DOSE dexamethasone suppression test: give 1 mg dexamethasone at 23:00, measure 08:00 cortisol. A NORMAL axis suppresses to &lt;1.8 µg/dL (&lt;50 nmol/L). FAILURE to suppress (&gt;1.8 µg/dL) is a positive screen. Dexamethasone is used because it suppresses pituitary ACTH without being detected by the cortisol assay.</div><div class="rtt">⚠️ FALSE POSITIVES from CYP3A4 inducers that speed dex metabolism (phenytoin, rifampin, carbamazepine) and from raised cortisol-binding globulin (estrogen/OCPs, pregnancy). FALSE NEGATIVES with CYP3A4 inhibitors. Stop estrogen ~6 weeks prior or measure free cortisol.</div></div><div class="rt"><div class="rtl">5. Prove cortisol then ACTH</div><div class="rte">STEP 2: once cortisol excess is confirmed, measure plasma ACTH (08:00) to split the two tracks — this single test decides the entire downstream workup. ACTH-dependent (high/normal ACTH) → pituitary vs ectopic. ACTH-independent (suppressed ACTH) → adrenal. The scale image captures the whole 'first prove cortisol, then ACTH sorts it' logic.</div><div class="rtt">⚠️ ACTH is labile (degrades quickly) — must be collected cold and processed promptly or you get a falsely low value that mislabels a case as adrenal. An inappropriately NORMAL ACTH with proven cortisol excess counts as ACTH-DEPENDENT.</div></div><div class="rt"><div class="rtl">6. ACTH high/normal → dependent</div><div class="rte">ACTH not suppressed (typically &gt;15-20 pg/mL, or inappropriately normal) → ACTH-DEPENDENT Cushing → source is PITUITARY (Cushing disease, ~80%) or ECTOPIC (~20%). Next steps: pituitary MRI plus dynamic testing (high-dose dexamethasone suppression and CRH stimulation), and IPSS if those are discordant.</div><div class="rtt">⚠️ An 'inappropriately normal' ACTH in the face of high cortisol is abnormal and counts as ACTH-DEPENDENT — autonomous adrenal disease would have fully SUPPRESSED ACTH. Don't read a normal-range ACTH as reassuring here.</div></div><div class="rt"><div class="rtl">7. ACTH low → independent</div><div class="rte">ACTH suppressed (typically &lt;5-10 pg/mL) → ACTH-INDEPENDENT Cushing → ADRENAL source making cortisol autonomously → go directly to ADRENAL CT. The non-tumor adrenal tissue is atrophic from chronic ACTH suppression, so plan perioperative glucocorticoid cover and a taper after adrenalectomy.</div><div class="rtt">⚠️ Low ACTH means SKIP the pituitary/dynamic tests entirely and image the adrenals — ordering high-dose dex or CRH in a suppressed-ACTH patient is a wasted, wrong step.</div></div><div class="rt"><div class="rtl">8. High-dose dex / CRH</div><div class="rte">Dynamic tests to separate PITUITARY from ECTOPIC within the ACTH-dependent track: a pituitary adenoma retains partial feedback — it SUPPRESSES cortisol &gt;50% on HIGH-dose (8 mg) dexamethasone and RESPONDS (ACTH/cortisol rise) to CRH (or desmopressin). Ectopic tumors typically do NEITHER (autonomous).</div><div class="rtt">⚠️ Bronchial CARCINOID is the classic exception — it can suppress with high-dose dex and respond to CRH, mimicking pituitary disease and fooling these tests. That discordance is exactly why IPSS is the gold standard tie-breaker.</div></div><div class="rt"><div class="rtl">9. Pituitary MRI</div><div class="rte">In ACTH-dependent Cushing, pituitary MRI (with dynamic gadolinium) looks for a corticotroph adenoma. A definite adenoma &gt;6 mm with concordant dynamic tests confirms Cushing disease and directs transsphenoidal surgery.</div><div class="rtt">⚠️ Most corticotroph adenomas are MICROadenomas (&lt;6 mm) and up to ~40% are NOT visible on MRI — a normal MRI does NOT exclude Cushing disease. Conversely, incidental non-functioning pituitary lesions are common, so a small MRI 'lesion' isn't automatically the culprit; confirm with IPSS.</div></div><div class="rt"><div class="rtl">10. IPSS gold standard</div><div class="rte">Inferior petrosal sinus sampling (IPSS) is the GOLD STANDARD for distinguishing pituitary from ectopic ACTH when MRI and dynamic tests are ambiguous. Catheters sample ACTH from both petrosal sinuses and a peripheral vein, before and after CRH. A central:peripheral ACTH gradient (≥2 basal, ≥3 post-CRH) = PITUITARY source; no gradient = ECTOPIC.</div><div class="rtt">⚠️ If MRI shows a small lesion but the biochemistry is discordant, IPSS overrides imaging — IPSS WINS TIES. A 'lesion' on MRI without a central gradient on IPSS is likely an incidentaloma, not the source.</div></div><div class="rt"><div class="rtl">11. Ectopic source hunt</div><div class="rte">No central IPSS gradient → ECTOPIC ACTH → hunt the tumor: small-cell lung carcinoma (most common), bronchial/thymic carcinoid, medullary thyroid carcinoma, pheochromocytoma, pancreatic NET. Use chest/abdomen CT, and functional imaging (Ga-68 DOTATATE for neuroendocrine tumors, FDG-PET). Definitive treatment is locating and resecting the source.</div><div class="rtt">⚠️ If the source can't be found or surgery isn't possible, control hypercortisolism medically (ketoconazole, metyrapone, osilodrostat, etomidate IV for crisis) or by bilateral adrenalectomy — don't leave severe hypercortisolism untreated while hunting the tumor.</div></div><div class="rt"><div class="rtl">12. Adrenal CT for independent</div><div class="rte">ACTH-INDEPENDENT (suppressed ACTH) → adrenal CT (unenhanced + washout protocol). Findings: a unilateral homogeneous lipid-rich (&lt;10 HU, &lt;4 cm) lesion = benign adenoma → unilateral adrenalectomy; a large (&gt;4 cm), heterogeneous, lipid-poor (&gt;20 HU), slow-washout mass = adrenocortical CARCINOMA; bilateral nodules = macronodular hyperplasia or PPNAD.</div><div class="rtt">⚠️ After unilateral adrenalectomy the suppressed contralateral gland is atrophic → expect POST-OP ADRENAL INSUFFICIENCY; give perioperative steroids and taper slowly. Don't forget glucocorticoid replacement.</div></div><div class="rt"><div class="rtl">13. Etomidate IV (crisis control)</div><div class="rte">For SEVERE acute hypercortisolism (e.g., psychosis, severe hypokalemia/HTN, sepsis from ectopic ACTH), IV ETOMIDATE rapidly blocks adrenal 11β-hydroxylase and lowers cortisol within hours — the fastest medical control while definitive workup/surgery is arranged. Oral steroidogenesis inhibitors (ketoconazole, metyrapone, osilodrostat) are used for ongoing control.</div><div class="rtt">⚠️ Etomidate suppresses cortisol so effectively it can precipitate ADRENAL INSUFFICIENCY — it must be titrated with cortisol monitoring and a 'block-and-replace' strategy, not given blindly.</div></div><div class="rt"><div class="rtl">14. Mitotane (adrenolytic in ACC)</div><div class="rte">MITOTANE is an adrenolytic (adrenal-cytotoxic) drug used as adjuvant therapy for adrenocortical CARCINOMA after resection and for unresectable/metastatic disease (often with etoposide-doxorubicin-cisplatin). It destroys adrenocortical cells, so it causes adrenal insufficiency by design and requires glucocorticoid (and often mineralocorticoid) replacement.</div><div class="rtt">⚠️ Mitotane induces hepatic CYP3A4 and raises cortisol-binding globulin, so patients need HIGHER-than-usual hydrocortisone replacement doses — under-replacing precipitates adrenal crisis. It is specific to ACC, not a treatment for benign adenoma or pituitary disease.</div></div><div class="rt"><div class="rtl">15. Clinical pearl</div><div class="rte">The locked diagnostic sequence: (0) exclude exogenous steroids → (1) PROVE cortisol excess with ≥2 first-line screens → (2) measure ACTH to sort tracks → LOW ACTH = ADRENAL (adrenal CT), HIGH/normal ACTH = PITUITARY or ECTOPIC (MRI + high-dose dex/CRH) → (3) IPSS WINS TIES when MRI and dynamic tests disagree, distinguishing pituitary (central gradient) from ectopic.</div><div class="rtt">⚠️ The recurring board traps: imaging BEFORE biochemical confirmation, checking ACTH before proving cortisol, trusting a normal pituitary MRI to exclude Cushing disease, and being fooled by a bronchial carcinoid that mimics pituitary on dynamic tests — IPSS settles that last one.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="adr_cushing_causes.html" title="Adrenal — Cushing Causes Court">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="adr_cushing_tx.html" title="Adrenal — Cushing Treatment Pharmacy">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

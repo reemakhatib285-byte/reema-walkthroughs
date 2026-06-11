@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Glomerular (Nephritic) — MPGN / C3 Glomerulopathy</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Tram-track station — MPGN/C3G</b> — WRONG: treating MPGN as one disease with one therapy. The discriminator is immunofluorescence — Ig-plus-C3 staining means immune-complex MPGN (hunt for HCV/cryoglobulins/HBV/monoclonal protein and treat THAT), whereas C3-dominant staining with little/no Ig means C3 glomerulopathy (work up alternative-pathway dysregulation); lumping them misdirects the entire workup.</li><li><b>Tram-track / double contour</b> — WRONG: confusing tram-track double contours with the 'spike-and-dome' of membranous nephropathy. The discriminator is the geometry on silver stain — MPGN shows DUPLICATED GBM (two parallel inner/outer tracks from cellular interposition), while membranous shows subepithelial spikes projecting outward between deposits; different stains, different diseases (nephritic vs nephrotic).</li><li><b>Low complement</b> — WRONG: expecting normal complement, or ignoring the C3-vs-C4 split. The discriminator is which complement is low — normal complement essentially excludes MPGN/C3G, and the C3/C4 pattern tells you classical (low C4, immune-complex) versus alternative (normal C4, isolated low C3, C3 glomerulopathy); reading only total complement loses that branch point.</li><li><b>Platform 1 — immune complex</b> — WRONG: starting empiric immunosuppression before screening for hepatitis C and cryoglobulins. The discriminator is the underlying antigen — immune-complex MPGN with HCV is treated with DAAs (and the renal disease often follows the viral cure), so missing the HCV/cryoglobulin workup leads to inappropriate immunosuppression of an infection-driven disease.</li><li><b>Platform 3 — light-chain</b> — WRONG: omitting paraprotein testing (SPEP/UPEP/immunofixation, free light chains, ± bone marrow) in an adult with MPGN. The discriminator is age and clonality — adults with an MPGN/C3G pattern frequently harbor an occult monoclonal gammopathy (MGRS), and treating the underlying clone is required; skipping electrophoresis misses a clone-driven disease that won't respond to RAAS blockade alone.</li><li><b>C3 glomerulopathy</b> — WRONG: expecting strong IgG (immunoglobulin) deposition. The discriminator is that C3G is C3-DOMINANT with absent/scant immunoglobulin on IF — prominent IgG/IgA/IgM redirects you to immune-complex MPGN (HCV, cryoglobulins, lupus, paraprotein) instead of pure complement-driven C3 glomerulopathy.</li><li><b>Alternative pathway dysregulation</b> — WRONG: ordering only classical-pathway tests and calling complement 'normal.' The discriminator is targeting the alternative pathway — measure C3NeF, serum factor H/factor I levels, soluble C5b-9, and CFHR/complement-regulator genetics; relying on C4 (which is normal in alternative-pathway disease) hides the dysregulation that defines C3G.</li><li><b>Dense deposit disease (DDD)</b> — WRONG: confusing DDD's intramembranous dense transformation with PSGN's subepithelial humps or membranous subepithelial deposits. The discriminator is the EM location of the deposits — DDD = dense INTRAMEMBRANOUS (within the GBM) ribbons; PSGN = subEPITHELIAL humps; membranous = subepithelial deposits with spikes; each maps to a different disease.</li><li><b>C3GN</b> — WRONG: separating C3GN from DDD by IF. The discriminator is ELECTRON MICROSCOPY, not IF — both are C3-dominant on IF; DDD shows dense intramembranous transformation while C3GN shows mesangial/subendothelial deposits, so you cannot split them without EM.</li><li><b>Nephritic + nephrotic mix</b> — WRONG: forcing the case into a single syndrome. The discriminator is the COMBINATION — a patient with simultaneous active urinary sediment (hematuria/RBC casts) AND nephrotic-range proteinuria with low complement is showing the mixed MPGN/C3G phenotype, not a pure nephritic (eg PSGN) or pure nephrotic (eg minimal change) disease.</li><li><b>Workup: complement/genetics</b> — WRONG: stopping at C3/C4 alone. The discriminator is completeness — without paraprotein testing, HCV/cryoglobulin serologies, alternative-pathway assays, and CFHR genetics you cannot determine whether the driver is an infection, a monoclonal clone, or inherited complement dysregulation, and the treatment differs for each.</li><li><b>Distinguish from PSGN</b> — WRONG: continuing to call it post-infectious GN when C3 stays low for months. The discriminator is complement recovery time — PSGN's hypocomplementemia resolves within 8 weeks, so persistently low C3 beyond that window means C3 glomerulopathy until proven otherwise, mandating a biopsy and complement-genetic evaluation.</li><li><b>Eculizumab / treatment</b> — WRONG: reaching for eculizumab as first-line for every MPGN/C3G. The discriminator is mechanism and refractoriness — eculizumab targets the terminal pathway (C5b-9) and is reserved for refractory complement-driven disease after addressing the underlying cause (virus, clone) and trying supportive ± conventional immunosuppression; using it indiscriminately ignores the treatable upstream driver and the meningococcal-vaccination requirement.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Tram-track station — MPGN/C3G</div><div class="rte">Membranoproliferative GN (MPGN) is a histologic PATTERN, not a single disease — defined by mesangial proliferation PLUS GBM 'tram-track' double contours, producing a mixed nephritic–nephrotic presentation with LOW complement. The modern (post-2013) classification splits it by immunofluorescence into immune-complex/Ig-mediated MPGN (driven by HCV/HBV/cryoglobulinemia, chronic infection, autoimmune) versus complement-mediated C3 glomerulopathy (C3-dominant, alternative-pathway dysregulation). The old type I/II/III scheme is being replaced by this IF-based scheme. Board move: see tram-tracks + low complement → ask 'immune complex or pure C3?' by looking at the IF.</div><div class="rtt">⚠️ WRONG: treating MPGN as one disease with one therapy. The discriminator is immunofluorescence — Ig-plus-C3 staining means immune-complex MPGN (hunt for HCV/cryoglobulins/HBV/monoclonal protein and treat THAT), whereas C3-dominant staining with little/no Ig means C3 glomerulopathy (work up alternative-pathway dysregulation); lumping them misdirects the entire workup.</div></div><div class="rt"><div class="rtl">2. Tram-track / double contour</div><div class="rte">The defining lesion is GBM 'tram-track' / double-contour splitting, best seen on PAS and silver (Jones methenamine) stains. Mechanism: mesangial cells and immune deposits insert between the endothelium and the original GBM (mesangial/cellular interposition), and a new layer of basement membrane is laid down internally — so the silver stain shows two parallel lines (the original outer GBM and the new inner one). Combined with mesangial hypercellularity this gives the lobulated, 'busy' glomerulus of MPGN.</div><div class="rtt">⚠️ WRONG: confusing tram-track double contours with the 'spike-and-dome' of membranous nephropathy. The discriminator is the geometry on silver stain — MPGN shows DUPLICATED GBM (two parallel inner/outer tracks from cellular interposition), while membranous shows subepithelial spikes projecting outward between deposits; different stains, different diseases (nephritic vs nephrotic).</div></div><div class="rt"><div class="rtl">3. Low complement</div><div class="rte">MPGN/C3G classically causes LOW serum complement because complement is being consumed. The PATTERN of consumption localizes the pathway: immune-complex MPGN activates the CLASSICAL pathway → low C4 (and low C3), whereas C3 glomerulopathy/DDD dysregulates the ALTERNATIVE pathway → LOW C3 with NORMAL C4. Eculizumab is a monoclonal antibody against C5 that blocks the terminal pathway (the membrane-attack complex C5b-9). Mnemonic: 'low C4 → classical/immune complex; normal C4 but low C3 → alternative/C3G.'</div><div class="rtt">⚠️ WRONG: expecting normal complement, or ignoring the C3-vs-C4 split. The discriminator is which complement is low — normal complement essentially excludes MPGN/C3G, and the C3/C4 pattern tells you classical (low C4, immune-complex) versus alternative (normal C4, isolated low C3, C3 glomerulopathy); reading only total complement loses that branch point.</div></div><div class="rt"><div class="rtl">4. Platform 1 — immune complex</div><div class="rte">Immune-complex (Ig-mediated) MPGN is driven by chronic antigenemia: HEPATITIS C (the classic cause, often via type II mixed cryoglobulinemia), hepatitis B, chronic bacterial infections (endocarditis, abscess), and autoimmune disease (SLE, Sjögren). IF shows immunoglobulin PLUS C3; classical-pathway activation gives LOW C4. Treatment is directed at the cause — eg direct-acting antivirals for HCV — because clearing the antigen removes the immune-complex driver.</div><div class="rtt">⚠️ WRONG: starting empiric immunosuppression before screening for hepatitis C and cryoglobulins. The discriminator is the underlying antigen — immune-complex MPGN with HCV is treated with DAAs (and the renal disease often follows the viral cure), so missing the HCV/cryoglobulin workup leads to inappropriate immunosuppression of an infection-driven disease.</div></div><div class="rt"><div class="rtl">5. Platform 3 — light-chain</div><div class="rte">A monoclonal gammopathy / light-chain (or monoclonal immunoglobulin) deposition can produce an MPGN pattern — part of 'monoclonal gammopathy of renal significance' (MGRS). A clonal plasma-cell or B-cell process secretes a monoclonal protein that deposits in the glomerulus and can also drive complement dysregulation. This is why an MPGN biopsy in an adult mandates serum/urine protein electrophoresis with immunofixation and serum free light chains to find a paraprotein.</div><div class="rtt">⚠️ WRONG: omitting paraprotein testing (SPEP/UPEP/immunofixation, free light chains, ± bone marrow) in an adult with MPGN. The discriminator is age and clonality — adults with an MPGN/C3G pattern frequently harbor an occult monoclonal gammopathy (MGRS), and treating the underlying clone is required; skipping electrophoresis misses a clone-driven disease that won't respond to RAAS blockade alone.</div></div><div class="rt"><div class="rtl">6. C3 glomerulopathy</div><div class="rte">C3 glomerulopathy (C3G) is defined by IMMUNOFLUORESCENCE: dominant/bright C3 staining with little or no immunoglobulin (no significant IgG/IgA/IgM). It splits by EM into dense deposit disease (DDD) and C3 glomerulonephritis (C3GN). The mechanism is uncontrolled ALTERNATIVE complement pathway activity, so serum shows LOW C3 with NORMAL C4. The IF picture (C3-dominant) is the single fact that separates C3G from immune-complex MPGN.</div><div class="rtt">⚠️ WRONG: expecting strong IgG (immunoglobulin) deposition. The discriminator is that C3G is C3-DOMINANT with absent/scant immunoglobulin on IF — prominent IgG/IgA/IgM redirects you to immune-complex MPGN (HCV, cryoglobulins, lupus, paraprotein) instead of pure complement-driven C3 glomerulopathy.</div></div><div class="rt"><div class="rtl">7. Alternative pathway dysregulation</div><div class="rte">The engine of C3G is uncontrolled ALTERNATIVE complement pathway activation. Causes include the C3 nephritic factor (C3NeF) — an autoantibody that stabilizes the alternative-pathway C3 convertase (C3bBb) so it keeps cleaving C3 — and genetic defects in complement regulators (factor H, factor I, MCP/CD46, and CFHR gene rearrangements). The result is continuous C3 cleavage and glomerular C3 deposition. Mnemonic: 'C3 nephritic factor keeps the convertase ON, so C3 stays LOW.'</div><div class="rtt">⚠️ WRONG: ordering only classical-pathway tests and calling complement 'normal.' The discriminator is targeting the alternative pathway — measure C3NeF, serum factor H/factor I levels, soluble C5b-9, and CFHR/complement-regulator genetics; relying on C4 (which is normal in alternative-pathway disease) hides the dysregulation that defines C3G.</div></div><div class="rt"><div class="rtl">8. Dense deposit disease (DDD)</div><div class="rte">Dense deposit disease (formerly MPGN type II) shows pathognomonic ribbon-like, intramembranous electron-DENSE deposits transforming the GBM on electron microscopy. It typically affects children/young adults, is strongly associated with C3 nephritic factor, and gives LOW C3 with NORMAL C4 (alternative pathway). Roughly ~50% progress to ESKD within ~10 years and it can recur after transplant. Extra-renal clue: association with acquired partial lipodystrophy and retinal drusen.</div><div class="rtt">⚠️ WRONG: confusing DDD's intramembranous dense transformation with PSGN's subepithelial humps or membranous subepithelial deposits. The discriminator is the EM location of the deposits — DDD = dense INTRAMEMBRANOUS (within the GBM) ribbons; PSGN = subEPITHELIAL humps; membranous = subepithelial deposits with spikes; each maps to a different disease.</div></div><div class="rt"><div class="rtl">9. C3GN</div><div class="rte">C3 glomerulonephritis (C3GN) is the other arm of C3G — same C3-dominant IF and alternative-pathway dysregulation as DDD, but EM shows mesangial/subendothelial deposits rather than the dense intramembranous ribbons of DDD. It presents at a mean age of ~30 with a mixed picture: about two-thirds have hematuria and one-third have proteinuria. Workup mirrors C3G: complement levels, C3NeF, and complement-regulator genetics.</div><div class="rtt">⚠️ WRONG: separating C3GN from DDD by IF. The discriminator is ELECTRON MICROSCOPY, not IF — both are C3-dominant on IF; DDD shows dense intramembranous transformation while C3GN shows mesangial/subendothelial deposits, so you cannot split them without EM.</div></div><div class="rt"><div class="rtl">10. Nephritic + nephrotic mix</div><div class="rte">MPGN/C3G classically straddles both syndromes — it presents as a MIXED nephritic–nephrotic picture with hematuria (with RBC casts), variable hypertension, AND nephrotic-range proteinuria, because both the mesangial/endocapillary proliferation (nephritic) and the GBM injury (nephrotic) coexist. This 'both at once' combination plus low complement is a strong board pointer to MPGN over a pure nephritic or pure nephrotic disease.</div><div class="rtt">⚠️ WRONG: forcing the case into a single syndrome. The discriminator is the COMBINATION — a patient with simultaneous active urinary sediment (hematuria/RBC casts) AND nephrotic-range proteinuria with low complement is showing the mixed MPGN/C3G phenotype, not a pure nephritic (eg PSGN) or pure nephrotic (eg minimal change) disease.</div></div><div class="rt"><div class="rtl">11. Workup: complement/genetics</div><div class="rte">The MPGN/C3G workup is a checklist: complement (C3, C4, CH50), alternative-pathway markers (factor H, factor I, C3 nephritic factor, soluble C5b-9), a paraprotein screen (SPEP/UPEP, immunofixation, serum free light chains), infectious serologies (HCV, HBV) and cryoglobulins, plus complement-regulator/CFHR genetic testing and a family screen. The goal is to assign the case to immune-complex versus complement-mediated and to find a treatable driver (virus, clone, or dysregulation).</div><div class="rtt">⚠️ WRONG: stopping at C3/C4 alone. The discriminator is completeness — without paraprotein testing, HCV/cryoglobulin serologies, alternative-pathway assays, and CFHR genetics you cannot determine whether the driver is an infection, a monoclonal clone, or inherited complement dysregulation, and the treatment differs for each.</div></div><div class="rt"><div class="rtl">12. Distinguish from PSGN</div><div class="rte">Resolving PSGN and C3G can look identical at one snapshot (both low C3, both can show C3-dominant IF in postinfectious cases), so the time course of complement is decisive. In PSGN the low C3 is TRANSIENT and normalizes by ~6–8 weeks; if C3 stays LOW beyond 8–12 weeks, abandon 'postinfectious' and pursue C3 glomerulopathy with the full alternative-pathway/genetic workup. Mnemonic: 'C3 that won't come back = C3 glomerulopathy.'</div><div class="rtt">⚠️ WRONG: continuing to call it post-infectious GN when C3 stays low for months. The discriminator is complement recovery time — PSGN's hypocomplementemia resolves within 8 weeks, so persistently low C3 beyond that window means C3 glomerulopathy until proven otherwise, mandating a biopsy and complement-genetic evaluation.</div></div><div class="rt"><div class="rtl">13. Eculizumab / treatment</div><div class="rte">Treatment is cause-directed first: clear the antigen (DAAs for HCV, treat the infection) or treat the clone (chemotherapy for MGRS) in immune-complex/monoclonal disease, plus universal supportive care — RAAS blockade (ACEi/ARB) for proteinuria and BP, and lipid-lowering for the nephrotic component. For complement-mediated C3G, immunosuppression (steroids ± mycophenolate) is used, and ECULIZUMAB (anti-C5 monoclonal blocking C5b-9) is reserved for refractory, terminal-pathway-driven, rapidly progressive disease. Patients on eculizumab need meningococcal vaccination (terminal-complement blockade raises Neisseria risk).</div><div class="rtt">⚠️ WRONG: reaching for eculizumab as first-line for every MPGN/C3G. The discriminator is mechanism and refractoriness — eculizumab targets the terminal pathway (C5b-9) and is reserved for refractory complement-driven disease after addressing the underlying cause (virus, clone) and trying supportive ± conventional immunosuppression; using it indiscriminately ignores the treatable upstream driver and the meningococcal-vaccination requirement.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="glom_nephritic_lupus.html" title="Glomerular (Nephritic) — Lupus Nephritis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="glom_nephritic_mesangio.html" title="Glomerular (Nephritic) — Mesangioproliferative GN">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hemolytic Anemia — G6PD Deficiency (Shield System)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>G6PD = NADPH shield</b> — WRONG answer: "G6PD deficiency causes hemolysis because the cell can no longer make ATP for its membrane pumps." Discriminator: G6PD is in the HMP shunt and produces NADPH (antioxidant defense), not ATP — the ATP-deficiency mechanism with rigid cells belongs to pyruvate kinase deficiency. G6PD hemolysis is from unopposed oxidative damage (Heinz bodies, bite cells).</li><li><b>Only source of NADPH</b> — WRONG answer: "RBCs have redundant pathways to make NADPH, so G6PD deficiency is well compensated and rarely causes hemolysis." Discriminator: the red cell has NO alternative NADPH source — the HMP shunt/G6PD is the sole supplier, which is precisely why G6PD-deficient RBCs cannot defend against an oxidative burst and lyse.</li><li><b>Broken shield → Heinz/bite</b> — WRONG answer: "Heinz bodies are seen on a routine Wright-Giemsa peripheral smear in G6PD deficiency." Discriminator: Heinz bodies require a SUPRAVITAL stain (crystal violet / new methylene blue) — they are invisible on the standard Wright stain. On the routine smear you instead see bite cells and blister cells, the indirect footprint of removed Heinz bodies.</li><li><b>X-linked recessive</b> — WRONG answer: "G6PD deficiency is autosomal recessive, so affected men and women occur in equal numbers." Discriminator: G6PD is X-linked recessive — males are predominantly and fully affected; heterozygous females are variably affected mosaics. The autosomal-recessive, equal-sex pattern belongs to pyruvate kinase deficiency, the classic distractor.</li><li><b>G6PD- is NOT recessive (dominant pattern note)</b> — WRONG answer: "PK deficiency and G6PD deficiency share the same inheritance and produce identical smears." Discriminator: PK = autosomal recessive, chronic, normal/non-spherocytic smear, no Heinz bodies; G6PD = X-linked, episodic/oxidative, bite cells + Heinz bodies. Mixing up the inheritance or the smear findings is the intended trap.</li><li><b>Triggers: infection</b> — WRONG answer: "Fava beans are the most common precipitant of hemolysis in G6PD deficiency." Discriminator: INFECTION is the most common trigger overall; fava beans (favism) and oxidant drugs are classic but less frequent precipitants. A G6PD patient who hemolyzes during an acute febrile illness fits the most common scenario.</li><li><b>Fava beans / favism</b> — WRONG answer: "Favism occurs equally across all G6PD variants and is the defining feature required for diagnosis." Discriminator: favism is more characteristic of the SEVERE Mediterranean variant and is not universal — many African A- variant patients tolerate fava beans. Favism is a classic trigger, not a diagnostic requirement.</li><li><b>Drugs: primaquine/dapsone</b> — WRONG answer: "Methylene blue is the correct antidote for methemoglobinemia in a G6PD-deficient patient." Discriminator: methylene blue is CONTRAINDICATED in G6PD deficiency — it needs NADPH to work and can itself act as an oxidant causing hemolysis; use ascorbic acid (and exchange transfusion if severe) instead. Rasburicase is similarly contraindicated.</li><li><b>Bite cells &amp; Heinz on smear</b> — WRONG answer: "Spherocytes and a positive direct Coombs test are the hallmark smear/lab findings of a G6PD crisis." Discriminator: G6PD hemolysis is Coombs-NEGATIVE with bite/blister cells and Heinz bodies — spherocytes with a positive Coombs indicate warm autoimmune hemolysis (or hereditary spherocytosis if Coombs-negative), not G6PD deficiency.</li><li><b>Self-limited (older cells lyse)</b> — WRONG answer: "In G6PD deficiency hemolysis worsens progressively and uncontrollably as long as the oxidant exposure continues." Discriminator: in the A- variant hemolysis is self-limited because only the older enzyme-deficient cells are destroyed and the marrow replaces them with enzyme-replete young cells — this same age-dependence is what makes the enzyme assay read falsely normal right after a crisis.</li><li><b>NNJ / kernicterus</b> — WRONG answer: "Neonatal jaundice from G6PD deficiency is benign and never requires intervention." Discriminator: G6PD neonatal jaundice can be severe and cause kernicterus — it warrants phototherapy and sometimes exchange transfusion; it is one of the more important treatable causes of neonatal hyperbilirubinemia, not a benign finding.</li><li><b>Diagnosis trap: false normal in crisis</b> — WRONG answer: "Measure the G6PD level during the acute hemolytic crisis to confirm the diagnosis immediately." Discriminator: testing during a crisis gives a FALSE-NORMAL result because the surviving cells are young, enzyme-rich reticulocytes — defer the assay 2–3 months until the cell population re-ages; a 'normal' level during active hemolysis does not exclude G6PD deficiency.</li><li><b>Mediterranean (severe)</b> — WRONG answer: "All G6PD variants produce identical, mild, self-limited hemolysis." Discriminator: the Mediterranean variant is far more SEVERE (low activity in all cells, can be non-self-limiting, marked favism), whereas the A- variant is mild and self-limited — variant identity changes both severity and the reliability of timing assumptions.</li><li><b>Screen before prescribing</b> — WRONG answer: "It is safe to give primaquine or rasburicase empirically and only check G6PD status if hemolysis develops." Discriminator: you must SCREEN for G6PD deficiency BEFORE giving primaquine, tafenoquine, or rasburicase — these can precipitate severe, even life-threatening hemolysis in deficient patients; checking only after a reaction defeats the purpose of prevention.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. G6PD = NADPH shield</div><div class="rte">Glucose-6-phosphate dehydrogenase is the rate-limiting enzyme of the hexose-monophosphate (pentose phosphate) shunt; it generates NADPH, which reduces oxidized glutathione (GSSG) back to reduced glutathione (GSH). GSH then neutralizes oxidative ROS (H2O2 → water via glutathione peroxidase), protecting hemoglobin and the membrane from oxidative denaturation. G6PD makes reducing power (NADPH), NOT ATP — the ATP-generating pathway is glycolysis (pyruvate kinase). Mnemonic: G6PD shields the cell from oxidants via NADPH→GSH.</div><div class="rtt">⚠️ WRONG answer: "G6PD deficiency causes hemolysis because the cell can no longer make ATP for its membrane pumps." Discriminator: G6PD is in the HMP shunt and produces NADPH (antioxidant defense), not ATP — the ATP-deficiency mechanism with rigid cells belongs to pyruvate kinase deficiency. G6PD hemolysis is from unopposed oxidative damage (Heinz bodies, bite cells).</div></div><div class="rt"><div class="rtl">2. Only source of NADPH</div><div class="rte">In the mature RBC, the G6PD step is the ONLY source of NADPH — there is no alternative pathway (no mitochondria, no other major NADPH generator), so the red cell is uniquely vulnerable to G6PD loss. Other tissues have backup NADPH sources, which is why hemolysis is the dominant manifestation. This 'no backup' design explains why even modestly reduced G6PD activity becomes clinically significant under oxidative stress.</div><div class="rtt">⚠️ WRONG answer: "RBCs have redundant pathways to make NADPH, so G6PD deficiency is well compensated and rarely causes hemolysis." Discriminator: the red cell has NO alternative NADPH source — the HMP shunt/G6PD is the sole supplier, which is precisely why G6PD-deficient RBCs cannot defend against an oxidative burst and lyse.</div></div><div class="rt"><div class="rtl">3. Broken shield → Heinz/bite</div><div class="rte">Without enough NADPH/GSH, oxidant stress denatures hemoglobin, which precipitates inside the cell as HEINZ BODIES (visible only on a supravital stain such as crystal violet/new methylene blue, NOT routine Wright stain). Splenic macrophages pluck out these inclusions, leaving BITE CELLS (degmacytes) and blister/hemighost cells on the smear. The hemolysis is partly intravascular (oxidative membrane damage) and partly extravascular (splenic bites). Mnemonic: Heinz bodies get a 'bite' taken out by the spleen.</div><div class="rtt">⚠️ WRONG answer: "Heinz bodies are seen on a routine Wright-Giemsa peripheral smear in G6PD deficiency." Discriminator: Heinz bodies require a SUPRAVITAL stain (crystal violet / new methylene blue) — they are invisible on the standard Wright stain. On the routine smear you instead see bite cells and blister cells, the indirect footprint of removed Heinz bodies.</div></div><div class="rt"><div class="rtl">4. X-linked recessive</div><div class="rte">G6PD deficiency is X-LINKED RECESSIVE: hemizygous MALES are fully (all-or-nothing) affected, while heterozygous FEMALES are mosaics (random X-inactivation/lyonization) with two RBC populations and variable, usually milder expression — a minority of female carriers can hemolyze significantly. This produces a male-predominant pedigree, the key inheritance contrast with the autosomal-recessive enzymopathies (e.g., pyruvate kinase deficiency).</div><div class="rtt">⚠️ WRONG answer: "G6PD deficiency is autosomal recessive, so affected men and women occur in equal numbers." Discriminator: G6PD is X-linked recessive — males are predominantly and fully affected; heterozygous females are variably affected mosaics. The autosomal-recessive, equal-sex pattern belongs to pyruvate kinase deficiency, the classic distractor.</div></div><div class="rt"><div class="rtl">5. G6PD- is NOT recessive (dominant pattern note)</div><div class="rte">This tag drives the head-to-head distinction: pyruvate kinase deficiency = AUTOSOMAL RECESSIVE (equal sexes, carrier parents, chronic non-spherocytic hemolysis, normal smear, no Heinz bodies), whereas G6PD = X-LINKED (male-predominant, episodic oxidative hemolysis with bite cells and Heinz bodies). Two enzyme defects, two pathways (glycolysis/ATP vs HMP shunt/NADPH), two inheritance patterns — the most heavily tested contrast in RBC enzymopathies.</div><div class="rtt">⚠️ WRONG answer: "PK deficiency and G6PD deficiency share the same inheritance and produce identical smears." Discriminator: PK = autosomal recessive, chronic, normal/non-spherocytic smear, no Heinz bodies; G6PD = X-linked, episodic/oxidative, bite cells + Heinz bodies. Mixing up the inheritance or the smear findings is the intended trap.</div></div><div class="rt"><div class="rtl">6. Triggers: infection</div><div class="rte">INFECTION is the single most common trigger of a G6PD hemolytic crisis — activated neutrophils release oxidative ROS (respiratory burst) during the infection, overwhelming the deficient antioxidant defenses. So the typical board vignette is a G6PD patient who develops a viral/bacterial illness (or pneumonia, hepatitis, typhoid) and then becomes acutely anemic and jaundiced, often before any drug or food is implicated.</div><div class="rtt">⚠️ WRONG answer: "Fava beans are the most common precipitant of hemolysis in G6PD deficiency." Discriminator: INFECTION is the most common trigger overall; fava beans (favism) and oxidant drugs are classic but less frequent precipitants. A G6PD patient who hemolyzes during an acute febrile illness fits the most common scenario.</div></div><div class="rt"><div class="rtl">7. Fava beans / favism</div><div class="rte">Fava (broad) beans contain the oxidant glycosides vicine and convicine, which generate ROS and trigger acute hemolysis ('favism'), classically in the more severe MEDITERRANEAN variant and notably in children. Hemolysis can begin hours to a day or two after ingestion. The board point: ask about fava-bean exposure (and naphthalene mothballs, another oxidant) in a patient of Mediterranean/Middle Eastern descent with acute hemolysis.</div><div class="rtt">⚠️ WRONG answer: "Favism occurs equally across all G6PD variants and is the defining feature required for diagnosis." Discriminator: favism is more characteristic of the SEVERE Mediterranean variant and is not universal — many African A- variant patients tolerate fava beans. Favism is a classic trigger, not a diagnostic requirement.</div></div><div class="rt"><div class="rtl">8. Drugs: primaquine/dapsone</div><div class="rte">Oxidant DRUGS precipitate hemolysis: antimalarials (PRIMAQUINE, tafenoquine), DAPSONE, RASBURICASE (and methylene blue — both can also cause methemoglobinemia and are contraindicated/avoided in G6PD deficiency), SULFA drugs (sulfamethoxazole), and NITROFURANTOIN. Mnemonic for oxidant drugs: 'Primaquine, Dapsone, Sulfa, Nitrofurantoin' (and rasburicase). Always screen for G6PD before starting primaquine, tafenoquine, or rasburicase.</div><div class="rtt">⚠️ WRONG answer: "Methylene blue is the correct antidote for methemoglobinemia in a G6PD-deficient patient." Discriminator: methylene blue is CONTRAINDICATED in G6PD deficiency — it needs NADPH to work and can itself act as an oxidant causing hemolysis; use ascorbic acid (and exchange transfusion if severe) instead. Rasburicase is similarly contraindicated.</div></div><div class="rt"><div class="rtl">9. Bite cells &amp; Heinz on smear</div><div class="rte">During a crisis the smear shows BITE CELLS (degmacytes), BLISTER/hemighost cells, and — on supravital staining only — HEINZ BODIES; you also see the usual intravascular-hemolysis labs: hemoglobinuria/dark urine, elevated LDH, low haptoglobin, elevated indirect bilirubin, and reticulocytosis once the marrow responds. Mnemonic: 'Heinz body → spleen takes a bite → bite cell.'</div><div class="rtt">⚠️ WRONG answer: "Spherocytes and a positive direct Coombs test are the hallmark smear/lab findings of a G6PD crisis." Discriminator: G6PD hemolysis is Coombs-NEGATIVE with bite/blister cells and Heinz bodies — spherocytes with a positive Coombs indicate warm autoimmune hemolysis (or hereditary spherocytosis if Coombs-negative), not G6PD deficiency.</div></div><div class="rt"><div class="rtl">10. Self-limited (older cells lyse)</div><div class="rte">In the common A- (African) variant, crises are SELF-LIMITED: G6PD activity declines as RBCs age, so the OLD, enzyme-poor cells lyse first while younger cells and reticulocytes (which still have adequate enzyme) are spared. Hemolysis therefore plateaus after 2–3 days and recovers as the marrow releases young cells even if the trigger continues. The severe Mediterranean variant has lower enzyme across all cell ages and can hemolyze more profoundly and less self-limitingly.</div><div class="rtt">⚠️ WRONG answer: "In G6PD deficiency hemolysis worsens progressively and uncontrollably as long as the oxidant exposure continues." Discriminator: in the A- variant hemolysis is self-limited because only the older enzyme-deficient cells are destroyed and the marrow replaces them with enzyme-replete young cells — this same age-dependence is what makes the enzyme assay read falsely normal right after a crisis.</div></div><div class="rt"><div class="rtl">11. NNJ / kernicterus</div><div class="rte">G6PD deficiency is a major cause of NEONATAL JAUNDICE worldwide (typically peaking day 2–3 of life), driven by impaired bilirubin handling plus hemolysis; severe unconjugated hyperbilirubinemia risks KERNICTERUS (bilirubin encephalopathy). Management is phototherapy, and EXCHANGE TRANSFUSION for very high or rapidly rising bilirubin. This is a key reason G6PD newborn screening matters in high-prevalence populations.</div><div class="rtt">⚠️ WRONG answer: "Neonatal jaundice from G6PD deficiency is benign and never requires intervention." Discriminator: G6PD neonatal jaundice can be severe and cause kernicterus — it warrants phototherapy and sometimes exchange transfusion; it is one of the more important treatable causes of neonatal hyperbilirubinemia, not a benign finding.</div></div><div class="rt"><div class="rtl">12. Diagnosis trap: false normal in crisis</div><div class="rte">Because the old enzyme-poor cells preferentially lyse and are replaced by young reticulocytes that still contain near-normal G6PD, a G6PD activity assay drawn DURING an acute crisis can be FALSELY NORMAL. The board rule: do not test during the episode — retest 2–3 months later (after the reticulocytosis has resolved and the RBC population has re-aged) for an accurate result. The fluorescent-spot screen and quantitative spectrophotometric assay are the standard tests.</div><div class="rtt">⚠️ WRONG answer: "Measure the G6PD level during the acute hemolytic crisis to confirm the diagnosis immediately." Discriminator: testing during a crisis gives a FALSE-NORMAL result because the surviving cells are young, enzyme-rich reticulocytes — defer the assay 2–3 months until the cell population re-ages; a 'normal' level during active hemolysis does not exclude G6PD deficiency.</div></div><div class="rt"><div class="rtl">13. Mediterranean (severe)</div><div class="rte">Variant matters: the MEDITERRANEAN variant (Italian, Greek, Middle Eastern, Sephardic Jewish) has markedly low enzyme activity across cells of all ages → severe, sometimes non-self-limited hemolysis and prominent favism. The African A- variant has near-normal enzyme in young cells that declines with age → milder, self-limited crises (the model for the 'older cells lyse' rule). Both variants are common in malaria-endemic regions because G6PD deficiency confers partial protection against Plasmodium falciparum (balanced polymorphism).</div><div class="rtt">⚠️ WRONG answer: "All G6PD variants produce identical, mild, self-limited hemolysis." Discriminator: the Mediterranean variant is far more SEVERE (low activity in all cells, can be non-self-limiting, marked favism), whereas the A- variant is mild and self-limited — variant identity changes both severity and the reliability of timing assumptions.</div></div><div class="rt"><div class="rtl">14. Screen before prescribing</div><div class="rte">Prevention is the main management strategy: SCREEN for G6PD deficiency BEFORE prescribing known oxidant drugs — especially primaquine and tafenoquine (radical cure of P. vivax malaria), rasburicase (tumor lysis prophylaxis), and dapsone — and counsel patients to avoid fava beans, naphthalene mothballs, and offending drugs. There is no cure; education and trigger avoidance, plus supportive care/transfusion during severe crises, are the cornerstones.</div><div class="rtt">⚠️ WRONG answer: "It is safe to give primaquine or rasburicase empirically and only check G6PD status if hemolysis develops." Discriminator: you must SCREEN for G6PD deficiency BEFORE giving primaquine, tafenoquine, or rasburicase — these can precipitate severe, even life-threatening hemolysis in deficient patients; checking only after a reaction defeats the purpose of prevention.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hemol_enzymes.html" title="Hemolytic Anemia — Enzyme Defects (Pyruvate Kinase &amp; Glycolysis)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hemol_g6pd_drugs.html" title="Hemolytic Anemia — G6PD Drug &amp; Oxidant Triggers">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

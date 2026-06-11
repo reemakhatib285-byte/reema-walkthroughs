@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Adrenal Insufficiency/CAH — The Steroidogenesis Factory</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Cholesterol input</b> — ACTH does NOT act on 21-hydroxylase or any downstream enzyme directly — its trophic target is StAR/cholesterol entry. Chronic ACTH excess therefore drives hyperplasia and precursor buildup, not selective enzyme activity.</li><li><b>StAR + CYP11A1</b> — Combined loss of all steroid classes points UPSTREAM (StAR/desmolase), whereas isolated patterns localize to a single later enzyme. Don't confuse global failure with a single-enzyme CAH.</li><li><b>Mineralocorticoid line</b> — Aldosterone is NOT mainly ACTH-driven — it is RAAS/K+ controlled. This is exactly why central (pituitary) AI needs glucocorticoid replacement only, with no fludrocortisone.</li><li><b>Glucocorticoid line</b> — Loss of cortisol negative feedback raises ACTH and (in primary AI) causes hyperpigmentation via POMC/MSH — a finding ABSENT in central AI, where ACTH is low.</li><li><b>Sex steroid line</b> — DHEA-S is essentially adrenal-specific; a markedly high DHEA-S points to an adrenal androgen source (e.g. ACC or CAH), not an ovarian one.</li><li><b>21-hydroxylase (CYP21A2)</b> — 21-OH deficiency does NOT raise aldosterone — it causes salt-WASTING (low Na, high K, high renin). Don't confuse it with the hypertensive CAH variants (11β / 17α).</li><li><b>11-beta-hydroxylase</b> — 11β-OH deficiency causes HIGH BP, the OPPOSITE of 21-OH salt-wasting. Renin is suppressed (DOC excess), not elevated.</li><li><b>17-OHP marker</b> — Elevated 17-OHP localizes specifically to 21-OH deficiency. It is NOT elevated in 11β or 17α deficiency, so use it to distinguish among the hyperandrogenic/hypertensive CAH forms.</li><li><b>17-alpha-hydroxylase</b> — 17α deficiency causes UNDER-virilization + HTN — the only hypertensive CAH WITHOUT androgen excess. Contrast with 11β (HTN WITH virilization) and 21-OH (salt-wasting WITH virilization).</li><li><b>The CAH engine</b> — The hyperplasia and precursor accumulation are driven by the high-ACTH compensatory state — treating with glucocorticoid both replaces cortisol AND suppresses ACTH, shrinking the gland and cutting androgen overproduction.</li><li><b>Precursor shunting</b> — Ask 'BP + androgens' to name the block: salt-wasting + virilized = 21-OH; HTN + virilized = 11β; HTN + under-virilized = 17α.</li><li><b>Aldosterone output</b> — Aldosterone is preserved in central/secondary AI (RAAS intact) — so hyperkalemia and salt-craving point toward a PRIMARY adrenal problem, not a pituitary one.</li><li><b>Cortisol throne</b> — In central AI the hyponatremia comes from cortisol deficiency (loss of ADH suppression), NOT from aldosterone loss — which is why K+ stays normal there.</li><li><b>Five-enzyme legend</b> — 3β-HSD deficiency is the classic exam curveball: it raises DHEA (a weak androgen) yet causes salt-wasting and ambiguous genitalia in BOTH sexes — high DHEA but the boy is under-virilized.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Cholesterol input</div><div class="rte">Every adrenal steroid is built from cholesterol — the raw material entering the factory from the top. The committed, rate-limiting first step is StAR (steroidogenic acute regulatory protein) shuttling cholesterol into the inner mitochondrial membrane, where CYP11A1 (desmolase / side-chain cleavage) converts it to pregnenolone. Mnemonic: the whole cascade hangs off ONE input, so any upstream defect (e.g. lipoid CAH / StAR deficiency) wipes out ALL classes of steroid at once.</div><div class="rtt">⚠️ ACTH does NOT act on 21-hydroxylase or any downstream enzyme directly — its trophic target is StAR/cholesterol entry. Chronic ACTH excess therefore drives hyperplasia and precursor buildup, not selective enzyme activity.</div></div><div class="rt"><div class="rtl">2. StAR + CYP11A1</div><div class="rte">ACTH (via the MC2R receptor and cAMP) stimulates StAR to move cholesterol into mitochondria, and CYP11A1 cleaves the side chain → pregnenolone, the parent of all three steroid classes. This is the rate-limiting committed step. StAR or CYP11A1 (lipoid CAH) deficiency = no cortisol, no aldosterone, no androgens → severe salt-wasting + under-virilized genotypic males.</div><div class="rtt">⚠️ Combined loss of all steroid classes points UPSTREAM (StAR/desmolase), whereas isolated patterns localize to a single later enzyme. Don't confuse global failure with a single-enzyme CAH.</div></div><div class="rt"><div class="rtl">3. Mineralocorticoid line</div><div class="rte">The zona Glomerulosa is the outermost cortical layer and makes aldosterone (the 'Salt' of GFR = Salt/Sugar/Sex). It is regulated by the RAAS — angiotensin II and serum K+ — and is essentially ACTH-INDEPENDENT, which is why aldosterone is preserved in secondary/central adrenal insufficiency. Aldosterone biosynthesis requires aldosterone synthase (CYP11B2), unique to this zone.</div><div class="rtt">⚠️ Aldosterone is NOT mainly ACTH-driven — it is RAAS/K+ controlled. This is exactly why central (pituitary) AI needs glucocorticoid replacement only, with no fludrocortisone.</div></div><div class="rt"><div class="rtl">4. Glucocorticoid line</div><div class="rte">The zona Fasciculata (middle, 'Sugar') makes cortisol and is the principal ACTH-driven zone. Path: pregnenolone → 17-OH-pregnenolone/progesterone → 11-deoxycortisol → cortisol (via 11β-hydroxylase). Cortisol exerts negative feedback on CRH/ACTH; its loss is the engine behind the high-ACTH state in both CAH and primary adrenal insufficiency.</div><div class="rtt">⚠️ Loss of cortisol negative feedback raises ACTH and (in primary AI) causes hyperpigmentation via POMC/MSH — a finding ABSENT in central AI, where ACTH is low.</div></div><div class="rt"><div class="rtl">5. Sex steroid line</div><div class="rte">The zona Reticularis (innermost, 'Sex') makes adrenal androgens: DHEA/DHEA-S and androstenedione, peripherally converted toward testosterone. 17α-hydroxylase then 17,20-lyase activity (both CYP17A1) divert the pathway here. Adrenal androgen excess explains the virilization/precocious puberty seen when precursors are shunted in 21-OH CAH.</div><div class="rtt">⚠️ DHEA-S is essentially adrenal-specific; a markedly high DHEA-S points to an adrenal androgen source (e.g. ACC or CAH), not an ovarian one.</div></div><div class="rt"><div class="rtl">6. 21-hydroxylase (CYP21A2)</div><div class="rte">21-hydroxylase (CYP21A2) deficiency is the #1 cause of CAH (&gt;90–95% of cases). It sits on BOTH the mineralocorticoid and glucocorticoid lines, so the block lowers cortisol AND aldosterone while precursors shunt into the open androgen pathway. Classic salt-wasting form presents in neonates with hyponatremia, hyperkalemia, hypotension, and virilized female genitalia; non-classic (late-onset) presents with hirsutism/oligomenorrhea.</div><div class="rtt">⚠️ 21-OH deficiency does NOT raise aldosterone — it causes salt-WASTING (low Na, high K, high renin). Don't confuse it with the hypertensive CAH variants (11β / 17α).</div></div><div class="rt"><div class="rtl">7. 11-beta-hydroxylase</div><div class="rte">11β-hydroxylase (CYP11B1) deficiency is the 2nd most common CAH (~5%). Cortisol and aldosterone are low, but 11-deoxycorticosterone (DOC) — a potent mineralocorticoid — accumulates upstream, causing HYPERTENSION with hypokalemia and metabolic alkalosis. Androgens still rise → virilization. Mnemonic: '11 = ele-VAT-ed BP.'</div><div class="rtt">⚠️ 11β-OH deficiency causes HIGH BP, the OPPOSITE of 21-OH salt-wasting. Renin is suppressed (DOC excess), not elevated.</div></div><div class="rt"><div class="rtl">8. 17-OHP marker</div><div class="rte">17-hydroxyprogesterone (17-OHP) is the substrate immediately proximal to the 21-hydroxylase step, so it pools behind a 21-OH block. A markedly elevated 17-OHP (especially on the ACTH-stimulation test) is THE diagnostic marker of classic 21-OH-deficiency CAH and is the analyte on newborn screening.</div><div class="rtt">⚠️ Elevated 17-OHP localizes specifically to 21-OH deficiency. It is NOT elevated in 11β or 17α deficiency, so use it to distinguish among the hyperandrogenic/hypertensive CAH forms.</div></div><div class="rt"><div class="rtl">9. 17-alpha-hydroxylase</div><div class="rte">17α-hydroxylase (CYP17A1) deficiency blocks cortisol AND all sex steroids, but the mineralocorticoid pathway runs unopposed → DOC/corticosterone excess → HYPERTENSION, hypokalemia, and suppressed renin. Patients have absent puberty: phenotypic females (46,XX with primary amenorrhea / 46,XY with under-virilization).</div><div class="rtt">⚠️ 17α deficiency causes UNDER-virilization + HTN — the only hypertensive CAH WITHOUT androgen excess. Contrast with 11β (HTN WITH virilization) and 21-OH (salt-wasting WITH virilization).</div></div><div class="rt"><div class="rtl">10. The CAH engine</div><div class="rte">Core CAH logic in one loop: enzyme block → low cortisol → loss of negative feedback → high CRH/ACTH → bilateral adrenal cortical HYPERPLASIA + massive precursor buildup → precursors shunt down whatever pathway remains open. Mnemonic chain: 'Blocked cortisol → high ACTH → hyperplasia → precursor buildup → shunting.'</div><div class="rtt">⚠️ The hyperplasia and precursor accumulation are driven by the high-ACTH compensatory state — treating with glucocorticoid both replaces cortisol AND suppresses ACTH, shrinking the gland and cutting androgen overproduction.</div></div><div class="rt"><div class="rtl">11. Precursor shunting</div><div class="rte">When an enzyme valve is shut, the backed-up substrate is rerouted into the unblocked branch. In 21-OH and 11β deficiency the open branch is androgens → virilization; in 17α deficiency androgens are blocked but mineralocorticoid precursors (DOC) accumulate → HTN. Reading the shunt direction tells you the phenotype.</div><div class="rtt">⚠️ Ask 'BP + androgens' to name the block: salt-wasting + virilized = 21-OH; HTN + virilized = 11β; HTN + under-virilized = 17α.</div></div><div class="rt"><div class="rtl">12. Aldosterone output</div><div class="rte">Aldosterone is the mineralocorticoid end-product: it acts on the distal nephron to retain Na+/water and excrete K+/H+, defending blood pressure. It is lost in classic salt-wasting 21-OH CAH and in primary adrenal insufficiency (Addison), producing hyponatremia, hyperkalemia, and high renin.</div><div class="rtt">⚠️ Aldosterone is preserved in central/secondary AI (RAAS intact) — so hyperkalemia and salt-craving point toward a PRIMARY adrenal problem, not a pituitary one.</div></div><div class="rt"><div class="rtl">13. Cortisol throne</div><div class="rte">Cortisol is the dominant glucocorticoid — it maintains gluconeogenesis, vascular tone/pressor responsiveness, and suppresses ACTH via negative feedback. Its deficiency is the unifying lesion that raises ACTH in both CAH and primary AI, and its loss causes hypoglycemia, hypotension, and the dilutional hyponatremia of cortisol-deficient ADH excess.</div><div class="rtt">⚠️ In central AI the hyponatremia comes from cortisol deficiency (loss of ADH suppression), NOT from aldosterone loss — which is why K+ stays normal there.</div></div><div class="rt"><div class="rtl">14. Five-enzyme legend</div><div class="rte">Five steroidogenic enzymes can be deficient (StAR/CYP11A1, 3β-HSD, 21-OH, 11β-OH, 17α-OH). The fast bedside localizer is two questions: BP (high vs low/salt-wasting) and androgens (excess vs deficient). 21-OH = low BP + high androgens; 11β = high BP + high androgens; 17α = high BP + low androgens.</div><div class="rtt">⚠️ 3β-HSD deficiency is the classic exam curveball: it raises DHEA (a weak androgen) yet causes salt-wasting and ambiguous genitalia in BOTH sexes — high DHEA but the boy is under-virilized.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="adrai_hpa_axis.html" title="Adrenal Insufficiency/CAH — The HPA Axis &amp; Adrenal Zones Castle">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="adrai_primary_secondary.html" title="Adrenal Insufficiency/CAH — Three-Bucket Hospital (Primary vs Secondary vs Tertiary)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

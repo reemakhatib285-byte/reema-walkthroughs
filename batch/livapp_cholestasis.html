@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Liver Approach — Mechanic's Workshop</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>18</em></summary><ol class="traps"><li><b>Blocked bile (yellow)</b> — WRONG answer: calling a predominantly UNCONJUGATED hyperbilirubinemia 'cholestasis.' Discriminator: cholestasis is conjugated/direct (water-soluble, spills into urine -&gt; dark urine, +urine bilirubin); unconjugated elevation (Gilbert, hemolysis) gives NO bilirubinuria and normal ALP.</li><li><b>US FIRST torch</b> — WRONG answer: ordering MRCP or ERCP (or CT) as the FIRST study. Discriminator: you cannot justify an invasive/expensive test before US has told you whether ducts are dilated; ERCP first exposes the patient to a 3-5% post-ERCP pancreatitis risk with no diagnostic gain over US.</li><li><b>Dilated → ERCP/MRCP</b> — WRONG answer: jumping straight to ERCP for every dilated duct. Discriminator: if you only need a diagnosis (e.g., suspected malignant stricture for staging), MRCP is non-invasive and avoids ERCP's pancreatitis/perforation/bleeding risk — reserve ERCP for when you intend to treat.</li><li><b>No dilation branch</b> — WRONG answer: proceeding to ERCP/stenting because the bilirubin is high. Discriminator: with NON-dilated ducts there is no mechanical lesion to stent — instrumenting the biliary tree is futile and harmful; the answer is antibody serology (AMA first).</li><li><b>AMA → PBC</b> — WRONG answer: confirming PBC with ERCP/cholangiography. Discriminator: PBC is a SMALL-duct disease — the cholangiogram is normal; the diagnosis is serologic (AMA + cholestatic LFTs), whereas PSC (large ducts) is the one diagnosed by cholangiography.</li><li><b>AMA → PSC / IBD 50%</b> — WRONG answer: relying on AMA to diagnose PSC. Discriminator: PSC is AMA-NEGATIVE (AMA is for PBC); PSC shows atypical p-ANCA and beading on cholangiography — a positive AMA should redirect you to PBC.</li><li><b>p-ANCA, NOT c-ANCA</b> — WRONG answer: interpreting a positive ANCA in this patient as granulomatosis with polyangiitis. Discriminator: c-ANCA (anti-PR3) means GPA/vasculitis; PSC is p-ANCA (atypical, anti-MPO-like) — c-ANCA does NOT point to liver/biliary disease.</li><li><b>MRCP (non-invasive)</b> — WRONG answer: choosing ERCP over MRCP when the patient only needs a diagnosis. Discriminator: MRCP achieves the same diagnostic picture as ERCP without the procedural pancreatitis/bleeding/perforation risk — pick ERCP only when an intervention is anticipated.</li><li><b>ERCP therapeutic / last</b> — WRONG answer: using ERCP as a first-line diagnostic test for jaundice/cholestasis. Discriminator: MRCP gives equivalent diagnostic information non-invasively — ERCP's risk is only justified by a planned therapeutic maneuver or a genuinely unrevealing noninvasive workup.</li><li><b>Spider angioma</b> — WRONG answer: attributing scattered spider angiomata in an adult to a primary vascular/genetic disorder. Discriminator: in the context of cirrhosis stigmata they reflect estrogen excess from liver dysfunction — though a few can be normal (pregnancy, healthy young people), the cluster with palmar erythema/gynecomastia points to the liver.</li><li><b>Cirrhosis liver</b> — WRONG answer: assuming normal-range aminotransferases exclude cirrhosis. Discriminator: in burnt-out cirrhosis AST/ALT can be normal or only mildly elevated because there are few hepatocytes left to leak — synthetic markers (low albumin, high INR, low platelets) and imaging reveal the disease.</li><li><b>Dupuytren's hand</b> — WRONG answer: treating Dupuytren's as a specific sign of cirrhosis in general. Discriminator: it skews toward ALCOHOL etiology (and is non-specific overall — diabetes, occupational), so use it as a clue to alcohol rather than proof of cirrhosis itself.</li><li><b>Palmar erythema</b> — WRONG answer: reading palmar erythema as pathognomonic for liver disease. Discriminator: it is non-specific — also seen in pregnancy, hyperthyroidism, rheumatoid arthritis and healthy people — so it counts only as a supporting stigma alongside spiders, gynecomastia and the synthetic profile.</li><li><b>Fetor hepaticus</b> — WRONG answer: confusing fetor hepaticus with the fruity/acetone breath of diabetic ketoacidosis. Discriminator: fetor hepaticus = sulfurous/musty from mercaptans + shunting in liver failure; DKA breath = sweet acetone from ketones — different molecule, different disease.</li><li><b>Synthetic gauges</b> — WRONG answer: blaming a prolonged PT/INR on liver synthetic failure without checking vitamin K. Discriminator: vitamin-K-dependent factors (II, VII, IX, X) correct after vitamin K if the problem is deficiency/cholestatic malabsorption; Factor V does NOT correct with vitamin K — a low Factor V confirms intrinsic liver synthetic failure.</li><li><b>&gt;10 tracts / &gt;1.5 cm</b> — WRONG answer: accepting a tiny/fragmented core (few portal tracts) as a definitive negative for cirrhosis. Discriminator: sampling error makes inadequate biopsies understage fibrosis — an insufficient core cannot rule out advanced disease, so the answer is to obtain an adequate sample or rely on noninvasive staging.</li><li><b>HCV no biopsy</b> — WRONG answer: requiring a pre-treatment liver biopsy before starting HCV antivirals. Discriminator: biopsy is no longer needed to decide HCV treatment — everyone with chronic HCV is eligible for DAAs; noninvasive tests stage fibrosis, and treatment proceeds regardless.</li><li><b>Cholestasis US first</b> — WRONG answer: selecting ERCP as the initial step for new cholestasis. Discriminator: ERCP is NEVER the first test — US (then MRCP) precedes it; ERCP is therapeutic/last-resort and carries pancreatitis risk, so leading with it is the trap answer.</li></ol></details><details class="panel"><summary>📖 Read-through — all 18 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Blocked bile (yellow)</div><div class="rte">A cholestatic pattern is defined by ALP elevated disproportionately to AST/ALT, plus a confirmatory high GGT and a CONJUGATED (direct) hyperbilirubinemia — bilirubin that has been processed by hepatocytes but cannot exit because bile flow is impaired. Clinically this produces pruritus (bile-salt deposition), jaundice, dark urine and pale/clay stools. The cholestasis algorithm splits into intrahepatic causes (PBC, PSC, drugs, intrahepatic cholestasis of pregnancy, infiltration) versus extrahepatic mechanical obstruction (choledocholithiasis, stricture, pancreatic/cholangiocarcinoma). The single fork that decides the pathway is duct dilatation on ultrasound.</div><div class="rtt">⚠️ WRONG answer: calling a predominantly UNCONJUGATED hyperbilirubinemia 'cholestasis.' Discriminator: cholestasis is conjugated/direct (water-soluble, spills into urine -&gt; dark urine, +urine bilirubin); unconjugated elevation (Gilbert, hemolysis) gives NO bilirubinuria and normal ALP.</div></div><div class="rt"><div class="rtl">2. US FIRST torch</div><div class="rte">Right-upper-quadrant abdominal ultrasound is ALWAYS the first imaging test in cholestasis: it is cheap, radiation-free, and answers the only question that matters first — are the intra/extrahepatic ducts DILATED (CBD &gt;6-7 mm, or &gt;10 mm post-cholecystectomy)? It also screens for gallstones, masses and the gallbladder. The result dictates everything downstream: dilated -&gt; mechanical/extrahepatic; non-dilated -&gt; intrahepatic/serologic workup.</div><div class="rtt">⚠️ WRONG answer: ordering MRCP or ERCP (or CT) as the FIRST study. Discriminator: you cannot justify an invasive/expensive test before US has told you whether ducts are dilated; ERCP first exposes the patient to a 3-5% post-ERCP pancreatitis risk with no diagnostic gain over US.</div></div><div class="rt"><div class="rtl">3. Dilated → ERCP/MRCP</div><div class="rte">Dilated ducts on US = mechanical (usually extrahepatic) obstruction, so you proceed to cholangiography. Choose MRCP when you mainly need to DIAGNOSE/localize the lesion (stone, stricture, tumor) without intervention, and ERCP when intervention is likely needed (stone extraction, stenting, sphincterotomy, brushings). Classic extrahepatic causes: choledocholithiasis, benign post-op or PSC strictures, pancreatic head adenocarcinoma (painless jaundice + Courvoisier sign), cholangiocarcinoma.</div><div class="rtt">⚠️ WRONG answer: jumping straight to ERCP for every dilated duct. Discriminator: if you only need a diagnosis (e.g., suspected malignant stricture for staging), MRCP is non-invasive and avoids ERCP's pancreatitis/perforation/bleeding risk — reserve ERCP for when you intend to treat.</div></div><div class="rt"><div class="rtl">4. No dilation branch</div><div class="rte">Non-dilated ducts with a cholestatic profile point to INTRAHEPATIC cholestasis, so the next step is serology rather than stenting: AMA (PBC), MRCP/p-ANCA picture (PSC), plus a careful drug history (anabolic steroids, augmentin, chlorpromazine, estrogens, TPN) and pregnancy (ICP). Infiltrative disease (sarcoid, lymphoma, amyloid, granulomas, metastases) also gives non-dilated cholestasis. Liver biopsy is the tiebreaker when serology is unrevealing.</div><div class="rtt">⚠️ WRONG answer: proceeding to ERCP/stenting because the bilirubin is high. Discriminator: with NON-dilated ducts there is no mechanical lesion to stent — instrumenting the biliary tree is futile and harmful; the answer is antibody serology (AMA first).</div></div><div class="rt"><div class="rtl">5. AMA → PBC</div><div class="rte">A positive anti-mitochondrial antibody (AMA, ~95% sensitive/specific) in a cholestatic, non-dilated picture diagnoses primary biliary cholangitis — autoimmune destruction of small intralobular bile ducts, classically a middle-aged woman with fatigue, pruritus and xanthelasma, with elevated IgM. First-line therapy is ursodeoxycholic acid 13-15 mg/kg/day; obeticholic acid or a fibrate is added for incomplete responders.</div><div class="rtt">⚠️ WRONG answer: confirming PBC with ERCP/cholangiography. Discriminator: PBC is a SMALL-duct disease — the cholangiogram is normal; the diagnosis is serologic (AMA + cholestatic LFTs), whereas PSC (large ducts) is the one diagnosed by cholangiography.</div></div><div class="rt"><div class="rtl">6. AMA → PSC / IBD 50%</div><div class="rte">Primary sclerosing cholangitis is a fibrosing inflammation of large intra- and extrahepatic ducts, strongly associated with inflammatory bowel disease (~70-80% of PSC has IBD, usually ulcerative colitis). Diagnosis is by MRCP/ERCP showing multifocal strictures with intervening dilation — the classic 'beaded' appearance. It is a premalignant condition: lifetime cholangiocarcinoma risk ~10-15%, plus increased gallbladder cancer and colon cancer (so annual colonoscopy if IBD coexists). Typical patient: young man.</div><div class="rtt">⚠️ WRONG answer: relying on AMA to diagnose PSC. Discriminator: PSC is AMA-NEGATIVE (AMA is for PBC); PSC shows atypical p-ANCA and beading on cholangiography — a positive AMA should redirect you to PBC.</div></div><div class="rt"><div class="rtl">7. p-ANCA, NOT c-ANCA</div><div class="rte">PSC carries an ATYPICAL perinuclear p-ANCA (atypical/x-ANCA) in up to ~80%, which supports but does not confirm the diagnosis (cholangiography is confirmatory). The pattern matters because it separates PSC's autoimmune neighborhood from systemic vasculitis.</div><div class="rtt">⚠️ WRONG answer: interpreting a positive ANCA in this patient as granulomatosis with polyangiitis. Discriminator: c-ANCA (anti-PR3) means GPA/vasculitis; PSC is p-ANCA (atypical, anti-MPO-like) — c-ANCA does NOT point to liver/biliary disease.</div></div><div class="rt"><div class="rtl">8. MRCP (non-invasive)</div><div class="rte">Magnetic resonance cholangiopancreatography is the NON-invasive, no-contrast, no-radiation way to image the entire biliary tree; it is the preferred test to diagnose/localize stones, strictures and the beading of PSC. It is purely diagnostic — it cannot remove a stone or place a stent — so it is the imaging of choice when therapy is not yet indicated.</div><div class="rtt">⚠️ WRONG answer: choosing ERCP over MRCP when the patient only needs a diagnosis. Discriminator: MRCP achieves the same diagnostic picture as ERCP without the procedural pancreatitis/bleeding/perforation risk — pick ERCP only when an intervention is anticipated.</div></div><div class="rt"><div class="rtl">9. ERCP therapeutic / last</div><div class="rte">ERCP is fundamentally a THERAPEUTIC tool (stone extraction, sphincterotomy, stenting, dilation, brush cytology) and is reserved either for confirmed obstruction needing intervention or as the last step when noninvasive workup leaves the cause unclear. Its signature complication is post-ERCP pancreatitis (~3-5%, higher in young women with suspected sphincter of Oddi dysfunction), plus bleeding, cholangitis and perforation; rectal indomethacin reduces post-ERCP pancreatitis.</div><div class="rtt">⚠️ WRONG answer: using ERCP as a first-line diagnostic test for jaundice/cholestasis. Discriminator: MRCP gives equivalent diagnostic information non-invasively — ERCP's risk is only justified by a planned therapeutic maneuver or a genuinely unrevealing noninvasive workup.</div></div><div class="rt"><div class="rtl">10. Spider angioma</div><div class="rte">Spider angiomata (central arteriole with radiating vessels that blanch and refill centrally) are a peripheral stigma of chronic liver disease, driven by hyperestrogenemia from reduced hepatic estrogen clearance. Numerous/large spiders correlate with severity and with esophageal varices. Found on the distribution of the SVC (face, neck, upper trunk, arms).</div><div class="rtt">⚠️ WRONG answer: attributing scattered spider angiomata in an adult to a primary vascular/genetic disorder. Discriminator: in the context of cirrhosis stigmata they reflect estrogen excess from liver dysfunction — though a few can be normal (pregnancy, healthy young people), the cluster with palmar erythema/gynecomastia points to the liver.</div></div><div class="rt"><div class="rtl">11. Cirrhosis liver</div><div class="rte">Cirrhosis is the end-stage of chronic injury: diffuse fibrosis with regenerative nodules producing a small, shrunken, nodular liver and portal hypertension. Consequences split into portal hypertension (varices, ascites, splenomegaly/thrombocytopenia, caput medusae) and synthetic failure (low albumin, high INR, jaundice, encephalopathy). It is the substrate for hepatocellular carcinoma, mandating surveillance US +/- AFP every 6 months.</div><div class="rtt">⚠️ WRONG answer: assuming normal-range aminotransferases exclude cirrhosis. Discriminator: in burnt-out cirrhosis AST/ALT can be normal or only mildly elevated because there are few hepatocytes left to leak — synthetic markers (low albumin, high INR, low platelets) and imaging reveal the disease.</div></div><div class="rt"><div class="rtl">12. Dupuytren's hand</div><div class="rte">Dupuytren's contracture is a palmar fascial fibrosis pulling the 4th/5th fingers into flexion, classically associated with ALCOHOLIC liver disease (also diabetes, manual labor, antiepileptics). It is one of the peripheral pointers that the underlying liver injury is alcohol-related.</div><div class="rtt">⚠️ WRONG answer: treating Dupuytren's as a specific sign of cirrhosis in general. Discriminator: it skews toward ALCOHOL etiology (and is non-specific overall — diabetes, occupational), so use it as a clue to alcohol rather than proof of cirrhosis itself.</div></div><div class="rt"><div class="rtl">13. Palmar erythema</div><div class="rte">Palmar erythema is symmetric redness of the thenar/hypothenar eminences sparing the center of the palm, a stigma of chronic liver disease again driven by hyperestrogenemia and altered vascular tone.</div><div class="rtt">⚠️ WRONG answer: reading palmar erythema as pathognomonic for liver disease. Discriminator: it is non-specific — also seen in pregnancy, hyperthyroidism, rheumatoid arthritis and healthy people — so it counts only as a supporting stigma alongside spiders, gynecomastia and the synthetic profile.</div></div><div class="rt"><div class="rtl">14. Fetor hepaticus</div><div class="rte">Fetor hepaticus is a sweet, musty/'rotten-egg' breath from volatile sulfur compounds (mercaptans, dimethyl sulfide) that bypass the liver via portosystemic shunting — a sign of advanced hepatic failure and impending/overt encephalopathy.</div><div class="rtt">⚠️ WRONG answer: confusing fetor hepaticus with the fruity/acetone breath of diabetic ketoacidosis. Discriminator: fetor hepaticus = sulfurous/musty from mercaptans + shunting in liver failure; DKA breath = sweet acetone from ketones — different molecule, different disease.</div></div><div class="rt"><div class="rtl">15. Synthetic gauges</div><div class="rte">Hepatic SYNTHETIC function is read from a prolonged PT/INR (the liver makes clotting factors), low albumin, and low Factor V. PT/INR rises early because Factor VII has the shortest half-life (~4-6 h), making it the most sensitive early marker; albumin falls late (half-life ~20 days). Factor V is liver-made but NOT vitamin-K-dependent, so it distinguishes true synthetic failure from vitamin K deficiency.</div><div class="rtt">⚠️ WRONG answer: blaming a prolonged PT/INR on liver synthetic failure without checking vitamin K. Discriminator: vitamin-K-dependent factors (II, VII, IX, X) correct after vitamin K if the problem is deficiency/cholestatic malabsorption; Factor V does NOT correct with vitamin K — a low Factor V confirms intrinsic liver synthetic failure.</div></div><div class="rt"><div class="rtl">16. &gt;10 tracts / &gt;1.5 cm</div><div class="rte">An adequate percutaneous liver biopsy core for reliable staging needs roughly &gt;10-11 complete portal tracts and a length &gt;1.5-2 cm; shorter/fragmented samples understage fibrosis. Biopsy remains the gold standard for grading inflammation and staging fibrosis when noninvasive tests are discordant or insufficient.</div><div class="rtt">⚠️ WRONG answer: accepting a tiny/fragmented core (few portal tracts) as a definitive negative for cirrhosis. Discriminator: sampling error makes inadequate biopsies understage fibrosis — an insufficient core cannot rule out advanced disease, so the answer is to obtain an adequate sample or rely on noninvasive staging.</div></div><div class="rt"><div class="rtl">17. HCV no biopsy</div><div class="rte">Chronic hepatitis C in the DAA era is treated WITHOUT biopsy: nearly all genotypes respond to pangenotypic direct-acting antivirals (e.g., sofosbuvir/velpatasvir or glecaprevir/pibrentasvir for 8-12 weeks) with &gt;95% sustained virologic response. Noninvasive fibrosis staging (FIB-4, elastography) suffices to decide management and surveillance.</div><div class="rtt">⚠️ WRONG answer: requiring a pre-treatment liver biopsy before starting HCV antivirals. Discriminator: biopsy is no longer needed to decide HCV treatment — everyone with chronic HCV is eligible for DAAs; noninvasive tests stage fibrosis, and treatment proceeds regardless.</div></div><div class="rt"><div class="rtl">18. Cholestasis US first</div><div class="rte">The bottom-line algorithm: any cholestatic pattern (high ALP/GGT + conjugated bilirubin) is worked up with abdominal ULTRASOUND first to assess duct dilatation, then MRCP for diagnosis, and ERCP last/for therapy. This ordering minimizes invasive risk and answers the dilated-vs-non-dilated fork that drives the whole pathway.</div><div class="rtt">⚠️ WRONG answer: selecting ERCP as the initial step for new cholestasis. Discriminator: ERCP is NEVER the first test — US (then MRCP) precedes it; ERCP is therapeutic/last-resort and carries pancreatitis risk, so leading with it is the trap answer.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="livapp_fibrosis_workup.html" title="Liver Approach — Left Lab Bench">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="livapp_transplant.html" title="Liver Approach — Transplant Court">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

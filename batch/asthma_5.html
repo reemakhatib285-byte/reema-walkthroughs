@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Asthma — Pharmacology Pharmacy (Theophylline, AERD, ICS side effects)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>11</em></summary><ol class="traps"><li><b>Theophylline narrow window</b> — Theophylline is NOT first-line in modern guidelines — toxicity (arrhythmia, seizures) appears at levels only modestly above therapeutic, and many factors (heart failure, cirrhosis, fever, age, CYP1A2 inhibitors) shift levels into the toxic range.</li><li><b>Theophylline toxicity (tachycardia/seizures)</b> — CYP1A2 inhibitors (ciprofloxacin, fluvoxamine, cimetidine, erythromycin) raise theophylline levels into the toxic range — always check interactions before adding any new drug, and seizures in theophylline toxicity may need benzodiazepines/barbiturates (avoid phenytoin).</li><li><b>Osteoporosis (high-dose ICS)</b> — ICS are far safer than oral steroids but are NOT systemically inert at high doses — use the lowest effective dose, and the catch-all 'inhaled steroids have no systemic effects' is a false board statement.</li><li><b>ICS oral thrush (candida)</b> — ICS cause Candida thrush — NOT HSV (the herpes option is crossed out in the scene). The classic distractor pairs ICS with a viral local infection; the correct association is fungal candidiasis plus dysphonia.</li><li><b>ASA / COX-1 (AERD)</b> — It is COX-1 inhibition (not COX-2) that triggers AERD reactions — therefore COX-2-selective agents (celecoxib, etoricoxib) and acetaminophen are generally tolerated, while any nonselective NSAID (ibuprofen, naproxen, ketorolac) can precipitate a severe reaction.</li><li><b>AERD triad (5-10% of asthmatics)</b> — The classic vignette — adult with severe asthma, recurrent nasal polyps despite surgery, and a wheezing/flushing reaction to ibuprofen = AERD. Treat with LTRA/zileuton and consider aspirin desensitization; do NOT simply re-challenge with NSAIDs.</li><li><b>COX-2 / paracetamol safe</b> — When an AERD patient needs an analgesic, choose a COX-2-selective agent or paracetamol — selecting any nonselective NSAID is the wrong board answer.</li><li><b>Zileuton (5-LOX inhibitor, LFT risk)</b> — Zileuton causes hepatotoxicity (ALT elevation in ~2–4%) and requires baseline and periodic LFT monitoring; it inhibits CYP1A2 and therefore RAISES theophylline and warfarin levels — a double board trap linking it back to theophylline toxicity.</li><li><b>Montelukast neuropsychiatric warning</b> — Montelukast is not benign — counsel on mood/behavior changes and reconsider it for allergic rhinitis if safer options exist. LTRAs are also generally less effective than ICS as controllers and should not replace ICS in persistent asthma.</li><li><b>ACE inhibitor board trap</b> — A new dry cough after starting an ACE inhibitor is the DRUG, not worsening asthma — switch to an ARB (which does not raise bradykinin). Don't escalate asthma controllers in response.</li><li><b>Beta-blocker board trap</b> — Avoid NONselective beta-blockers in asthma; cardioselective ones may be used cautiously when essential. Statins are SAFE and crossed out in the scene as a non-trigger — don't pick statin as a respiratory offender.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Theophylline narrow window</div><div class="rte">Theophylline is a methylxanthine that inhibits phosphodiesterase (raising cAMP) and antagonizes adenosine receptors, giving bronchodilation plus mild anti-inflammatory effect. Its therapeutic range is narrow (~10–20 µg/mL), so it requires serum-level monitoring and is now relegated to add-on therapy when biologics/LAMA are unavailable. It is metabolized by CYP1A2.</div><div class="rtt">⚠️ Theophylline is NOT first-line in modern guidelines — toxicity (arrhythmia, seizures) appears at levels only modestly above therapeutic, and many factors (heart failure, cirrhosis, fever, age, CYP1A2 inhibitors) shift levels into the toxic range.</div></div><div class="rt"><div class="rtl">2. PDE inhibitor → cAMP → bronchodilation</div><div class="rte">Phosphodiesterase normally degrades cAMP; inhibiting it raises intracellular cAMP in airway smooth muscle, causing relaxation and bronchodilation. This is the same downstream second messenger that beta-2 agonists raise by stimulating Gs-coupled receptors — the two converge on cAMP. Roflumilast (PDE4 inhibitor) uses the same principle in COPD.</div></div><div class="rt"><div class="rtl">3. Theophylline toxicity (tachycardia/seizures)</div><div class="rte">Theophylline overdose produces the triad of tachyarrhythmias (sinus tach, SVT, atrial/ventricular arrhythmias), CNS excitation (seizures, which are often refractory), and GI upset (nausea, vomiting). Severe toxicity also causes hypokalemia, hypophosphatemia, hyperglycemia, and metabolic/lactic acidosis. Treatment is supportive plus multiple-dose activated charcoal; hemodialysis for severe levels.</div><div class="rtt">⚠️ CYP1A2 inhibitors (ciprofloxacin, fluvoxamine, cimetidine, erythromycin) raise theophylline levels into the toxic range — always check interactions before adding any new drug, and seizures in theophylline toxicity may need benzodiazepines/barbiturates (avoid phenytoin).</div></div><div class="rt"><div class="rtl">4. Osteoporosis (high-dose ICS)</div><div class="rte">High-dose or long-term inhaled corticosteroids carry dose-dependent systemic effects: reduced bone mineral density/osteoporosis, posterior subcapsular cataracts, glaucoma, easy bruising/skin thinning, and a small linear-growth reduction in children (~0.5 cm in the first year, largely catch-up). Adrenal suppression is possible at very high doses.</div><div class="rtt">⚠️ ICS are far safer than oral steroids but are NOT systemically inert at high doses — use the lowest effective dose, and the catch-all 'inhaled steroids have no systemic effects' is a false board statement.</div></div><div class="rt"><div class="rtl">5. ICS oral thrush (candida)</div><div class="rte">The most common LOCAL adverse effects of ICS are oropharyngeal candidiasis (thrush) and dysphonia/hoarseness from laryngeal myopathy. Both are prevented by using a spacer and rinsing/gargling the mouth after each dose. Local immunosuppression of the oral mucosa allows Candida overgrowth.</div><div class="rtt">⚠️ ICS cause Candida thrush — NOT HSV (the herpes option is crossed out in the scene). The classic distractor pairs ICS with a viral local infection; the correct association is fungal candidiasis plus dysphonia.</div></div><div class="rt"><div class="rtl">6. ASA / COX-1 (AERD)</div><div class="rte">Aspirin and nonselective NSAIDs irreversibly/competitively block COX-1, removing the bronchoprotective prostaglandin E2 (PGE2) brake and shunting arachidonic acid down the 5-lipoxygenase pathway to overproduce cysteinyl leukotrienes (LTC4/D4/E4). In AERD patients this causes acute bronchospasm, nasal congestion, and flushing within 30–180 minutes of NSAID exposure.</div><div class="rtt">⚠️ It is COX-1 inhibition (not COX-2) that triggers AERD reactions — therefore COX-2-selective agents (celecoxib, etoricoxib) and acetaminophen are generally tolerated, while any nonselective NSAID (ibuprofen, naproxen, ketorolac) can precipitate a severe reaction.</div></div><div class="rt"><div class="rtl">7. AERD triad (5-10% of asthmatics)</div><div class="rte">Aspirin-exacerbated respiratory disease (Samter's triad) = severe persistent asthma + recurrent nasal polyposis/eosinophilic chronic rhinosinusitis + NSAID hypersensitivity, affecting ~5–10% of adult asthmatics (higher among severe asthmatics). It is a non-IgE-mediated, leukotriene-overproduction disorder. Management: leukotriene modifiers, ICS, and aspirin desensitization for refractory disease; dupilumab is highly effective for the polyps and asthma.</div><div class="rtt">⚠️ The classic vignette — adult with severe asthma, recurrent nasal polyps despite surgery, and a wheezing/flushing reaction to ibuprofen = AERD. Treat with LTRA/zileuton and consider aspirin desensitization; do NOT simply re-challenge with NSAIDs.</div></div><div class="rt"><div class="rtl">8. COX-2 / paracetamol safe</div><div class="rte">Because AERD is driven by loss of COX-1-derived PGE2, COX-2-selective inhibitors (celecoxib, etoricoxib) and low-to-moderate-dose acetaminophen/paracetamol are tolerated by the large majority of AERD patients and are the preferred analgesics/antipyretics. High-dose acetaminophen (&gt;1 g) can rarely cross-react.</div><div class="rtt">⚠️ When an AERD patient needs an analgesic, choose a COX-2-selective agent or paracetamol — selecting any nonselective NSAID is the wrong board answer.</div></div><div class="rt"><div class="rtl">9. Zileuton (5-LOX inhibitor, LFT risk)</div><div class="rte">Zileuton inhibits 5-lipoxygenase (5-LOX), the enzyme upstream of all leukotrienes, blocking both bronchoconstrictor cys-LTs and chemotactic LTB4 — broader than montelukast/zafirlukast which only block the CysLT1 receptor. It is dosed multiple times daily and is particularly useful in AERD.</div><div class="rtt">⚠️ Zileuton causes hepatotoxicity (ALT elevation in ~2–4%) and requires baseline and periodic LFT monitoring; it inhibits CYP1A2 and therefore RAISES theophylline and warfarin levels — a double board trap linking it back to theophylline toxicity.</div></div><div class="rt"><div class="rtl">10. Montelukast neuropsychiatric warning</div><div class="rte">Montelukast is a CysLT1-receptor antagonist (LTRA) used for mild asthma, EIB, allergic rhinitis, and AERD. In 2020 the FDA added a BOXED WARNING for serious neuropsychiatric events — agitation, depression, sleep disturbance, and suicidal thoughts/behavior — recommending it be reserved when other therapies are inadequate.</div><div class="rtt">⚠️ Montelukast is not benign — counsel on mood/behavior changes and reconsider it for allergic rhinitis if safer options exist. LTRAs are also generally less effective than ICS as controllers and should not replace ICS in persistent asthma.</div></div><div class="rt"><div class="rtl">11. ACE inhibitor board trap</div><div class="rte">ACE inhibitors block bradykinin breakdown; accumulated bradykinin and substance P cause a dry, non-productive cough in ~5–20% of users, which can be mistaken for or aggravate asthma symptoms. The cough is class-specific (not dose-related) and resolves days to weeks after stopping.</div><div class="rtt">⚠️ A new dry cough after starting an ACE inhibitor is the DRUG, not worsening asthma — switch to an ARB (which does not raise bradykinin). Don't escalate asthma controllers in response.</div></div><div class="rt"><div class="rtl">12. Beta-blocker board trap</div><div class="rte">Nonselective beta-blockers (propranolol, timolol — including ophthalmic drops) block bronchial beta-2 receptors and can precipitate bronchospasm in asthmatics. When a beta-blocker is genuinely indicated (e.g., post-MI), a cardioselective beta-1 agent (metoprolol, bisoprolol, atenolol) at low dose is preferred and usually tolerated.</div><div class="rtt">⚠️ Avoid NONselective beta-blockers in asthma; cardioselective ones may be used cautiously when essential. Statins are SAFE and crossed out in the scene as a non-trigger — don't pick statin as a respiratory offender.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="asthma_exacerbation.html" title="Asthma — Exacerbation Triggers Winter Scene">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="asthma_scene1_airway_siege.html" title="Asthma — The Asthma Airway Siege (pathophysiology)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

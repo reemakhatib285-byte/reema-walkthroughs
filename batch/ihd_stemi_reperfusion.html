@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD / STEMI — reperfusion (PCI vs fibrinolysis)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Primary PCI gold star</b> — WRONG: choosing fibrinolysis over PCI when a patient presents to a PCI-capable hospital. Discriminator: if the cath lab is available and door-to-balloon can be met, PCI is always preferred — lytics are the fallback only when PCI cannot be delivered in time.</li><li><b>Door-to-balloon 90 MIN</b> — WRONG answer: stating the door-to-balloon goal is 120 minutes. Discriminator: 90 min is the in-house PCI target; 120 min is the OUTSIDE limit of total time-to-PCI (including transfer) before you should give lytics instead — don't confuse the two thresholds.</li><li><b>DIDO 30</b> — WRONG: DIDO target is 90 minutes. Discriminator: 30 min is for getting the patient back OUT the door of a transferring hospital; confusing it with the 90-min in-house balloon time is the classic mix-up.</li><li><b>PCI within 120 MIN</b> — WRONG: transfer everyone for PCI regardless of how long it takes. Discriminator: beyond an anticipated 120 min to balloon, lytics save more muscle than waiting for a delayed PCI — choose pharmacologic reperfusion, not endless transfer.</li><li><b>Fibrinolysis door-to-needle 30</b> — WRONG: door-to-needle target is 90 minutes. Discriminator: needle time is fast (≤30 min) — the 90-min figure belongs to in-house door-to-balloon, not to lytic administration.</li><li><b>0–2 H / 3–12 H window</b> — WRONG: fibrinolysis is useful out to 24 hours regardless. Discriminator: the lytic window is roughly ≤12h from symptom onset (best ≤2–3h); after 12h the bleeding risk outweighs benefit — late presenters who still need reperfusion go to PCI, not lysis.</li><li><b>Contraindication board</b> — WRONG: these contraindicate primary PCI. Discriminator: every item here forbids LYTICS only — a patient with active bleeding or prior intracranial hemorrhage should be sent for PCI, not denied reperfusion altogether.</li><li><b>Prior hemorrhagic stroke — ANY TIME</b> — WRONG: only a RECENT hemorrhagic stroke matters. Discriminator: for hemorrhagic/intracranial bleed the time window is 'ever' — any history at any time permanently rules out lytics, unlike ischemic stroke which uses a 3-month/1-year cutoff.</li><li><b>Ischemic stroke within 1 YEAR</b> — WRONG: ischemic stroke is never a contraindication to lysis. Discriminator: a RECENT ischemic stroke is contraindicated; the nuance vs hemorrhagic stroke (any time = absolute) is the favorite distractor pairing.</li><li><b>Severe HTN</b> — WRONG: blood pressure is irrelevant to lysis decisions. Discriminator: markedly elevated BP at presentation (&gt;180/110) sharply raises bleeding risk — either treat it down first or default to PCI.</li><li><b>Aortic dissection</b> — WRONG: a dissection is safe to lyse. Discriminator: lysing a dissection is lethal — the STEMI may itself be caused by the dissection, so exclude dissection clinically/by imaging before any lytic.</li><li><b>Active internal bleeding</b> — WRONG: an active GI bleed is only a RELATIVE contraindication. Discriminator: active internal bleeding (other than menstruation) is ABSOLUTE — do not lyse; route to PCI instead.</li><li><b>TIMI 3 trophy</b> — WRONG: TIMI 1 flow is an adequate endpoint. Discriminator: only TIMI 3 (full normal flow) is the real success endpoint — TIMI 1–2 means inadequate reperfusion and predicts worse outcomes.</li><li><b>Shock = culprit only</b> — WRONG: in shock, perform complete multivessel PCI all at once. Discriminator: CULPRIT-SHOCK established culprit-only PCI as superior in shock; immediate full multivessel intervention worsens outcomes — defer non-culprit lesions.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Primary PCI gold star</div><div class="rte">Primary PCI is the preferred reperfusion strategy for STEMI whenever it can be delivered in a timely fashion at a PCI-capable center. It restores flow more reliably than lytics, has lower rates of death, reinfarction, and intracranial hemorrhage, and lets you mechanically open the culprit lesion. Indications: any STEMI (ST elevation or new LBBB) within 12h of symptom onset, and still beneficial up to 12–24h if ongoing ischemia, shock, or hemodynamic instability. Mnemonic: 'balloon beats clot-buster when the cath lab is close.'</div><div class="rtt">⚠️ WRONG: choosing fibrinolysis over PCI when a patient presents to a PCI-capable hospital. Discriminator: if the cath lab is available and door-to-balloon can be met, PCI is always preferred — lytics are the fallback only when PCI cannot be delivered in time.</div></div><div class="rt"><div class="rtl">2. Door-to-balloon 90 MIN</div><div class="rte">At a PCI-capable hospital the target is door-to-balloon (first medical contact to device) ≤90 minutes. This is the benchmark quality metric for primary PCI and every minute of delay increases infarct size ('time is muscle'). The fastest reperfusion correlates with the best myocardial salvage and survival.</div><div class="rtt">⚠️ WRONG answer: stating the door-to-balloon goal is 120 minutes. Discriminator: 90 min is the in-house PCI target; 120 min is the OUTSIDE limit of total time-to-PCI (including transfer) before you should give lytics instead — don't confuse the two thresholds.</div></div><div class="rt"><div class="rtl">3. DIDO 30</div><div class="rte">Door-in–door-out (DIDO) target is ≤30 minutes: at a non-PCI hospital, the patient should be diagnosed and shipped out within 30 min so the total transfer-to-balloon time can still meet ≤120 min. A DIDO &gt;30 min predicts worse outcomes and may tip the decision toward giving lytics locally.</div><div class="rtt">⚠️ WRONG: DIDO target is 90 minutes. Discriminator: 30 min is for getting the patient back OUT the door of a transferring hospital; confusing it with the 90-min in-house balloon time is the classic mix-up.</div></div><div class="rt"><div class="rtl">4. PCI within 120 MIN</div><div class="rte">If the patient is at a non-PCI center, transfer for primary PCI is preferred only if total first-medical-contact-to-device time is ≤120 minutes. If PCI cannot be achieved within 120 min, give fibrinolysis first (within 30-min door-to-needle) then transfer. This is the single most tested branch point in STEMI triage.</div><div class="rtt">⚠️ WRONG: transfer everyone for PCI regardless of how long it takes. Discriminator: beyond an anticipated 120 min to balloon, lytics save more muscle than waiting for a delayed PCI — choose pharmacologic reperfusion, not endless transfer.</div></div><div class="rt"><div class="rtl">5. Fibrinolysis door-to-needle 30</div><div class="rte">When lysis is the strategy, door-to-needle should be ≤30 minutes. Preferred agents are fibrin-specific lytics: tenecteplase (TNK, single weight-based IV bolus — easiest), alteplase (tPA, bolus + infusion), or reteplase. Give with adjunctive aspirin, a P2Y12 inhibitor (clopidogrel), and anticoagulation (enoxaparin or UFH). Always pair with a plan for routine angiography 3–24h later (pharmacoinvasive strategy).</div><div class="rtt">⚠️ WRONG: door-to-needle target is 90 minutes. Discriminator: needle time is fast (≤30 min) — the 90-min figure belongs to in-house door-to-balloon, not to lytic administration.</div></div><div class="rt"><div class="rtl">6. 0–2 H / 3–12 H window</div><div class="rte">Fibrinolysis is most effective when given early — greatest myocardial salvage in the first 0–2 hours from symptom onset, with declining but still real benefit through ~12 hours. Beyond 12h, lytics offer little benefit and rising harm, so they are generally not given unless ongoing ischemia in a setting where PCI is truly unavailable. The benefit curve is steepest early.</div><div class="rtt">⚠️ WRONG: fibrinolysis is useful out to 24 hours regardless. Discriminator: the lytic window is roughly ≤12h from symptom onset (best ≤2–3h); after 12h the bleeding risk outweighs benefit — late presenters who still need reperfusion go to PCI, not lysis.</div></div><div class="rt"><div class="rtl">7. Contraindication board</div><div class="rte">This board lists ABSOLUTE contraindications to FIBRINOLYSIS — they do not apply to primary PCI. This is why PCI is favored in any patient with bleeding risk: PCI has no bleeding-based contraindications of this kind. Whenever a STEMI patient has any item on this board, mechanical reperfusion (PCI) becomes the route of choice.</div><div class="rtt">⚠️ WRONG: these contraindicate primary PCI. Discriminator: every item here forbids LYTICS only — a patient with active bleeding or prior intracranial hemorrhage should be sent for PCI, not denied reperfusion altogether.</div></div><div class="rt"><div class="rtl">8. Prior hemorrhagic stroke — ANY TIME</div><div class="rte">Any prior intracranial hemorrhage or hemorrhagic stroke at ANY point in life is an absolute contraindication to fibrinolysis — the risk of recurrent catastrophic intracranial bleed is unacceptable. Also absolute: known cerebral AVM, intracranial malignancy, or structural cerebrovascular lesion. Send these patients for PCI.</div><div class="rtt">⚠️ WRONG: only a RECENT hemorrhagic stroke matters. Discriminator: for hemorrhagic/intracranial bleed the time window is 'ever' — any history at any time permanently rules out lytics, unlike ischemic stroke which uses a 3-month/1-year cutoff.</div></div><div class="rt"><div class="rtl">9. Ischemic stroke within 1 YEAR</div><div class="rte">An ischemic stroke within the recent window (classically within 3 months by ACC/AHA, with caution out to a year) is a contraindication to fibrinolysis. Acute ischemic stroke can hemorrhagically transform under lytic therapy. Older remote ischemic strokes become relative rather than absolute. PCI is the alternative.</div><div class="rtt">⚠️ WRONG: ischemic stroke is never a contraindication to lysis. Discriminator: a RECENT ischemic stroke is contraindicated; the nuance vs hemorrhagic stroke (any time = absolute) is the favorite distractor pairing.</div></div><div class="rt"><div class="rtl">10. Severe HTN</div><div class="rte">Severe uncontrolled hypertension (SBP &gt;180 or DBP &gt;110 mmHg) is a contraindication to fibrinolysis because of intracranial hemorrhage risk; it is relative if BP can be lowered before lytic. A history of chronic severe poorly controlled HTN is also a relative contraindication. Control the pressure or choose PCI.</div><div class="rtt">⚠️ WRONG: blood pressure is irrelevant to lysis decisions. Discriminator: markedly elevated BP at presentation (&gt;180/110) sharply raises bleeding risk — either treat it down first or default to PCI.</div></div><div class="rt"><div class="rtl">11. Aortic dissection</div><div class="rte">Suspected or known aortic dissection is an absolute contraindication to fibrinolysis — lysing a dissection can cause fatal rupture/tamponade. A type A dissection can also occlude a coronary ostium and mimic STEMI, so always consider it in chest pain with a widened mediastinum, pulse deficit, or new aortic regurgitation before giving lytics.</div><div class="rtt">⚠️ WRONG: a dissection is safe to lyse. Discriminator: lysing a dissection is lethal — the STEMI may itself be caused by the dissection, so exclude dissection clinically/by imaging before any lytic.</div></div><div class="rt"><div class="rtl">12. Active internal bleeding</div><div class="rte">Active internal bleeding or a known bleeding diathesis (excluding menses) is an absolute contraindication to fibrinolysis. Also note recent major surgery/trauma and recent internal bleeding as contraindications. These patients should undergo primary PCI, which carries no such bleeding-based prohibition.</div><div class="rtt">⚠️ WRONG: an active GI bleed is only a RELATIVE contraindication. Discriminator: active internal bleeding (other than menstruation) is ABSOLUTE — do not lyse; route to PCI instead.</div></div><div class="rt"><div class="rtl">13. TIMI 3 trophy</div><div class="rte">The angiographic goal of reperfusion is TIMI 3 (normal, brisk, complete) flow in the culprit artery. The TIMI scale runs 0 (no flow) → 1 (penetration without perfusion) → 2 (partial/delayed) → 3 (normal). Achieving TIMI 3 flow correlates with the best survival; PCI achieves it far more reliably (&gt;90%) than lytics (~50–60%).</div><div class="rtt">⚠️ WRONG: TIMI 1 flow is an adequate endpoint. Discriminator: only TIMI 3 (full normal flow) is the real success endpoint — TIMI 1–2 means inadequate reperfusion and predicts worse outcomes.</div></div><div class="rt"><div class="rtl">14. Shock = culprit only</div><div class="rte">In STEMI complicated by cardiogenic shock, PCI of the CULPRIT vessel only is favored — the CULPRIT-SHOCK trial showed that immediate routine multivessel PCI increased death/renal failure at 30 days vs culprit-only revascularization. Stage non-culprit lesions later if needed. Emergent revascularization in shock is indicated regardless of time from onset.</div><div class="rtt">⚠️ WRONG: in shock, perform complete multivessel PCI all at once. Discriminator: CULPRIT-SHOCK established culprit-only PCI as superior in shock; immediate full multivessel intervention worsens outcomes — defer non-culprit lesions.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_stemi_postmi.html" title="IHD / STEMI — post-MI care &amp; secondary prevention">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_stemi_stents_dapt.html" title="IHD / STEMI — stents &amp; DAPT">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

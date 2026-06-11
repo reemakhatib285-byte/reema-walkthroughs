@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypokalemia — GI / extrarenal loss</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>GI loss = LOW urine K</b> — Ordering renin/aldosterone first when urine K is low. Low urine K rules OUT a renal/diuretic cause, so the mineralocorticoid workup is wasted — the next step is acid-base status and the urine anion gap, not aldosterone.</li><li><b>Diarrhea causes</b> — VIPoma is the secretory-diarrhea zebra: profound hypokalemia plus tea-colored watery diarrhea that persists with FASTING (osmotic/laxative diarrhea stops when fasting). Achlorhydria + flushing point to VIP, not laxatives.</li><li><b>Diarrhea man</b> — Expecting hypertension. A normotensive, volume-deplete hypokalemic patient with acidosis is GI/RTA territory; HTN would redirect you to mineralocorticoid excess instead.</li><li><b>Diarrhea → acidosis + neg UAG</b> — Distal (type 1) RTA gives a POSITIVE urine anion gap because the kidney CANNOT excrete NH4+. Same hypokalemia + non-gap acidosis picture, opposite UAG — the sign is the discriminator, and confusing them is the classic trap.</li><li><b>Board trap: low urine K from aldo</b> — Classifying vomiting as a 'GI/low-urine-K' cause. Mechanistically it is RENAL K loss, and EARLY urine K can be inappropriately HIGH; use urine CHLORIDE (low, &lt;20) — not urine K or Na — to recognize the volume-deplete, saline-responsive alkalosis.</li><li><b>Vomiting man</b> — Suspected bulimia is confirmed by metabolic alkalosis + low urine Cl + LOW urine K once volume-replete; finding HIGH urine Cl instead points away from vomiting toward a diuretic or Bartter/Gitelman.</li><li><b>HCl loss → alkalosis</b> — Trying to correct the alkalosis with more chloride-free fluid or acetazolamide first. The fix is volume/chloride repletion with NS; failure to replace Cl perpetuates the alkalosis and the renal K leak.</li><li><b>Sweating / skin loss</b> — Overlooking burns/heavy sweat as a cause and labeling it 'idiopathic.' A low urine K in an athlete or burn patient localizes the loss to skin — no renal workup needed.</li><li><b>Urine K barrel</b> — Reading urine K in isolation. Always pair it with acid-base status AND blood pressure — e.g. vomiting can show transiently high urine K despite being volume-deplete, so urine Cl must back it up.</li><li><b>UAG box</b> — Applying UAG when there's an anion-gap acidosis or massive bicarbonaturia — it is only valid in a non-anion-gap (hyperchloremic) acidosis. Misapplying it to a ketoacidosis or to vomiting gives a meaningless number.</li><li><b>Acid-base mini scale</b> — Pairing diarrhea with alkalosis (or vomiting with acidosis). Diarrhea = acidosis, vomiting = alkalosis — flipping these is a frequently tested error.</li><li><b>Acidosis + hypoK → use UAG</b> — Jumping to imaging the adrenals in a hypokalemic-acidotic patient. Acidosis takes you to the UAG/RTA pathway; adrenal/renin-aldo workup belongs to the hypertensive-alkalosis arm only.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. GI loss = LOW urine K</div><div class="rte">Extrarenal (GI or skin) K loss → the kidney appropriately conserves K → spot urine K &lt;15 mmol/day (or &lt;13 mmol/g Cr, TTKG &lt;3). The kidney is NOT the leak; it is doing its job. This is the LEFT, low-urine-K arm of the hypokalemia algorithm.</div><div class="rtt">⚠️ Ordering renin/aldosterone first when urine K is low. Low urine K rules OUT a renal/diuretic cause, so the mineralocorticoid workup is wasted — the next step is acid-base status and the urine anion gap, not aldosterone.</div></div><div class="rt"><div class="rtl">2. Diarrhea causes</div><div class="rte">Lower-GI (secretory/diarrheal) K losses: laxative abuse, VIPoma (WDHA — Watery Diarrhea, Hypokalemia, Achlorhydria), villous adenoma, IBD, celiac, high-output ileostomy, Ogilvie. Stool is rich in K and HCO3 → hypokalemia WITH a non-anion-gap (hyperchloremic) metabolic ACIDOSIS.</div><div class="rtt">⚠️ VIPoma is the secretory-diarrhea zebra: profound hypokalemia plus tea-colored watery diarrhea that persists with FASTING (osmotic/laxative diarrhea stops when fasting). Achlorhydria + flushing point to VIP, not laxatives.</div></div><div class="rt"><div class="rtl">3. Diarrhea man</div><div class="rte">Diarrhea produces volume contraction with normal or LOW blood pressure plus low urine K — the non-renal route confirmed clinically. The accompanying acidosis is hyperchloremic (normal anion gap) from stool bicarbonate loss.</div><div class="rtt">⚠️ Expecting hypertension. A normotensive, volume-deplete hypokalemic patient with acidosis is GI/RTA territory; HTN would redirect you to mineralocorticoid excess instead.</div></div><div class="rt"><div class="rtl">4. Diarrhea → acidosis + neg UAG</div><div class="rte">Stool HCO3 loss drives a non-anion-gap metabolic acidosis. The kidney responds correctly by excreting NH4Cl, so the urine anion gap (Na + K − Cl) is NEGATIVE (NH4+ unmeasured, raising urine Cl). Negative UAG = extrarenal/GI source.</div><div class="rtt">⚠️ Distal (type 1) RTA gives a POSITIVE urine anion gap because the kidney CANNOT excrete NH4+. Same hypokalemia + non-gap acidosis picture, opposite UAG — the sign is the discriminator, and confusing them is the classic trap.</div></div><div class="rt"><div class="rtl">5. Board trap: low urine K from aldo</div><div class="rte">In VOMITING, gastric fluid contains little K (~5–10 mmol/L). The real K loss is RENAL: loss of HCl → metabolic alkalosis, the bicarbonaturia obligates Na/K excretion, and volume depletion → secondary hyperaldosteronism → distal K wasting via ROMK.</div><div class="rtt">⚠️ Classifying vomiting as a 'GI/low-urine-K' cause. Mechanistically it is RENAL K loss, and EARLY urine K can be inappropriately HIGH; use urine CHLORIDE (low, &lt;20) — not urine K or Na — to recognize the volume-deplete, saline-responsive alkalosis.</div></div><div class="rt"><div class="rtl">6. Vomiting man</div><div class="rte">Upper-GI loss (vomiting or NG suction) loses H+ and Cl- → hypochloremic metabolic ALKALOSIS with volume depletion. Same mechanism whether self-induced (bulimia) or iatrogenic (NG tube).</div><div class="rtt">⚠️ Suspected bulimia is confirmed by metabolic alkalosis + low urine Cl + LOW urine K once volume-replete; finding HIGH urine Cl instead points away from vomiting toward a diuretic or Bartter/Gitelman.</div></div><div class="rt"><div class="rtl">7. HCl loss → alkalosis</div><div class="rte">Vomiting cascade: lose H+/Cl- → metabolic alkalosis + hypovolemia → secondary hyperaldosteronism → renal K AND H+ wasting (paradoxical aciduria). Treatment is normal saline (saline-responsive alkalosis) plus KCl.</div><div class="rtt">⚠️ Trying to correct the alkalosis with more chloride-free fluid or acetazolamide first. The fix is volume/chloride repletion with NS; failure to replace Cl perpetuates the alkalosis and the renal K leak.</div></div><div class="rt"><div class="rtl">8. Sweating / skin loss</div><div class="rte">Skin is the second extrarenal route: profuse sweating, endurance exercise in heat, and extensive burns lose K (and Na) → low urine K, like GI loss. Usually modest unless losses are large and sustained.</div><div class="rtt">⚠️ Overlooking burns/heavy sweat as a cause and labeling it 'idiopathic.' A low urine K in an athlete or burn patient localizes the loss to skin — no renal workup needed.</div></div><div class="rt"><div class="rtl">9. Urine K barrel</div><div class="rte">Spot/24-hr urine K is the pivot test of the whole algorithm. Extrarenal loss → urine K &lt;15 mmol/day (kidney conserving correctly). Renal loss → &gt;15 mmol/day (inappropriately high). TTKG &lt;3 supports extrarenal, &gt;4 supports renal.</div><div class="rtt">⚠️ Reading urine K in isolation. Always pair it with acid-base status AND blood pressure — e.g. vomiting can show transiently high urine K despite being volume-deplete, so urine Cl must back it up.</div></div><div class="rt"><div class="rtl">10. UAG box</div><div class="rte">Urine anion gap = (urine Na + urine K) − urine Cl, used as a surrogate for unmeasured NH4+. NEGATIVE UAG = appropriate NH4Cl excretion = GI/diarrhea. POSITIVE UAG = failure to excrete NH4+ = distal (type 1) RTA. Memory aid: 'neGUTive' = gut cause.</div><div class="rtt">⚠️ Applying UAG when there's an anion-gap acidosis or massive bicarbonaturia — it is only valid in a non-anion-gap (hyperchloremic) acidosis. Misapplying it to a ketoacidosis or to vomiting gives a meaningless number.</div></div><div class="rt"><div class="rtl">11. Acid-base mini scale</div><div class="rte">Acid-base status frames the differential: hypokalemia + non-gap metabolic ACIDOSIS → diarrhea (neg UAG) or RTA (pos UAG). Hypokalemia + metabolic ALKALOSIS → vomiting/NG suction, diuretics, or mineralocorticoid excess.</div><div class="rtt">⚠️ Pairing diarrhea with alkalosis (or vomiting with acidosis). Diarrhea = acidosis, vomiting = alkalosis — flipping these is a frequently tested error.</div></div><div class="rt"><div class="rtl">12. Acidosis + hypoK → use UAG</div><div class="rte">Workflow anchor: when hypokalemia comes with a non-gap acidosis, the NEXT step is the urine anion gap (to separate diarrhea from RTA), not renin/aldosterone. Reserve the mineralocorticoid workup for the hypertensive, alkalotic patient.</div><div class="rtt">⚠️ Jumping to imaging the adrenals in a hypokalemic-acidotic patient. Acidosis takes you to the UAG/RTA pathway; adrenal/renin-aldo workup belongs to the hypertensive-alkalosis arm only.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperna_treatment_calc.html" title="Hypernatremia — Treatment Calculation">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hypok_clinical.html" title="Hypokalemia — clinical features">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

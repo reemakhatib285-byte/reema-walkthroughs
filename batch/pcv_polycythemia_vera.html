@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Polycythemia / MPN — Polycythemia Vera pathophysiology (JAK2)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>JAK2 V617F engine</b> — WRONG: the driver here is BCR-ABL. BCR-ABL defines CML (the Philadelphia chromosome MPN); PV is BCR-ABL NEGATIVE and JAK2-mutated. Discriminator: send BCR-ABL to exclude CML, then JAK2 to confirm PV.</li><li><b>Autoinhibitory valve broken</b> — WRONG: V617F is a loss-of-function mutation that disables JAK2. It is GAIN-of-function — it removes the autoinhibitory brake, producing constitutive activity, not loss of signaling.</li><li><b>EPO-R no ligand</b> — WRONG: serum EPO is high in polycythemia vera. EPO is LOW in PV (autonomous, feedback-suppressed); a HIGH EPO points to SECONDARY polycythemia (hypoxia, EPO-secreting tumor, exogenous EPO).</li><li><b>&gt;95% PV / JAK2</b> — WRONG: a negative JAK2 V617F test rules out PV. About 3-5% of PV is V617F-negative but exon-12 positive — if V617F is negative with a low EPO and high Hct, reflex to JAK2 exon-12 testing before excluding PV.</li><li><b>CALR / MPL (no JAK2)</b> — WRONG: CALR mutations can drive polycythemia vera. CALR/MPL are seen in ET and PMF only; PV is essentially always JAK2-mutated — finding CALR points you away from PV toward ET/PMF.</li><li><b>Triple-negative</b> — WRONG: triple-negative means a reactive, non-clonal blood disorder. The disease is still clonal/neoplastic — driven by other lesions — and in PMF triple-negativity is the most aggressive subgroup.</li><li><b>RED = erythrocytosis</b> — WRONG: an isolated high hematocrit always means polycythemia vera. First exclude RELATIVE polycythemia (dehydration/plasma contraction) and SECONDARY causes (hypoxia, smoking/CO, EPO-secreting tumor); confirm true PV with low EPO + JAK2.</li><li><b>GREY = WBC</b> — WRONG: leukocytosis excludes PV and indicates infection or CML. PV is a trilineage MPN, so leukocytosis is expected; the distinction from CML is BCR-ABL (positive in CML, negative in PV).</li><li><b>PURPLE = platelets</b> — WRONG: extreme thrombocytosis in PV means even greater clotting risk and warrants more aggressive anticoagulation. Very high platelet counts can cause acquired von Willebrand disease and BLEEDING — avoid aspirin/anticoagulation until vWF activity is checked.</li><li><b>Overproduction, no dysplasia</b> — WRONG: PV shows dysplastic, ineffective hematopoiesis. That describes MDS — MPNs feature effective overproduction of normal-appearing mature cells; presence of dysplasia/cytopenias should redirect you toward MDS or MDS/MPN overlap.</li><li><b>Stem cell origin</b> — WRONG: PV is a disease of mature committed erythroid progenitors only. It is a clonal STEM-cell disorder — the multipotent origin accounts for trilineage involvement and transformation potential.</li><li><b>Extramedullary fibrosis → AML</b> — WRONG: PV never transforms — it is a benign chronic erythrocytosis. PV is a clonal neoplasm that can progress to post-PV myelofibrosis and secondary AML; the latter is treatment-resistant with poor survival.</li><li><b>JAK2 pathway / decades</b> — WRONG: PV is rapidly fatal and needs urgent chemotherapy at diagnosis. It is typically indolent over decades; the cornerstone is phlebotomy to Hct &lt;45% plus low-dose aspirin, reserving cytoreduction for high-risk (age &gt;60 or prior thrombosis) patients.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. JAK2 V617F engine</div><div class="rte">JAK2 V617F (a valine-to-phenylalanine substitution at codon 617 in the JH2 pseudokinase domain) is the driver mutation in ~95% of polycythemia vera. It creates a constitutively active cytoplasmic tyrosine kinase that fires JAK-STAT signaling without ligand. The ~3-5% of JAK2 V617F-negative PV cases carry JAK2 exon-12 mutations — so essentially 100% of PV is JAK2-driven.</div><div class="rtt">⚠️ WRONG: the driver here is BCR-ABL. BCR-ABL defines CML (the Philadelphia chromosome MPN); PV is BCR-ABL NEGATIVE and JAK2-mutated. Discriminator: send BCR-ABL to exclude CML, then JAK2 to confirm PV.</div></div><div class="rt"><div class="rtl">2. Autoinhibitory valve broken</div><div class="rte">Normally the JH2 pseudokinase domain auto-inhibits the JH1 kinase domain, keeping JAK2 off until a cytokine binds its receptor. V617F disrupts this autoinhibitory brake, so the kinase is permanently 'on' — ligand-independent, constitutive JAK-STAT/PI3K/MAPK signaling driving proliferation.</div><div class="rtt">⚠️ WRONG: V617F is a loss-of-function mutation that disables JAK2. It is GAIN-of-function — it removes the autoinhibitory brake, producing constitutive activity, not loss of signaling.</div></div><div class="rt"><div class="rtl">3. EPO-R no ligand</div><div class="rte">Mutant JAK2 signals through the erythropoietin receptor (and TPO-R/G-CSF-R scaffolds) WITHOUT erythropoietin binding. Because red-cell production runs autonomously, the body suppresses EPO — so serum EPO is characteristically LOW in PV. A low EPO is the key lab discriminator separating PV from secondary polycythemia.</div><div class="rtt">⚠️ WRONG: serum EPO is high in polycythemia vera. EPO is LOW in PV (autonomous, feedback-suppressed); a HIGH EPO points to SECONDARY polycythemia (hypoxia, EPO-secreting tumor, exogenous EPO).</div></div><div class="rt"><div class="rtl">4. &gt;95% PV / JAK2</div><div class="rte">WHO criteria leverage that JAK2 mutation is present in &gt;95% of PV (V617F plus exon-12). Major criteria: elevated Hgb/Hct or red-cell mass, characteristic hypercellular trilineage marrow with pleomorphic megakaryocytes, and a JAK2 mutation; the minor criterion is subnormal serum EPO. JAK2 testing is the pivotal molecular step.</div><div class="rtt">⚠️ WRONG: a negative JAK2 V617F test rules out PV. About 3-5% of PV is V617F-negative but exon-12 positive — if V617F is negative with a low EPO and high Hct, reflex to JAK2 exon-12 testing before excluding PV.</div></div><div class="rt"><div class="rtl">5. CALR / MPL (no JAK2)</div><div class="rte">CALR and MPL mutations drive the JAK2-wild-type MPNs — essential thrombocythemia (ET) and primary myelofibrosis (PMF) — by activating the same downstream JAK-STAT axis (CALR binds and activates MPL/TPO-R). They do NOT cause polycythemia vera.</div><div class="rtt">⚠️ WRONG: CALR mutations can drive polycythemia vera. CALR/MPL are seen in ET and PMF only; PV is essentially always JAK2-mutated — finding CALR points you away from PV toward ET/PMF.</div></div><div class="rt"><div class="rtl">6. Triple-negative</div><div class="rte">'Triple-negative' MPN lacks detectable JAK2, CALR, and MPL mutations. It is rare, occurs in ET/PMF (not PV, which is virtually always JAK2-positive), and in PMF carries the worst prognosis. These cases often harbor non-canonical or high-molecular-risk subclonal mutations.</div><div class="rtt">⚠️ WRONG: triple-negative means a reactive, non-clonal blood disorder. The disease is still clonal/neoplastic — driven by other lesions — and in PMF triple-negativity is the most aggressive subgroup.</div></div><div class="rt"><div class="rtl">7. RED = erythrocytosis</div><div class="rte">The hallmark of PV is erythrocytosis — elevated hematocrit/hemoglobin from autonomous red-cell overproduction. Diagnostic thresholds: Hgb &gt;16.5 g/dL (men)/&gt;16.0 (women) or Hct &gt;49%/&gt;48%. The resulting hyperviscosity causes headache, plethora, dizziness, blurred vision, and thrombosis (including arterial/venous and Budd-Chiari).</div><div class="rtt">⚠️ WRONG: an isolated high hematocrit always means polycythemia vera. First exclude RELATIVE polycythemia (dehydration/plasma contraction) and SECONDARY causes (hypoxia, smoking/CO, EPO-secreting tumor); confirm true PV with low EPO + JAK2.</div></div><div class="rt"><div class="rtl">8. GREY = WBC</div><div class="rte">PV is a panmyelosis — leukocytosis (neutrophilia) accompanies the erythrocytosis in many patients, reflecting trilineage stem-cell expansion. Leukocytosis is itself an adverse prognostic and thrombotic risk factor in PV, though the red line dominates the phenotype.</div><div class="rtt">⚠️ WRONG: leukocytosis excludes PV and indicates infection or CML. PV is a trilineage MPN, so leukocytosis is expected; the distinction from CML is BCR-ABL (positive in CML, negative in PV).</div></div><div class="rt"><div class="rtl">9. PURPLE = platelets</div><div class="rte">Thrombocytosis is the third arm of PV's panmyelosis. Counts can rise high enough to provoke ACQUIRED von Willebrand syndrome (vWF multimers consumed by excess platelets), causing paradoxical BLEEDING at extreme counts (typically &gt;1,000-1,500 x10^9/L) despite the prothrombotic state.</div><div class="rtt">⚠️ WRONG: extreme thrombocytosis in PV means even greater clotting risk and warrants more aggressive anticoagulation. Very high platelet counts can cause acquired von Willebrand disease and BLEEDING — avoid aspirin/anticoagulation until vWF activity is checked.</div></div><div class="rt"><div class="rtl">10. Overproduction, no dysplasia</div><div class="rte">MPNs (PV, ET, PMF, CML) are defined by EFFECTIVE overproduction of mature, functional blood cells WITHOUT dysplasia. This contrasts with myelodysplastic syndromes (MDS), where INEFFECTIVE, dysplastic hematopoiesis produces cytopenias despite a cellular marrow.</div><div class="rtt">⚠️ WRONG: PV shows dysplastic, ineffective hematopoiesis. That describes MDS — MPNs feature effective overproduction of normal-appearing mature cells; presence of dysplasia/cytopenias should redirect you toward MDS or MDS/MPN overlap.</div></div><div class="rt"><div class="rtl">11. Stem cell origin</div><div class="rte">PV arises from a single transformed multipotent hematopoietic STEM cell, which is why all three lineages can be involved (panmyelosis). The clonal stem-cell origin also explains the long natural history and capacity to evolve into post-PV myelofibrosis or AML.</div><div class="rtt">⚠️ WRONG: PV is a disease of mature committed erythroid progenitors only. It is a clonal STEM-cell disorder — the multipotent origin accounts for trilineage involvement and transformation potential.</div></div><div class="rt"><div class="rtl">12. Extramedullary fibrosis → AML</div><div class="rte">PV can evolve to a 'spent phase' / post-PV myelofibrosis (marrow fibrosis, falling counts, splenomegaly from extramedullary hematopoiesis) and ultimately transform to secondary AML. Risk of leukemic transformation rises with disease duration and with cytoreductive exposure.</div><div class="rtt">⚠️ WRONG: PV never transforms — it is a benign chronic erythrocytosis. PV is a clonal neoplasm that can progress to post-PV myelofibrosis and secondary AML; the latter is treatment-resistant with poor survival.</div></div><div class="rt"><div class="rtl">13. JAK2 pathway / decades</div><div class="rte">Ph-negative MPNs are chronic, indolent diseases evolving over years to decades. Management of PV aims to prevent thrombosis (the leading cause of morbidity/mortality): therapeutic phlebotomy to Hct &lt;45%, low-dose aspirin, and cytoreduction (hydroxyurea first-line; ruxolitinib or interferon second-line) in high-risk patients (age &gt;60 or prior thrombosis).</div><div class="rtt">⚠️ WRONG: PV is rapidly fatal and needs urgent chemotherapy at diagnosis. It is typically indolent over decades; the cornerstone is phlebotomy to Hct &lt;45% plus low-dose aspirin, reserving cytoreduction for high-risk (age &gt;60 or prior thrombosis) patients.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcv_polycythemia_vera_clinical.html" title="Polycythemia / MPN — Polycythemia Vera clinical features &amp; complications">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcv_polycythemia_vera_treatment.html" title="Polycythemia / MPN — Polycythemia Vera treatment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

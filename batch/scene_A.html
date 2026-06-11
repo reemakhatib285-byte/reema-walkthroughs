@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Acid–Base A — Diagnostic Approach (Winter's, Δ-Δ, AG correction)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Step 1 — pH (acidemia vs alkalemia)</b> — A normal pH does NOT rule out an acid–base disorder — it can hide a MIXED disorder (e.g., a metabolic acidosis plus a metabolic alkalosis cancelling out). Always proceed to the anion gap and compensation checks even when the pH looks normal.</li><li><b>HCO3⁻ normal 22–26</b> — Don't confuse a LOW bicarbonate caused by a primary metabolic acidosis with the appropriately low bicarbonate that COMPENSATES a chronic respiratory alkalosis — pair it with the pH: low HCO3 + low pH = metabolic acidosis; low HCO3 + high pH = compensated respiratory alkalosis.</li><li><b>PCO2 normal 35–45</b> — A 'normal' PCO2 in a patient with a severe metabolic acidosis is actually pathologic — it signals impending respiratory failure/fatigue (the patient should be hyperventilating with a LOW PCO2). Use Winter's formula to confirm the PCO2 is appropriately low rather than falsely reassuring.</li><li><b>‘NORMAL pH ≠ NO DISORDER’</b> — Stopping the workup at a normal pH and declaring 'no acid–base disorder' — the high-yield error. Calculate the anion gap and check expected compensation on every gas, regardless of pH.</li><li><b>Identify the primary disorder (wheel)</b> — Misassigning primary vs compensatory — if you pick the value moving the WRONG way relative to the pH as 'primary,' the whole analysis fails. Anchor to the rule that the value matching the pH abnormality is the primary process.</li><li><b>Winter's formula (metabolic acidosis)</b> — If the measured PCO2 is HIGHER than Winter's predicts → there is a concomitant RESPIRATORY ACIDOSIS (the patient isn't blowing off enough CO2). If it is LOWER than predicted → a concomitant RESPIRATORY ALKALOSIS (e.g., salicylate toxicity). 'Appropriate compensation' is NOT a second disorder — only deviations are.</li><li><b>Metabolic alkalosis compensation (+0.7)</b> — Expecting full normalization of pH — respiratory compensation for metabolic alkalosis is incomplete and self-limited. If the PCO2 hasn't risen as expected, suspect a superimposed respiratory alkalosis; if it has risen far more than 0.7/mEq, suspect a superimposed respiratory acidosis.</li><li><b>Respiratory acute vs chronic (hourglass)</b> — A 'normal' HCO3 in a patient with chronic CO2 retention (e.g., COPD) is actually ABNORMAL — chronic respiratory acidosis should have an elevated HCO3 from renal compensation. A normal HCO3 there means a coexisting metabolic acidosis is masking the expected rise.</li><li><b>Anion gap = Na − Cl − HCO3 (10–12)</b> — Dismissing a NORMAL-anion-gap (hyperchloremic) acidosis as benign — it still has a real cause: GI bicarbonate loss (diarrhea), renal tubular acidosis (RTA), or carbonic anhydrase inhibitors. Use the urine anion gap to separate diarrhea (negative UAG) from RTA (positive UAG).</li><li><b>High anion gap</b> — Forgetting the toxic alcohols (methanol, ethylene glycol) when there is a high gap AND a high OSMOLAR gap — that combination is a poisoning emergency requiring fomepizole ± dialysis. Lactate and ketones don't raise the osmolar gap much, so a wide osmolar gap points to ingested alcohols.</li><li><b>Albumin correction (+2.5 per 1 g/dL)</b> — Reading a 'normal' anion gap in a hypoalbuminemic patient as a non-gap acidosis — once corrected, it may be a genuine high-gap acidosis. Skipping albumin correction misses occult lactic acidosis or ketoacidosis in sick, low-albumin patients.</li><li><b>Delta-delta (ΔAG / ΔHCO3)</b> — Ratio &lt;1 → a coexisting NORMAL-gap (hyperchloremic) metabolic acidosis is also present (HCO3 fell more than the gap rose). Ratio &gt;2 → a coexisting METABOLIC ALKALOSIS or chronic respiratory acidosis (HCO3 is higher than expected for the gap). Forgetting the delta-delta hides these second processes.</li><li><b>Hidden alkalosis / mixed disorder</b> — Seeing a near-normal HCO3 alongside a clearly elevated anion gap and calling it normal — that pattern means a second process (metabolic alkalosis) is propping the bicarbonate up. Don't be reassured by a normal HCO3 when the gap is wide.</li><li><b>Hot-air balloon — osm/AG context</b> — Skipping steps and 'eyeballing' the gas — every mixed disorder boards question is built to punish shortcuts. Run all five steps in order, every time, especially when the pH looks deceptively normal.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Step 1 — pH (acidemia vs alkalemia)</div><div class="rte">STEP 1 of the systematic approach: read the arterial pH first. Normal is 7.35–7.45. pH &lt;7.35 = acidemia, pH &gt;7.45 = alkalemia. This names the direction of the PRIMARY disorder — the body never over-compensates back across 7.40, so the side the pH sits on tells you which process is primary.</div><div class="rtt">⚠️ A normal pH does NOT rule out an acid–base disorder — it can hide a MIXED disorder (e.g., a metabolic acidosis plus a metabolic alkalosis cancelling out). Always proceed to the anion gap and compensation checks even when the pH looks normal.</div></div><div class="rt"><div class="rtl">2. HCO3⁻ normal 22–26</div><div class="rte">Bicarbonate (normal 22–26 mEq/L) is the METABOLIC component, controlled by the kidney. Low HCO3 (with low pH) = primary metabolic acidosis; high HCO3 (with high pH) = primary metabolic alkalosis. Note ABG-calculated HCO3 and the venous (chemistry) measured HCO3 should roughly agree — a big discrepancy suggests a lab/sampling error.</div><div class="rtt">⚠️ Don't confuse a LOW bicarbonate caused by a primary metabolic acidosis with the appropriately low bicarbonate that COMPENSATES a chronic respiratory alkalosis — pair it with the pH: low HCO3 + low pH = metabolic acidosis; low HCO3 + high pH = compensated respiratory alkalosis.</div></div><div class="rt"><div class="rtl">3. PCO2 normal 35–45</div><div class="rte">PCO2 (normal 35–45 mmHg) is the RESPIRATORY component, controlled by alveolar ventilation. High PCO2 (with low pH) = primary respiratory acidosis (hypoventilation); low PCO2 (with high pH) = primary respiratory alkalosis (hyperventilation). In a metabolic acidosis, the lungs blow off CO2 to compensate, so PCO2 should fall.</div><div class="rtt">⚠️ A 'normal' PCO2 in a patient with a severe metabolic acidosis is actually pathologic — it signals impending respiratory failure/fatigue (the patient should be hyperventilating with a LOW PCO2). Use Winter's formula to confirm the PCO2 is appropriately low rather than falsely reassuring.</div></div><div class="rt"><div class="rtl">4. ‘NORMAL pH ≠ NO DISORDER’</div><div class="rte">Mixed acid–base disorders can leave the pH (and even the HCO3 or PCO2) deceptively normal because opposing processes cancel out. The keys to unmasking them are the ANION GAP (always calculate it) and the COMPENSATION formulas (Winter's, delta-delta). A normal pH with a high anion gap is the classic giveaway of a mixed picture.</div><div class="rtt">⚠️ Stopping the workup at a normal pH and declaring 'no acid–base disorder' — the high-yield error. Calculate the anion gap and check expected compensation on every gas, regardless of pH.</div></div><div class="rt"><div class="rtl">5. Identify the primary disorder (wheel)</div><div class="rte">STEP 2: name the primary disorder by combining the pH direction with WHICH value moved in the same direction. Acidemia + low HCO3 = metabolic acidosis; acidemia + high PCO2 = respiratory acidosis; alkalemia + high HCO3 = metabolic alkalosis; alkalemia + low PCO2 = respiratory alkalosis. The value that 'explains' the pH is primary; the other reflects compensation.</div><div class="rtt">⚠️ Misassigning primary vs compensatory — if you pick the value moving the WRONG way relative to the pH as 'primary,' the whole analysis fails. Anchor to the rule that the value matching the pH abnormality is the primary process.</div></div><div class="rt"><div class="rtl">6. Winter's formula (metabolic acidosis)</div><div class="rte">For a primary metabolic acidosis, Winter's formula gives the expected respiratory compensation: expected PCO2 = (1.5 × HCO3) + 8 (±2). If the measured PCO2 falls within this range, compensation is appropriate (a single disorder). A handy bedside shortcut: PCO2 should approximate the last two digits of the pH (e.g., pH 7.25 → PCO2 ≈ 25).</div><div class="rtt">⚠️ If the measured PCO2 is HIGHER than Winter's predicts → there is a concomitant RESPIRATORY ACIDOSIS (the patient isn't blowing off enough CO2). If it is LOWER than predicted → a concomitant RESPIRATORY ALKALOSIS (e.g., salicylate toxicity). 'Appropriate compensation' is NOT a second disorder — only deviations are.</div></div><div class="rt"><div class="rtl">7. Metabolic alkalosis compensation (+0.7)</div><div class="rte">For a primary metabolic alkalosis, the expected respiratory compensation is a RISE in PCO2 of ~0.7 mmHg per 1 mEq/L rise in HCO3 (the lungs hypoventilate to retain CO2). Compensation is limited because hypoventilation is capped by hypoxic drive (PCO2 rarely exceeds ~55).</div><div class="rtt">⚠️ Expecting full normalization of pH — respiratory compensation for metabolic alkalosis is incomplete and self-limited. If the PCO2 hasn't risen as expected, suspect a superimposed respiratory alkalosis; if it has risen far more than 0.7/mEq, suspect a superimposed respiratory acidosis.</div></div><div class="rt"><div class="rtl">8. Respiratory acute vs chronic (hourglass)</div><div class="rte">Renal (metabolic) compensation for respiratory disorders takes ~2–5 days, so acute and chronic expectations differ. Respiratory ACIDOSIS: HCO3 rises ~1 per 10 mmHg PCO2 (acute) vs ~4 (chronic). Respiratory ALKALOSIS: HCO3 falls ~2 per 10 (acute) vs ~4–5 (chronic). Chronic = full renal compensation; acute = minimal.</div><div class="rtt">⚠️ A 'normal' HCO3 in a patient with chronic CO2 retention (e.g., COPD) is actually ABNORMAL — chronic respiratory acidosis should have an elevated HCO3 from renal compensation. A normal HCO3 there means a coexisting metabolic acidosis is masking the expected rise.</div></div><div class="rt"><div class="rtl">9. Anion gap = Na − Cl − HCO3 (10–12)</div><div class="rte">STEP 3 on any metabolic acidosis: calculate the anion gap = Na − (Cl + HCO3); normal ≈ 10–12 mEq/L (the gap reflects unmeasured anions, mostly albumin). HIGH gap = an added unmeasured acid; NORMAL (non-gap) gap = bicarbonate loss with chloride retention (hyperchloremic acidosis).</div><div class="rtt">⚠️ Dismissing a NORMAL-anion-gap (hyperchloremic) acidosis as benign — it still has a real cause: GI bicarbonate loss (diarrhea), renal tubular acidosis (RTA), or carbonic anhydrase inhibitors. Use the urine anion gap to separate diarrhea (negative UAG) from RTA (positive UAG).</div></div><div class="rt"><div class="rtl">10. High anion gap</div><div class="rte">A high-anion-gap metabolic acidosis comes from added unmeasured acids. Mnemonic MUDPILES: Methanol, Uremia, DKA (and other ketoacidosis), Propylene glycol, Iron/Isoniazid, Lactic acidosis, Ethylene glycol, Salicylates. (Modern alternative: GOLD MARK — Glycols, Oxoproline, L-/D-lactate, Methanol, Aspirin, Renal failure, Ketoacidosis.)</div><div class="rtt">⚠️ Forgetting the toxic alcohols (methanol, ethylene glycol) when there is a high gap AND a high OSMOLAR gap — that combination is a poisoning emergency requiring fomepizole ± dialysis. Lactate and ketones don't raise the osmolar gap much, so a wide osmolar gap points to ingested alcohols.</div></div><div class="rt"><div class="rtl">11. Albumin correction (+2.5 per 1 g/dL)</div><div class="rte">Albumin is the major unmeasured anion, so hypoalbuminemia lowers the measured anion gap and can mask a true high gap. Correct it: add ~2.5 mEq/L to the measured AG for every 1 g/dL the albumin is below 4.0 g/dL. Always correct in critically ill, cirrhotic, or nephrotic patients.</div><div class="rtt">⚠️ Reading a 'normal' anion gap in a hypoalbuminemic patient as a non-gap acidosis — once corrected, it may be a genuine high-gap acidosis. Skipping albumin correction misses occult lactic acidosis or ketoacidosis in sick, low-albumin patients.</div></div><div class="rt"><div class="rtl">12. Delta-delta (ΔAG / ΔHCO3)</div><div class="rte">STEP 4 on a high-AG acidosis: compute the delta-delta ratio = ΔAG (measured AG − 12) ÷ ΔHCO3 (24 − measured HCO3). In a PURE high-gap acidosis the rise in gap should match the fall in bicarbonate, so the ratio is ~1–2.</div><div class="rtt">⚠️ Ratio &lt;1 → a coexisting NORMAL-gap (hyperchloremic) metabolic acidosis is also present (HCO3 fell more than the gap rose). Ratio &gt;2 → a coexisting METABOLIC ALKALOSIS or chronic respiratory acidosis (HCO3 is higher than expected for the gap). Forgetting the delta-delta hides these second processes.</div></div><div class="rt"><div class="rtl">13. Hidden alkalosis / mixed disorder</div><div class="rte">The delta-delta can unmask a metabolic ALKALOSIS hiding behind a high-AG acidosis (classic combo: a vomiting DKA patient, or salicylate toxicity with a respiratory alkalosis). A high anion gap with a higher-than-expected (even normal or elevated) HCO3 is the fingerprint of this triple/mixed disorder.</div><div class="rtt">⚠️ Seeing a near-normal HCO3 alongside a clearly elevated anion gap and calling it normal — that pattern means a second process (metabolic alkalosis) is propping the bicarbonate up. Don't be reassured by a normal HCO3 when the gap is wide.</div></div><div class="rt"><div class="rtl">14. Hot-air balloon — osm/AG context</div><div class="rte">The big-picture algorithm, in order: (1) pH → name acidemia vs alkalemia; (2) HCO3 vs PCO2 → primary disorder; (3) check compensation (Winter's for met acidosis, +0.7 for met alkalosis, acute/chronic rules for respiratory); (4) anion gap (albumin-corrected); (5) delta-delta on any high gap; and add the OSMOLAR GAP when toxic alcohol ingestion is suspected.</div><div class="rtt">⚠️ Skipping steps and 'eyeballing' the gas — every mixed disorder boards question is built to punish shortcuts. Run all five steps in order, every time, especially when the pH looks deceptively normal.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="respdist_pft.html" title="Respiratory Disturbance — PFT Workshop (Volumes &amp; FEV₁/FVC Algorithm)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="../acid_base/scene_B.html" title="Acid–Base B — Toxic Alcohols (Underground Poison Market)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

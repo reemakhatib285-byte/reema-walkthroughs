@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypertension — Secondary Causes &amp; Pregnancy Safety</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Pheochromocytoma classic triad</b> — WRONG: diagnosing panic/anxiety disorder and ordering psychiatry referral for episodic palpitations + headache + sweating. Discriminator — pheo episodes come WITH measured BP spikes and are not relieved by reassurance; check fractionated metanephrines before labeling it anxiety.</li><li><b>Plasma/urine metanephrines first</b> — WRONG: ordering abdominal CT/MRI as the first step in a patient with suspected pheo. Discriminator — adrenal 'incidentalomas' are common (~5% of CTs) and imaging a non-functional nodule misleads you; always confirm hormonal excess biochemically before localizing.</li><li><b>Phenoxybenzamine alpha-first</b> — WRONG: starting a beta-blocker (or labetalol as monotherapy) to control the tachycardia first. Discriminator — labetalol's alpha:beta blockade is only ~1:7, insufficient alpha coverage, so it behaves like beta-predominant blockade and can trigger crisis; dedicated alpha-blockade must come first.</li><li><b>Beta-blocker before alpha = fatal</b> — WRONG: choosing 'add metoprolol' for a pheo patient with HR 120 who is not yet alpha-blocked. Discriminator — the correct first move is phenoxybenzamine; beta-blockade is reserved for after alpha-blockade is established.</li><li><b>Primary aldosteronism: resistant HTN + hypokalemia</b> — WRONG: only screening for aldosteronism if the potassium is low. Discriminator — the majority of Conn patients are NORMOkalemic; resistant HTN, an adrenal incidentaloma, or HTN with OSA/family history of early HTN all warrant aldosterone:renin screening regardless of K+.</li><li><b>Aldosterone:renin ratio screen</b> — WRONG: leaving the patient on spironolactone while drawing the ARR. Discriminator — MRAs raise renin and invalidate the ratio, producing a false-negative; stop interfering drugs before testing or use alpha-blockers (doxazosin) for interim BP control.</li><li><b>Adrenal vein sampling = gold standard</b> — WRONG: sending a 55-year-old with a small unilateral CT 'adenoma' straight to adrenalectomy. Discriminator — over age 35 nonfunctioning incidentalomas are common and CT can mislabel which side is the source; AVS is required to confirm lateralization before surgery.</li><li><b>FMD vs atherosclerotic RVD</b> — WRONG: attributing resistant HTN in a 30-year-old woman to 'essential hypertension.' Discriminator — essential HTN is unusual that young; secondary causes (FMD renovascular disease, OCP use, primary aldosteronism) must be excluded with renal imaging and aldosterone:renin testing.</li><li><b>FMD -&gt; balloon angioplasty curative</b> — WRONG: managing FMD with lifelong medical therapy alone and never imaging/intervening. Discriminator — unlike atherosclerotic disease, FMD responds to angioplasty with potential cure; failing to offer PTA condemns a young patient to decades of drugs.</li><li><b>Atherosclerotic RVD -&gt; medical management</b> — WRONG: choosing renal artery stenting for an older patient with atherosclerotic stenosis and stable, controlled HTN. Discriminator — CORAL/ASTRAL proved no outcome benefit from routine stenting; medical therapy is first-line, and intervention is only for the rare refractory cases.</li><li><b>Bilateral RAS: stop ACEI</b> — WRONG: continuing/up-titrating the ACEi when creatinine jumps 40% after initiation, calling it 'expected.' Discriminator — a &gt;30% creatinine rise is abnormal and signals bilateral RAS or volume depletion; stop the agent and evaluate rather than pushing through.</li><li><b>Unilateral RAS: ACEI renoprotective</b> — WRONG: reflexively stopping the ACEi in unilateral RAS just because 'RAS = no ACEi.' Discriminator — the contraindication is specific to BILATERAL RAS (or solitary kidney); in unilateral disease ACEi/ARB are beneficial and should usually be continued with monitoring.</li><li><b>Pregnancy: avoid ACEI/ARB</b> — WRONG: continuing an ACEi/ARB in a diabetic woman who becomes pregnant 'because it protects her kidneys.' Discriminator — fetal toxicity overrides maternal renoprotection; switch to a pregnancy-safe agent (labetalol/nifedipine/methyldopa) as soon as pregnancy is known or planned.</li><li><b>Pregnancy-safe agents</b> — WRONG: reaching for an ACEi/ARB or a thiazide diuretic to treat gestational/chronic HTN. Discriminator — labetalol, nifedipine, and methyldopa are the pregnancy-safe trio; thiazides reduce plasma volume (risky if preeclampsia) and ACEi/ARB are teratogenic.</li><li><b>Pulse pressure scale</b> — WRONG: dismissing a wide pulse pressure in an elderly patient as a measurement artifact. Discriminator — in the elderly a wide pulse pressure reflects arterial stiffening/isolated systolic HTN and is itself a strong predictor of cardiovascular events, not an error.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Pheochromocytoma classic triad</div><div class="rte">Pheochromocytoma is a catecholamine-secreting tumor of adrenal medulla chromaffin cells. Classic triad = episodic Headache, Palpitations, and Diaphoresis (sweating) with paroxysmal HTN — the 3 P's. Episodes are paroxysmal because catecholamine release is intermittent; between spells BP may be normal. Suspect it in resistant HTN, spells, or HTN in the young; associations include MEN2A/2B, VHL, NF1.</div><div class="rtt">⚠️ WRONG: diagnosing panic/anxiety disorder and ordering psychiatry referral for episodic palpitations + headache + sweating. Discriminator — pheo episodes come WITH measured BP spikes and are not relieved by reassurance; check fractionated metanephrines before labeling it anxiety.</div></div><div class="rt"><div class="rtl">2. Plasma/urine metanephrines first</div><div class="rte">Screen with plasma free metanephrines or 24h urine fractionated metanephrines BEFORE imaging — biochemical confirmation comes first. Metanephrines are the stable O-methylated catecholamine metabolites, continuously secreted, so they have higher sensitivity (~97-99%) than catecholamines themselves. Avoid false positives by stopping TCAs and ensuring proper sampling (supine, fasting).</div><div class="rtt">⚠️ WRONG: ordering abdominal CT/MRI as the first step in a patient with suspected pheo. Discriminator — adrenal 'incidentalomas' are common (~5% of CTs) and imaging a non-functional nodule misleads you; always confirm hormonal excess biochemically before localizing.</div></div><div class="rt"><div class="rtl">3. Phenoxybenzamine alpha-first</div><div class="rte">Pre-op blockade is ALPHA FIRST: phenoxybenzamine (irreversible, non-selective alpha-blocker) for 10-14 days to control BP and re-expand the contracted plasma volume; add liberal salt/fluids. A beta-blocker (e.g., propranolol) is added only AFTER adequate alpha-blockade to control reflex tachycardia. Definitive treatment is laparoscopic adrenalectomy.</div><div class="rtt">⚠️ WRONG: starting a beta-blocker (or labetalol as monotherapy) to control the tachycardia first. Discriminator — labetalol's alpha:beta blockade is only ~1:7, insufficient alpha coverage, so it behaves like beta-predominant blockade and can trigger crisis; dedicated alpha-blockade must come first.</div></div><div class="rt"><div class="rtl">4. Beta-blocker before alpha = fatal</div><div class="rte">Giving a beta-blocker before alpha-blockade removes beta-2 mediated vasodilation while leaving alpha-1 vasoconstriction unopposed -&gt; severe vasoconstriction, hypertensive crisis, pulmonary edema, and death. This is why sequence matters absolutely in pheochromocytoma management.</div><div class="rtt">⚠️ WRONG: choosing 'add metoprolol' for a pheo patient with HR 120 who is not yet alpha-blocked. Discriminator — the correct first move is phenoxybenzamine; beta-blockade is reserved for after alpha-blockade is established.</div></div><div class="rt"><div class="rtl">5. Primary aldosteronism: resistant HTN + hypokalemia</div><div class="rte">Primary hyperaldosteronism (Conn syndrome) is the most common identifiable secondary cause of HTN. Excess aldosterone drives renal Na+ retention (HTN) and K+/H+ wasting (hypokalemia, metabolic alkalosis). Classic clue = resistant HTN with spontaneous or diuretic-induced hypokalemia, but most patients are normokalemic. Causes: bilateral adrenal hyperplasia (~60%) or unilateral aldosterone-producing adenoma.</div><div class="rtt">⚠️ WRONG: only screening for aldosteronism if the potassium is low. Discriminator — the majority of Conn patients are NORMOkalemic; resistant HTN, an adrenal incidentaloma, or HTN with OSA/family history of early HTN all warrant aldosterone:renin screening regardless of K+.</div></div><div class="rt"><div class="rtl">6. Aldosterone:renin ratio screen</div><div class="rte">Screening test = elevated plasma aldosterone-to-renin ratio (ARR), reflecting high aldosterone with SUPPRESSED renin. Confirm with a saline infusion or oral sodium loading test showing failure to suppress aldosterone. Withhold MRAs (spironolactone/eplerenone) ~4-6 weeks before testing because they falsely raise renin and lower the ratio.</div><div class="rtt">⚠️ WRONG: leaving the patient on spironolactone while drawing the ARR. Discriminator — MRAs raise renin and invalidate the ratio, producing a false-negative; stop interfering drugs before testing or use alpha-blockers (doxazosin) for interim BP control.</div></div><div class="rt"><div class="rtl">7. Adrenal vein sampling = gold standard</div><div class="rte">After biochemical confirmation, CT abdomen images the adrenals, but adrenal vein sampling (AVS) is the GOLD STANDARD to lateralize: it distinguishes a unilateral adenoma (-&gt; laparoscopic adrenalectomy, often curative) from bilateral hyperplasia (-&gt; lifelong MRA, spironolactone or eplerenone). AVS may be skipped in young patients (&lt;35) with a clear unilateral adenoma on CT and biochemical confirmation.</div><div class="rtt">⚠️ WRONG: sending a 55-year-old with a small unilateral CT 'adenoma' straight to adrenalectomy. Discriminator — over age 35 nonfunctioning incidentalomas are common and CT can mislabel which side is the source; AVS is required to confirm lateralization before surgery.</div></div><div class="rt"><div class="rtl">8. FMD vs atherosclerotic RVD</div><div class="rte">Renovascular HTN comes in two flavors. Fibromuscular dysplasia (FMD): young women, NO atherosclerotic risk factors, affects the DISTAL/mid renal artery with a 'string-of-beads' appearance. Atherosclerotic renovascular disease: older patients with ASCVD risk factors, affects the OSTIAL/proximal artery. Clue to either = HTN refractory to 3 drugs, flash pulmonary edema, or a rise in creatinine after starting ACEi/ARB; an abdominal bruit may be heard.</div><div class="rtt">⚠️ WRONG: attributing resistant HTN in a 30-year-old woman to 'essential hypertension.' Discriminator — essential HTN is unusual that young; secondary causes (FMD renovascular disease, OCP use, primary aldosteronism) must be excluded with renal imaging and aldosterone:renin testing.</div></div><div class="rt"><div class="rtl">9. FMD -&gt; balloon angioplasty curative</div><div class="rte">FMD renal artery stenosis is treated with percutaneous transluminal angioplasty (PTA, balloon only — NO stent needed), which is often CURATIVE and can normalize BP especially when caught early. Stenting is generally not required in FMD.</div><div class="rtt">⚠️ WRONG: managing FMD with lifelong medical therapy alone and never imaging/intervening. Discriminator — unlike atherosclerotic disease, FMD responds to angioplasty with potential cure; failing to offer PTA condemns a young patient to decades of drugs.</div></div><div class="rt"><div class="rtl">10. Atherosclerotic RVD -&gt; medical management</div><div class="rte">Atherosclerotic renovascular disease is managed MEDICALLY: ACEi/ARB (if not bilateral), a statin, antiplatelet, BP control, and smoking cessation. Landmark trials (CORAL, ASTRAL) showed renal artery STENTING does NOT improve BP, renal function, or CV outcomes versus medical therapy. Reserve revascularization for refractory HTN, flash pulmonary edema, or rapidly declining renal function.</div><div class="rtt">⚠️ WRONG: choosing renal artery stenting for an older patient with atherosclerotic stenosis and stable, controlled HTN. Discriminator — CORAL/ASTRAL proved no outcome benefit from routine stenting; medical therapy is first-line, and intervention is only for the rare refractory cases.</div></div><div class="rt"><div class="rtl">11. Bilateral RAS: stop ACEI</div><div class="rte">In bilateral renal artery stenosis (or stenosis to a solitary kidney), glomerular perfusion depends on angiotensin-II-mediated efferent arteriolar constriction. ACEi/ARB dilate the efferent arteriole -&gt; GFR falls -&gt; acute kidney injury. A creatinine rise &gt;30% after starting an ACEi/ARB is the classic warning to STOP the drug and investigate for bilateral RAS.</div><div class="rtt">⚠️ WRONG: continuing/up-titrating the ACEi when creatinine jumps 40% after initiation, calling it 'expected.' Discriminator — a &gt;30% creatinine rise is abnormal and signals bilateral RAS or volume depletion; stop the agent and evaluate rather than pushing through.</div></div><div class="rt"><div class="rtl">12. Unilateral RAS: ACEI renoprotective</div><div class="rte">In UNILATERAL RAS the contralateral healthy kidney maintains overall GFR, so ACEi/ARB is acceptable and renoprotective (it lowers BP and reduces proteinuria). A small creatinine bump is tolerated. Contrast with bilateral disease, where the same drug precipitates AKI.</div><div class="rtt">⚠️ WRONG: reflexively stopping the ACEi in unilateral RAS just because 'RAS = no ACEi.' Discriminator — the contraindication is specific to BILATERAL RAS (or solitary kidney); in unilateral disease ACEi/ARB are beneficial and should usually be continued with monitoring.</div></div><div class="rt"><div class="rtl">13. Pregnancy: avoid ACEI/ARB</div><div class="rte">ACE inhibitors and ARBs are CONTRAINDICATED in pregnancy (all trimesters; classically 2nd/3rd). They cause fetal renal dysgenesis/failure, oligohydramnios, skull ossification defects, limb contractures, and pulmonary hypoplasia (ACE-inhibitor fetopathy). Also avoid in women planning conception. Other agents to avoid: nitroprusside (fetal cyanide), and atenolol (fetal growth restriction).</div><div class="rtt">⚠️ WRONG: continuing an ACEi/ARB in a diabetic woman who becomes pregnant 'because it protects her kidneys.' Discriminator — fetal toxicity overrides maternal renoprotection; switch to a pregnancy-safe agent (labetalol/nifedipine/methyldopa) as soon as pregnancy is known or planned.</div></div><div class="rt"><div class="rtl">14. Pregnancy-safe agents</div><div class="rte">Preferred antihypertensives in pregnancy = Labetalol, Nifedipine, and Methyldopa ('moms love nifedipine'). Labetalol (combined alpha/beta-blocker) and oral nifedipine are first-line for chronic and severe HTN; IV labetalol or hydralazine for acute severe HTN (&gt;=160/110). Methyldopa (central alpha-2 agonist) is safe but weaker. For severe preeclampsia, magnesium sulfate is given for seizure prophylaxis and definitive treatment is delivery.</div><div class="rtt">⚠️ WRONG: reaching for an ACEi/ARB or a thiazide diuretic to treat gestational/chronic HTN. Discriminator — labetalol, nifedipine, and methyldopa are the pregnancy-safe trio; thiazides reduce plasma volume (risky if preeclampsia) and ACEi/ARB are teratogenic.</div></div><div class="rt"><div class="rtl">15. Pulse pressure scale</div><div class="rte">Pulse pressure = SBP − DBP (normal ~40 mmHg). WIDE pulse pressure: stiff non-compliant aorta (isolated systolic HTN of the elderly), aortic regurgitation, high-output states (thyrotoxicosis, anemia, AV fistula), and increased ICP (Cushing reflex). NARROW pulse pressure: low stroke volume states — aortic stenosis, cardiac tamponade, decompensated heart failure, hypovolemic/cardiogenic shock.</div><div class="rtt">⚠️ WRONG: dismissing a wide pulse pressure in an elderly patient as a measurement artifact. Discriminator — in the elderly a wide pulse pressure reflects arterial stiffening/isolated systolic HTN and is itself a strong predictor of cardiovascular events, not an error.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="htn_6.html" title="Hypertension — Lifestyle Modifications &amp; BP Impact">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="htn_secondary.html" title="Hypertension — Secondary HTN (Causes, Red Flags &amp; Workup)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

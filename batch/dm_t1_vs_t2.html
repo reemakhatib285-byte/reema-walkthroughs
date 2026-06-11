@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DM — Scene 2 — DM Pathophys &amp; Dx: T1DM Battle vs T2DM Factory</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Autoimmune destruction banner</b> — Wrong answer: 'T1DM is caused by insulin resistance.' Discriminator — insulin resistance with relative deficiency is the T2DM mechanism; T1DM is autoimmune beta-cell DESTRUCTION with absolute deficiency. The presence of autoantibodies and low C-peptide settles it as type 1.</li><li><b>Stages 1-3 flags</b> — Wrong answer: 'a child must have symptomatic hyperglycemia to be considered to have type 1 diabetes.' Discriminator — Stages 1–2 are antibody-positive but normoglycemic/dysglycemic and asymptomatic; T1DM autoimmunity precedes clinical disease by years. Screening high-risk relatives can catch presymptomatic stages.</li><li><b>Autoantibodies (GAD65, IA-2, ZnT8, IAA, ICA)</b> — Wrong answer: 'order an insulin autoantibody (IAA) to confirm T1DM in an adult already on insulin therapy.' Discriminator — IAA cannot distinguish autoimmune from injected-insulin antibodies once exogenous insulin is started; in an adult, GAD65 is the antibody of choice. Pick GAD65, not IAA, in treated adults.</li><li><b>LADA / slow T1DM clock</b> — Wrong answer: 'label a lean, antibody-positive 45-year-old who fails oral agents quickly as ordinary type 2 diabetes.' Discriminator — lean adult + GAD65 positive + rapid oral failure = LADA, not T2DM. Recognizing it changes management toward earlier insulin and avoids exhausting beta cells with secretagogues.</li><li><b>Pancreatic islet destroyed</b> — Wrong answer: 'manage newly diagnosed T1DM with metformin and lifestyle.' Discriminator — T1DM is insulin-deficient and metformin (which targets hepatic glucose/insulin resistance) cannot replace absent insulin; these patients need insulin from diagnosis. Oral agents alone are inappropriate.</li><li><b>Honeymoon 1-2 years</b> — Wrong answer: 'a T1DM patient whose insulin needs fell to near zero a few months after diagnosis has been cured / can stop insulin.' Discriminator — this is the honeymoon phase, NOT remission; stopping insulin risks rebound hyperglycemia/DKA when residual beta cells fail. Continue (low-dose) insulin through the honeymoon.</li><li><b>Autoimmune friends (Hashimoto, celiac, Addison, vitiligo, PA)</b> — Wrong answer: 'unexplained fatigue/hypoglycemia and hyperpigmentation in a T1DM patient is just poor glycemic control.' Discriminator — new hypoglycemia, fatigue, hyperpigmentation, and salt craving in T1DM should raise concern for coexisting Addison disease (autoimmune adrenal insufficiency); check morning cortisol/ACTH, don't just adjust insulin.</li><li><b>T2DM resistance + beta failure banner</b> — Wrong answer: 'T2DM is due to autoimmune destruction of beta cells.' Discriminator — autoimmune destruction (with autoantibodies, insulitis, low C-peptide) is type 1; T2DM is insulin resistance with relative deficiency, autoantibody-NEGATIVE, normal/high C-peptide early. Antibody and C-peptide testing differentiate them.</li><li><b>Compensatory hyperinsulinemia stack</b> — Wrong answer: 'a fasting glucose of 100 rules out any glucose abnormality.' Discriminator — early T2DM shows postprandial/2-hr OGTT elevations (IGT) BEFORE fasting glucose rises; a normal FPG can coexist with IGT. Use an OGTT or A1c if you suspect early dysglycemia despite normal FPG.</li><li><b>Islet amyloid</b> — Wrong answer: 'lymphocytic insulitis is the islet finding in type 2 diabetes.' Discriminator — insulitis (lymphocytic infiltration) is the T1DM lesion; T2DM islets show amylin-derived AMYLOID. Mixing these up is a classic histology distractor.</li><li><b>Visceral obesity hub</b> — Wrong answer: 'BMI/total body fat matters more than fat distribution for insulin resistance.' Discriminator — VISCERAL/central adiposity (waist circumference) drives insulin resistance more than subcutaneous fat or total BMI; a 'metabolically obese' normal-weight patient can be insulin resistant. Assess waist, not BMI alone.</li><li><b>Liver gluconeogenesis</b> — Wrong answer: 'fasting hyperglycemia in T2DM is mainly from dietary carbohydrate intake overnight.' Discriminator — fasting (especially morning) hyperglycemia reflects unsuppressed HEPATIC gluconeogenesis, not overnight food; that's why metformin (a suppressor of hepatic glucose output) preferentially lowers fasting glucose.</li><li><b>T1 vs T2 comparison box</b> — Wrong answer: 'a high C-peptide indicates type 1 diabetes.' Discriminator — C-peptide is LOW in T1DM (no endogenous insulin) and NORMAL/HIGH in T2DM (insulin present but resistant). Reversing the direction is a frequent trap; pair C-peptide with autoantibodies to classify.</li><li><b>Classic T2DM clues</b> — Wrong answer: 'acanthosis nigricans in a child points to type 1 diabetes.' Discriminator — acanthosis nigricans reflects hyperINSULINemia/insulin resistance, a TYPE 2 (and prediabetes/obesity) finding, not type 1. Its presence argues against autoimmune insulin-deficient diabetes.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Autoimmune destruction banner</div><div class="rte">T1DM is a T-cell-mediated autoimmune disease: autoreactive CD8+ cytotoxic T cells (with CD4+ help) destroy pancreatic beta cells, producing ABSOLUTE insulin deficiency. Strongest genetic link is HLA-DR3/DR4-DQ2/DQ8 (class II MHC). Histology shows lymphocytic insulitis. Result: lifelong dependence on exogenous insulin and proneness to DKA. Mnemonic: 'Type 1 = T cells + Total insulin loss.'</div><div class="rtt">⚠️ Wrong answer: 'T1DM is caused by insulin resistance.' Discriminator — insulin resistance with relative deficiency is the T2DM mechanism; T1DM is autoimmune beta-cell DESTRUCTION with absolute deficiency. The presence of autoantibodies and low C-peptide settles it as type 1.</div></div><div class="rt"><div class="rtl">2. Stages 1-3 flags</div><div class="rte">T1DM evolves through defined stages: Stage 1 = ≥2 islet autoantibodies but NORMAL glucose (asymptomatic, presymptomatic); Stage 2 = ≥2 autoantibodies WITH dysglycemia (impaired fasting/glucose tolerance) still asymptomatic; Stage 3 = symptomatic overt hyperglycemia, often presenting as DKA. The anti-CD3 antibody teplizumab can DELAY progression from Stage 2 to Stage 3. Mnemonic: 'antibodies → dysglycemia → disease.'</div><div class="rtt">⚠️ Wrong answer: 'a child must have symptomatic hyperglycemia to be considered to have type 1 diabetes.' Discriminator — Stages 1–2 are antibody-positive but normoglycemic/dysglycemic and asymptomatic; T1DM autoimmunity precedes clinical disease by years. Screening high-risk relatives can catch presymptomatic stages.</div></div><div class="rt"><div class="rtl">3. Autoantibodies (GAD65, IA-2, ZnT8, IAA, ICA)</div><div class="rte">The five T1DM islet autoantibodies: GAD65 (glutamic acid decarboxylase — most useful/persistent in adults and LADA), IA-2 (insulinoma-associated/tyrosine phosphatase), ZnT8 (zinc transporter 8), IAA (insulin autoantibody — best in young children, but unreliable once exogenous insulin given), and ICA (islet cell). ≥2 positive confirms autoimmune diabetes. Mnemonic: 'GIANT-Z — GAD, IA-2, IAA, anti-islet (ICA), ZnT8.'</div><div class="rtt">⚠️ Wrong answer: 'order an insulin autoantibody (IAA) to confirm T1DM in an adult already on insulin therapy.' Discriminator — IAA cannot distinguish autoimmune from injected-insulin antibodies once exogenous insulin is started; in an adult, GAD65 is the antibody of choice. Pick GAD65, not IAA, in treated adults.</div></div><div class="rt"><div class="rtl">4. LADA / slow T1DM clock</div><div class="rte">LADA (latent autoimmune diabetes in adults) = slowly progressive autoimmune beta-cell loss presenting in adulthood. Patients are often lean, antibody-POSITIVE (GAD65), with initially preserved C-peptide that declines over months–years, progressing to insulin dependence faster than typical T2DM. Frequently MISdiagnosed as T2DM. Mnemonic: 'LADA = type 1 in slow motion, wearing a type-2 disguise.'</div><div class="rtt">⚠️ Wrong answer: 'label a lean, antibody-positive 45-year-old who fails oral agents quickly as ordinary type 2 diabetes.' Discriminator — lean adult + GAD65 positive + rapid oral failure = LADA, not T2DM. Recognizing it changes management toward earlier insulin and avoids exhausting beta cells with secretagogues.</div></div><div class="rt"><div class="rtl">5. Pancreatic islet destroyed</div><div class="rte">Autoimmune destruction wipes out beta cells (alpha/delta cells relatively spared), causing absolute insulin deficiency — so exogenous insulin is REQUIRED for life and is the only therapy that prevents DKA and death. C-peptide is low/undetectable, reflecting absent endogenous insulin. Mnemonic: 'no beta cells = no insulin = needle for life.'</div><div class="rtt">⚠️ Wrong answer: 'manage newly diagnosed T1DM with metformin and lifestyle.' Discriminator — T1DM is insulin-deficient and metformin (which targets hepatic glucose/insulin resistance) cannot replace absent insulin; these patients need insulin from diagnosis. Oral agents alone are inappropriate.</div></div><div class="rt"><div class="rtl">6. Honeymoon 1-2 years</div><div class="rte">The T1DM 'honeymoon' is a transient partial remission soon after diagnosis: once glucotoxicity is relieved by initial insulin, residual beta cells temporarily recover, insulin requirements drop (sometimes near zero), and control is easy for ~1–2 years. Then beta-cell loss completes and requirements rise (relapse). Mnemonic: 'a short honeymoon before the marriage to insulin gets demanding.'</div><div class="rtt">⚠️ Wrong answer: 'a T1DM patient whose insulin needs fell to near zero a few months after diagnosis has been cured / can stop insulin.' Discriminator — this is the honeymoon phase, NOT remission; stopping insulin risks rebound hyperglycemia/DKA when residual beta cells fail. Continue (low-dose) insulin through the honeymoon.</div></div><div class="rt"><div class="rtl">7. Autoimmune friends (Hashimoto, celiac, Addison, vitiligo, PA)</div><div class="rte">T1DM clusters with other organ-specific autoimmune diseases (part of polyglandular autoimmune syndromes): Hashimoto/autoimmune thyroid (most common — screen TSH/TPO), celiac disease (screen tTG-IgA), Addison disease (primary adrenal insufficiency), vitiligo, and pernicious anemia (B12 deficiency). Screen at diagnosis and periodically. Mnemonic: 'autoimmune comes in packs — check thyroid, gut, adrenal.'</div><div class="rtt">⚠️ Wrong answer: 'unexplained fatigue/hypoglycemia and hyperpigmentation in a T1DM patient is just poor glycemic control.' Discriminator — new hypoglycemia, fatigue, hyperpigmentation, and salt craving in T1DM should raise concern for coexisting Addison disease (autoimmune adrenal insufficiency); check morning cortisol/ACTH, don't just adjust insulin.</div></div><div class="rt"><div class="rtl">8. T2DM resistance + beta failure banner</div><div class="rte">T2DM has TWO core defects: peripheral/hepatic INSULIN RESISTANCE plus progressive BETA-CELL FAILURE, producing RELATIVE (not absolute) insulin deficiency. Early on, beta cells compensate with hyperinsulinemia, but they gradually fail. Strong polygenic/lifestyle (obesity) basis; NOT autoimmune. Mnemonic: 'Type 2 = resistance + tired (not destroyed) beta cells.'</div><div class="rtt">⚠️ Wrong answer: 'T2DM is due to autoimmune destruction of beta cells.' Discriminator — autoimmune destruction (with autoantibodies, insulitis, low C-peptide) is type 1; T2DM is insulin resistance with relative deficiency, autoantibody-NEGATIVE, normal/high C-peptide early. Antibody and C-peptide testing differentiate them.</div></div><div class="rt"><div class="rtl">9. Compensatory hyperinsulinemia stack</div><div class="rte">Natural history of T2DM: insulin resistance → compensatory hyperinsulinemia (normoglycemia maintained) → beta cells can't keep up → postprandial spikes (impaired glucose tolerance, IGT) → fasting hyperglycemia (impaired fasting glucose) → overt T2DM. Postprandial/IGT changes precede fasting hyperglycemia. Mnemonic: 'resistance first, fasting glucose last.'</div><div class="rtt">⚠️ Wrong answer: 'a fasting glucose of 100 rules out any glucose abnormality.' Discriminator — early T2DM shows postprandial/2-hr OGTT elevations (IGT) BEFORE fasting glucose rises; a normal FPG can coexist with IGT. Use an OGTT or A1c if you suspect early dysglycemia despite normal FPG.</div></div><div class="rt"><div class="rtl">10. Islet amyloid</div><div class="rte">The characteristic islet pathology of T2DM is amyloid deposition derived from islet amyloid polypeptide (amylin/IAPP), co-secreted with insulin; accumulation is toxic to beta cells and contributes to their failure. Contrast with T1DM's lymphocytic insulitis. Mnemonic: 'Type 2 islet = amyloid; Type 1 islet = lymphocytes (insulitis).'</div><div class="rtt">⚠️ Wrong answer: 'lymphocytic insulitis is the islet finding in type 2 diabetes.' Discriminator — insulitis (lymphocytic infiltration) is the T1DM lesion; T2DM islets show amylin-derived AMYLOID. Mixing these up is a classic histology distractor.</div></div><div class="rt"><div class="rtl">11. Visceral obesity hub</div><div class="rte">Visceral (central) obesity is the engine of T2DM insulin resistance: excess visceral fat releases free fatty acids and pro-inflammatory adipokines (low adiponectin, high resistin/TNF/IL-6) that impair insulin signaling in muscle (reduced glucose uptake), liver (unsuppressed gluconeogenesis), and adipose (unrestrained lipolysis). Mnemonic: 'belly fat broadcasts FFAs and bad adipokines to every tissue.'</div><div class="rtt">⚠️ Wrong answer: 'BMI/total body fat matters more than fat distribution for insulin resistance.' Discriminator — VISCERAL/central adiposity (waist circumference) drives insulin resistance more than subcutaneous fat or total BMI; a 'metabolically obese' normal-weight patient can be insulin resistant. Assess waist, not BMI alone.</div></div><div class="rt"><div class="rtl">12. Liver gluconeogenesis</div><div class="rte">Hepatic insulin resistance: normally insulin suppresses hepatic gluconeogenesis/glycogenolysis, but in T2DM the liver keeps producing glucose despite hyperinsulinemia, driving FASTING hyperglycemia. This is precisely the step metformin targets (it reduces hepatic glucose output). Mnemonic: 'the resistant liver won't stop making sugar — metformin tells it to stop.'</div><div class="rtt">⚠️ Wrong answer: 'fasting hyperglycemia in T2DM is mainly from dietary carbohydrate intake overnight.' Discriminator — fasting (especially morning) hyperglycemia reflects unsuppressed HEPATIC gluconeogenesis, not overnight food; that's why metformin (a suppressor of hepatic glucose output) preferentially lowers fasting glucose.</div></div><div class="rt"><div class="rtl">13. T1 vs T2 comparison box</div><div class="rte">Head-to-head: T1DM = LOW C-peptide, autoantibody POSITIVE, LEAN, DKA-prone, insulin always required, often younger/abrupt onset. T2DM = NORMAL/HIGH C-peptide (early), autoantibody NEGATIVE, OBESE, less DKA (more HHS), gradual onset, oral agents often suffice initially. C-peptide measures endogenous insulin (low = beta-cell failure of type 1). Mnemonic: 'C-peptide LOW = type 1; C-peptide HIGH = type 2.'</div><div class="rtt">⚠️ Wrong answer: 'a high C-peptide indicates type 1 diabetes.' Discriminator — C-peptide is LOW in T1DM (no endogenous insulin) and NORMAL/HIGH in T2DM (insulin present but resistant). Reversing the direction is a frequent trap; pair C-peptide with autoantibodies to classify.</div></div><div class="rt"><div class="rtl">14. Classic T2DM clues</div><div class="rte">Clinical clues to T2DM: central OBESITY, ACANTHOSIS NIGRICANS (velvety hyperpigmented neck/axilla folds — a marker of hyperinsulinemia/insulin resistance), and the metabolic syndrome cluster — hypertension, atherogenic dyslipidemia (high triglycerides, low HDL), plus a strong FAMILY HISTORY (T2DM is more heritable than T1DM). Mnemonic: 'fat folds (acanthosis), high BP, high TGs, family — that's type 2.'</div><div class="rtt">⚠️ Wrong answer: 'acanthosis nigricans in a child points to type 1 diabetes.' Discriminator — acanthosis nigricans reflects hyperINSULINemia/insulin resistance, a TYPE 2 (and prediabetes/obesity) finding, not type 1. Its presence argues against autoimmune insulin-deficient diabetes.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_hyperglycemic_treatment.html" title="DM — Scene 2 — Acute Hyperglycemic Treatment: DKA/HHS Management">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_pharm_gut_kidney.html" title="DM — Scene 2 — Diabetes Pharmacology: The Gut-Kidney Plumbing">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

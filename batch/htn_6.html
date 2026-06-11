@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypertension — Lifestyle Modifications &amp; BP Impact</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>11</em></summary><ol class="traps"><li><b>DASH diet (~5 mmHg SBP)</b> — WRONG: telling a Stage 1 HTN, low-ASCVD-risk patient they need drug therapy immediately instead of a 3-6 month lifestyle trial. Discriminator — for Stage 1 (130-139/80-89) with &lt;10% 10-year ASCVD risk, guideline-first management is lifestyle modification; drugs are added if BP remains elevated or risk is high.</li><li><b>Sodium reduction &lt;2000 mg</b> — WRONG: focusing only on removing the table salt shaker to cut sodium. Discriminator — the dominant sodium source is processed and restaurant food (&gt;70%); counseling must target packaged/prepared foods, not just added table salt.</li><li><b>Coaches achievement board</b> — WRONG: assuming lifestyle changes give a trivial effect and skipping them once a drug is started. Discriminator — stacked lifestyle measures rival a single antihypertensive in magnitude and improve drug efficacy; they are continued alongside pharmacotherapy, not abandoned.</li><li><b>Potassium supplementation</b> — WRONG: prescribing potassium supplements or K-based salt substitutes to a patient with CKD or on an ACEi/ARB/MRA. Discriminator — these patients cannot excrete a potassium load and are at risk of life-threatening hyperkalemia; potassium loading is contraindicated when renal handling or renin-angiotensin blockade is in play.</li><li><b>Smoking: no BP benefit</b> — WRONG: listing 'smoking cessation' as the answer to 'which lifestyle change lowers this patient's blood pressure?' Discriminator — smoking cessation reduces CV RISK but not BP; the BP-lowering answers are DASH, sodium restriction, weight loss, exercise, potassium, and alcohol moderation.</li><li><b>Smoking: no safe threshold</b> — WRONG: reassuring a patient that cutting down to a few cigarettes a day makes their smoking 'safe enough.' Discriminator — the risk curve has no safe threshold and is supralinear at low doses; only complete cessation meaningfully removes the cardiovascular hazard.</li><li><b>All six interventions panel</b> — WRONG: swapping smoking cessation into the list of six BP-lowering lifestyle measures. Discriminator — the canonical six are DASH/sodium/weight/exercise/potassium/alcohol; smoking cessation belongs to CV-risk reduction, a separate category.</li><li><b>Weight loss ~1 mmHg/kg</b> — WRONG: telling an obese hypertensive that only reaching ideal body weight will help their BP. Discriminator — BP falls roughly linearly with weight (~1 mmHg/kg), so even partial, modest weight loss produces proportional benefit; perfection is not required to lower BP.</li><li><b>GLP-1 / weight-loss drug</b> — WRONG: starting a GLP-1 agonist as a dedicated antihypertensive in a normal-weight patient. Discriminator — the BP benefit is a downstream effect of weight loss; in patients without obesity it is not an appropriate BP therapy, and first-line antihypertensive classes should be used instead.</li><li><b>Aerobic exercise (~5 mmHg)</b> — WRONG: assuming exercise only helps BP if it produces weight loss. Discriminator — aerobic and resistance training lower BP through vascular and autonomic mechanisms independent of weight change; a normal-weight hypertensive still benefits ~5 mmHg from regular exercise.</li><li><b>Alcohol reduction (~5 mmHg)</b> — WRONG: overlooking heavy alcohol use as a cause when a patient's HTN is resistant to multiple drugs. Discriminator — alcohol is a frequently missed contributor to resistant HTN and medication nonadherence; quantifying and cutting intake can restore control before escalating drug therapy.</li></ol></details><details class="panel"><summary>📖 Read-through — all 11 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. DASH diet (~5 mmHg SBP)</div><div class="rte">The DASH diet (Dietary Approaches to Stop Hypertension) emphasizes fruits, vegetables, whole grains, and low-fat dairy while limiting saturated fat, red meat, and sweets. Alone it lowers SBP roughly 5-11 mmHg, and its effect is ADDITIVE with sodium restriction (combined DASH + low-sodium can drop SBP &gt;10-11 mmHg). It is a recommended first step for elevated BP and Stage 1 HTN at low CV risk before/with drug therapy.</div><div class="rtt">⚠️ WRONG: telling a Stage 1 HTN, low-ASCVD-risk patient they need drug therapy immediately instead of a 3-6 month lifestyle trial. Discriminator — for Stage 1 (130-139/80-89) with &lt;10% 10-year ASCVD risk, guideline-first management is lifestyle modification; drugs are added if BP remains elevated or risk is high.</div></div><div class="rt"><div class="rtl">2. Sodium reduction &lt;2000 mg</div><div class="rte">Limiting sodium to &lt;2 g/day (WHO target; AHA ideal ~1.5 g/day, &lt;2.3 g acceptable) lowers SBP about 5 mmHg. Over 70-80% of dietary sodium comes from processed/restaurant food, not the salt shaker, so label-reading and avoiding processed foods matter most. Salt sensitivity is greater in older adults, Black patients, CKD, and diabetes.</div><div class="rtt">⚠️ WRONG: focusing only on removing the table salt shaker to cut sodium. Discriminator — the dominant sodium source is processed and restaurant food (&gt;70%); counseling must target packaged/prepared foods, not just added table salt.</div></div><div class="rt"><div class="rtl">3. Coaches achievement board</div><div class="rte">Each individual evidence-based lifestyle measure lowers SBP by roughly 5 mmHg (DASH up to ~11), and the effects are ADDITIVE — combining several can produce drug-equivalent reductions of 10-15+ mmHg. This is why lifestyle is foundational therapy at every HTN stage, not just an alternative to medication.</div><div class="rtt">⚠️ WRONG: assuming lifestyle changes give a trivial effect and skipping them once a drug is started. Discriminator — stacked lifestyle measures rival a single antihypertensive in magnitude and improve drug efficacy; they are continued alongside pharmacotherapy, not abandoned.</div></div><div class="rt"><div class="rtl">4. Potassium supplementation</div><div class="rte">Higher dietary potassium (target ~3500-5000 mg/day; DASH provides ~4700 mg) blunts the pressor effect of sodium and lowers BP, with about a 3x greater effect in Black adults. Prefer potassium from food (fruits, vegetables, legumes) rather than supplements. Potassium-based salt substitutes are an effective strategy in patients without CKD.</div><div class="rtt">⚠️ WRONG: prescribing potassium supplements or K-based salt substitutes to a patient with CKD or on an ACEi/ARB/MRA. Discriminator — these patients cannot excrete a potassium load and are at risk of life-threatening hyperkalemia; potassium loading is contraindicated when renal handling or renin-angiotensin blockade is in play.</div></div><div class="rt"><div class="rtl">5. Smoking: no BP benefit</div><div class="rte">Smoking cessation is the single most impactful intervention for overall cardiovascular risk, but it does NOT directly lower resting blood pressure. Nicotine causes only transient acute BP spikes; chronic essential HTN levels are not improved by quitting. The benefit of cessation is on atherosclerosis, MI, stroke, and mortality — not on the BP number.</div><div class="rtt">⚠️ WRONG: listing 'smoking cessation' as the answer to 'which lifestyle change lowers this patient's blood pressure?' Discriminator — smoking cessation reduces CV RISK but not BP; the BP-lowering answers are DASH, sodium restriction, weight loss, exercise, potassium, and alcohol moderation.</div></div><div class="rt"><div class="rtl">6. Smoking: no safe threshold</div><div class="rte">There is NO safe level of smoking — cardiovascular risk rises steeply even at low cigarette counts, and the dose-response curve is non-linear (even 1 cigarette/day carries substantial excess risk). Complete cessation, not reduction, is the goal.</div><div class="rtt">⚠️ WRONG: reassuring a patient that cutting down to a few cigarettes a day makes their smoking 'safe enough.' Discriminator — the risk curve has no safe threshold and is supralinear at low doses; only complete cessation meaningfully removes the cardiovascular hazard.</div></div><div class="rt"><div class="rtl">7. All six interventions panel</div><div class="rte">The six evidence-based lifestyle interventions for BP are: (1) DASH diet, (2) sodium reduction, (3) weight loss, (4) aerobic exercise, (5) potassium intake, and (6) alcohol moderation. Note smoking cessation is deliberately NOT on this BP-lowering list (it lowers CV risk, not BP). All six are additive.</div><div class="rtt">⚠️ WRONG: swapping smoking cessation into the list of six BP-lowering lifestyle measures. Discriminator — the canonical six are DASH/sodium/weight/exercise/potassium/alcohol; smoking cessation belongs to CV-risk reduction, a separate category.</div></div><div class="rt"><div class="rtl">8. Weight loss ~1 mmHg/kg</div><div class="rte">Weight loss lowers BP by approximately 1 mmHg per kilogram lost, with the greatest absolute benefit in those with the most excess weight. Even modest loss (~5-10% of body weight) yields meaningful BP reduction and improves insulin sensitivity, lipids, and OSA. Target BMI &lt;25 kg/m².</div><div class="rtt">⚠️ WRONG: telling an obese hypertensive that only reaching ideal body weight will help their BP. Discriminator — BP falls roughly linearly with weight (~1 mmHg/kg), so even partial, modest weight loss produces proportional benefit; perfection is not required to lower BP.</div></div><div class="rt"><div class="rtl">9. GLP-1 / weight-loss drug</div><div class="rte">GLP-1 receptor agonists (e.g., semaglutide, tirzepatide is a dual GIP/GLP-1) are FDA-approved for weight loss and produce a modest secondary BP reduction (~3-5 mmHg SBP) at 6-12 months, largely via weight loss. They are an adjunct in obese hypertensives, not a primary antihypertensive class.</div><div class="rtt">⚠️ WRONG: starting a GLP-1 agonist as a dedicated antihypertensive in a normal-weight patient. Discriminator — the BP benefit is a downstream effect of weight loss; in patients without obesity it is not an appropriate BP therapy, and first-line antihypertensive classes should be used instead.</div></div><div class="rt"><div class="rtl">10. Aerobic exercise (~5 mmHg)</div><div class="rte">Regular aerobic exercise — at least 150 minutes/week of moderate intensity (or 75 min vigorous), plus 2-3 sessions of dynamic/isometric resistance training — lowers SBP by about 5 mmHg, an RCT-proven effect. Isometric handgrip training also lowers BP. Benefits accrue independent of weight loss.</div><div class="rtt">⚠️ WRONG: assuming exercise only helps BP if it produces weight loss. Discriminator — aerobic and resistance training lower BP through vascular and autonomic mechanisms independent of weight change; a normal-weight hypertensive still benefits ~5 mmHg from regular exercise.</div></div><div class="rt"><div class="rtl">11. Alcohol reduction (~5 mmHg)</div><div class="rte">Limiting alcohol to &lt;=2 standard drinks/day for men and &lt;=1/day for women lowers SBP by about 5 mmHg (RCT-proven), with the largest effect in heavy drinkers; complete abstinence gives the greatest reduction. Excess alcohol is a common, reversible cause of resistant/secondary HTN.</div><div class="rtt">⚠️ WRONG: overlooking heavy alcohol use as a cause when a patient's HTN is resistant to multiple drugs. Discriminator — alcohol is a frequently missed contributor to resistant HTN and medication nonadherence; quantifying and cutting intake can restore control before escalating drug therapy.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="htn_2.html" title="Hypertension — First-Line Drug Classes">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="htn_5.html" title="Hypertension — Secondary Causes &amp; Pregnancy Safety">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Thyroid — Nodule Workup &amp; TI-RADS</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>9</em></summary><ol class="traps"><li><b>STEP 1: Check TSH</b> — Jumping straight to FNA or imaging without a TSH — you cannot decide between an uptake scan and US/FNA without it.</li><li><b>Do NOT FNA before TSH</b> — FNA before checking TSH — risks an unnecessary biopsy of a hot (benign autonomous) nodule.</li><li><b>Hot nodule = never cancer</b> — Performing FNA of a hot nodule — unnecessary; treat the hyperthyroidism rather than biopsy.</li><li><b>Normal/high TSH → US/TI-RADS</b> — Ordering a radionuclide uptake scan when TSH is normal/high — wasteful; the nodule won't be hot, so US is the correct next test.</li><li><b>TI-RADS scoring + size cutoffs</b> — Memorizing one universal size cutoff — the FNA threshold falls as TI-RADS category rises, so size alone is never the rule.</li><li><b>FNA = risk + size, not size alone</b> — Biopsying every nodule ≥1 cm regardless of features — over-biopsies benign nodules; conversely don't ignore a &lt;1 cm TR5 nodule with suspicious nodes.</li><li><b>High-risk US features</b> — Calling coarse/macrocalcifications or comet-tail artifact 'suspicious' — those are lower-risk; microcalcifications are the worrisome finding.</li><li><b>CT contrast contraindicated</b> — Ordering contrast-enhanced CT in autonomous/nodular goiter — risks Jod-Basedow and delays RAI/uptake imaging by saturating the gland.</li><li><b>PET-avid nodule</b> — Treating diffuse PET uptake the same as focal — diffuse uptake is thyroiditis; only focal uptake demands FNA.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. STEP 1: Check TSH</div><div class="rte">Every thyroid nodule workup begins with serum TSH — it is the single test that branches the entire algorithm. TSH plus a dedicated thyroid ultrasound are the only mandatory first steps. Calcitonin is checked only if medullary carcinoma/MEN2 is suspected; thyroglobulin has no role in initial diagnosis.</div><div class="rtt">⚠️ Jumping straight to FNA or imaging without a TSH — you cannot decide between an uptake scan and US/FNA without it.</div></div><div class="rt"><div class="rtl">2. Do NOT FNA before TSH</div><div class="rte">TSH first because a LOW TSH redirects you to a radionuclide uptake scan (a hot nodule is essentially never cancer and should not be biopsied), whereas a normal/high TSH sends you to ultrasound and possible FNA. Biopsying first wastes a procedure and can yield indeterminate cytology on what is actually a benign autonomous nodule.</div><div class="rtt">⚠️ FNA before checking TSH — risks an unnecessary biopsy of a hot (benign autonomous) nodule.</div></div><div class="rt"><div class="rtl">3. Low TSH → radionuclide scan</div><div class="rte">Low/suppressed TSH suggests an autonomously functioning nodule, so the next step is a radioiodine (I-123) or technetium uptake scan to map function. A focal 'hot' area that suppresses the rest of the gland is a toxic adenoma; multiple hot areas = toxic MNG.</div></div><div class="rt"><div class="rtl">4. Hot nodule = never cancer</div><div class="rte">A hyperfunctioning ('hot') nodule is malignant in well under 1% of cases — effectively never cancer — so it does NOT need FNA. Manage the hyperthyroidism instead (RAI ablation or surgery; thionamides as a bridge). Only cold/hypofunctioning nodules carry meaningful cancer risk and warrant cytologic evaluation.</div><div class="rtt">⚠️ Performing FNA of a hot nodule — unnecessary; treat the hyperthyroidism rather than biopsy.</div></div><div class="rt"><div class="rtl">5. Cold nodule → US ± FNA</div><div class="rte">A cold (non-functioning) nodule on uptake scan accounts for ~5–15% malignancy risk, so it is characterized by ultrasound and biopsied per sonographic risk + size. Note: most nodules in the population are cold, and most cold nodules are still benign — risk stratification by US (TI-RADS) prevents over-biopsy.</div></div><div class="rt"><div class="rtl">6. Normal/high TSH → US/TI-RADS</div><div class="rte">A normal or high TSH means the nodule is not autonomous — a uptake scan is pointless (it would not be hot), so go directly to diagnostic ultrasound and apply TI-RADS risk stratification to decide on FNA. A high TSH also raises suspicion for underlying Hashimoto's.</div><div class="rtt">⚠️ Ordering a radionuclide uptake scan when TSH is normal/high — wasteful; the nodule won't be hot, so US is the correct next test.</div></div><div class="rt"><div class="rtl">7. TI-RADS scoring + size cutoffs</div><div class="rte">ACR TI-RADS assigns points for composition, echogenicity, shape, margin, and echogenic foci to give TR1 (benign) through TR5 (highly suspicious). FNA thresholds: TR1–2 no FNA; TR3 FNA if ≥2.5 cm (follow ≥1.5 cm); TR4 FNA if ≥1.5 cm (follow ≥1 cm); TR5 FNA if ≥1 cm (follow ≥0.5 cm). Higher suspicion → smaller size triggers biopsy.</div><div class="rtt">⚠️ Memorizing one universal size cutoff — the FNA threshold falls as TI-RADS category rises, so size alone is never the rule.</div></div><div class="rt"><div class="rtl">8. FNA = risk + size, not size alone</div><div class="rte">The FNA decision integrates sonographic suspicion AND size: a small but highly suspicious (TR5) nodule may be biopsied at ≥1 cm, while a large spongiform (TR1–2) nodule may never be. Subcentimeter nodules (&lt;1 cm) are generally not routinely aspirated unless there are clinical red flags (suspicious nodes, extrathyroidal extension).</div><div class="rtt">⚠️ Biopsying every nodule ≥1 cm regardless of features — over-biopsies benign nodules; conversely don't ignore a &lt;1 cm TR5 nodule with suspicious nodes.</div></div><div class="rt"><div class="rtl">9. Spongiform/cystic = benign</div><div class="rte">A spongiform pattern (aggregation of microcystic spaces in &gt;50% of the nodule) or a purely cystic/anechoic nodule is essentially always benign (TR1) and does not require FNA. These reassuring features are high-yield for distinguishing benign colloid nodules from solid hypoechoic cancers.</div></div><div class="rt"><div class="rtl">10. High-risk US features</div><div class="rte">The classic malignant sonographic signs (each adds TI-RADS points): marked hypoechogenicity, irregular/lobulated/spiculated margins, microcalcifications (punctate echogenic foci — most specific, suggest psammoma bodies of papillary cancer), taller-than-wide shape on transverse view, extrathyroidal extension, and abnormal/suspicious cervical lymph nodes.</div><div class="rtt">⚠️ Calling coarse/macrocalcifications or comet-tail artifact 'suspicious' — those are lower-risk; microcalcifications are the worrisome finding.</div></div><div class="rt"><div class="rtl">11. Pemberton sign</div><div class="rte">Pemberton's sign: raising both arms above the head causes facial plethora/congestion, cyanosis, distended neck veins, and stridor/dyspnea — produced by a large substernal goiter obstructing the thoracic inlet ('cork in a bottle'). It signals retrosternal extension and the need for non-contrast CT to map the goiter and assess airway compression.</div></div><div class="rt"><div class="rtl">12. CT contrast contraindicated</div><div class="rte">Iodinated IV contrast delivers a large iodine load that can trigger Jod-Basedow (iodine-induced hyperthyroidism/storm) in an autonomous nodular goiter AND saturates the gland, blocking any planned radioiodine scan or RAI therapy for weeks to months. Image a substernal goiter with NON-contrast CT.</div><div class="rtt">⚠️ Ordering contrast-enhanced CT in autonomous/nodular goiter — risks Jod-Basedow and delays RAI/uptake imaging by saturating the gland.</div></div><div class="rt"><div class="rtl">13. Risk-factor red flags</div><div class="rte">Clinical malignancy red flags lowering the threshold to biopsy/refer: childhood head-neck radiation, family history of thyroid cancer or MEN2/MTC, extremes of age (&lt;20 or &gt;65, esp. male), hoarseness/vocal-cord paralysis (recurrent laryngeal nerve invasion), a firm/fixed nodule, fixed lateral neck mass/adenopathy, and rapid growth (rapid growth in an older patient also raises anaplastic carcinoma or lymphoma).</div></div><div class="rt"><div class="rtl">14. PET-avid nodule</div><div class="rte">An incidentally discovered FOCAL FDG-PET-avid thyroid nodule carries a substantial malignancy risk (~30–35%) and should be evaluated with ultrasound and FNA. By contrast, DIFFUSE FDG uptake throughout the gland usually reflects chronic (Hashimoto's) thyroiditis and is not concerning.</div><div class="rtt">⚠️ Treating diffuse PET uptake the same as focal — diffuse uptake is thyroiditis; only focal uptake demands FNA.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="thy_myxedema.html" title="Thyroid — Myxedema Coma &amp; Central Hypothyroidism">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="thy_painful.html" title="Thyroid — Painful &amp; Silent Thyroiditis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

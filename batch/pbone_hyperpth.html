@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Parathyroid/Bone — Primary Hyperparathyroidism (Throne Room)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Outpatient Ca cause</b> — WRONG answer: 'asymptomatic outpatient with mildly high Ca = occult malignancy.' Chronic, mild, asymptomatic hypercalcemia found on routine labs is overwhelmingly primary hyperPTH; malignancy hypercalcemia is usually acute, symptomatic, severe, with a known/advanced cancer and a SUPPRESSED PTH (PTHrP-mediated). Discriminator: check PTH — high/inappropriately normal = primary hyperPTH; suppressed = malignancy/other.</li><li><b>Solitary adenoma 80%</b> — WRONG answer: 'most primary hyperPTH is 4-gland hyperplasia, so all four glands must be explored.' A single adenoma is far more common (~80%) and is treated by removing the one gland after localization. Discriminator: 4-gland involvement implies a familial/MEN syndrome and changes the operation to subtotal (3.5-gland) parathyroidectomy.</li><li><b>4-gland hyperplasia</b> — WRONG answer: treating MEN-associated 4-gland hyperplasia with single-gland excision. All four glands are diseased — limited resection leaves persistent/recurrent disease; subtotal or total-with-autotransplant is required. Discriminator: young patient or positive family history -&gt; suspect hyperplasia/MEN, not a sporadic adenoma.</li><li><b>Parathyroid carcinoma &lt;1%</b> — WRONG answer: 'a palpable neck mass with very high Ca and very high PTH is just a big adenoma.' The combination of palpable mass + extreme Ca + extreme PTH should raise parathyroid CARCINOMA, which needs en bloc surgery (not simple enucleation). Discriminator: adenomas are non-palpable with moderate elevations; carcinoma = palpable + extreme biochemistry.</li><li><b>MEN family gallery</b> — WRONG answer: 'a young patient with hyperPTH just needs the parathyroid removed.' In MEN2A you must EXCLUDE pheochromocytoma BEFORE any surgery (operating on an unrecognized pheo can precipitate hypertensive crisis), and screen for the syndrome's other tumors. Discriminator: MEN1 = 3 Ps (pituitary/pancreas/parathyroid); MEN2A = medullary thyroid Ca + pheo + parathyroid.</li><li><b>Stones (renal)</b> — WRONG answer: 'recurrent calcium stones with high Ca means start a low-calcium diet and observe.' Recurrent nephrolithiasis is an INDICATION FOR PARATHYROIDECTOMY in primary hyperPTH. Discriminator: don't merely manage the stones medically — cure the source by removing the overactive gland.</li><li><b>Bones</b> — WRONG answer: 'lytic bone lesions + high Ca = metastatic cancer or multiple myeloma.' Brown tumors and subperiosteal resorption are classic for hyperPTH, and PTH will be HIGH (suppressed in malignancy/myeloma). Discriminator: brown tumor + high PTH + subperiosteal resorption = hyperPTH; lytic lesions + low PTH + M-spike = myeloma.</li><li><b>Abdominal groans</b> — WRONG answer: working up recurrent PUD or pancreatitis without checking calcium. Unexplained PUD or pancreatitis plus hypercalcemia should prompt a PTH and an MEN1 workup (gastrinoma). Discriminator: recurrent/refractory ulcers in a hypercalcemic patient = Zollinger-Ellison within MEN1, not ordinary H. pylori disease.</li><li><b>Psychic moans + short QT</b> — WRONG answer: 'hypercalcemia prolongs the QT interval.' Hypercalcemia SHORTENS QT; it is HYPOcalcemia that prolongs QT. Discriminator: high Ca = short QT; low Ca = long QT (and tetany).</li><li><b>FHH spectrum (CaSR)</b> — WRONG answer: 'high Ca + high/normal PTH = primary hyperPTH, so operate.' FHH mimics this biochemistry but is benign and surgery does NOT cure it. ALWAYS check 24-h urine Ca first — a low calcium:creatinine clearance ratio (&lt;0.01) and a positive family history of asymptomatic hypercalcemia point to FHH. Discriminator: FHH = LOW urine Ca; primary hyperPTH = high/normal urine Ca.</li><li><b>Jansen dwarf (PTH1R)</b> — WRONG answer: 'hypercalcemia must mean elevated PTH or a tumor.' In Jansen disease the calcium is high but PTH is LOW because the receptor itself is constitutively active downstream of the hormone. Discriminator: high Ca + LOW PTH + short-limbed dwarfism in a child = activating PTH1R (Jansen), a receptor problem, not gland overproduction.</li><li><b>Surgery indications</b> — WRONG answer: 'an asymptomatic 45-year-old with mildly high Ca should just be observed.' Age &lt;50 ALONE is a surgical indication (young patients accrue decades of complications). Discriminator: meeting ANY single criterion (esp. age &lt;50, T-score &lt;= -2.5, Ca &gt;1 above normal, eGFR &lt;60) mandates surgery; truly mild disease meeting none can be monitored with serial Ca, creatinine, and DXA.</li><li><b>Do NOT operate / cinacalcet</b> — WRONG answer: 'cinacalcet improves bone density in primary hyperPTH, so use it instead of surgery for the osteoporotic patient.' Cinacalcet lowers calcium but does NOT improve BMD; surgery is preferred when the indication is bone loss. Discriminator: cinacalcet = for inoperable disease/carcinoma/control of Ca, not a substitute for the curative operation in surgical candidates.</li><li><b>Hungry bone post-op</b> — WRONG answer: confusing hungry bone with transient hypoparathyroidism. Immediate (&lt;24 h) post-op hypocalcemia from gland manipulation/devascularization = transient hypoPTH (LOW PTH). Hungry bone occurs days (2–4+) later with NORMAL/elevated PTH and very low phosphate. Discriminator: timing + phosphate — early/low PTH = surgical hypoPTH; delayed/low phosphate with normal PTH = hungry bone.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Outpatient Ca cause</div><div class="rte">Primary hyperparathyroidism is the #1 cause of hypercalcemia in the OUTPATIENT/ambulatory setting, classically a postmenopausal woman found incidentally to have a high calcium on routine labs. Incidence ~50/100,000/yr. The defining biochemistry is HIGH calcium with a HIGH or 'inappropriately normal' PTH (PTH should be suppressed when Ca is high) plus low/low-normal phosphate and high/high-normal 24-h urine calcium. Malignancy is the most common cause of INPATIENT hypercalcemia.</div><div class="rtt">⚠️ WRONG answer: 'asymptomatic outpatient with mildly high Ca = occult malignancy.' Chronic, mild, asymptomatic hypercalcemia found on routine labs is overwhelmingly primary hyperPTH; malignancy hypercalcemia is usually acute, symptomatic, severe, with a known/advanced cancer and a SUPPRESSED PTH (PTHrP-mediated). Discriminator: check PTH — high/inappropriately normal = primary hyperPTH; suppressed = malignancy/other.</div></div><div class="rt"><div class="rtl">2. Solitary adenoma 80%</div><div class="rte">A single benign parathyroid ADENOMA accounts for ~80–85% of primary hyperPTH — one autonomously hypersecreting gland. Localized preoperatively with sestamibi scan +/- neck ultrasound and 4D-CT, enabling minimally invasive (focused) parathyroidectomy with intraoperative PTH monitoring (PTH should drop &gt;50% within 10 min of excision).</div><div class="rtt">⚠️ WRONG answer: 'most primary hyperPTH is 4-gland hyperplasia, so all four glands must be explored.' A single adenoma is far more common (~80%) and is treated by removing the one gland after localization. Discriminator: 4-gland involvement implies a familial/MEN syndrome and changes the operation to subtotal (3.5-gland) parathyroidectomy.</div></div><div class="rt"><div class="rtl">3. 4-gland hyperplasia</div><div class="rte">Diffuse hyperplasia of ALL FOUR glands causes ~10–15% of cases and is the form seen in familial/MEN syndromes (MEN1, MEN2A). Because every gland is abnormal, surgery is subtotal parathyroidectomy (remove 3.5 glands) or total parathyroidectomy with autotransplantation of tissue into the forearm.</div><div class="rtt">⚠️ WRONG answer: treating MEN-associated 4-gland hyperplasia with single-gland excision. All four glands are diseased — limited resection leaves persistent/recurrent disease; subtotal or total-with-autotransplant is required. Discriminator: young patient or positive family history -&gt; suspect hyperplasia/MEN, not a sporadic adenoma.</div></div><div class="rt"><div class="rtl">4. Parathyroid carcinoma &lt;1%</div><div class="rte">Parathyroid CARCINOMA is rare (&lt;1%) but causes the most severe disease: markedly elevated calcium (often &gt;14 mg/dL) AND markedly elevated PTH (often &gt;3–10x normal), frequently with a palpable neck mass and renal + bone involvement. Associated with CDC73/parafibromin loss and the hyperparathyroidism-jaw tumor (HPT-JT) syndrome. Treated by en bloc resection; cinacalcet for unresectable disease.</div><div class="rtt">⚠️ WRONG answer: 'a palpable neck mass with very high Ca and very high PTH is just a big adenoma.' The combination of palpable mass + extreme Ca + extreme PTH should raise parathyroid CARCINOMA, which needs en bloc surgery (not simple enucleation). Discriminator: adenomas are non-palpable with moderate elevations; carcinoma = palpable + extreme biochemistry.</div></div><div class="rt"><div class="rtl">5. MEN family gallery</div><div class="rte">Familial primary hyperPTH clusters in syndromes: MEN1 (Wermer; MEN1/menin gene) = Pituitary + Parathyroid + Pancreas ('3 Ps', parathyroid is the earliest/most common feature); MEN2A (Sipple; RET) = Medullary thyroid carcinoma + Pheochromocytoma + Parathyroid hyperplasia; plus HPT-JT (CDC73) and FHH. Screen for MEN with young age of onset, multigland disease, or family history.</div><div class="rtt">⚠️ WRONG answer: 'a young patient with hyperPTH just needs the parathyroid removed.' In MEN2A you must EXCLUDE pheochromocytoma BEFORE any surgery (operating on an unrecognized pheo can precipitate hypertensive crisis), and screen for the syndrome's other tumors. Discriminator: MEN1 = 3 Ps (pituitary/pancreas/parathyroid); MEN2A = medullary thyroid Ca + pheo + parathyroid.</div></div><div class="rt"><div class="rtl">6. Stones (renal)</div><div class="rte">'Stones': chronic hypercalcemia/hypercalciuria drives calcium-oxalate and calcium-phosphate nephrolithiasis and nephrocalcinosis, and can cause nephrogenic diabetes insipidus (polyuria) and chronic kidney disease. Recurrent calcium stones or nephrocalcinosis is itself a surgical indication in primary hyperPTH.</div><div class="rtt">⚠️ WRONG answer: 'recurrent calcium stones with high Ca means start a low-calcium diet and observe.' Recurrent nephrolithiasis is an INDICATION FOR PARATHYROIDECTOMY in primary hyperPTH. Discriminator: don't merely manage the stones medically — cure the source by removing the overactive gland.</div></div><div class="rt"><div class="rtl">7. Bones</div><div class="rte">'Bones': chronic PTH excess drives osteoclastic resorption -&gt; osteitis fibrosa cystica (the severe end), subperiosteal bone resorption (classically the radial side of the middle phalanges), 'salt-and-pepper' skull, and brown tumors (lytic lesions of giant cells and hemosiderin). DXA shows preferential loss at cortical bone (distal 1/3 radius). High ALP and high bone turnover markers.</div><div class="rtt">⚠️ WRONG answer: 'lytic bone lesions + high Ca = metastatic cancer or multiple myeloma.' Brown tumors and subperiosteal resorption are classic for hyperPTH, and PTH will be HIGH (suppressed in malignancy/myeloma). Discriminator: brown tumor + high PTH + subperiosteal resorption = hyperPTH; lytic lesions + low PTH + M-spike = myeloma.</div></div><div class="rt"><div class="rtl">8. Abdominal groans</div><div class="rte">'Abdominal groans': hypercalcemia causes constipation, nausea/anorexia, peptic ulcer disease (Ca stimulates gastrin -&gt; consider Zollinger-Ellison in MEN1), and acute pancreatitis (Ca activates trypsinogen).</div><div class="rtt">⚠️ WRONG answer: working up recurrent PUD or pancreatitis without checking calcium. Unexplained PUD or pancreatitis plus hypercalcemia should prompt a PTH and an MEN1 workup (gastrinoma). Discriminator: recurrent/refractory ulcers in a hypercalcemic patient = Zollinger-Ellison within MEN1, not ordinary H. pylori disease.</div></div><div class="rt"><div class="rtl">9. Psychic moans + short QT</div><div class="rte">'Psychic moans': fatigue, depression, anxiety, poor concentration, and at higher levels confusion/stupor/coma. Hypercalcemia also causes polyuria/polydipsia (nephrogenic DI) and SHORTENS the QT interval on ECG. The classic mnemonic: 'stones, bones, abdominal groans, and psychiatric moans.'</div><div class="rtt">⚠️ WRONG answer: 'hypercalcemia prolongs the QT interval.' Hypercalcemia SHORTENS QT; it is HYPOcalcemia that prolongs QT. Discriminator: high Ca = short QT; low Ca = long QT (and tetany).</div></div><div class="rt"><div class="rtl">10. FHH spectrum (CaSR)</div><div class="rte">Familial hypocalciuric hypercalcemia (FHH) is a benign autosomal-dominant LOSS-of-function of the calcium-sensing receptor (CaSR): the parathyroid and kidney sense Ca as 'low,' so PTH is high/inappropriately-normal and the kidney AVIDLY reabsorbs calcium -&gt; mild lifelong hypercalcemia with LOW urine calcium. The discriminating test is the 24-h urine calcium-to-creatinine clearance ratio (CCCR): &lt;0.01 = FHH; &gt;0.02 = primary hyperPTH.</div><div class="rtt">⚠️ WRONG answer: 'high Ca + high/normal PTH = primary hyperPTH, so operate.' FHH mimics this biochemistry but is benign and surgery does NOT cure it. ALWAYS check 24-h urine Ca first — a low calcium:creatinine clearance ratio (&lt;0.01) and a positive family history of asymptomatic hypercalcemia point to FHH. Discriminator: FHH = LOW urine Ca; primary hyperPTH = high/normal urine Ca.</div></div><div class="rt"><div class="rtl">11. Jansen dwarf (PTH1R)</div><div class="rte">Jansen metaphyseal chondrodysplasia is a rare autosomal-dominant ACTIVATING mutation of the PTH/PTHrP receptor (PTH1R): the receptor is constitutively 'on,' so there is PTH-INDEPENDENT hypercalcemia (hypophosphatemia, hypercalciuria) with LOW/undetectable PTH, plus short-limbed dwarfism from disordered growth-plate chondrocytes.</div><div class="rtt">⚠️ WRONG answer: 'hypercalcemia must mean elevated PTH or a tumor.' In Jansen disease the calcium is high but PTH is LOW because the receptor itself is constitutively active downstream of the hormone. Discriminator: high Ca + LOW PTH + short-limbed dwarfism in a child = activating PTH1R (Jansen), a receptor problem, not gland overproduction.</div></div><div class="rt"><div class="rtl">12. Surgery indications</div><div class="rte">Parathyroidectomy is indicated for ANY symptomatic primary hyperPTH, and for ASYMPTOMATIC patients meeting any one criterion: serum Ca &gt;1 mg/dL above the upper limit of normal; eGFR/CrCl &lt;60; DXA T-score &lt;= -2.5 OR a fragility/vertebral fracture; 24-h urine Ca &gt;400 mg or nephrolithiasis/nephrocalcinosis; or age &lt;50. It is the only curative treatment.</div><div class="rtt">⚠️ WRONG answer: 'an asymptomatic 45-year-old with mildly high Ca should just be observed.' Age &lt;50 ALONE is a surgical indication (young patients accrue decades of complications). Discriminator: meeting ANY single criterion (esp. age &lt;50, T-score &lt;= -2.5, Ca &gt;1 above normal, eGFR &lt;60) mandates surgery; truly mild disease meeting none can be monitored with serial Ca, creatinine, and DXA.</div></div><div class="rt"><div class="rtl">13. Do NOT operate / cinacalcet</div><div class="rte">Two key non-surgical points: (1) FHH (CCCR &lt;0.01) is benign and is NOT cured by parathyroidectomy — confirm with 24-h urine Ca and do not operate. (2) For patients who can't/won't have surgery or have parathyroid carcinoma, cinacalcet (a calcimimetic that allosterically activates the CaSR to lower PTH and Ca) is used; bisphosphonates/denosumab help protect bone.</div><div class="rtt">⚠️ WRONG answer: 'cinacalcet improves bone density in primary hyperPTH, so use it instead of surgery for the osteoporotic patient.' Cinacalcet lowers calcium but does NOT improve BMD; surgery is preferred when the indication is bone loss. Discriminator: cinacalcet = for inoperable disease/carcinoma/control of Ca, not a substitute for the curative operation in surgical candidates.</div></div><div class="rt"><div class="rtl">14. Hungry bone post-op</div><div class="rte">Hungry bone syndrome is severe, PROLONGED hypocalcemia (often also low phosphate and low magnesium) appearing several days after parathyroidectomy: once PTH drops, demineralized bone avidly takes up calcium/phosphate/magnesium to remineralize. Most likely after high preop PTH/Ca/ALP and osteitis fibrosa cystica; treated with aggressive IV/oral calcium and calcitriol, plus Mg repletion.</div><div class="rtt">⚠️ WRONG answer: confusing hungry bone with transient hypoparathyroidism. Immediate (&lt;24 h) post-op hypocalcemia from gland manipulation/devascularization = transient hypoPTH (LOW PTH). Hungry bone occurs days (2–4+) later with NORMAL/elevated PTH and very low phosphate. Discriminator: timing + phosphate — early/low PTH = surgical hypoPTH; delayed/low phosphate with normal PTH = hungry bone.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pbone_nonpth_hypoca.html" title="Parathyroid/Bone — Non-Parathyroid Hypocalcemia (Deficient Village &amp; ICU)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pbone_pseudohypopth.html" title="Parathyroid/Bone — Pseudohypoparathyroidism (GNAS Masquerade)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

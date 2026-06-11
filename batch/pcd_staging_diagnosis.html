@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Plasma Cell — War Room (Diagnosis, ISS Staging &amp; Genetics)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>CD138 plasma cells greater than or equal to 10%</b> — WRONG answer: 'greater than or equal to 10% clonal plasma cells alone diagnoses multiple myeloma.' By itself this only establishes a plasma-cell neoplasm — you ALSO need a myeloma-defining event (CRAB end-organ damage OR a SLiM biomarker). Discriminator: greater than or equal to 10% plasma cells WITHOUT CRAB/SLiM = smoldering myeloma; &lt;10% with small M-protein and no events = MGUS.</li><li><b>CRAB report card</b> — WRONG answer: 'a single lytic lesion isn't enough — you need multiple CRAB features to call it myeloma.' Just ONE CRAB criterion (or one SLiM biomarker) attributable to the plasma-cell clone is sufficient. Discriminator: the renal lesion is classically cast nephropathy from free light chains (not a simple prerenal azotemia), and bone disease is LYTIC (contrast POEMS = sclerotic).</li><li><b>SLiM criteria</b> — WRONG answer: 'a free light-chain ratio of 8 (abnormal) meets the SLiM criterion and diagnoses myeloma.' The SLiM cutoff is a ratio greater than or equal to 100 (with involved FLC ≥100 mg/L) — modestly abnormal ratios do not qualify. Discriminator: an FLC ratio of 8 with no CRAB and 15% plasma cells is smoldering myeloma, not active myeloma.</li><li><b>ISS Rank I — B2M less than 3.5, albumin greater than or equal to 3.5</b> — WRONG answer: 'a low B2-microglobulin alone puts the patient in ISS Stage I.' Stage I needs BOTH a low B2M AND a normal-or-high albumin — a low B2M with low albumin is Stage II. Discriminator: ISS is defined by the combination of the two labs, not B2M in isolation.</li><li><b>ISS Rank II — intermediate</b> — WRONG answer: 'ISS Stage II has its own specific lab thresholds you must memorize.' Stage II is purely a residual category — anything that is not Stage I and not Stage III. Discriminator: anchor on the Stage I criteria (B2M &lt;3.5 AND albumin ≥3.5) and the Stage III criterion (B2M &gt;5.5); everything between is Stage II.</li><li><b>ISS Rank III — B2M greater than 5.5</b> — WRONG answer: 'ISS staging incorporates LDH and cytogenetics.' The original ISS uses ONLY B2-microglobulin and albumin. LDH and high-risk FISH cytogenetics are added in the REVISED R-ISS, which reclassifies prognosis (R-ISS I/II/III). Discriminator: if a stem mentions LDH or del(17p)/t(4;14) affecting stage, it is testing R-ISS, not ISS.</li><li><b>Beta2-microglobulin = gas pedal</b> — WRONG answer: 'an elevated B2-microglobulin always means high tumor burden.' Because B2M is renally cleared, renal failure (even from cast nephropathy) elevates it independently of tumor mass. Discriminator: interpret B2M alongside creatinine — and remember it is a prognostic, not diagnostic, marker.</li><li><b>Albumin = brakes</b> — WRONG answer: 'higher albumin worsens prognosis / albumin and B2M move the stage in the same direction.' They move OPPOSITELY — high B2M is bad, high albumin is GOOD. Discriminator: Stage I needs the favorable pairing (low B2M + high albumin); mixing them up flips the staging.</li><li><b>High-risk genetics</b> — WRONG answer: 't(11;14) is a high-risk translocation requiring intensified therapy.' t(11;14) is STANDARD/favorable risk (and notably predicts BCL2-dependence → venetoclax sensitivity). Discriminator: the high-risk IgH translocations are t(4;14) and t(14;16); del(17p) is the key high-risk deletion. Don't lump all 14q translocations together.</li><li><b>Standard-risk genetics</b> — WRONG answer: 'hyperdiploidy indicates aggressive, high-risk myeloma.' Hyperdiploidy is a STANDARD/favorable-risk feature. Discriminator: aggressive biology comes from del(17p), t(4;14), t(14;16), and 1q gain — not from hyperdiploidy or t(11;14).</li><li><b>FISH vs karyotype</b> — WRONG answer: 'order a standard metaphase karyotype to risk-stratify the myeloma.' Conventional karyotype is LOW-YIELD because plasma cells seldom divide in culture — interphase FISH (ideally on plasma-cell-enriched samples) is the correct test. Discriminator: a 'normal karyotype' does NOT exclude high-risk disease; you must do FISH.</li><li><b>Key serum labs</b> — WRONG answer: 'a positive urine DIPSTICK for protein detects Bence Jones protein and screens for myeloma kidney.' The urine dipstick detects mainly ALBUMIN and is typically NEGATIVE despite massive light-chain (Bence Jones) proteinuria — you need UPEP/urine immunofixation or a urine protein:creatinine ratio. Discriminator: a negative dipstick with heavy proteinuria on quantitative testing = light-chain (overflow) proteinuria of myeloma.</li><li><b>IgG most common isotype</b> — WRONG answer: 'lytic bone lesions should raise the alkaline phosphatase, so a normal ALP argues against bone involvement.' In myeloma ALP is usually NORMAL because osteoblasts are inhibited (uncoupled bone turnover) — unlike osteoblastic metastases or Paget disease where ALP rises. Discriminator: normal ALP with painful lytic lesions and a monoclonal protein is classic for myeloma.</li><li><b>Morphology corner</b> — WRONG answer: 'rouleaux on the smear is specific for myeloma.' Rouleaux merely reflects a high plasma-protein/paraprotein state and is seen in any hyperglobulinemia/inflammation — it is suggestive, not diagnostic. Discriminator: confirm with SPEP/IFE/FLC and marrow; clock-face chromatin + perinuclear hof identify the plasma cell itself, but clonality (light-chain restriction) is what proves neoplasia.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. CD138 plasma cells greater than or equal to 10%</div><div class="rte">Diagnosis of multiple myeloma requires clonal bone-marrow plasma cells greater than or equal to 10% OR a biopsy-proven plasmacytoma (bony or extramedullary). CD138 (syndecan-1) is the immunohistochemical marker used to identify and quantify plasma cells, and clonality is confirmed by kappa/lambda light-chain restriction (flow or in-situ hybridization). Mnemonic: CD138 is the 'PROOF OF INVASION' badge under the microscope.</div><div class="rtt">⚠️ WRONG answer: 'greater than or equal to 10% clonal plasma cells alone diagnoses multiple myeloma.' By itself this only establishes a plasma-cell neoplasm — you ALSO need a myeloma-defining event (CRAB end-organ damage OR a SLiM biomarker). Discriminator: greater than or equal to 10% plasma cells WITHOUT CRAB/SLiM = smoldering myeloma; &lt;10% with small M-protein and no events = MGUS.</div></div><div class="rt"><div class="rtl">2. CRAB report card</div><div class="rte">CRAB = the end-organ damage that defines symptomatic myeloma: hyperCalcemia (&gt;11 mg/dL or &gt;1 above ULN), Renal insufficiency (Cr &gt;2 mg/dL or CrCl &lt;40), Anemia (Hgb &lt;10 or &gt;2 g/dL below normal), and Bone lesions (≥1 lytic lesion on skeletal survey/CT/PET). Any one CRAB feature attributable to the clone establishes active myeloma needing treatment. Mnemonic: the CRAB report card grades the four organs.</div><div class="rtt">⚠️ WRONG answer: 'a single lytic lesion isn't enough — you need multiple CRAB features to call it myeloma.' Just ONE CRAB criterion (or one SLiM biomarker) attributable to the plasma-cell clone is sufficient. Discriminator: the renal lesion is classically cast nephropathy from free light chains (not a simple prerenal azotemia), and bone disease is LYTIC (contrast POEMS = sclerotic).</div></div><div class="rt"><div class="rtl">3. SLiM criteria</div><div class="rte">SLiM biomarkers are the 2014 IMWG additions that define myeloma even WITHOUT CRAB, because they predict near-certain progression: Sixty% — clonal marrow plasma cells greater than or equal to 60%; Light chains — involved:uninvolved serum free light-chain ratio greater than or equal to 100 (with involved FLC ≥100 mg/L); MRI — greater than 1 focal lesion (each ≥5 mm) on MRI. Mnemonic: SLiM = Sixty, Light-chain 100, MRI &gt;1.</div><div class="rtt">⚠️ WRONG answer: 'a free light-chain ratio of 8 (abnormal) meets the SLiM criterion and diagnoses myeloma.' The SLiM cutoff is a ratio greater than or equal to 100 (with involved FLC ≥100 mg/L) — modestly abnormal ratios do not qualify. Discriminator: an FLC ratio of 8 with no CRAB and 15% plasma cells is smoldering myeloma, not active myeloma.</div></div><div class="rt"><div class="rtl">4. ISS Rank I — B2M less than 3.5, albumin greater than or equal to 3.5</div><div class="rte">ISS Stage I requires BOTH beta-2-microglobulin &lt;3.5 mg/L AND albumin greater than or equal to 3.5 g/dL — the best-prognosis group (median OS historically ~62 months in original ISS). It reflects low tumor burden with preserved nutritional/hepatic synthetic status. Mnemonic: Rank I = low gas pedal (B2M) AND high albumin = the longest survival.</div><div class="rtt">⚠️ WRONG answer: 'a low B2-microglobulin alone puts the patient in ISS Stage I.' Stage I needs BOTH a low B2M AND a normal-or-high albumin — a low B2M with low albumin is Stage II. Discriminator: ISS is defined by the combination of the two labs, not B2M in isolation.</div></div><div class="rt"><div class="rtl">5. ISS Rank II — intermediate</div><div class="rte">ISS Stage II is defined by exclusion: NOT Stage I and NOT Stage III. In practice this is either B2M &lt;3.5 with albumin &lt;3.5, OR B2M 3.5–5.5 (any albumin). It is the intermediate-prognosis group (original median OS ~44 months). Mnemonic: Rank II = the middle medal, 'neither best nor worst.'</div><div class="rtt">⚠️ WRONG answer: 'ISS Stage II has its own specific lab thresholds you must memorize.' Stage II is purely a residual category — anything that is not Stage I and not Stage III. Discriminator: anchor on the Stage I criteria (B2M &lt;3.5 AND albumin ≥3.5) and the Stage III criterion (B2M &gt;5.5); everything between is Stage II.</div></div><div class="rt"><div class="rtl">6. ISS Rank III — B2M greater than 5.5</div><div class="rte">ISS Stage III is beta-2-microglobulin &gt;5.5 mg/L (regardless of albumin) — the highest tumor burden / worst prognosis (original median OS ~29 months). High B2M reflects both large tumor mass and renal impairment. Mnemonic: Rank III = B2M floored past 5.5 = brakes on survival.</div><div class="rtt">⚠️ WRONG answer: 'ISS staging incorporates LDH and cytogenetics.' The original ISS uses ONLY B2-microglobulin and albumin. LDH and high-risk FISH cytogenetics are added in the REVISED R-ISS, which reclassifies prognosis (R-ISS I/II/III). Discriminator: if a stem mentions LDH or del(17p)/t(4;14) affecting stage, it is testing R-ISS, not ISS.</div></div><div class="rt"><div class="rtl">7. Beta2-microglobulin = gas pedal</div><div class="rte">Beta-2-microglobulin is the light chain of MHC class I shed by all nucleated cells; in myeloma it rises with tumor BURDEN and with renal impairment (it is renally cleared), so elevated B2M can reflect either more disease or worse kidneys. It is the dominant adverse prognostic lab in ISS. Mnemonic: B2M is the GAS PEDAL — the higher it goes, the faster toward poor prognosis.</div><div class="rtt">⚠️ WRONG answer: 'an elevated B2-microglobulin always means high tumor burden.' Because B2M is renally cleared, renal failure (even from cast nephropathy) elevates it independently of tumor mass. Discriminator: interpret B2M alongside creatinine — and remember it is a prognostic, not diagnostic, marker.</div></div><div class="rt"><div class="rtl">8. Albumin = brakes</div><div class="rte">Serum albumin is INVERSELY prognostic: low albumin (driven partly by IL-6, the plasma-cell growth factor, and by poor nutrition) worsens stage, whereas higher albumin is protective. In ISS, albumin ≥3.5 g/dL is the favorable cutoff. Mnemonic: albumin is the BRAKES — more albumin slows progression and improves prognosis.</div><div class="rtt">⚠️ WRONG answer: 'higher albumin worsens prognosis / albumin and B2M move the stage in the same direction.' They move OPPOSITELY — high B2M is bad, high albumin is GOOD. Discriminator: Stage I needs the favorable pairing (low B2M + high albumin); mixing them up flips the staging.</div></div><div class="rt"><div class="rtl">9. High-risk genetics</div><div class="rte">High-risk cytogenetics by FISH: del(17p) (loss of TP53), t(4;14) (FGFR3/MMSET), and t(14;16) (MAF) — also t(14;20) and amp/gain(1q), del(1p). These confer poor prognosis and contribute to R-ISS Stage III. They influence treatment intensity (e.g., favoring carfilzomib-based regimens and consideration of tandem ASCT). Mnemonic: the High-Risk wall mugshots = del(17p), t(4;14), t(14;16).</div><div class="rtt">⚠️ WRONG answer: 't(11;14) is a high-risk translocation requiring intensified therapy.' t(11;14) is STANDARD/favorable risk (and notably predicts BCL2-dependence → venetoclax sensitivity). Discriminator: the high-risk IgH translocations are t(4;14) and t(14;16); del(17p) is the key high-risk deletion. Don't lump all 14q translocations together.</div></div><div class="rt"><div class="rtl">10. Standard-risk genetics</div><div class="rte">Standard/favorable-risk genetics: HYPERDIPLOIDY (trisomies of odd-numbered chromosomes) and t(11;14). These carry better prognosis with current therapy. Notably t(11;14) marks BCL2 dependence, predicting response to venetoclax — a board-relevant targeted option. Mnemonic: the Standard-Risk wall shows the 'extra-chromosome' hyperdiploid clone.</div><div class="rtt">⚠️ WRONG answer: 'hyperdiploidy indicates aggressive, high-risk myeloma.' Hyperdiploidy is a STANDARD/favorable-risk feature. Discriminator: aggressive biology comes from del(17p), t(4;14), t(14;16), and 1q gain — not from hyperdiploidy or t(11;14).</div></div><div class="rt"><div class="rtl">11. FISH vs karyotype</div><div class="rte">Myeloma plasma cells have a LOW proliferative index, so they rarely yield metaphases for conventional karyotyping. Interphase FISH (often on CD138-selected/sorted plasma cells) detects the diagnostically and prognostically important abnormalities — del(17p), t(4;14), t(14;16), 1q gain — and is the standard cytogenetic test. Mnemonic: the FISH probe lights up where the karyotype comes up empty.</div><div class="rtt">⚠️ WRONG answer: 'order a standard metaphase karyotype to risk-stratify the myeloma.' Conventional karyotype is LOW-YIELD because plasma cells seldom divide in culture — interphase FISH (ideally on plasma-cell-enriched samples) is the correct test. Discriminator: a 'normal karyotype' does NOT exclude high-risk disease; you must do FISH.</div></div><div class="rt"><div class="rtl">12. Key serum labs</div><div class="rte">Core workup: SPEP (quantifies the M-spike), serum immunofixation (identifies the heavy/light-chain isotype), serum free light chains (essential for light-chain/oligosecretory and nonsecretory disease), 24-hour UPEP/urine immunofixation (Bence Jones), plus CBC, calcium, creatinine, and a skeletal survey/whole-body low-dose CT or PET. Cationic IgG can NARROW the anion gap. Mnemonic: SPEP + IFE + FLC + UPEP is the diagnostic toolkit.</div><div class="rtt">⚠️ WRONG answer: 'a positive urine DIPSTICK for protein detects Bence Jones protein and screens for myeloma kidney.' The urine dipstick detects mainly ALBUMIN and is typically NEGATIVE despite massive light-chain (Bence Jones) proteinuria — you need UPEP/urine immunofixation or a urine protein:creatinine ratio. Discriminator: a negative dipstick with heavy proteinuria on quantitative testing = light-chain (overflow) proteinuria of myeloma.</div></div><div class="rt"><div class="rtl">13. IgG most common isotype</div><div class="rte">IgG is the most common myeloma isotype (~50–60%), followed by IgA, then light-chain-only; IgD and IgM myeloma are rare. Alkaline phosphatase (ALP) is characteristically NORMAL despite extensive lytic bone disease because osteoBLAST activity is suppressed by the clone (DKK1, etc.). Mnemonic: IgG leads at ~53%; ALP stays flat even as bones break down.</div><div class="rtt">⚠️ WRONG answer: 'lytic bone lesions should raise the alkaline phosphatase, so a normal ALP argues against bone involvement.' In myeloma ALP is usually NORMAL because osteoblasts are inhibited (uncoupled bone turnover) — unlike osteoblastic metastases or Paget disease where ALP rises. Discriminator: normal ALP with painful lytic lesions and a monoclonal protein is classic for myeloma.</div></div><div class="rt"><div class="rtl">14. Morphology corner</div><div class="rte">Plasma-cell morphology: ECCENTRIC nucleus, 'clock-face' / spoke-wheel (cartwheel) heterochromatin, abundant basophilic cytoplasm, and a perinuclear HOF (pale paranuclear zone = the prominent Golgi). On the peripheral smear, the high paraprotein causes ROULEAUX (stacked-coin RBCs). Mnemonic: clock-face nucleus + perinuclear hof = the textbook plasma cell.</div><div class="rtt">⚠️ WRONG answer: 'rouleaux on the smear is specific for myeloma.' Rouleaux merely reflects a high plasma-protein/paraprotein state and is seen in any hyperglobulinemia/inflammation — it is suggestive, not diagnostic. Discriminator: confirm with SPEP/IFE/FLC and marrow; clock-face chromatin + perinuclear hof identify the plasma cell itself, but clonality (light-chain restriction) is what proves neoplasia.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcd_hyperviscosity.html" title="Plasma Cell — Waldenström Macroglobulinemia &amp; Hyperviscosity">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="coag_inhibitors.html" title="Coagulation — Acquired Inhibitors of Coagulation Factors">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

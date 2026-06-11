@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypertension — Emergency vs Urgency &amp; BP-Lowering Protocol</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Emergency = end-organ damage</b> — Treating a BP of 220/120 with IV antihypertensives because the number is alarming, even though the patient is asymptomatic with normal labs and exam — WRONG. The discriminator: it is the presence of acute end-organ damage, not the absolute number, that defines an emergency and justifies IV therapy; without damage this is urgency, managed with oral agents.</li><li><b>End-organ damage gallery</b> — Calling chronically stable findings like long-standing LVH or baseline proteinuria 'acute end-organ damage' — WRONG. The discriminator: emergency requires NEW, ACUTE organ injury (rising creatinine, papilledema, encephalopathy, ACS, dissection, eclampsia), not chronic sequelae of hypertension.</li><li><b>Urgency = no organ damage</b> — Admitting a hypertensive-urgency patient to the ICU for rapid IV BP reduction to normal — WRONG and dangerous (causes hypoperfusion). The discriminator: with no acute organ damage, use oral agents and gradual outpatient lowering; reserve IV therapy and rapid reduction for true emergencies.</li><li><b>Small kidneys / RBBB not emergencies</b> — Diagnosing hypertensive emergency because imaging shows small kidneys or the ECG shows RBBB — WRONG. The discriminator: these are chronic/baseline findings; an emergency needs evidence of ACUTE injury (rising creatinine, ST changes/ACS, encephalopathy), so an asymptomatic patient with these findings is an urgency.</li><li><b>First hour: reduce &lt;=25%</b> — Rapidly normalizing BP to 120/80 in the first hour of a hypertensive emergency — WRONG. The discriminator: dropping BP below the autoregulatory range causes watershed ischemia (stroke, MI, AKI); limit the first-hour reduction to ~25% of MAP except in aortic dissection and eclampsia.</li><li><b>Next 2-6 hours cautious</b> — Achieving full normalization within the first 6 hours of an emergency — WRONG. The discriminator: the protocol is deliberately staged (25% in hour 1, ~160/100 by 2-6h, normal over 24-48h); compressing the timeline risks ischemic organ injury.</li><li><b>Aortic dissection station</b> — Starting nitroprusside (a vasodilator) before beta-blockade in aortic dissection — WRONG. The discriminator: a vasodilator alone triggers reflex tachycardia that INCREASES shear stress and propagates the dissection; control heart rate with a beta-blocker first. Also, the ~25% rule does NOT apply here — dissection needs aggressive SBP &lt;120.</li><li><b>IV drug dispensers</b> — Using a single default agent for every emergency regardless of the organ involved — WRONG. The discriminator: the agent is scenario-specific — labetalol for eclampsia, beta-blocker-first then vasodilator for dissection, nitroglycerin for ACS/pulmonary edema, phentolamine for pheochromocytoma/cocaine.</li><li><b>Nicardipine = most general use</b> — Defaulting to nitroprusside for a neuro emergency when nicardipine is available — WRONG. The discriminator: nitroprusside can raise intracranial pressure and risks cyanide toxicity; nicardipine/clevidipine are preferred, controllable choices for most emergencies including neurologic ones.</li><li><b>Labetalol = pregnancy</b> — Choosing an ACEi, ARB, or nitroprusside for a hypertensive emergency in a pregnant patient — WRONG. The discriminator: ACEi/ARBs are teratogenic and nitroprusside risks fetal cyanide accumulation; labetalol (or hydralazine/nifedipine) is the safe choice for hypertensive emergency in pregnancy.</li><li><b>Nitroprusside = cyanide risk</b> — Continuing a nitroprusside infusion for days in a patient with renal failure and attributing new confusion/lactic acidosis to the underlying illness — WRONG. The discriminator: suspect cyanide/thiocyanate toxicity; limit duration/dose, avoid in renal failure, and choose nicardipine or labetalol when prolonged therapy is anticipated.</li><li><b>Rapid normalization harms</b> — Believing that the faster BP is brought to normal, the safer the patient — WRONG, it is the opposite. The discriminator: rapid normalization causes ischemic organ injury; chronically hypertensive brains/kidneys autoregulate at higher pressures, so reduce gradually.</li><li><b>Stroke exception (CVA)</b> — Aggressively normalizing BP of 200/110 in a patient with an acute ischemic stroke who is not getting tPA — WRONG. The discriminator: permissive hypertension preserves penumbral perfusion; only treat if &gt;220/120 (no tPA) or &gt;185/110 (before tPA). Do not apply the 25% emergency rule to acute ischemic stroke.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Emergency = end-organ damage</div><div class="rte">Hypertensive emergency = severely elevated BP (usually &gt;180/120) WITH acute target-organ damage. It requires admission (usually ICU), IV titratable therapy, and arterial monitoring. The defining feature is the organ injury, not the BP number — a patient at 250/140 with no acute damage is an urgency, while one at 185/115 with papilledema or encephalopathy is an emergency. Goal: controlled, gradual reduction, not normalization.</div><div class="rtt">⚠️ Treating a BP of 220/120 with IV antihypertensives because the number is alarming, even though the patient is asymptomatic with normal labs and exam — WRONG. The discriminator: it is the presence of acute end-organ damage, not the absolute number, that defines an emergency and justifies IV therapy; without damage this is urgency, managed with oral agents.</div></div><div class="rt"><div class="rtl">2. End-organ damage gallery</div><div class="rte">Acute target-organ damage of hypertensive emergency: brain (hypertensive encephalopathy, ischemic/hemorrhagic stroke), eye (papilledema, retinal hemorrhages — grade III/IV retinopathy), kidney (acute kidney injury, hematuria), heart (ACS, acute pulmonary edema/HF), aorta (acute dissection), and pregnancy (eclampsia/severe preeclampsia). Each scenario dictates a specific drug and target.</div><div class="rtt">⚠️ Calling chronically stable findings like long-standing LVH or baseline proteinuria 'acute end-organ damage' — WRONG. The discriminator: emergency requires NEW, ACUTE organ injury (rising creatinine, papilledema, encephalopathy, ACS, dissection, eclampsia), not chronic sequelae of hypertension.</div></div><div class="rt"><div class="rtl">3. Urgency = no organ damage</div><div class="rte">Hypertensive urgency = severely elevated BP (often &gt;180/120) with NO acute end-organ damage. Manage by restarting/optimizing ORAL agents and reducing BP gradually over 24-48 hours in the outpatient setting, with close follow-up. Rapid IV lowering is harmful here. Common cause is medication nonadherence.</div><div class="rtt">⚠️ Admitting a hypertensive-urgency patient to the ICU for rapid IV BP reduction to normal — WRONG and dangerous (causes hypoperfusion). The discriminator: with no acute organ damage, use oral agents and gradual outpatient lowering; reserve IV therapy and rapid reduction for true emergencies.</div></div><div class="rt"><div class="rtl">4. Small kidneys / RBBB not emergencies</div><div class="rte">Distractor findings that are CHRONIC, not acute end-organ damage: bilaterally small kidneys (chronic CKD/long-standing HTN, not acute injury) and an isolated right bundle branch block (a baseline conduction pattern, not acute ischemia). Neither converts an urgency into an emergency.</div><div class="rtt">⚠️ Diagnosing hypertensive emergency because imaging shows small kidneys or the ECG shows RBBB — WRONG. The discriminator: these are chronic/baseline findings; an emergency needs evidence of ACUTE injury (rising creatinine, ST changes/ACS, encephalopathy), so an asymptomatic patient with these findings is an urgency.</div></div><div class="rt"><div class="rtl">5. First hour: reduce &lt;=25%</div><div class="rte">In MOST hypertensive emergencies, lower the mean arterial pressure (MAP) by no more than ~10-25% during the FIRST hour using IV titratable agents. This protects autoregulation in brain, heart, and kidney. Exceptions where you go faster/lower: aortic dissection (SBP &lt;120 rapidly) and severe preeclampsia/eclampsia. Exception where you go slower/higher: acute ischemic stroke.</div><div class="rtt">⚠️ Rapidly normalizing BP to 120/80 in the first hour of a hypertensive emergency — WRONG. The discriminator: dropping BP below the autoregulatory range causes watershed ischemia (stroke, MI, AKI); limit the first-hour reduction to ~25% of MAP except in aortic dissection and eclampsia.</div></div><div class="rt"><div class="rtl">6. Next 2-6 hours cautious</div><div class="rte">After the initial ~25% first-hour reduction, lower BP to approximately 160/100-110 over the next 2-6 hours, then cautiously toward normal over the following 24-48 hours if the patient is stable. This staged approach prevents hypoperfusion while still reversing the acute damage.</div><div class="rtt">⚠️ Achieving full normalization within the first 6 hours of an emergency — WRONG. The discriminator: the protocol is deliberately staged (25% in hour 1, ~160/100 by 2-6h, normal over 24-48h); compressing the timeline risks ischemic organ injury.</div></div><div class="rt"><div class="rtl">7. Aortic dissection station</div><div class="rte">Acute aortic dissection is the most aggressive target: rapidly lower SBP to &lt;120 mmHg AND heart rate to &lt;60 bpm within ~20 minutes to reduce aortic wall shear stress (dP/dt). Give a BETA-BLOCKER FIRST (IV esmolol or labetalol) to control HR, THEN add a vasodilator (nitroprusside or nicardipine). Pain control with opioids also helps.</div><div class="rtt">⚠️ Starting nitroprusside (a vasodilator) before beta-blockade in aortic dissection — WRONG. The discriminator: a vasodilator alone triggers reflex tachycardia that INCREASES shear stress and propagates the dissection; control heart rate with a beta-blocker first. Also, the ~25% rule does NOT apply here — dissection needs aggressive SBP &lt;120.</div></div><div class="rt"><div class="rtl">8. IV drug dispensers</div><div class="rte">Titratable IV agents for emergencies, matched to scenario: nicardipine/clevidipine (most general use, neuro-friendly), labetalol/esmolol (pregnancy, dissection, most settings), nitroprusside (potent, short-acting; cyanide risk), nitroglycerin (ACS/flash pulmonary edema), hydralazine (pregnancy), and phentolamine (catecholamine excess — pheochromocytoma, cocaine/MAOI crisis).</div><div class="rtt">⚠️ Using a single default agent for every emergency regardless of the organ involved — WRONG. The discriminator: the agent is scenario-specific — labetalol for eclampsia, beta-blocker-first then vasodilator for dissection, nitroglycerin for ACS/pulmonary edema, phentolamine for pheochromocytoma/cocaine.</div></div><div class="rt"><div class="rtl">9. Nicardipine = most general use</div><div class="rte">Nicardipine is a titratable IV dihydropyridine CCB and a versatile first choice for most hypertensive emergencies, including hypertensive encephalopathy and stroke-related HTN (it does not raise intracranial pressure or worsen cerebral autoregulation the way nitroprusside can). Clevidipine is an ultra-short-acting alternative.</div><div class="rtt">⚠️ Defaulting to nitroprusside for a neuro emergency when nicardipine is available — WRONG. The discriminator: nitroprusside can raise intracranial pressure and risks cyanide toxicity; nicardipine/clevidipine are preferred, controllable choices for most emergencies including neurologic ones.</div></div><div class="rt"><div class="rtl">10. Labetalol = pregnancy</div><div class="rte">Labetalol is a combined alpha-1 and beta blocker — preferred in pregnancy/eclampsia (alongside IV hydralazine and oral nifedipine) and safe across most emergencies, including aortic dissection (HR + BP control in one agent). Its mixed blockade avoids reflex tachycardia. Avoid in decompensated HFrEF, bradycardia, severe asthma, and cocaine toxicity (relative — unopposed alpha concern).</div><div class="rtt">⚠️ Choosing an ACEi, ARB, or nitroprusside for a hypertensive emergency in a pregnant patient — WRONG. The discriminator: ACEi/ARBs are teratogenic and nitroprusside risks fetal cyanide accumulation; labetalol (or hydralazine/nifedipine) is the safe choice for hypertensive emergency in pregnancy.</div></div><div class="rt"><div class="rtl">11. Nitroprusside = cyanide risk</div><div class="rte">Sodium nitroprusside is a potent arterial AND venous vasodilator with rapid on/off control, but its metabolism releases cyanide and thiocyanate — risking toxicity with high doses, prolonged use (&gt;24-48h), or renal/hepatic impairment. It can also raise intracranial pressure and cause coronary steal. Watch for unexplained metabolic acidosis and altered mental status (cyanide).</div><div class="rtt">⚠️ Continuing a nitroprusside infusion for days in a patient with renal failure and attributing new confusion/lactic acidosis to the underlying illness — WRONG. The discriminator: suspect cyanide/thiocyanate toxicity; limit duration/dose, avoid in renal failure, and choose nicardipine or labetalol when prolonged therapy is anticipated.</div></div><div class="rt"><div class="rtl">12. Rapid normalization harms</div><div class="rte">Over-rapid BP lowering drops perfusion below the shifted autoregulatory threshold in chronically hypertensive patients, causing watershed ischemia: ischemic stroke, AKI, and MI. This is the core rationale for the staged 25%-first-hour protocol. The goal is controlled reduction to a safe range, never abrupt normalization.</div><div class="rtt">⚠️ Believing that the faster BP is brought to normal, the safer the patient — WRONG, it is the opposite. The discriminator: rapid normalization causes ischemic organ injury; chronically hypertensive brains/kidneys autoregulate at higher pressures, so reduce gradually.</div></div><div class="rt"><div class="rtl">13. Stroke exception (CVA)</div><div class="rte">Acute ISCHEMIC stroke is the permissive-hypertension exception: do NOT lower BP unless it exceeds 220/120 (then reduce ~15% cautiously), OR the patient is a thrombolysis/thrombectomy candidate, in which case lower to &lt;185/110 before tPA and keep &lt;180/105 for 24h afterward. Higher BP maintains perfusion of the ischemic penumbra. (Acute hemorrhagic stroke has its own, lower targets, e.g. SBP ~140.)</div><div class="rtt">⚠️ Aggressively normalizing BP of 200/110 in a patient with an acute ischemic stroke who is not getting tPA — WRONG. The discriminator: permissive hypertension preserves penumbral perfusion; only treat if &gt;220/120 (no tPA) or &gt;185/110 (before tPA). Do not apply the 25% emergency rule to acute ischemic stroke.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="htn_1.html" title="Hypertension — Classification, Targets &amp; White-Coat/Masked HTN">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="htn_2.html" title="Hypertension — First-Line Drug Classes">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

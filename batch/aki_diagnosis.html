@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">AKI — Diagnosis</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Clinical clues board</b> — Students jump straight to ordering a kidney biopsy or FENa. The correct first move is the cheap triad — bladder scan/Foley, renal ultrasound, and urine microscopy — because postrenal obstruction is instantly reversible and missing it is a classic board error.</li><li><b>FENa &lt;1%</b> — The trap is treating FENa as a pure prerenal-vs-ATN dichotomy and forgetting it is meaningless if the patient is on a loop diuretic (which dumps Na and falsely raises FENa) — in that setting you must switch to FEUrea.</li><li><b>FENa exceptions</b> — Picking 'prerenal' simply because FENa is &lt;1% in a patient with a positive blood dipstick and CK in the thousands — that is rhabdomyolysis with pigment ATN, an intrinsic injury that mimics a prerenal FENa.</li><li><b>FEUrea on diuretics</b> — The classic trap is reporting a 'high' FENa in a patient on furosemide and calling it ATN — the diuretic falsely elevated FENa. The right discriminator on diuretics is FEUrea, not FENa.</li><li><b>BUN:Cr ratio</b> — Calling a high BUN:Cr 'prerenal' in a patient with melena and an upper GI bleed — the absorbed blood protein raises BUN independent of perfusion, so the ratio is a false positive and the kidneys may be fine.</li><li><b>Urine osmolality</b> — Trusting urine osmolality in a CKD patient or one on diuretics — both blunt concentrating ability and make a low UOsm look like ATN when the real process is prerenal.</li><li><b>Urine output</b> — Assuming AKI must be oliguric and dismissing a rising creatinine with normal urine output — aminoglycoside and contrast ATN are characteristically non-oliguric, so normal urine output does NOT exclude significant tubular injury.</li><li><b>Cystatin C</b> — Dismissing early AKI because serum creatinine is still 'normal' — creatinine lags injury by 24–48h due to its reservoir, so a normal Cr does not rule out an acute GFR drop that cystatin C would already show.</li><li><b>Kidney size US</b> — Reading small echogenic kidneys as 'severe AKI that needs aggressive treatment' — small kidneys mean established CKD, which is irreversible, and the appropriate move is to recognize chronicity rather than pursue reversal.</li><li><b>Biopsy indication</b> — Ordering a biopsy as a first-line test — the trap is skipping non-invasive classification (ultrasound, sediment, serologies) and going straight to an invasive bleeding-prone procedure when the diagnosis is usually clinical.</li><li><b>Urine sediment</b> — Calling muddy-brown casts 'normal' or attributing them to prerenal disease — granular muddy casts are pathognomonic for ATN (intrinsic injury), whereas true prerenal urine is bland with no casts.</li><li><b>Blood lab / CBC</b> — Attributing AKI with schistocytes and low platelets to 'DIC' and ordering plasma — in a young patient with normal coags this is TMA (TTP/HUS); the discriminator is normal PT/PTT/fibrinogen in TMA versus abnormal in DIC, and TTP needs urgent plasma exchange.</li><li><b>GN / vasculitis</b> — Mistaking nephritic RBC casts for a UTI or a 'traumatic' hematuria and missing RPGN — the discriminator is dysmorphic RBCs and RBC casts (glomerular origin) versus isomorphic RBCs and clots (urologic), and delay in RPGN costs nephrons irreversibly.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Clinical clues board</div><div class="rte">The first step in any AKI workup is to classify it into prerenal (hypoperfusion), intrinsic/renal (parenchymal injury), or postrenal (obstruction) using history, exam, urinalysis, and basic labs. Prerenal clues are volume loss, low CO, NSAID/ACE-I use; intrinsic clues are recent contrast/nephrotoxins, casts on micro; postrenal clues are anuria, BPH, single kidney, or distended bladder. Always place a Foley and order a renal ultrasound early to rule out reversible obstruction before chasing intrinsic causes.</div><div class="rtt">⚠️ Students jump straight to ordering a kidney biopsy or FENa. The correct first move is the cheap triad — bladder scan/Foley, renal ultrasound, and urine microscopy — because postrenal obstruction is instantly reversible and missing it is a classic board error.</div></div><div class="rt"><div class="rtl">2. FENa &lt;1%</div><div class="rte">FENa = (UNa × PCr)/(PNa × UCr) × 100. A FENa &lt;1% means intact tubules are avidly reabsorbing sodium to defend volume, pointing to PRERENAL azotemia; a FENa &gt;2% indicates tubular cells are too injured to reabsorb Na, pointing to ATN (intrinsic). The 1–2% gray zone is indeterminate. FENa is only valid in oliguric AKI and is invalidated by diuretics.</div><div class="rtt">⚠️ The trap is treating FENa as a pure prerenal-vs-ATN dichotomy and forgetting it is meaningless if the patient is on a loop diuretic (which dumps Na and falsely raises FENa) — in that setting you must switch to FEUrea.</div></div><div class="rt"><div class="rtl">3. FENa exceptions</div><div class="rte">A low FENa (&lt;1%) is NOT exclusive to prerenal disease — it also occurs in contrast-induced nephropathy, rhabdomyolysis/pigment nephropathy, early sepsis, acute glomerulonephritis, hepatorenal syndrome, and CKD, all of which involve Na-avid states or vasoconstriction despite intrinsic injury. Conversely, ATN typically gives FENa &gt;2%. Memory hook: 'CRaSGoCK' lowers FENa even without true prerenal physiology.</div><div class="rtt">⚠️ Picking 'prerenal' simply because FENa is &lt;1% in a patient with a positive blood dipstick and CK in the thousands — that is rhabdomyolysis with pigment ATN, an intrinsic injury that mimics a prerenal FENa.</div></div><div class="rt"><div class="rtl">4. FEUrea on diuretics</div><div class="rte">FEUrea = (UUrea × PCr)/(BUN × UCr) × 100, and it is the test of choice when the patient is on diuretics because urea handling is in the proximal tubule and is unaffected by loop/thiazide action at the distal nephron. FEUrea &lt;35% supports PRERENAL; &gt;50% supports ATN. It rescues you when FENa is uninterpretable.</div><div class="rtt">⚠️ The classic trap is reporting a 'high' FENa in a patient on furosemide and calling it ATN — the diuretic falsely elevated FENa. The right discriminator on diuretics is FEUrea, not FENa.</div></div><div class="rt"><div class="rtl">5. BUN:Cr ratio</div><div class="rte">A BUN:Cr ratio &gt;20:1 supports PRERENAL azotemia because slow tubular flow lets passive urea reabsorption rise while creatinine (not reabsorbed) stays put. A ratio near 10–15:1 suggests intrinsic ATN where reabsorption is lost. The ratio is confounded upward by GI bleeding, high-protein/TPN intake, corticosteroids, and catabolic states (false-positive prerenal pattern).</div><div class="rtt">⚠️ Calling a high BUN:Cr 'prerenal' in a patient with melena and an upper GI bleed — the absorbed blood protein raises BUN independent of perfusion, so the ratio is a false positive and the kidneys may be fine.</div></div><div class="rt"><div class="rtl">6. Urine osmolality</div><div class="rte">Urine osmolality &gt;500 mOsm/kg with a high specific gravity reflects intact concentrating ability and supports PRERENAL; values approaching serum (~300, isosthenuria) suggest ATN where tubules can no longer concentrate. UOsm is unreliable in CKD, with diuretics, and with osmotic agents (glucose, contrast, mannitol).</div><div class="rtt">⚠️ Trusting urine osmolality in a CKD patient or one on diuretics — both blunt concentrating ability and make a low UOsm look like ATN when the real process is prerenal.</div></div><div class="rt"><div class="rtl">7. Urine output</div><div class="rte">Anuria (&lt;50–100 mL/day) is ominous and points to complete bilateral obstruction, a vascular catastrophe (cortical necrosis, bilateral RAS thrombosis), or severe RPGN. Oliguria (&lt;400–500 mL/day) is common to all AKI types. Importantly, non-oliguric AKI exists — classically aminoglycoside ATN and contrast nephropathy — and carries a better prognosis.</div><div class="rtt">⚠️ Assuming AKI must be oliguric and dismissing a rising creatinine with normal urine output — aminoglycoside and contrast ATN are characteristically non-oliguric, so normal urine output does NOT exclude significant tubular injury.</div></div><div class="rt"><div class="rtl">8. Cystatin C</div><div class="rte">Cystatin C is freely filtered and not secreted, so it rises EARLIER than creatinine and is independent of muscle mass — useful in cachectic, elderly, or amputee patients where creatinine underestimates injury. It is falsely elevated by corticosteroids and hyperthyroidism and falsely low in hypothyroidism, limiting it in those states.</div><div class="rtt">⚠️ Dismissing early AKI because serum creatinine is still 'normal' — creatinine lags injury by 24–48h due to its reservoir, so a normal Cr does not rule out an acute GFR drop that cystatin C would already show.</div></div><div class="rt"><div class="rtl">9. Kidney size US</div><div class="rte">On ultrasound, kidney size separates acute from chronic: NORMAL size and cortical thickness favor AKI (potentially reversible); SMALL, echogenic kidneys with thinned cortex indicate CKD (chronic, irreversible scarring). ENLARGED kidneys suggest infiltration (lymphoma, amyloid), HIV nephropathy, diabetic nephropathy, polycystic disease, or acute obstruction with hydronephrosis.</div><div class="rtt">⚠️ Reading small echogenic kidneys as 'severe AKI that needs aggressive treatment' — small kidneys mean established CKD, which is irreversible, and the appropriate move is to recognize chronicity rather than pursue reversal.</div></div><div class="rt"><div class="rtl">10. Biopsy indication</div><div class="rte">Kidney biopsy is reserved for intrinsic AKI of unclear cause, suspected rapidly progressive glomerulonephritis/vasculitis, or AKI failing to recover when prerenal and postrenal are excluded — it changes management when immunosuppression is being considered. It is risk-stratified: bleeding risk rises with uncontrolled hypertension, single kidney, coagulopathy, and very low urine output.</div><div class="rtt">⚠️ Ordering a biopsy as a first-line test — the trap is skipping non-invasive classification (ultrasound, sediment, serologies) and going straight to an invasive bleeding-prone procedure when the diagnosis is usually clinical.</div></div><div class="rt"><div class="rtl">11. Urine sediment</div><div class="rte">Urine sediment is the single most discriminating bedside test. Muddy-brown granular ('dirty') casts = ATN; RBC casts with dysmorphic RBCs = glomerulonephritis; WBC casts = acute interstitial nephritis or pyelonephritis; broad waxy casts = CKD; bland sediment = prerenal or postrenal. Mnemonic: Muddy=ATN, Red=GN, White=AIN.</div><div class="rtt">⚠️ Calling muddy-brown casts 'normal' or attributing them to prerenal disease — granular muddy casts are pathognomonic for ATN (intrinsic injury), whereas true prerenal urine is bland with no casts.</div></div><div class="rt"><div class="rtl">12. Blood lab / CBC</div><div class="rte">Blood work narrows intrinsic causes: schistocytes + thrombocytopenia + high LDH/low haptoglobin = thrombotic microangiopathy (HUS/TTP); peripheral eosinophilia = AIN or atheroembolic disease (post-catheterization, also low complement + livedo); low C3/C4 = immune-complex GN (lupus, post-strep, MPGN, endocarditis); positive ANCA/anti-GBM = pauci-immune or anti-GBM RPGN.</div><div class="rtt">⚠️ Attributing AKI with schistocytes and low platelets to 'DIC' and ordering plasma — in a young patient with normal coags this is TMA (TTP/HUS); the discriminator is normal PT/PTT/fibrinogen in TMA versus abnormal in DIC, and TTP needs urgent plasma exchange.</div></div><div class="rt"><div class="rtl">13. GN / vasculitis</div><div class="rte">Glomerulonephritis/vasculitis presents as a nephritic picture: RBC casts, dysmorphic RBCs, sub-nephrotic-to-nephrotic proteinuria, hypertension, and edema. Serologic workup includes ANCA (granulomatosis with polyangiitis, microscopic polyangiitis), anti-GBM (Goodpasture), ANA/anti-dsDNA (lupus), complement levels, ASO/anti-DNase B, and cryoglobulins/hepatitis serologies. Rapidly progressive GN (crescents) is a nephrologic emergency needing urgent biopsy and immunosuppression.</div><div class="rtt">⚠️ Mistaking nephritic RBC casts for a UTI or a 'traumatic' hematuria and missing RPGN — the discriminator is dysmorphic RBCs and RBC casts (glomerular origin) versus isomorphic RBCs and clots (urologic), and delay in RPGN costs nephrons irreversibly.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aki_complications.html" title="AKI — Complications &amp; Treatment">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aki_atn.html" title="AKI — Intrinsic 1: ATN">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

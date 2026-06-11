@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Arrhythmias — Monomorphic VT (Scar / Structural Disease)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Known heart disease + WCT = VT</b> — WRONG: assuming SVT with aberrancy in a post-MI patient with a wide-complex tachycardia — the safe and statistically correct default is VT. Misclassifying VT as SVT and giving an AV-nodal blocker (verapamil/diltiazem) can cause hemodynamic collapse.</li><li><b>Scar substrate / old MI</b> — WRONG: expecting an acute event — scar-based monomorphic VT typically presents YEARS after the index MI, not acutely. A normal acute ischemic workup does not exclude scar VT, and revascularizing the old territory does not abolish the established reentry circuit.</li><li><b>AV dissociation</b> — WRONG: interpreting AV dissociation as evidence of SVT — independent atrial activity (slower than the ventricle) indicates a VENTRICULAR origin, i.e., VT. In SVT with aberrancy the atria drive the ventricles 1:1.</li><li><b>Fusion beats</b> — WRONG: dismissing an oddly-shaped intermediate complex as artifact — a fusion beat is a specific marker confirming VT and should be actively looked for in any wide-complex tachycardia.</li><li><b>Capture beats</b> — WRONG: treating an isolated narrow complex during a wide-complex tachycardia as a return to SVT/aberrancy — a capture beat actually confirms the underlying rhythm is VT (intermittent sinus capture through an otherwise dissociated AV relationship).</li><li><b>R in aVR / concordance</b> — WRONG: relying on heart rate or QRS width alone to call SVT vs VT — use the morphologic criteria (positive aVR, precordial concordance, AV dissociation, fusion/capture). Absence of these does not exclude VT, so when in doubt, treat as VT.</li><li><b>Cardioversion (unstable)</b> — WRONG: giving IV amiodarone to an UNSTABLE VT patient first — instability mandates immediate synchronized cardioversion, not a drug. Conversely, if the patient is PULSELESS, switch to UNSYNCHRONIZED defibrillation, not synchronized cardioversion.</li><li><b>IV amiodarone (stable)</b> — WRONG: giving an AV-nodal blocker (verapamil, diltiazem, or adenosine as therapy) to a presumed-stable wide-complex tachycardia 'to see if it's SVT' — in true VT this can precipitate hemodynamic collapse. Use a VT-appropriate antiarrhythmic (amiodarone/procainamide).</li><li><b>Stability ≠ diagnosis</b> — WRONG: concluding that a comfortable, normotensive patient 'must have SVT, not VT' — stability says nothing about the rhythm's origin. Treat a stable wide-complex tachycardia as VT and avoid AV-nodal blockers.</li><li><b>Troponin = demand, not cause</b> — WRONG: treating every VT with a troponin rise as an acute STEMI requiring emergent PCI — the troponin is often demand-related, and revascularizing old scar does not prevent the established VT circuit. Evaluate for true acute ischemia clinically/ECG rather than assuming the troponin proves a culprit lesion.</li><li><b>ICD secondary prevention</b> — WRONG: choosing amiodarone alone as adequate secondary prevention after sustained VT/aborted SCD — drugs alone do not improve survival; the ICD does. Exception: if the VT was due to a fully reversible cause (e.g., VF within 48 h of acute MI that is revascularized), an ICD is not indicated.</li><li><b>Ablation when shocks recur</b> — WRONG: escalating/stacking antiarrhythmic drugs for recurrent ICD shocks instead of ablating — VANISH showed catheter ablation is preferred over intensifying drug therapy for recurrent scar VT. Ablation reduces recurrence but the ICD stays in place.</li><li><b>Recurrence &amp; mortality despite ICD</b> — WRONG: reassuring a patient that an ICD makes them low-risk — recurrent VT is common and overall mortality stays high from the underlying disease. The ICD treats the arrhythmic mode of death, not the heart failure; optimize GDMT and consider ablation.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Known heart disease + WCT = VT</div><div class="rte">In a patient with known structural or ischemic heart disease (especially a prior MI), a wide-complex tachycardia (QRS &gt;120 ms) is ventricular tachycardia until proven otherwise — the prior probability exceeds 90%. When uncertain, ALWAYS treat a wide-complex tachycardia as VT. Mnemonic: 'old heart + wide and fast = VT.'</div><div class="rtt">⚠️ WRONG: assuming SVT with aberrancy in a post-MI patient with a wide-complex tachycardia — the safe and statistically correct default is VT. Misclassifying VT as SVT and giving an AV-nodal blocker (verapamil/diltiazem) can cause hemodynamic collapse.</div></div><div class="rt"><div class="rtl">2. Scar substrate / old MI</div><div class="rte">Monomorphic VT arises from a fixed anatomic scar — most commonly years after a large transmural MI — where surviving myocyte channels through fibrosis form a stable reentry circuit. The same loop is used each time, producing an identical (monomorphic) QRS. Mnemonic: 'one scar, one loop, one look.' Non-ischemic scars (sarcoidosis, prior myocarditis, ARVC) cause it too.</div><div class="rtt">⚠️ WRONG: expecting an acute event — scar-based monomorphic VT typically presents YEARS after the index MI, not acutely. A normal acute ischemic workup does not exclude scar VT, and revascularizing the old territory does not abolish the established reentry circuit.</div></div><div class="rt"><div class="rtl">3. AV dissociation</div><div class="rte">AV dissociation — P waves marching at their own slower rate, independent of the faster QRS — is the MOST reliable ECG sign that a wide-complex tachycardia is VT (the ventricle is driving faster than the atria). It is present in a minority of cases but, when seen, is essentially diagnostic of VT. Look for occasional P waves 'walking through' the QRS complexes.</div><div class="rtt">⚠️ WRONG: interpreting AV dissociation as evidence of SVT — independent atrial activity (slower than the ventricle) indicates a VENTRICULAR origin, i.e., VT. In SVT with aberrancy the atria drive the ventricles 1:1.</div></div><div class="rt"><div class="rtl">4. Fusion beats</div><div class="rte">A fusion beat occurs when a supraventricular (sinus) impulse and a ventricular impulse activate the ventricle simultaneously, producing a hybrid QRS intermediate between a normal beat and the VT beat. Fusion beats prove AV dissociation and therefore confirm VT. They are part of the Brugada/AV-dissociation criteria.</div><div class="rtt">⚠️ WRONG: dismissing an oddly-shaped intermediate complex as artifact — a fusion beat is a specific marker confirming VT and should be actively looked for in any wide-complex tachycardia.</div></div><div class="rt"><div class="rtl">5. Capture beats</div><div class="rte">A capture beat is an occasional normally-conducted narrow QRS occurring during the tachycardia, when a sinus impulse transiently 'captures' the ventricle through the normal His-Purkinje system. Like fusion beats, capture beats prove AV dissociation and confirm VT. Both are highly specific but uncommon.</div><div class="rtt">⚠️ WRONG: treating an isolated narrow complex during a wide-complex tachycardia as a return to SVT/aberrancy — a capture beat actually confirms the underlying rhythm is VT (intermittent sinus capture through an otherwise dissociated AV relationship).</div></div><div class="rt"><div class="rtl">6. R in aVR / concordance</div><div class="rte">A dominant positive R wave in lead aVR (apex-to-base activation) and precordial concordance (all V1–V6 QRS complexes pointing the same direction — all positive or all negative) strongly favor VT. These are part of the Brugada, Vereckei (aVR), and Pava (RWPT) algorithms used to distinguish VT from SVT with aberrancy.</div><div class="rtt">⚠️ WRONG: relying on heart rate or QRS width alone to call SVT vs VT — use the morphologic criteria (positive aVR, precordial concordance, AV dissociation, fusion/capture). Absence of these does not exclude VT, so when in doubt, treat as VT.</div></div><div class="rt"><div class="rtl">7. Cardioversion (unstable)</div><div class="rte">Hemodynamically UNSTABLE monomorphic VT WITH a pulse (hypotension, shock, chest pain, pulmonary edema, altered mental status) is treated with immediate SYNCHRONIZED cardioversion (start ~100 J, escalate). Synchronization to the R wave avoids delivering a shock on the T wave (R-on-T → VF). Sedate first if time permits.</div><div class="rtt">⚠️ WRONG: giving IV amiodarone to an UNSTABLE VT patient first — instability mandates immediate synchronized cardioversion, not a drug. Conversely, if the patient is PULSELESS, switch to UNSYNCHRONIZED defibrillation, not synchronized cardioversion.</div></div><div class="rt"><div class="rtl">8. IV amiodarone (stable)</div><div class="rte">Hemodynamically STABLE, tolerated monomorphic VT can be treated pharmacologically with an IV antiarrhythmic — amiodarone (150 mg over 10 min, repeat as needed, then infusion) or procainamide (often preferred for efficacy in tolerated VT) or lidocaine. Have the defibrillator ready in case of deterioration. Even 'stable' VT is treated as VT.</div><div class="rtt">⚠️ WRONG: giving an AV-nodal blocker (verapamil, diltiazem, or adenosine as therapy) to a presumed-stable wide-complex tachycardia 'to see if it's SVT' — in true VT this can precipitate hemodynamic collapse. Use a VT-appropriate antiarrhythmic (amiodarone/procainamide).</div></div><div class="rt"><div class="rtl">9. Stability ≠ diagnosis</div><div class="rte">Hemodynamic stability does NOT distinguish VT from SVT — many patients tolerate VT with a normal blood pressure, especially the young or those with preserved EF. A well-appearing patient with a wide-complex tachycardia still has VT until proven otherwise. Stability determines the URGENCY/route of therapy (drug vs immediate shock), not the diagnosis.</div><div class="rtt">⚠️ WRONG: concluding that a comfortable, normotensive patient 'must have SVT, not VT' — stability says nothing about the rhythm's origin. Treat a stable wide-complex tachycardia as VT and avoid AV-nodal blockers.</div></div><div class="rt"><div class="rtl">10. Troponin = demand, not cause</div><div class="rte">A mild troponin elevation accompanying VT usually reflects demand ischemia from the rapid rate (type 2), NOT a culprit plaque rupture causing the arrhythmia. Scar-based monomorphic VT comes from old fibrosis, so revascularization does not abolish the reentry circuit. Don't reflexively activate the cath lab for a small troponin bump after VT in a patient with old scar.</div><div class="rtt">⚠️ WRONG: treating every VT with a troponin rise as an acute STEMI requiring emergent PCI — the troponin is often demand-related, and revascularizing old scar does not prevent the established VT circuit. Evaluate for true acute ischemia clinically/ECG rather than assuming the troponin proves a culprit lesion.</div></div><div class="rt"><div class="rtl">11. ICD secondary prevention</div><div class="rte">After sustained VT or aborted sudden cardiac death in a patient with structural heart disease (and no fully reversible cause), an ICD is first-line SECONDARY prevention — it improves survival, which antiarrhythmic drugs alone do not (AVID/CIDS/CASH trials). Amiodarone may reduce shocks/symptoms but does not replace the ICD for survival benefit.</div><div class="rtt">⚠️ WRONG: choosing amiodarone alone as adequate secondary prevention after sustained VT/aborted SCD — drugs alone do not improve survival; the ICD does. Exception: if the VT was due to a fully reversible cause (e.g., VF within 48 h of acute MI that is revascularized), an ICD is not indicated.</div></div><div class="rt"><div class="rtl">12. Ablation when shocks recur</div><div class="rte">For recurrent VT/ICD shocks despite an ICD and antiarrhythmic therapy, catheter ablation of the scar circuit reduces recurrence and was superior to escalating drug therapy in the VANISH trial. Ablation targets the reentrant substrate that drugs cannot suppress and decreases the shock burden. It complements, but does not replace, the ICD.</div><div class="rtt">⚠️ WRONG: escalating/stacking antiarrhythmic drugs for recurrent ICD shocks instead of ablating — VANISH showed catheter ablation is preferred over intensifying drug therapy for recurrent scar VT. Ablation reduces recurrence but the ICD stays in place.</div></div><div class="rt"><div class="rtl">13. Recurrence &amp; mortality despite ICD</div><div class="rte">Scar-related VT has a high recurrence rate (~70% within ~2 years) and significant long-term mortality (5-year mortality often &gt;30%) even WITH an ICD, because the underlying structural disease (low EF, ischemic/non-ischemic cardiomyopathy) continues to progress. The ICD prevents arrhythmic death but does not cure the cardiomyopathy — comprehensive heart-failure therapy and substrate modification remain essential.</div><div class="rtt">⚠️ WRONG: reassuring a patient that an ICD makes them low-risk — recurrent VT is common and overall mortality stays high from the underlying disease. The ICD treats the arrhythmic mode of death, not the heart failure; optimize GDMT and consider ablation.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="arr_channelopathies.html" title="Arrhythmias — Inherited Channelopathies (LQTS, Brugada, CPVT, Short QT)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="arr_pvc_nsvt.html" title="Arrhythmias — PVCs &amp; NSVT (Benign vs Structural)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

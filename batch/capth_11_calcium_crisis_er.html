@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The Calcium Crisis ER Ladder</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Steroids (granuloma/lymphoma)</b> — A board case gives an SCC of the lung with hypercalcemia and a low PTH, then offers 'glucocorticoids' as the answer — WRONG. Steroids only work for calcitriol-driven (vitamin D-mediated) hypercalcemia such as sarcoid or lymphoma; they do NOT lower calcium in PHPT or PTHrP-mediated (humoral) malignancy. The discriminator is the mediator: check 1,25-OH vitamin D (high → steroids work) versus PTHrP (high → use saline/bisphosphonate).</li><li><b>Cinacalcet (CaSR)</b> — A patient in acute hypercalcemic crisis (Ca 15, confused, dehydrated) is offered 'start cinacalcet' — WRONG. Cinacalcet is oral and slow, not for the emergency; the crisis answer is IV normal saline first. Cinacalcet's niche is chronic management of parathyroid carcinoma or non-operable PHPT, not the ER ladder.</li><li><b>Parathyroidectomy</b> — A stable outpatient with PHPT meeting surgical criteria is offered 'IV bisphosphonate' as definitive management — WRONG. Bisphosphonates and cinacalcet are temporizing/medical options; surgery is the only cure. The discriminator: if criteria are met and the patient is operable, parathyroidectomy is the definitive answer.</li><li><b>Ca &gt;14 / short QT</b> — An ECG showing a SHORT QT in a hypercalcemic patient is misread as 'consistent with hypocalcemia' — WRONG and reversed. Hypercalcemia SHORTENS QT; hypocalcemia PROLONGS QT (risk of torsades). The discriminator is direction: high Ca = short QT, low Ca = long QT.</li><li><b>Severity thermometer</b> — A reported total Ca of 11.5 with albumin 2.0 is called 'only mild hypercalcemia, observe' — WRONG; corrected Ca = 11.5 + 0.8 x (4-2) = 13.1, which is moderate. Conversely, a low-albumin patient with 'normal' total Ca may actually be hypercalcemic. Always correct for albumin before tiering.</li><li><b>Dialysis (top rung)</b> — A hypercalcemic crisis patient with anuric ESRD and pulmonary edema is offered 'aggressive 4-6 L normal saline' — WRONG/dangerous, since they can't excrete the volume and will flood. The discriminator: renal failure or volume-overload + crisis-level Ca = hemodialysis, not saline.</li><li><b>Denosumab</b> — A malignancy-hypercalcemia patient with eGFR 25 is offered 'IV zoledronic acid' — WRONG, since bisphosphonates are nephrotoxic and contraindicated/risky at low GFR. The discriminator: renal impairment or bisphosphonate failure → denosumab (no renal adjustment) is the correct calcium-lowering antiresorptive.</li><li><b>Bisphosphonate (turtle = durable but slow)</b> — A crashing patient with Ca 16 and confusion is given 'IV zoledronic acid' as the FIRST and only move — WRONG. Bisphosphonates take 2-4 days to peak, so they do nothing for the acute crisis. The discriminator: give saline first (and calcitonin to bridge), then add a bisphosphonate for durable control; the turtle is slow but lasting.</li><li><b>Calcitonin (rabbit = fast but brief)</b> — Calcitonin is chosen as MONOTHERAPY for durable control of malignant hypercalcemia — WRONG. Its effect is fast but brief (tachyphylaxis at ~48h); it must be paired with saline plus a bisphosphonate/denosumab for lasting control. The discriminator: rabbit (fast, short) bridges to the turtle (slow, durable).</li><li><b>Normal saline (bottom rung, FIRST)</b> — A textbook sequencing trap offers 'furosemide' or 'IV bisphosphonate' as the first step in acute hypercalcemia — WRONG. The very first move is always IV normal saline to rehydrate; only after volume repletion are other agents (calcitonin to bridge, bisphosphonate for durability) added. The discriminator: fluids first, every time.</li><li><b>Volume → calciuresis</b> — A learner reasons that since 'loop diuretics increase calcium excretion,' they should be added early to boost calciuresis — WRONG. The dominant driver of calciuresis is VOLUME repletion, not the diuretic; giving a loop before rehydration worsens the dehydration that caused the hypercalcemia. Restore volume first.</li><li><b>Furosemide NOT first (red X)</b> — The classic outdated-teaching trap: 'give furosemide to treat hypercalcemia' as an early/first step — WRONG. Early loop diuretics deplete volume and worsen hypercalcemia. They are only appropriate AFTER the patient is volume-replete and shows signs of overload. The discriminator: saline first; furosemide only for fluid overload, never as the opener.</li><li><b>Hypercalcemia symptom triad (Ca↑→polyuria→GFR↓)</b> — A polyuric, hypercalcemic patient is worked up for primary diabetes insipidus or started on desmopressin — WRONG framing. The polyuria here is nephrogenic, driven by the hypercalcemia itself; treating the calcium (with saline) resolves it. The discriminator: correct the calcium, not chase the urine output with ADH.</li><li><b>Polyuria / GFR down (floor)</b> — A dehydrated, prerenal-AKI hypercalcemic patient is held off fluids 'because the creatinine is rising' — WRONG. The rising creatinine is from hypovolemia caused by the hypercalcemia, and saline both restores GFR and lowers calcium. The discriminator: in hypercalcemic AKI, the treatment for the kidney IS the saline, not fluid restriction.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Steroids (granuloma/lymphoma)</div><div class="rte">Glucocorticoids (e.g., prednisone 20-40 mg/day or hydrocortisone 100 mg IV q6h) lower calcium specifically in calcitriol-mediated hypercalcemia. In granulomatous disease (sarcoidosis, TB, fungal) and some lymphomas, activated macrophages express 1-alpha-hydroxylase, converting 25-OH vitamin D to active 1,25-(OH)2 vitamin D independent of PTH, driving gut calcium absorption. Steroids suppress this extrarenal 1-alpha-hydroxylase and reduce intestinal absorption; effect takes 2-5 days.</div><div class="rtt">⚠️ A board case gives an SCC of the lung with hypercalcemia and a low PTH, then offers 'glucocorticoids' as the answer — WRONG. Steroids only work for calcitriol-driven (vitamin D-mediated) hypercalcemia such as sarcoid or lymphoma; they do NOT lower calcium in PHPT or PTHrP-mediated (humoral) malignancy. The discriminator is the mediator: check 1,25-OH vitamin D (high → steroids work) versus PTHrP (high → use saline/bisphosphonate).</div></div><div class="rt"><div class="rtl">2. Cinacalcet (CaSR)</div><div class="rte">Cinacalcet is a calcimimetic that allosterically activates the calcium-sensing receptor (CaSR) on parathyroid cells, increasing the gland's sensitivity to calcium so it secretes LESS PTH, thereby lowering serum calcium. It is used for hypercalcemia of parathyroid carcinoma, inoperable/refractory PHPT, and secondary hyperparathyroidism in dialysis patients. It is an oral chronic agent, not an acute crisis drug; a key side effect is hypocalcemia.</div><div class="rtt">⚠️ A patient in acute hypercalcemic crisis (Ca 15, confused, dehydrated) is offered 'start cinacalcet' — WRONG. Cinacalcet is oral and slow, not for the emergency; the crisis answer is IV normal saline first. Cinacalcet's niche is chronic management of parathyroid carcinoma or non-operable PHPT, not the ER ladder.</div></div><div class="rt"><div class="rtl">3. Parathyroidectomy</div><div class="rte">Parathyroidectomy is the only definitive cure for PHPT-driven hypercalcemia, removing the adenoma (85%), hyperplastic glands (4-gland, often MEN1/MEN2A), or carcinoma. Intraoperative PTH should fall &gt;50% from baseline within 10 minutes of excision (Miami criterion), confirming the offending gland is out. It addresses the cause; the rest of the ladder only treats the calcium acutely.</div><div class="rtt">⚠️ A stable outpatient with PHPT meeting surgical criteria is offered 'IV bisphosphonate' as definitive management — WRONG. Bisphosphonates and cinacalcet are temporizing/medical options; surgery is the only cure. The discriminator: if criteria are met and the patient is operable, parathyroidectomy is the definitive answer.</div></div><div class="rt"><div class="rtl">4. Ca &gt;14 / short QT</div><div class="rte">Severe hypercalcemia (Ca &gt;14 mg/dL or any symptomatic level) is a medical emergency. Calcium accelerates cardiac myocyte repolarization, SHORTENING the QT interval (specifically the ST segment / QTc); extreme levels can cause Osborn-like changes and arrhythmia. Symptoms follow 'stones, bones, abdominal groans, psychiatric overtones' plus polyuria and dehydration.</div><div class="rtt">⚠️ An ECG showing a SHORT QT in a hypercalcemic patient is misread as 'consistent with hypocalcemia' — WRONG and reversed. Hypercalcemia SHORTENS QT; hypocalcemia PROLONGS QT (risk of torsades). The discriminator is direction: high Ca = short QT, low Ca = long QT.</div></div><div class="rt"><div class="rtl">5. Severity thermometer</div><div class="rte">Calcium severity tiers guide urgency: mild 10.5-12 mg/dL (often asymptomatic, treat cause), moderate 12-14 mg/dL (polyuria, dehydration, may treat per symptoms), severe/crisis &gt;14 mg/dL (always aggressive treatment regardless of symptoms). Always interpret against albumin (corrected Ca = measured + 0.8 x [4 - albumin]) or measure ionized calcium.</div><div class="rtt">⚠️ A reported total Ca of 11.5 with albumin 2.0 is called 'only mild hypercalcemia, observe' — WRONG; corrected Ca = 11.5 + 0.8 x (4-2) = 13.1, which is moderate. Conversely, a low-albumin patient with 'normal' total Ca may actually be hypercalcemic. Always correct for albumin before tiering.</div></div><div class="rt"><div class="rtl">6. Dialysis (top rung)</div><div class="rte">Hemodialysis with a low- or zero-calcium dialysate is the rescue/last-line therapy for life-threatening hypercalcemia, removing calcium directly when other measures fail or cannot be used. It is the answer when the patient has renal failure or heart failure (can't tolerate aggressive saline), or has refractory crisis-level Ca with neurologic compromise. Onset is immediate during the session.</div><div class="rtt">⚠️ A hypercalcemic crisis patient with anuric ESRD and pulmonary edema is offered 'aggressive 4-6 L normal saline' — WRONG/dangerous, since they can't excrete the volume and will flood. The discriminator: renal failure or volume-overload + crisis-level Ca = hemodialysis, not saline.</div></div><div class="rt"><div class="rtl">7. Denosumab</div><div class="rte">Denosumab is a monoclonal antibody against RANKL that blocks osteoclast formation/activity, lowering bone resorption and serum calcium. Dose for hypercalcemia of malignancy is 120 mg SC. Its key advantage: NO renal dose adjustment, making it the agent of choice when GFR is too low for bisphosphonates or in bisphosphonate-refractory hypercalcemia. Watch for hypocalcemia, especially with low vitamin D.</div><div class="rtt">⚠️ A malignancy-hypercalcemia patient with eGFR 25 is offered 'IV zoledronic acid' — WRONG, since bisphosphonates are nephrotoxic and contraindicated/risky at low GFR. The discriminator: renal impairment or bisphosphonate failure → denosumab (no renal adjustment) is the correct calcium-lowering antiresorptive.</div></div><div class="rt"><div class="rtl">8. Bisphosphonate (turtle = durable but slow)</div><div class="rte">IV bisphosphonates inhibit osteoclast-mediated bone resorption and are the MAINSTAY for sustained lowering in hypercalcemia of malignancy. Zoledronic acid 4 mg IV over 15 min is preferred (more potent than pamidronate 60-90 mg). Onset is slow (2-4 days) but durable (effect lasts 2-4 weeks). Adjust/avoid in renal impairment; risks include nephrotoxicity, hypocalcemia, and osteonecrosis of the jaw.</div><div class="rtt">⚠️ A crashing patient with Ca 16 and confusion is given 'IV zoledronic acid' as the FIRST and only move — WRONG. Bisphosphonates take 2-4 days to peak, so they do nothing for the acute crisis. The discriminator: give saline first (and calcitonin to bridge), then add a bisphosphonate for durable control; the turtle is slow but lasting.</div></div><div class="rt"><div class="rtl">9. Calcitonin (rabbit = fast but brief)</div><div class="rte">Calcitonin (4-8 IU/kg SC/IM q6-12h) inhibits osteoclasts AND increases renal calcium excretion, dropping calcium by 1-2 mg/dL within 4-6 hours — the fastest agent on the ladder. It serves as a BRIDGE while the bisphosphonate takes effect over 2-4 days. Tachyphylaxis (downregulation of receptors) limits useful effect to ~48 hours.</div><div class="rtt">⚠️ Calcitonin is chosen as MONOTHERAPY for durable control of malignant hypercalcemia — WRONG. Its effect is fast but brief (tachyphylaxis at ~48h); it must be paired with saline plus a bisphosphonate/denosumab for lasting control. The discriminator: rabbit (fast, short) bridges to the turtle (slow, durable).</div></div><div class="rt"><div class="rtl">10. Normal saline (bottom rung, FIRST)</div><div class="rte">Aggressive isotonic (0.9%) saline, typically 200-300 mL/hr to maintain urine output ~100-150 mL/hr (often 4-6 L/day), is the FIRST-line treatment for hypercalcemia. It corrects the near-universal dehydration, restores GFR, and increases urinary calcium excretion (volume expansion reduces proximal tubular Na+ and passive Ca++ reabsorption). Monitor for volume overload, especially in heart/renal failure.</div><div class="rtt">⚠️ A textbook sequencing trap offers 'furosemide' or 'IV bisphosphonate' as the first step in acute hypercalcemia — WRONG. The very first move is always IV normal saline to rehydrate; only after volume repletion are other agents (calcitonin to bridge, bisphosphonate for durability) added. The discriminator: fluids first, every time.</div></div><div class="rt"><div class="rtl">11. Volume → calciuresis</div><div class="rte">Restoring intravascular volume is the core mechanism of saline therapy: expansion increases GFR and reduces proximal tubular sodium (and thus passively coupled calcium) reabsorption, markedly increasing urinary calcium excretion (calciuresis). This both dilutes serum calcium and actively dumps it in the urine, breaking the dehydration-hypercalcemia vicious cycle.</div><div class="rtt">⚠️ A learner reasons that since 'loop diuretics increase calcium excretion,' they should be added early to boost calciuresis — WRONG. The dominant driver of calciuresis is VOLUME repletion, not the diuretic; giving a loop before rehydration worsens the dehydration that caused the hypercalcemia. Restore volume first.</div></div><div class="rt"><div class="rtl">12. Furosemide NOT first (red X)</div><div class="rte">Loop diuretics (furosemide) block the Na-K-2Cl transporter, reducing the lumen-positive gradient that drives calcium reabsorption in the thick ascending limb, thereby promoting calciuresis. However, they are NO LONGER routine in hypercalcemia and are reserved for patients who become volume-overloaded after saline (e.g., heart/renal failure). Using them early causes volume depletion that paradoxically worsens hypercalcemia.</div><div class="rtt">⚠️ The classic outdated-teaching trap: 'give furosemide to treat hypercalcemia' as an early/first step — WRONG. Early loop diuretics deplete volume and worsen hypercalcemia. They are only appropriate AFTER the patient is volume-replete and shows signs of overload. The discriminator: saline first; furosemide only for fluid overload, never as the opener.</div></div><div class="rt"><div class="rtl">13. Hypercalcemia symptom triad (Ca↑→polyuria→GFR↓)</div><div class="rte">Hypercalcemia activates the renal CaSR and antagonizes ADH action in the collecting duct, causing nephrogenic diabetes insipidus → polyuria → dehydration → falling GFR. The falling GFR reduces calcium clearance, raising calcium further: a self-perpetuating vicious cycle. This is exactly why IV saline (rehydration) is the priority that breaks the loop.</div><div class="rtt">⚠️ A polyuric, hypercalcemic patient is worked up for primary diabetes insipidus or started on desmopressin — WRONG framing. The polyuria here is nephrogenic, driven by the hypercalcemia itself; treating the calcium (with saline) resolves it. The discriminator: correct the calcium, not chase the urine output with ADH.</div></div><div class="rt"><div class="rtl">14. Polyuria / GFR down (floor)</div><div class="rte">The yellow puddle depicts the consequence: hypercalcemia-induced polyuria leads to dehydration and falling GFR, which concentrates serum calcium and impairs its renal clearance. This is the pathophysiologic justification for fluids being rung #1 — you must refill the tank before any other agent can work efficiently.</div><div class="rtt">⚠️ A dehydrated, prerenal-AKI hypercalcemic patient is held off fluids 'because the creatinine is rising' — WRONG. The rising creatinine is from hypovolemia caused by the hypercalcemia, and saline both restores GFR and lowers calcium. The discriminator: in hypercalcemic AKI, the treatment for the kidney IS the saline, not fluid restriction.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_08_calcium_courthouse.html" title="Calcium/PTH/VitD — The Calcium Courthouse">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="capth_13_calcium_forms.html" title="Calcium/PTH/VitD — The Calcium Forms Courtroom">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

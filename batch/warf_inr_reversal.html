@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Warfarin — INR Targets &amp; Reversal</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Target 2.0-3.0</b> — WRONG: 'push the INR to 3.5-4 in AFib for stronger stroke protection.' Above an INR of ~3 the bleeding risk (especially intracranial hemorrhage) rises sharply with no added thromboembolic benefit — 2-3 is the AFib target, not higher.</li><li><b>Target 2.5-3.5</b> — WRONG: 'a mechanical mitral valve can be managed with an INR target of 2.0-3.0 like AFib.' The mitral position is highly thrombogenic and requires the higher 2.5-3.5 target — under-targeting risks valve thrombosis and stroke.</li><li><b>Mechanical valve = warfarin</b> — WRONG: 'switch a mechanical-valve patient from warfarin to apixaban for convenience.' DOACs are absolutely contraindicated in mechanical valves (RE-ALIGN: worse outcomes) — warfarin is the only approved oral anticoagulant for them.</li><li><b>INR 2.5-10, no bleed</b> — WRONG: 'give FFP or 4-factor PCC for an INR of 8 in a patient who is not bleeding.' Reversal products (PCC/FFP) and high-dose IV vitamin K are reserved for serious bleeding — for asymptomatic high INR you hold warfarin ± low-dose oral vitamin K, avoiding overcorrection and rebound thrombosis.</li><li><b>4-factor PCC</b> — WRONG: 'give 4F-PCC alone and skip vitamin K because the INR corrected immediately.' PCC's transfused factors are consumed within hours and the INR will rebound; IV vitamin K must be given concurrently to sustain reversal by restoring endogenous factor synthesis.</li><li><b>IV vitamin K</b> — WRONG: 'give a large IV vitamin K dose (e.g. 10 mg) to a stable patient just to normalize the INR fast.' Over-reversing with high-dose vitamin K in a non-bleeding patient causes prolonged warfarin RESISTANCE for days, making re-anticoagulation difficult — high-dose IV vitamin K is for active major bleeding only.</li><li><b>FFP only if no PCC</b> — WRONG: 'reach for FFP first in a warfarin patient with intracranial hemorrhage.' 4F-PCC is preferred (faster, smaller volume, more complete); FFP is only a fallback when PCC is not on hand — delaying with FFP in ICH costs critical time.</li><li><b>Stop 5 days pre-op</b> — WRONG: 'stop warfarin the night before surgery.' Warfarin's effect (via long-half-life prothrombin) persists for days; a single night is not enough — you need ~5 days for the INR to normalize before major surgery.</li><li><b>Bridge if high risk</b> — WRONG: 'bridge every warfarin patient with LMWH around surgery.' The BRIDGE trial found that in low/moderate-risk AFib, bridging did not reduce thromboembolism but TRIPLED major bleeding — only high-thrombotic-risk patients should be bridged.</li><li><b>Skin necrosis</b> — WRONG: 'warfarin skin necrosis means the patient is over-anticoagulated, so stop warfarin and wait.' It is an EARLY hypercoagulable complication, not over-anticoagulation; management is stop warfarin, give vitamin K, start a non-warfarin anticoagulant (heparin), and replace protein C — and always bridge with heparin to prevent it.</li><li><b>Crosses placenta</b> — WRONG: 'continue warfarin through pregnancy in a VTE patient because heparin is inconvenient.' Warfarin's teratogenicity and fetal bleeding risk mandate switching to LMWH; warfarin should not be used in pregnancy for routine VTE.</li><li><b>Use LMWH in pregnancy</b> — WRONG: 'use a DOAC in pregnancy as a convenient warfarin alternative.' DOACs are NOT recommended in pregnancy (insufficient safety data, cross the placenta); LMWH is the correct substitute for warfarin in pregnant patients.</li><li><b>Safe in breastfeeding</b> — WRONG: 'a breastfeeding mother needing anticoagulation must avoid warfarin like she did in pregnancy.' Warfarin (and LMWH/UFH) are all safe during lactation — the teratogenic/placental concern does not apply to breast milk.</li><li><b>LAC = unreliable INR</b> — WRONG: 'trust the standard INR to dose-adjust warfarin in a lupus-anticoagulant patient.' The LAC artifactually alters the INR, so the displayed value may not reflect actual anticoagulation — monitor with chromogenic factor X activity instead.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Target 2.0-3.0</div><div class="rte">The standard INR target is 2.0-3.0 (goal 2.5) for the vast majority of indications: atrial fibrillation, treatment/prevention of VTE (DVT/PE), bioprosthetic valves (first 3 months), and most other indications. In nonvalvular AFib, anticoagulate when CHA2DS2-VASc ≥2 in men or ≥3 in women. INR &lt;2.0 is subtherapeutic (thrombosis risk), INR &gt;3.0 raises bleeding.</div><div class="rtt">⚠️ WRONG: 'push the INR to 3.5-4 in AFib for stronger stroke protection.' Above an INR of ~3 the bleeding risk (especially intracranial hemorrhage) rises sharply with no added thromboembolic benefit — 2-3 is the AFib target, not higher.</div></div><div class="rt"><div class="rtl">2. Target 2.5-3.5</div><div class="rte">A HIGHER target of 2.5-3.5 (goal 3.0) is used for higher-thrombotic-risk mechanical valves — specifically mechanical MITRAL valves, and mechanical aortic valves with additional risk factors (AFib, prior thromboembolism, LV dysfunction). Low-risk newer-generation mechanical aortic valves target 2.0-3.0. Low-dose aspirin is often added.</div><div class="rtt">⚠️ WRONG: 'a mechanical mitral valve can be managed with an INR target of 2.0-3.0 like AFib.' The mitral position is highly thrombogenic and requires the higher 2.5-3.5 target — under-targeting risks valve thrombosis and stroke.</div></div><div class="rt"><div class="rtl">3. Mechanical valve = warfarin</div><div class="rte">Mechanical heart valves REQUIRE warfarin; DOACs are contraindicated. The RE-ALIGN trial showed dabigatran caused MORE thromboembolism AND more bleeding than warfarin in mechanical valves, because contact activation on the artificial surface drives clotting that direct thrombin/Xa inhibitors fail to control. Warfarin is also preferred in moderate-to-severe (rheumatic) mitral stenosis.</div><div class="rtt">⚠️ WRONG: 'switch a mechanical-valve patient from warfarin to apixaban for convenience.' DOACs are absolutely contraindicated in mechanical valves (RE-ALIGN: worse outcomes) — warfarin is the only approved oral anticoagulant for them.</div></div><div class="rt"><div class="rtl">4. INR 2.5-10, no bleed</div><div class="rte">Supratherapeutic INR WITHOUT significant bleeding is managed by withholding warfarin and rechecking. INR 4.5-10 with no bleeding: simply hold warfarin (routine vitamin K is NOT recommended). INR &gt;10 with no bleeding: hold warfarin AND give low-dose ORAL vitamin K 2.5-5 mg. INR slightly above range (3-4.5): lower or hold a dose. Always look for the cause (drug interaction, diet, illness).</div><div class="rtt">⚠️ WRONG: 'give FFP or 4-factor PCC for an INR of 8 in a patient who is not bleeding.' Reversal products (PCC/FFP) and high-dose IV vitamin K are reserved for serious bleeding — for asymptomatic high INR you hold warfarin ± low-dose oral vitamin K, avoiding overcorrection and rebound thrombosis.</div></div><div class="rt"><div class="rtl">5. 4-factor PCC</div><div class="rte">For MAJOR or life-threatening bleeding on warfarin, 4-factor prothrombin complex concentrate (4F-PCC; contains factors II, VII, IX, X plus proteins C and S) is the PREFERRED reversal agent — dosed by weight and INR, it works within minutes, requires small volume, and needs no blood-type matching. ALWAYS co-administer IV vitamin K because PCC's effect is short-lived.</div><div class="rtt">⚠️ WRONG: 'give 4F-PCC alone and skip vitamin K because the INR corrected immediately.' PCC's transfused factors are consumed within hours and the INR will rebound; IV vitamin K must be given concurrently to sustain reversal by restoring endogenous factor synthesis.</div></div><div class="rt"><div class="rtl">6. IV vitamin K</div><div class="rte">In major bleeding give IV vitamin K 5-10 mg (slow infusion) together with PCC/FFP — it provides DURABLE reversal by allowing hepatic synthesis of functional factors over ~12-24 h, covering the gap after PCC wanes. IV (not oral) is used for serious bleeding because it acts faster. Give slowly due to a small risk of anaphylactoid reaction.</div><div class="rtt">⚠️ WRONG: 'give a large IV vitamin K dose (e.g. 10 mg) to a stable patient just to normalize the INR fast.' Over-reversing with high-dose vitamin K in a non-bleeding patient causes prolonged warfarin RESISTANCE for days, making re-anticoagulation difficult — high-dose IV vitamin K is for active major bleeding only.</div></div><div class="rt"><div class="rtl">7. FFP only if no PCC</div><div class="rte">Fresh frozen plasma is SECOND-LINE for warfarin reversal, used only when 4F-PCC is unavailable. FFP requires large volumes (risk of volume overload/TACO), takes time to thaw and type-match, and reverses less completely/quickly than PCC. It supplies all coagulation factors but is inferior for urgent warfarin reversal.</div><div class="rtt">⚠️ WRONG: 'reach for FFP first in a warfarin patient with intracranial hemorrhage.' 4F-PCC is preferred (faster, smaller volume, more complete); FFP is only a fallback when PCC is not on hand — delaying with FFP in ICH costs critical time.</div></div><div class="rt"><div class="rtl">8. Stop 5 days pre-op</div><div class="rte">Hold warfarin about 5 days before major surgery to let the INR drift down to &lt;1.5 (≈5 days = ~5 half-lives covering the long-lived factor II). Check INR the day before surgery; if still ≥1.5 give low-dose oral vitamin K 1-2.5 mg. Resume warfarin 12-24 h post-op once hemostasis is secure.</div><div class="rtt">⚠️ WRONG: 'stop warfarin the night before surgery.' Warfarin's effect (via long-half-life prothrombin) persists for days; a single night is not enough — you need ~5 days for the INR to normalize before major surgery.</div></div><div class="rt"><div class="rtl">9. Bridge if high risk</div><div class="rte">Peri-procedural BRIDGING with therapeutic LMWH (or UFH) is reserved for HIGH thrombotic risk: mechanical mitral valve, recent (&lt;3 mo) VTE/stroke, CHA2DS2-VASc ≥7-9, or known caged-ball valves. Start LMWH when INR falls &lt;2, stop LMWH ~24 h pre-op, resume after hemostasis. The BRIDGE trial showed most AFib patients do NOT benefit from bridging.</div><div class="rtt">⚠️ WRONG: 'bridge every warfarin patient with LMWH around surgery.' The BRIDGE trial found that in low/moderate-risk AFib, bridging did not reduce thromboembolism but TRIPLED major bleeding — only high-thrombotic-risk patients should be bridged.</div></div><div class="rt"><div class="rtl">10. Skin necrosis</div><div class="rte">Warfarin-induced skin necrosis appears within the first ~3-5 days, striking fatty areas (breast, thigh, buttock, abdomen) as painful purple lesions progressing to necrosis. It results from the early steep fall of protein C (short half-life) before procoagulant factors decline, causing microvascular thrombosis — risk is highest in protein C or protein S deficiency.</div><div class="rtt">⚠️ WRONG: 'warfarin skin necrosis means the patient is over-anticoagulated, so stop warfarin and wait.' It is an EARLY hypercoagulable complication, not over-anticoagulation; management is stop warfarin, give vitamin K, start a non-warfarin anticoagulant (heparin), and replace protein C — and always bridge with heparin to prevent it.</div></div><div class="rt"><div class="rtl">11. Crosses placenta</div><div class="rte">Warfarin crosses the placenta and is TERATOGENIC: first-trimester exposure causes fetal warfarin syndrome (nasal/bone hypoplasia, stippled epiphyses); later exposure causes CNS abnormalities and fetal/intracranial hemorrhage. It is contraindicated in pregnancy (the narrow exception is some mechanical-valve patients in specialized centers, with counseling).</div><div class="rtt">⚠️ WRONG: 'continue warfarin through pregnancy in a VTE patient because heparin is inconvenient.' Warfarin's teratogenicity and fetal bleeding risk mandate switching to LMWH; warfarin should not be used in pregnancy for routine VTE.</div></div><div class="rt"><div class="rtl">12. Use LMWH in pregnancy</div><div class="rte">LMWH is the anticoagulant of choice in pregnancy because it does NOT cross the placenta (large molecule) — it is not teratogenic and does not cause fetal bleeding. It requires dose adjustment as weight/GFR change and may need anti-Xa monitoring. Unfractionated heparin is an alternative, also placenta-safe.</div><div class="rtt">⚠️ WRONG: 'use a DOAC in pregnancy as a convenient warfarin alternative.' DOACs are NOT recommended in pregnancy (insufficient safety data, cross the placenta); LMWH is the correct substitute for warfarin in pregnant patients.</div></div><div class="rt"><div class="rtl">13. Safe in breastfeeding</div><div class="rte">Warfarin is COMPATIBLE with breastfeeding — it is highly protein-bound and does not pass into breast milk in clinically significant amounts, so it does not anticoagulate the infant. This contrasts sharply with its pregnancy contraindication; the placenta and breast milk are different barriers.</div><div class="rtt">⚠️ WRONG: 'a breastfeeding mother needing anticoagulation must avoid warfarin like she did in pregnancy.' Warfarin (and LMWH/UFH) are all safe during lactation — the teratogenic/placental concern does not apply to breast milk.</div></div><div class="rt"><div class="rtl">14. LAC = unreliable INR</div><div class="rte">In antiphospholipid syndrome with a lupus anticoagulant (LAC), the antibody can interfere with the phospholipid-dependent PT/INR assay, making the INR unreliable for monitoring warfarin. Use chromogenic factor X activity (target ~20-40%) to gauge true anticoagulation intensity. APS VTE is treated with warfarin (DOACs inferior in triple-positive APS).</div><div class="rtt">⚠️ WRONG: 'trust the standard INR to dose-adjust warfarin in a lupus-anticoagulant patient.' The LAC artifactually alters the INR, so the displayed value may not reflect actual anticoagulation — monitor with chromogenic factor X activity instead.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aps_treatment.html" title="APS — Treatment, Pregnancy &amp; Catastrophic APS (Warfarin Armory / Maternity Ward / CAPS Bunker)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="warf_overview.html" title="Warfarin — Mechanism &amp; Monitoring">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

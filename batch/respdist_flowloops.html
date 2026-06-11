@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Respiratory Disturbance — Flow-Volume Loop Gallery (Upper-Airway Obstruction)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Normal loop</b> — Loss of the symmetric peaked shape — flattening (plateau) or scooping — is the first clue to obstruction or upper-airway disease; read the SHAPE before any numbers.</li><li><b>Normal label</b> — A normal FEV1/FVC ratio can still hide a flattened limb of upper-airway obstruction — central/upper-airway lesions distort the loop shape without necessarily dropping the ratio, so inspect the contour, not just spirometric numbers.</li><li><b>Obstruction (scooped)</b> — Scooping = diffuse SMALL-airway obstruction, NOT central/upper-airway obstruction (which gives flat plateaus). Don't confuse a concave limb with the boxy plateau of a fixed central lesion.</li><li><b>Post-bronchodilator response</b> — Lack of bronchodilator reversibility points to COPD, not asthma — but a single non-reversible test doesn't exclude asthma entirely (asthma can become partly fixed with remodeling).</li><li><b>Initial spike (central collapse)</b> — The early spike-then-collapse is emphysema's SMALL-airway pattern; it is distinct from the flat-topped PLATEAU of central/upper-airway obstruction.</li><li><b>Fixed central obstruction (both flat)</b> — Both limbs flat = FIXED lesion. If only ONE limb flattens, it is a VARIABLE obstruction (the limb tells you intra- vs extrathoracic).</li><li><b>Goiter / tracheal stenosis</b> — Don't call a fixed central lesion 'asthma' — fixed obstruction flattens both limbs (no scooping) and does not reverse with bronchodilators.</li><li><b>Variable extrathoracic (insp flat)</b> — Extrathoracic = INspiratory flattening. The negative intraluminal pressure of inhalation collapses the extrathoracic airway; on exhalation positive pressure splints it open.</li><li><b>Extrathoracic collapse mechanism</b> — Mixing up the mechanism leads to assigning the wrong limb — remember extrathoracic lesions impair INSPIRATION (the limb that flattens).</li><li><b>Vocal cord dysfunction</b> — VCD mimics refractory asthma but does NOT respond to bronchodilators or steroids — the flattened INSPIRATORY limb (and normal lower-airway flows) gives it away. Treat with speech therapy, not escalating asthma meds.</li><li><b>Variable intrathoracic (exp flat)</b> — Intrathoracic = EXpiratory flattening. Positive pleural pressure during forced exhalation collapses the intrathoracic airway; inspiration (negative pleural pressure) pulls it open.</li><li><b>Tracheomalacia</b> — Tracheomalacia flattens EXpiration; do not confuse it with extrathoracic lesions (VCD), which flatten INspiration.</li><li><b>Intrathoracic collapse mechanism</b> — Reversing the inspiratory/expiratory rule between intra- and extrathoracic lesions is THE classic board trap: Intrathoracic = Expiration, Extrathoracic = Inspiration, Fixed = both.</li><li><b>Restriction (small, not scooped)</b> — A small loop without a concave limb is RESTRICTION, not obstruction — shape (concavity), not just size, decides. Obstruction scoops; restriction shrinks.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Normal loop</div><div class="rte">The normal flow-volume loop has a rapid rise to a sharp PEAK expiratory flow followed by a straight, gently downsloping expiratory limb, and a rounded (semicircular) inspiratory limb below. Expiration is plotted on top, inspiration on the bottom; the x-axis is lung volume (TLC at left, RV at right).</div><div class="rtt">⚠️ Loss of the symmetric peaked shape — flattening (plateau) or scooping — is the first clue to obstruction or upper-airway disease; read the SHAPE before any numbers.</div></div><div class="rt"><div class="rtl">2. Normal label</div><div class="rte">Use the normal loop as the reference standard: peaked expiratory limb, rounded inspiratory limb, both unflattened. The inspiratory limb is effort-dependent and normally symmetric to expiration in the mid-portion.</div><div class="rtt">⚠️ A normal FEV1/FVC ratio can still hide a flattened limb of upper-airway obstruction — central/upper-airway lesions distort the loop shape without necessarily dropping the ratio, so inspect the contour, not just spirometric numbers.</div></div><div class="rt"><div class="rtl">3. Obstruction (scooped)</div><div class="rte">Lower-airway (intrathoracic small-airway) obstruction — asthma and COPD — produces a CONCAVE, 'scooped-out' expiratory limb because flow falls disproportionately at low lung volumes as small airways collapse. RV/TLC rises with air trapping.</div><div class="rtt">⚠️ Scooping = diffuse SMALL-airway obstruction, NOT central/upper-airway obstruction (which gives flat plateaus). Don't confuse a concave limb with the boxy plateau of a fixed central lesion.</div></div><div class="rt"><div class="rtl">4. Post-bronchodilator response</div><div class="rte">Bronchodilator reversibility testing: a rise in FEV1 of ≥12% AND ≥200 mL after a SABA defines significant reversibility, supporting asthma. COPD/emphysema typically shows little or no reversibility (fixed obstruction).</div><div class="rtt">⚠️ Lack of bronchodilator reversibility points to COPD, not asthma — but a single non-reversible test doesn't exclude asthma entirely (asthma can become partly fixed with remodeling).</div></div><div class="rt"><div class="rtl">5. Initial spike (central collapse)</div><div class="rte">Emphysema's loop shows a brief, sharp INITIAL expiratory spike followed by rapid airway collapse and a steeply concave limb — the loss of elastic recoil lets airways collapse early in expiration once the initial burst passes.</div><div class="rtt">⚠️ The early spike-then-collapse is emphysema's SMALL-airway pattern; it is distinct from the flat-topped PLATEAU of central/upper-airway obstruction.</div></div><div class="rt"><div class="rtl">6. Fixed central obstruction (both flat)</div><div class="rte">A FIXED upper-airway/central obstruction (tracheal stenosis, large goiter, fixed mass) flattens BOTH the inspiratory and expiratory limbs, giving a rectangular 'boxed' loop, because the rigid narrowing limits flow equally in both phases regardless of pressure.</div><div class="rtt">⚠️ Both limbs flat = FIXED lesion. If only ONE limb flattens, it is a VARIABLE obstruction (the limb tells you intra- vs extrathoracic).</div></div><div class="rt"><div class="rtl">7. Goiter / tracheal stenosis</div><div class="rte">Tracheal stenosis (post-intubation, granulomatosis with polyangiitis) and a large goiter are the classic FIXED central lesions producing the boxed-off loop with flattening of both limbs.</div><div class="rtt">⚠️ Don't call a fixed central lesion 'asthma' — fixed obstruction flattens both limbs (no scooping) and does not reverse with bronchodilators.</div></div><div class="rt"><div class="rtl">8. Variable extrathoracic (insp flat)</div><div class="rte">Variable EXTRAthoracic obstruction (vocal cord dysfunction, extrathoracic tracheomalacia, extrathoracic tumor) flattens the INSPIRATORY limb only. During inspiration, the airway pressure inside the extrathoracic airway falls below atmospheric, so the narrowing collapses inward.</div><div class="rtt">⚠️ Extrathoracic = INspiratory flattening. The negative intraluminal pressure of inhalation collapses the extrathoracic airway; on exhalation positive pressure splints it open.</div></div><div class="rt"><div class="rtl">9. Extrathoracic collapse mechanism</div><div class="rte">Mechanism: the extrathoracic airway sits in atmospheric pressure. On inspiration, intraluminal pressure drops below atmospheric → transmural pressure collapses the variable lesion → inspiratory flow plateau. On expiration the airway is pushed open, so expiration is preserved.</div><div class="rtt">⚠️ Mixing up the mechanism leads to assigning the wrong limb — remember extrathoracic lesions impair INSPIRATION (the limb that flattens).</div></div><div class="rt"><div class="rtl">10. Vocal cord dysfunction</div><div class="rte">Vocal cord dysfunction (paradoxical vocal fold motion) is a variable EXTRAthoracic lesion → flattened INSPIRATORY limb. It causes episodic stridor/dyspnea that MIMICS asthma but localizes to the throat, with inspiratory adduction of the cords on laryngoscopy.</div><div class="rtt">⚠️ VCD mimics refractory asthma but does NOT respond to bronchodilators or steroids — the flattened INSPIRATORY limb (and normal lower-airway flows) gives it away. Treat with speech therapy, not escalating asthma meds.</div></div><div class="rt"><div class="rtl">11. Variable intrathoracic (exp flat)</div><div class="rte">Variable INTRAthoracic obstruction (tracheomalacia, intrathoracic tumor/mass, intrathoracic tracheal lesion) flattens the EXPIRATORY limb only. During forced expiration the rising pleural/intrathoracic pressure exceeds intraluminal pressure and collapses the lesion.</div><div class="rtt">⚠️ Intrathoracic = EXpiratory flattening. Positive pleural pressure during forced exhalation collapses the intrathoracic airway; inspiration (negative pleural pressure) pulls it open.</div></div><div class="rt"><div class="rtl">12. Tracheomalacia</div><div class="rte">Tracheomalacia = a floppy, weakened trachea. When intrathoracic, it is a variable intrathoracic obstruction that collapses on forced EXPIRATION → expiratory limb plateau (and expiratory wheeze/barking cough).</div><div class="rtt">⚠️ Tracheomalacia flattens EXpiration; do not confuse it with extrathoracic lesions (VCD), which flatten INspiration.</div></div><div class="rt"><div class="rtl">13. Intrathoracic collapse mechanism</div><div class="rte">Mechanism: intrathoracic airways are surrounded by pleural pressure. During forced expiration pleural pressure becomes strongly positive and exceeds intraluminal pressure at the variable lesion → collapse → expiratory plateau. During inspiration negative pleural pressure holds it open.</div><div class="rtt">⚠️ Reversing the inspiratory/expiratory rule between intra- and extrathoracic lesions is THE classic board trap: Intrathoracic = Expiration, Extrathoracic = Inspiration, Fixed = both.</div></div><div class="rt"><div class="rtl">14. Restriction (small, not scooped)</div><div class="rte">Restriction shrinks the WHOLE loop into a tall, narrow 'witch's hat' shifted toward low volumes (low TLC and RV), but the expiratory limb keeps a normal convex/peaked shape with NO scooping — flows may even be supranormal for the small volume.</div><div class="rtt">⚠️ A small loop without a concave limb is RESTRICTION, not obstruction — shape (concavity), not just size, decides. Obstruction scoops; restriction shrinks.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="respdist_patterns.html" title="Respiratory Disturbance — Disease Pattern Recognition (Pulmonology Waiting Room)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="respdist_hypoxemia.html" title="Respiratory Disturbance — Hypoxemia, A–a Gradient &amp; Shunt (Gas-Exchange Factory)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

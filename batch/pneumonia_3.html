@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pneumonia — CAP severity (CURB-65, ICU criteria) &amp; diagnostics</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>CURB-65 wheel</b> — CURB-65 guides SITE OF CARE (admission/ICU), not antibiotic selection — picking antibiotics 'because the CURB-65 is high' is a category error. It can also UNDERESTIMATE severity in a young, hypoxemic patient (no oxygenation variable), so don't send home a hypoxic patient just because the score is 0-1.</li><li><b>C — Confusion</b> — Don't dismiss new confusion as 'baseline dementia' or attribute it solely to a UTI — in an older adult it may be the only clue to pneumonia/sepsis. It must be NEW confusion to count.</li><li><b>U — Urea &gt;7 mmol/L</b> — It is UREA / BUN that is scored, NOT creatinine — a normal creatinine with an elevated BUN still earns the point. (Note: the abbreviated 'CRB-65,' used without labs, drops this variable.)</li><li><b>R — RR ≥30</b> — Tachypnea is frequently undercounted at the bedside — don't overlook it when the other vitals look 'okay.' RR ≥30 is also one of the IDSA/ATS minor ICU criteria.</li><li><b>B — Blood pressure low</b> — Hypotension that needs fluids/vasopressors is itself a severe-CAP/ICU trigger — don't treat a hypotensive pneumonia patient as routine ward care. Distinguish fluid-responsive hypotension (minor criterion) from vasopressor-dependent shock (major criterion → automatic ICU).</li><li><b>65 — age</b> — Older age alone can tip disposition toward admission even when vitals look mild — and elders may lack fever/leukocytosis, presenting instead with confusion or functional decline, so don't be falsely reassured.</li><li><b>CURB-65 score interpretation</b> — Treating a high CURB-65 (≥3) patient as an outpatient is a clear wrong answer. Remember the score informs disposition, not the choice of drug, and clinical judgment/hypoxemia can override a deceptively low score.</li><li><b>ICU major criteria</b> — A single major criterion is sufficient for ICU — don't wait to accumulate minor criteria. Conversely, don't downgrade a vasopressor-dependent or ventilated patient to the ward.</li><li><b>ICU minor criteria (need ≥3)</b> — A patient with ≥3 minor criteria needs ICU-level care even WITHOUT overt shock or ventilation — don't be lulled by the absence of a major criterion. Note the counterintuitive ones: LEUKOPENIA (not leukocytosis), HYPOthermia, and thrombocytopenia all count as severity markers.</li><li><b>Radiographic clues board</b> — Upper-lobe cavitation should trigger a TB workup (acid-fast, isolation), NOT be assumed to be bacterial CAP — and definitely don't start an empiric respiratory FQ that could partially treat and mask TB. Multiple bilateral peripheral cavities suggest septic emboli, not simple CAP.</li><li><b>Sputum Gram stain &amp; culture</b> — Don't delay empiric antibiotics in severe CAP while waiting for sputum results — collect specimens but treat promptly (time-to-antibiotics matters in severe disease/sepsis). A contaminated, epithelial-cell-rich specimen is uninterpretable, so heavy oral flora ≠ the true pathogen.</li><li><b>Blood cultures</b> — Routine blood cultures are LOW-yield in mild outpatient CAP and not required — reserve them for severe disease or specific risk factors. Don't withhold/delay antibiotics in a septic patient just to draw cultures; obtain them rapidly and treat.</li><li><b>Legionella &amp; pneumococcal urinary antigen</b> — A NEGATIVE Legionella urinary antigen does NOT exclude disease — it misses non-serogroup-1 strains; if suspicion is high, pursue lower-respiratory culture (BCYE agar) or PCR. Antigen positivity can also persist for weeks, so it may reflect a recent rather than current infection.</li><li><b>Procalcitonin (PCT)</b> — A low procalcitonin does NOT rule out bacterial pneumonia and does NOT justify withholding empiric antibiotics in a patient with a clinical/radiographic CAP diagnosis — 'don't treat because PCT is low' is the wrong answer.</li><li><b>Elderly presentation pearl</b> — Don't anchor on UTI or 'delirium' and miss pneumonia in a confused elder — always include pneumonia in the differential for new confusion, and don't be reassured by an absent fever or normal WBC (leukopenia/hypothermia are actually severity markers).</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. CURB-65 wheel</div><div class="rte">CURB-65 is a 5-point mortality/disposition tool awarding 1 point each for Confusion, Urea &gt;7 mmol/L (BUN &gt;19 mg/dL), Respiratory rate ≥30, low Blood pressure (SBP &lt;90 or DBP ≤60), and age ≥65. Score 0-1 → outpatient, 2 → consider short hospitalization, ≥3 → hospitalize and assess for ICU. It estimates 30-day mortality and is simpler than the more comprehensive PSI/PORT score.</div><div class="rtt">⚠️ CURB-65 guides SITE OF CARE (admission/ICU), not antibiotic selection — picking antibiotics 'because the CURB-65 is high' is a category error. It can also UNDERESTIMATE severity in a young, hypoxemic patient (no oxygenation variable), so don't send home a hypoxic patient just because the score is 0-1.</div></div><div class="rt"><div class="rtl">2. C — Confusion</div><div class="rte">New-onset confusion/disorientation scores 1 point and reflects severe disease and/or hypoperfusion. It is an especially important sign in the elderly, in whom altered mental status may be the dominant or only presentation of pneumonia.</div><div class="rtt">⚠️ Don't dismiss new confusion as 'baseline dementia' or attribute it solely to a UTI — in an older adult it may be the only clue to pneumonia/sepsis. It must be NEW confusion to count.</div></div><div class="rt"><div class="rtl">3. U — Urea &gt;7 mmol/L</div><div class="rte">Blood urea &gt;7 mmol/L (equivalently BUN &gt;19-20 mg/dL) scores 1 point, marking end-organ hypoperfusion/dehydration and worse prognosis. It is one reason a basic metabolic panel is part of the initial CAP workup.</div><div class="rtt">⚠️ It is UREA / BUN that is scored, NOT creatinine — a normal creatinine with an elevated BUN still earns the point. (Note: the abbreviated 'CRB-65,' used without labs, drops this variable.)</div></div><div class="rt"><div class="rtl">4. R — RR ≥30</div><div class="rte">A respiratory rate ≥30 breaths/min scores 1 point and is an early, sensitive marker of respiratory compromise and impending failure. Tachypnea often precedes hypoxemia and hypotension.</div><div class="rtt">⚠️ Tachypnea is frequently undercounted at the bedside — don't overlook it when the other vitals look 'okay.' RR ≥30 is also one of the IDSA/ATS minor ICU criteria.</div></div><div class="rt"><div class="rtl">5. B — Blood pressure low</div><div class="rte">Hypotension (SBP &lt;90 mmHg OR DBP ≤60 mmHg) scores 1 point and signals impending septic shock. It overlaps with the severe-CAP framework: hypotension requiring aggressive fluid resuscitation is a minor ICU criterion, and vasopressor-requiring septic shock is a MAJOR criterion.</div><div class="rtt">⚠️ Hypotension that needs fluids/vasopressors is itself a severe-CAP/ICU trigger — don't treat a hypotensive pneumonia patient as routine ward care. Distinguish fluid-responsive hypotension (minor criterion) from vasopressor-dependent shock (major criterion → automatic ICU).</div></div><div class="rt"><div class="rtl">6. 65 — age</div><div class="rte">Age ≥65 years scores 1 point, reflecting the steep rise in pneumonia mortality with age due to comorbidity, immunosenescence, and atypical presentations.</div><div class="rtt">⚠️ Older age alone can tip disposition toward admission even when vitals look mild — and elders may lack fever/leukocytosis, presenting instead with confusion or functional decline, so don't be falsely reassured.</div></div><div class="rt"><div class="rtl">7. CURB-65 score interpretation</div><div class="rte">Mortality climbs with score: 0 ≈ 0.6-1.5% (outpatient appropriate), 1-2 ≈ low-to-moderate (consider admission, especially at 2), and ≥3 ≈ ~22% 30-day mortality (admit and assess for ICU). The PSI/PORT score is an alternative, more granular tool that better identifies low-risk patients suitable for outpatient care.</div><div class="rtt">⚠️ Treating a high CURB-65 (≥3) patient as an outpatient is a clear wrong answer. Remember the score informs disposition, not the choice of drug, and clinical judgment/hypoxemia can override a deceptively low score.</div></div><div class="rt"><div class="rtl">8. ICU major criteria</div><div class="rte">The IDSA/ATS severe-CAP definition has 2 MAJOR criteria — invasive mechanical ventilation (respiratory failure requiring intubation) and septic shock requiring vasopressors. Either ONE alone mandates ICU admission.</div><div class="rtt">⚠️ A single major criterion is sufficient for ICU — don't wait to accumulate minor criteria. Conversely, don't downgrade a vasopressor-dependent or ventilated patient to the ward.</div></div><div class="rt"><div class="rtl">9. ICU minor criteria (need ≥3)</div><div class="rte">There are 9 IDSA/ATS MINOR criteria: RR ≥30, PaO2/FiO2 ≤250, multilobar infiltrates, confusion/disorientation, uremia (BUN ≥20), leukopenia (WBC &lt;4000), thrombocytopenia (&lt;100k), hypothermia (&lt;36°C), and hypotension requiring aggressive fluid resuscitation. Meeting ≥3 minor criteria defines severe CAP warranting ICU or high-level monitoring.</div><div class="rtt">⚠️ A patient with ≥3 minor criteria needs ICU-level care even WITHOUT overt shock or ventilation — don't be lulled by the absence of a major criterion. Note the counterintuitive ones: LEUKOPENIA (not leukocytosis), HYPOthermia, and thrombocytopenia all count as severity markers.</div></div><div class="rt"><div class="rtl">10. Radiographic clues board</div><div class="rte">Radiographic patterns narrow the differential: cavitation/multilobar disease = more severe (Klebsiella, S. aureus, anaerobes); thin-walled pneumatoceles → S. aureus; upper-lobe/apical cavitation → reactivation TB; gravity-dependent (posterior upper, superior lower segments, right &gt; left) → aspiration. Multilobar infiltrates are also an ICU minor criterion.</div><div class="rtt">⚠️ Upper-lobe cavitation should trigger a TB workup (acid-fast, isolation), NOT be assumed to be bacterial CAP — and definitely don't start an empiric respiratory FQ that could partially treat and mask TB. Multiple bilateral peripheral cavities suggest septic emboli, not simple CAP.</div></div><div class="rt"><div class="rtl">11. Sputum Gram stain &amp; culture</div><div class="rte">Sputum Gram stain and culture help identify and target the pathogen and are most useful in severe disease, before antibiotics, and when a resistant/unusual organism is suspected (prior MRSA/Pseudomonas). A good specimen has &gt;25 neutrophils and &lt;10 epithelial cells per low-power field. They are NOT routinely required for mild outpatient CAP.</div><div class="rtt">⚠️ Don't delay empiric antibiotics in severe CAP while waiting for sputum results — collect specimens but treat promptly (time-to-antibiotics matters in severe disease/sepsis). A contaminated, epithelial-cell-rich specimen is uninterpretable, so heavy oral flora ≠ the true pathogen.</div></div><div class="rt"><div class="rtl">12. Blood cultures</div><div class="rte">Blood cultures (two sets before antibiotics) are recommended in severe/ICU CAP and in patients with risk factors (MRSA/Pseudomonas, cavitary disease, asplenia, leukopenia) to detect bacteremia and tailor therapy. Pneumococcus is the most common blood-culture isolate.</div><div class="rtt">⚠️ Routine blood cultures are LOW-yield in mild outpatient CAP and not required — reserve them for severe disease or specific risk factors. Don't withhold/delay antibiotics in a septic patient just to draw cultures; obtain them rapidly and treat.</div></div><div class="rt"><div class="rtl">13. Legionella &amp; pneumococcal urinary antigen</div><div class="rte">Urinary antigen tests give rapid, antibiotic-insensitive results: the Legionella urinary antigen detects L. pneumophila serogroup 1, and the pneumococcal urinary antigen detects S. pneumoniae. They are recommended in severe CAP and when there is a Legionella outbreak/travel exposure, and can allow targeted de-escalation.</div><div class="rtt">⚠️ A NEGATIVE Legionella urinary antigen does NOT exclude disease — it misses non-serogroup-1 strains; if suspicion is high, pursue lower-respiratory culture (BCYE agar) or PCR. Antigen positivity can also persist for weeks, so it may reflect a recent rather than current infection.</div></div><div class="rt"><div class="rtl">14. Procalcitonin (PCT)</div><div class="rte">Procalcitonin rises with bacterial infection and falls with viral/resolving infection, and can help GUIDE de-escalation/duration. However, current IDSA/ATS guidance is that PCT should NOT be used alone to decide whether to START antibiotics in suspected CAP — the clinical and radiographic diagnosis drives initiation.</div><div class="rtt">⚠️ A low procalcitonin does NOT rule out bacterial pneumonia and does NOT justify withholding empiric antibiotics in a patient with a clinical/radiographic CAP diagnosis — 'don't treat because PCT is low' is the wrong answer.</div></div><div class="rt"><div class="rtl">15. Elderly presentation pearl</div><div class="rte">In older adults, pneumonia may present WITHOUT fever, cough, or leukocytosis — altered mental status, functional decline, falls, tachypnea, or decompensation of a chronic illness may be the only signs. A low threshold for chest imaging and prompt evaluation is essential.</div><div class="rtt">⚠️ Don't anchor on UTI or 'delirium' and miss pneumonia in a confused elder — always include pneumonia in the differential for new confusion, and don't be reassured by an absent fever or normal WBC (leukopenia/hypothermia are actually severity markers).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ild_3.html" title="ILD — Treatment by Responsiveness &amp; Drug-Induced Causes">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pneumonia_1.html" title="Pneumonia — Organisms (typical, atypical, epidemiologic clues &amp; CA-MRSA)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

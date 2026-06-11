@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CKD — Definition &amp; KDIGO Staging</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Over 3 months banner</b> — Stem: a single lab shows eGFR 55 on one visit — wrong answer is to immediately diagnose CKD (or to label a 3-day creatinine rise as CKD). Discriminator: CKD requires PERSISTENCE &gt;3 months; a one-time low eGFR or a single abnormal value may be AKI or transient — you must confirm chronicity (repeat testing) before diagnosing CKD.</li><li><b>Detective / occult FSGS</b> — Stem: diabetic with CKD, heavy proteinuria, hematuria, but NO retinopathy — wrong answer is to assume diabetic nephropathy and stop. Discriminator: in diabetes, nephropathy almost always coexists with RETINOPATHY; its ABSENCE (or active sediment/hematuria, very rapid decline, or proteinuria out of proportion) should prompt biopsy to find FSGS or another glomerulonephritis rather than attributing all CKD to diabetes/HTN.</li><li><b>KDIGO eGFR staircase (G1–G5)</b> — Stem: healthy young person, eGFR 85 (G2), no proteinuria, no hematuria, normal imaging — wrong answer is to diagnose CKD because eGFR is 'below 90.' Discriminator: G1 (≥90) and G2 (60–89) are NOT CKD by themselves — they require a co-existing DAMAGE MARKER (albuminuria, hematuria, structural/biopsy abnormality). Only eGFR &lt;60 (G3a+) qualifies as CKD on GFR alone.</li><li><b>Albuminuria A1/A2/A3</b> — Stem: two patients both at G3a — one A1, one A3 — treated as identical risk — wrong answer. Discriminator: staging on eGFR ALONE misses risk; albuminuria is an INDEPENDENT predictor of CKD progression AND cardiovascular death, so the A3 patient (heat-map red) is far higher risk and warrants more aggressive RAAS blockade/SGLT2i and monitoring. Always report G AND A together.</li><li><b>Global burden rising / world map</b> — Stem framing CKD as a rare/declining problem or attributing the global rise primarily to glomerulonephritis/infections — wrong answer. Discriminator: the global rise is driven predominantly by DIABETES and HYPERTENSION (lifestyle/metabolic disease) and aging, not by primary glomerular or infectious causes.</li><li><b>King — etiology directed</b> — Stem: CKD patient given only generic renoprotection while an obstructing stone / treatable glomerulonephritis / RAS goes unaddressed — wrong answer. Discriminator: management must be ETIOLOGY-DIRECTED — generic measures don't substitute for treating a reversible/specific cause (relieve obstruction, immunosuppress active GN, control diabetes); missing the cause is the error.</li><li><b>RAAS vicious cycle wheel</b> — Stem: patient with normal systemic BP but progressive proteinuric CKD — wrong answer is to assume the glomerulus is fine because the cuff pressure is normal. Discriminator: INTRAGLOMERULAR pressure (efferent constriction from angiotensin II) can stay high and damage the glomerulus even when SYSTEMIC BP is normal — which is why RAAS blockade slows progression independent of BP, and why proteinuria persists despite normal cuff readings.</li><li><b>Hyperfiltration tower</b> — Stem: early diabetic with an ELEVATED eGFR (hyperfiltration) — wrong answer is to call the kidneys 'extra healthy' or low-risk. Discriminator: hyperfiltration is a MALADAPTIVE early warning of nephron stress/progression, not robust health; it precedes albuminuria and decline. SGLT2i/RAAS blockade reduce it — high eGFR here is a red flag, not reassurance.</li><li><b>ACEi/ARB knight</b> — Stem: ACEi started for albuminuric CKD, creatinine rises ~25% — wrong answer is to discontinue it. Discriminator: an early creatinine rise UP TO ~30% is EXPECTED and acceptable (reflects intended lowering of glomerular pressure) — continue and monitor. Stop and investigate (e.g., bilateral renal artery stenosis, volume depletion) only if the rise exceeds ~30% or potassium becomes dangerous; and never combine ACEi + ARB.</li><li><b>SGLT2 shield</b> — Stem: non-diabetic CKD patient with proteinuria already on a maxed ACEi — wrong answer is to withhold an SGLT2 inhibitor because the patient 'isn't diabetic,' or to stop it over the early eGFR dip. Discriminator: SGLT2i benefit is NOT limited to diabetics (proven in non-diabetic CKD) and is ADDITIVE to RAAS blockade; the small initial eGFR dip is hemodynamic and expected, not a reason to stop.</li><li><b>Etiology gallery (DN, GN, HTN, ADPKD)</b> — Stem asks the single most common cause of ESRD — wrong answer is glomerulonephritis or hypertension. Discriminator: DIABETIC NEPHROPATHY is the most common cause of ESRD overall (hypertension is second). Don't pick GN or HTN as #1; and remember ADPKD is the most common HEREDITARY cause.</li><li><b>Risk factor icons</b> — Stem: young adult born premature/low birth weight now with early proteinuria/HTN — wrong answer is to dismiss CKD risk as unrelated to birth history. Discriminator: low nephron endowment (prematurity/LBW) is an established, often-overlooked CKD risk factor (low congenital nephron number → hyperfiltration and earlier CKD); combine with modifiable risks (smoking, obesity, proteinuria) for risk assessment.</li><li><b>Race-free eGFR equation</b> — Stem: low-muscle-mass cachectic patient with a 'normal' creatinine — wrong answer is to trust the creatinine-based eGFR as accurate (or to apply the old race adjustment). Discriminator: low muscle mass produces a falsely LOW creatinine → falsely HIGH/reassuring eGFR; use CYSTATIN C-based eGFR for a truer estimate. And never apply the obsolete race coefficient.</li><li><b>Uremia brain (sequela)</b> — Stem: asymptomatic patient at eGFR 13 with normal electrolytes — wrong answer is to start dialysis purely because the eGFR number crossed a threshold. Discriminator: dialysis initiation is driven by SYMPTOMS/complications (AEIOU — uremic pericarditis, encephalopathy, refractory hyperkalemia/acidosis/overload, intoxication), not by an eGFR number alone; trials (IDEAL) show no benefit to early, asymptomatic 'eGFR-triggered' starts.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Over 3 months banner</div><div class="rte">CKD = abnormalities of kidney STRUCTURE or FUNCTION present for &gt;3 MONTHS with implications for health. Operationally: eGFR &lt;60 mL/min/1.73m2, OR markers of kidney damage (albuminuria ≥30 mg/g, abnormal urine sediment/hematuria, electrolyte/tubular disorders, structural abnormalities on imaging, biopsy abnormalities, or transplant history) — EITHER persisting &gt;3 months. Chronicity (&gt;3 months) is exactly what separates CKD from AKI. Mnemonic: '&lt;60 OR damage marker, for &gt;3 months.'</div><div class="rtt">⚠️ Stem: a single lab shows eGFR 55 on one visit — wrong answer is to immediately diagnose CKD (or to label a 3-day creatinine rise as CKD). Discriminator: CKD requires PERSISTENCE &gt;3 months; a one-time low eGFR or a single abnormal value may be AKI or transient — you must confirm chronicity (repeat testing) before diagnosing CKD.</div></div><div class="rt"><div class="rtl">2. Detective / occult FSGS</div><div class="rte">Always investigate the CAUSE of CKD rather than reflexively labeling it 'hypertensive' or 'diabetic.' Occult primary glomerular disease — especially FSGS (focal segmental glomerulosclerosis, often with heavy proteinuria) and other glomerulonephritides — is commonly missed. Clues to look for an alternate cause: significant proteinuria, hematuria/dysmorphic RBCs or casts, rapid decline, or CKD without diabetic retinopathy in a 'presumed diabetic.' Mnemonic: 'don't blindly accept the label — hunt the real culprit.'</div><div class="rtt">⚠️ Stem: diabetic with CKD, heavy proteinuria, hematuria, but NO retinopathy — wrong answer is to assume diabetic nephropathy and stop. Discriminator: in diabetes, nephropathy almost always coexists with RETINOPATHY; its ABSENCE (or active sediment/hematuria, very rapid decline, or proteinuria out of proportion) should prompt biopsy to find FSGS or another glomerulonephritis rather than attributing all CKD to diabetes/HTN.</div></div><div class="rt"><div class="rtl">3. KDIGO eGFR staircase (G1–G5)</div><div class="rte">KDIGO GFR categories (mL/min/1.73m2): G1 ≥90, G2 60–89, G3a 45–59, G3b 30–44, G4 15–29, G5 &lt;15 (or dialysis = G5D). Splitting G3 into 3a/3b matters because risk and management differ. Lower number = lower GFR = 'redder' = worse. Mnemonic: count down by halving-ish — 90, 60, 45, 30, 15.</div><div class="rtt">⚠️ Stem: healthy young person, eGFR 85 (G2), no proteinuria, no hematuria, normal imaging — wrong answer is to diagnose CKD because eGFR is 'below 90.' Discriminator: G1 (≥90) and G2 (60–89) are NOT CKD by themselves — they require a co-existing DAMAGE MARKER (albuminuria, hematuria, structural/biopsy abnormality). Only eGFR &lt;60 (G3a+) qualifies as CKD on GFR alone.</div></div><div class="rt"><div class="rtl">4. Albuminuria A1/A2/A3</div><div class="rte">Albuminuria categories by urine albumin-to-creatinine ratio (ACR, mg/g): A1 &lt;30 (normal/mildly increased), A2 30–300 (moderately increased, the old 'microalbuminuria'), A3 &gt;300 (severely increased, old 'macroalbuminuria'). KDIGO stages risk by BOTH eGFR (G) AND albuminuria (A) — the green/yellow/orange/red 'heat map.' Mnemonic: 'CGA' = Cause + GFR category + Albuminuria category.</div><div class="rtt">⚠️ Stem: two patients both at G3a — one A1, one A3 — treated as identical risk — wrong answer. Discriminator: staging on eGFR ALONE misses risk; albuminuria is an INDEPENDENT predictor of CKD progression AND cardiovascular death, so the A3 patient (heat-map red) is far higher risk and warrants more aggressive RAAS blockade/SGLT2i and monitoring. Always report G AND A together.</div></div><div class="rt"><div class="rtl">5. Global burden rising / world map</div><div class="rte">CKD prevalence (~10% of adults globally) is rising worldwide, driven mainly by the diabetes and hypertension epidemics plus aging. CKD is a leading and growing cause of death, and a major cost/dialysis burden. Mnemonic: 'diabetes + hypertension + aging = a global CKD wave.'</div><div class="rtt">⚠️ Stem framing CKD as a rare/declining problem or attributing the global rise primarily to glomerulonephritis/infections — wrong answer. Discriminator: the global rise is driven predominantly by DIABETES and HYPERTENSION (lifestyle/metabolic disease) and aging, not by primary glomerular or infectious causes.</div></div><div class="rt"><div class="rtl">6. King — etiology directed</div><div class="rte">Management has TWO arms: (1) treat the underlying CAUSE (glycemic control in diabetes, BP control, immunosuppression for glomerulonephritis, relieve obstruction, etc.), and (2) generic kidney-protective measures (RAAS blockade, SGLT2i, BP/proteinuria targets, avoid nephrotoxins, treat CKD complications). The KDIGO 'C' (Cause) is part of formal staging. Mnemonic: 'name the cause, then protect the nephron.'</div><div class="rtt">⚠️ Stem: CKD patient given only generic renoprotection while an obstructing stone / treatable glomerulonephritis / RAS goes unaddressed — wrong answer. Discriminator: management must be ETIOLOGY-DIRECTED — generic measures don't substitute for treating a reversible/specific cause (relieve obstruction, immunosuppress active GN, control diabetes); missing the cause is the error.</div></div><div class="rt"><div class="rtl">7. RAAS vicious cycle wheel</div><div class="rte">Nephron loss activates the renin-angiotensin-aldosterone system; angiotensin II constricts the EFFERENT arteriole, raising intraglomerular pressure to maintain GFR — but this glomerular hypertension and aldosterone-driven fibrosis progressively destroy remaining nephrons (a self-perpetuating cycle). This is the rationale for ACEi/ARB (and SGLT2i, which restore tubuloglomerular feedback). Mnemonic: the wheel that 'turns nephron loss into more nephron loss.'</div><div class="rtt">⚠️ Stem: patient with normal systemic BP but progressive proteinuric CKD — wrong answer is to assume the glomerulus is fine because the cuff pressure is normal. Discriminator: INTRAGLOMERULAR pressure (efferent constriction from angiotensin II) can stay high and damage the glomerulus even when SYSTEMIC BP is normal — which is why RAAS blockade slows progression independent of BP, and why proteinuria persists despite normal cuff readings.</div></div><div class="rt"><div class="rtl">8. Hyperfiltration tower</div><div class="rte">After nephron loss, surviving nephrons COMPENSATE by hyperfiltering (afferent dilation + efferent constriction → single-nephron hyperfiltration). This maintains total GFR short-term but causes shear stress, glomerular hypertrophy/sclerosis, and proteinuria — accelerating destruction of the remaining nephrons (the 'final common pathway' of progression). Same mechanism underlies early diabetic hyperfiltration. Mnemonic: 'the survivors overwork and burn out.'</div><div class="rtt">⚠️ Stem: early diabetic with an ELEVATED eGFR (hyperfiltration) — wrong answer is to call the kidneys 'extra healthy' or low-risk. Discriminator: hyperfiltration is a MALADAPTIVE early warning of nephron stress/progression, not robust health; it precedes albuminuria and decline. SGLT2i/RAAS blockade reduce it — high eGFR here is a red flag, not reassurance.</div></div><div class="rt"><div class="rtl">9. ACEi/ARB knight</div><div class="rte">ACEi/ARB are first-line to SLOW CKD progression, with the greatest benefit in ALBUMINURIC CKD (diabetic and non-diabetic). They lower intraglomerular pressure (efferent dilation) → reduce proteinuria and nephron loss. Titrate to the maximum tolerated dose; monitor creatinine and potassium 1–2 weeks after starting/up-titration. Mnemonic: the 'shield' that drops glomerular pressure and proteinuria.</div><div class="rtt">⚠️ Stem: ACEi started for albuminuric CKD, creatinine rises ~25% — wrong answer is to discontinue it. Discriminator: an early creatinine rise UP TO ~30% is EXPECTED and acceptable (reflects intended lowering of glomerular pressure) — continue and monitor. Stop and investigate (e.g., bilateral renal artery stenosis, volume depletion) only if the rise exceeds ~30% or potassium becomes dangerous; and never combine ACEi + ARB.</div></div><div class="rt"><div class="rtl">10. SGLT2 shield</div><div class="rte">SGLT2 inhibitors (dapagliflozin, empagliflozin) slow CKD progression and reduce CV/renal events by restoring tubuloglomerular feedback (afferent constriction → lower intraglomerular pressure) plus natriuresis and metabolic effects. Proven in DIABETIC AND NON-DIABETIC proteinuric CKD (DAPA-CKD, EMPA-KIDNEY); cause a small, expected, reversible early eGFR dip. Mnemonic: the 'second shield' added on top of ACEi/ARB for cardio-renal protection.</div><div class="rtt">⚠️ Stem: non-diabetic CKD patient with proteinuria already on a maxed ACEi — wrong answer is to withhold an SGLT2 inhibitor because the patient 'isn't diabetic,' or to stop it over the early eGFR dip. Discriminator: SGLT2i benefit is NOT limited to diabetics (proven in non-diabetic CKD) and is ADDITIVE to RAAS blockade; the small initial eGFR dip is hemodynamic and expected, not a reason to stop.</div></div><div class="rt"><div class="rtl">11. Etiology gallery (DN, GN, HTN, ADPKD)</div><div class="rte">Leading causes of CKD/ESRD: diabetic nephropathy is #1 (most common cause of ESRD overall), then hypertensive nephrosclerosis, glomerulonephritis, and ADPKD/hereditary disease. Diabetic nephropathy classically progresses hyperfiltration → microalbuminuria → macroalbuminuria → declining GFR, and usually co-occurs with retinopathy. Mnemonic: 'Diabetes Dominates' the ESRD list.</div><div class="rtt">⚠️ Stem asks the single most common cause of ESRD — wrong answer is glomerulonephritis or hypertension. Discriminator: DIABETIC NEPHROPATHY is the most common cause of ESRD overall (hypertension is second). Don't pick GN or HTN as #1; and remember ADPKD is the most common HEREDITARY cause.</div></div><div class="rt"><div class="rtl">12. Risk factor icons</div><div class="rte">CKD risk factors include smoking, obesity, cardiovascular disease, proteinuria/albuminuria, diabetes, hypertension, AKI episodes, nephrotoxin exposure, family history, and reduced nephron endowment from PREMATURITY/LOW BIRTH WEIGHT (fewer nephrons from birth → lifelong vulnerability). Many are modifiable. Mnemonic: 'fewer nephrons at birth = more CKD later.'</div><div class="rtt">⚠️ Stem: young adult born premature/low birth weight now with early proteinuria/HTN — wrong answer is to dismiss CKD risk as unrelated to birth history. Discriminator: low nephron endowment (prematurity/LBW) is an established, often-overlooked CKD risk factor (low congenital nephron number → hyperfiltration and earlier CKD); combine with modifiable risks (smoking, obesity, proteinuria) for risk assessment.</div></div><div class="rt"><div class="rtl">13. Race-free eGFR equation</div><div class="rte">Current practice uses the 2021 CKD-EPI creatinine equation WITHOUT the race coefficient (race is a social, not biological, variable). When creatinine-based eGFR is unreliable (extremes of muscle mass — amputees, bodybuilders, cachexia, cirrhosis, paraplegia), CYSTATIN C (or combined creatinine–cystatin C) refines the estimate. Mnemonic: 'no race coefficient; use cystatin C when muscle mass is weird.'</div><div class="rtt">⚠️ Stem: low-muscle-mass cachectic patient with a 'normal' creatinine — wrong answer is to trust the creatinine-based eGFR as accurate (or to apply the old race adjustment). Discriminator: low muscle mass produces a falsely LOW creatinine → falsely HIGH/reassuring eGFR; use CYSTATIN C-based eGFR for a truer estimate. And never apply the obsolete race coefficient.</div></div><div class="rt"><div class="rtl">14. Uremia brain (sequela)</div><div class="rte">Advanced CKD (G5, eGFR &lt;15) produces the UREMIC SYNDROME — encephalopathy/asterixis, pericarditis, nausea/anorexia, platelet dysfunction/bleeding, neuropathy, pruritus — from retained toxins. Symptomatic uremia is a key indication to start dialysis (or transplant). Mnemonic: dialysis indications = AEIOU — Acidosis, Electrolytes (refractory hyperkalemia), Intoxications, Overload (refractory), Uremic symptoms (pericarditis/encephalopathy/bleeding).</div><div class="rtt">⚠️ Stem: asymptomatic patient at eGFR 13 with normal electrolytes — wrong answer is to start dialysis purely because the eGFR number crossed a threshold. Discriminator: dialysis initiation is driven by SYMPTOMS/complications (AEIOU — uremic pericarditis, encephalopathy, refractory hyperkalemia/acidosis/overload, intoxication), not by an eGFR number alone; trials (IDEAL) show no benefit to early, asymptomatic 'eGFR-triggered' starts.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ckd_cv_mortality.html" title="CKD — Cardiovascular Mortality (#1 Killer)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ckd_electrolytes.html" title="CKD — Electrolyte &amp; Acid-Base Chaos">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

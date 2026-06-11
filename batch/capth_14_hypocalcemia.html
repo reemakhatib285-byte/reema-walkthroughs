@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The Hypocalcemia Mirror Courtroom</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Ca DOWN / PTH should rise (judge)</b> — A hypocalcemic patient with a 'normal' PTH is read as 'PTH is fine, so the parathyroid is not the problem' — WRONG. During hypocalcemia PTH SHOULD be high; an inappropriately normal PTH is actually inappropriate and indicates hypoparathyroidism. The discriminator: interpret PTH relative to the calcium — normal PTH with low Ca is pathologic, not reassuring.</li><li><b>PTH low/normal = inappropriate (left)</b> — A post-thyroidectomy patient with low calcium and low PTH is worked up for vitamin D deficiency — WRONG/inefficient. Low PTH with low Ca is hypoparathyroidism (here surgical), characterized by HIGH phosphate, whereas vitamin D deficiency shows HIGH PTH and LOW phosphate. The discriminator: PTH direction plus phosphate splits hypoPTH (low PTH, high PO4) from vit D deficiency (high PTH, low PO4).</li><li><b>PTH high = appropriate, look elsewhere (right)</b> — A patient with low Ca and high PTH is labeled 'hyperparathyroidism' and worked up for an adenoma — WRONG. PRIMARY hyperparathyroidism has HIGH calcium; high PTH WITH LOW calcium is SECONDARY (appropriate compensation). The discriminator: the calcium tells you the type — high Ca + high PTH = primary; low Ca + high PTH = secondary, so hunt the cause.</li><li><b>Postsurgical hypoparathyroidism (most common)</b> — A patient 2 days after total thyroidectomy with perioral tingling has it attributed to anxiety/anesthesia — WRONG and dangerous. Post-thyroidectomy hypocalcemia from hypoparathyroidism is the leading cause and can progress to laryngospasm/tetany. The discriminator: any neuromuscular symptom post-neck-surgery is hypocalcemia until proven otherwise — check calcium urgently.</li><li><b>Autoimmune / APS hypoparathyroidism</b> — A young patient with hypoparathyroidism and oral thrush is treated for thrush alone without screening for adrenal insufficiency — WRONG/incomplete. The candidiasis + hypoparathyroidism combination should trigger evaluation for APS-1 and concurrent Addison disease, which can be life-threatening. The discriminator: hypoPTH + candidiasis = think APS-1, screen for adrenal insufficiency.</li><li><b>Hypomagnesemia blocks PTH</b> — A hypocalcemic patient gets repeated IV calcium boluses with no improvement, and more calcium is ordered — WRONG. Refractory hypocalcemia that won't budge is the classic sign of unrecognized HYPOMAGNESEMIA, which blocks both PTH release and action. The discriminator: in refractory hypocalcemia, check and replace magnesium FIRST; calcium won't rise until Mg is corrected.</li><li><b>Hyperphosphatemia / PO4 high</b> — A hypocalcemic patient with high phosphate is presumed to have vitamin D deficiency — WRONG. Low Ca + HIGH PO4 points to a PTH problem (hypoparathyroidism if PTH low, pseudohypoparathyroidism if PTH high), NOT vitamin D deficiency, which gives low Ca + LOW PO4. The discriminator: phosphate splits the differential — high PO4 = PTH axis problem, low PO4 = vitamin D problem.</li><li><b>Vitamin D deficiency</b> — A hypocalcemic patient with low phosphate and high PTH is mislabeled hypoparathyroidism — WRONG; that pattern (low PO4, high PTH) is vitamin D deficiency, the mirror image of hypoPTH (high PO4, low PTH). The discriminator: high PTH + low phosphate = vitamin D deficiency; low PTH + high phosphate = hypoparathyroidism.</li><li><b>CKD / secondary HPT</b> — A CKD patient with hypocalcemia, high phosphate, and high PTH is treated only with calcium without addressing phosphate or calcitriol — WRONG/incomplete. CKD-mineral bone disease needs phosphate binders, active vitamin D (calcitriol), and sometimes calcimimetics. The discriminator: CKD hypocalcemia is multifactorial (low calcitriol + phosphate retention) — manage the whole axis, not just calcium.</li><li><b>Pseudohypoparathyroidism (PHP, resistance)</b> — A short patient with round face, short fourth metacarpals, low Ca, and high phosphate is diagnosed with true hypoparathyroidism — WRONG. The HIGH PTH (not low) plus the Albright phenotype defines pseudohypoparathyroidism (PTH resistance). The discriminator: identical chemistry to hypoPTH (low Ca, high PO4) but PTH is HIGH — that elevated PTH is the key distinguishing feature.</li><li><b>Sequestration: pancreatitis / saponification</b> — A patient with acute pancreatitis and hypocalcemia has the low calcium dismissed as incidental — WRONG; hypocalcemia in pancreatitis (from saponification) is a marker of SEVERITY and a Ranson/prognostic criterion. The discriminator: low calcium in pancreatitis is clinically meaningful, signals fat necrosis and worse prognosis, and may need repletion if symptomatic.</li><li><b>Alkalosis trap (total normal, ionized low)</b> — A hyperventilating patient with tetany and a normal total calcium is told they have no calcium problem — WRONG. Alkalosis has dropped the ionized fraction despite a normal total. The discriminator: when symptoms suggest hypocalcemia but total Ca is normal, check pH and ionized calcium; treat the alkalosis rather than infusing calcium.</li><li><b>Corrected-Ca formula</b> — A hospitalized patient with low albumin and a low total calcium is launched into a full hypocalcemia workup (PTH, vitamin D, magnesium) without correcting first — WRONG/wasteful. The corrected value may be normal (pseudohypocalcemia). The discriminator: always albumin-correct or check ionized calcium FIRST; only a truly low corrected/ionized calcium warrants the workup.</li><li><b>Acute treatment — IV calcium gluconate, replace Mg first</b> — Calcium CHLORIDE is given through a peripheral IV for symptomatic hypocalcemia — WRONG choice peripherally. Calcium chloride is highly irritating and causes tissue necrosis on extravasation, so it is preferred only via central access; calcium GLUCONATE is the peripheral agent of choice. The discriminator: peripheral line = gluconate; central line = chloride; and always replace magnesium or calcium won't correct.</li><li><b>Classic signs: Chvostek / Trousseau / long QT</b> — An ECG with a prolonged QT in a symptomatic patient is attributed to hypercalcemia — WRONG and reversed. Hypocalcemia PROLONGS the QT (lengthened ST segment, torsades risk); HYPERcalcemia SHORTENS it. The discriminator: low Ca = long QT, high Ca = short QT — never mix the two directions.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Ca DOWN / PTH should rise (judge)</div><div class="rte">In true hypocalcemia, the CaSR should drive PTH UP (appropriate compensation). The diagnostic fork hangs on the PTH level: low/inappropriately-normal PTH points to hypoparathyroidism (gland failure), whereas high PTH is an appropriate secondary response pointing elsewhere (vitamin D deficiency, CKD, PTH resistance, sequestration). Always confirm hypocalcemia is real first.</div><div class="rtt">⚠️ A hypocalcemic patient with a 'normal' PTH is read as 'PTH is fine, so the parathyroid is not the problem' — WRONG. During hypocalcemia PTH SHOULD be high; an inappropriately normal PTH is actually inappropriate and indicates hypoparathyroidism. The discriminator: interpret PTH relative to the calcium — normal PTH with low Ca is pathologic, not reassuring.</div></div><div class="rt"><div class="rtl">2. PTH low/normal = inappropriate (left)</div><div class="rte">Low or inappropriately normal PTH in the setting of hypocalcemia signals HYPOPARATHYROIDISM — the gland cannot mount the expected response. Causes include post-surgical (most common), autoimmune (APS-1), hypomagnesemia (functional), infiltrative disease, and genetic (DiGeorge/22q11). Chemistry: low Ca, HIGH phosphate (no PTH-driven phosphaturia), low calcitriol.</div><div class="rtt">⚠️ A post-thyroidectomy patient with low calcium and low PTH is worked up for vitamin D deficiency — WRONG/inefficient. Low PTH with low Ca is hypoparathyroidism (here surgical), characterized by HIGH phosphate, whereas vitamin D deficiency shows HIGH PTH and LOW phosphate. The discriminator: PTH direction plus phosphate splits hypoPTH (low PTH, high PO4) from vit D deficiency (high PTH, low PO4).</div></div><div class="rt"><div class="rtl">3. PTH high = appropriate, look elsewhere (right)</div><div class="rte">High PTH with low calcium is the parathyroid responding CORRECTLY (appropriate secondary hyperparathyroidism). Look for the underlying driver: vitamin D deficiency, chronic kidney disease, PTH end-organ resistance (pseudohypoparathyroidism), or calcium sequestration (pancreatitis, tumor lysis, rhabdo, citrate). The gland is working; find what is consuming or under-absorbing calcium.</div><div class="rtt">⚠️ A patient with low Ca and high PTH is labeled 'hyperparathyroidism' and worked up for an adenoma — WRONG. PRIMARY hyperparathyroidism has HIGH calcium; high PTH WITH LOW calcium is SECONDARY (appropriate compensation). The discriminator: the calcium tells you the type — high Ca + high PTH = primary; low Ca + high PTH = secondary, so hunt the cause.</div></div><div class="rt"><div class="rtl">4. Postsurgical hypoparathyroidism (most common)</div><div class="rte">Post-thyroidectomy or parathyroid/neck surgery is the MOST COMMON cause of acquired hypoparathyroidism, from inadvertent removal or devascularization of the parathyroid glands. It may be transient (days-weeks) or permanent. Watch for symptomatic hypocalcemia (perioral numbness, Chvostek/Trousseau) in the first 24-72h post-op; treat with calcium and calcitriol.</div><div class="rtt">⚠️ A patient 2 days after total thyroidectomy with perioral tingling has it attributed to anxiety/anesthesia — WRONG and dangerous. Post-thyroidectomy hypocalcemia from hypoparathyroidism is the leading cause and can progress to laryngospasm/tetany. The discriminator: any neuromuscular symptom post-neck-surgery is hypocalcemia until proven otherwise — check calcium urgently.</div></div><div class="rt"><div class="rtl">5. Autoimmune / APS hypoparathyroidism</div><div class="rte">Autoimmune destruction of the parathyroids causes hypoparathyroidism, classically as part of Autoimmune Polyendocrine Syndrome type 1 (APS-1 / APECED, AIRE gene): the triad of chronic mucocutaneous candidiasis, hypoparathyroidism, and primary adrenal insufficiency (Addison). Isolated autoimmune hypoparathyroidism also occurs. Chemistry mirrors other hypoPTH: low Ca, high PO4, low/normal PTH.</div><div class="rtt">⚠️ A young patient with hypoparathyroidism and oral thrush is treated for thrush alone without screening for adrenal insufficiency — WRONG/incomplete. The candidiasis + hypoparathyroidism combination should trigger evaluation for APS-1 and concurrent Addison disease, which can be life-threatening. The discriminator: hypoPTH + candidiasis = think APS-1, screen for adrenal insufficiency.</div></div><div class="rt"><div class="rtl">6. Hypomagnesemia blocks PTH</div><div class="rte">Hypomagnesemia causes FUNCTIONAL hypoparathyroidism by two mechanisms: it impairs PTH SECRETION and induces PTH RESISTANCE at target tissues. The result is hypocalcemia with low/inappropriately-normal PTH that will NOT correct until magnesium is replaced. Common causes: alcoholism, diarrhea, diuretics, proton-pump inhibitors, aminoglycosides. Always check Mg in unexplained or refractory hypocalcemia.</div><div class="rtt">⚠️ A hypocalcemic patient gets repeated IV calcium boluses with no improvement, and more calcium is ordered — WRONG. Refractory hypocalcemia that won't budge is the classic sign of unrecognized HYPOMAGNESEMIA, which blocks both PTH release and action. The discriminator: in refractory hypocalcemia, check and replace magnesium FIRST; calcium won't rise until Mg is corrected.</div></div><div class="rt"><div class="rtl">7. Hyperphosphatemia / PO4 high</div><div class="rte">In hypoparathyroidism, loss of PTH-driven renal phosphate excretion (phosphaturia) causes phosphate RETENTION, so the pattern is low calcium WITH high phosphate. This phosphate-calcium relationship is a key discriminator: hypoPTH and pseudohypoPTH both show high PO4, whereas vitamin D deficiency (high PTH causing phosphaturia) shows low/normal PO4.</div><div class="rtt">⚠️ A hypocalcemic patient with high phosphate is presumed to have vitamin D deficiency — WRONG. Low Ca + HIGH PO4 points to a PTH problem (hypoparathyroidism if PTH low, pseudohypoparathyroidism if PTH high), NOT vitamin D deficiency, which gives low Ca + LOW PO4. The discriminator: phosphate splits the differential — high PO4 = PTH axis problem, low PO4 = vitamin D problem.</div></div><div class="rt"><div class="rtl">8. Vitamin D deficiency</div><div class="rte">Vitamin D deficiency (low 25-OH vitamin D from low sun/intake, malabsorption, or liver disease) reduces intestinal calcium AND phosphate absorption, lowering serum calcium. The low calcium drives a compensatory rise in PTH (secondary hyperparathyroidism), which causes renal phosphate wasting — hence the pattern: low Ca, LOW phosphate, HIGH PTH, low calcitriol. Treat with vitamin D (and calcium) repletion.</div><div class="rtt">⚠️ A hypocalcemic patient with low phosphate and high PTH is mislabeled hypoparathyroidism — WRONG; that pattern (low PO4, high PTH) is vitamin D deficiency, the mirror image of hypoPTH (high PO4, low PTH). The discriminator: high PTH + low phosphate = vitamin D deficiency; low PTH + high phosphate = hypoparathyroidism.</div></div><div class="rt"><div class="rtl">9. CKD / secondary HPT</div><div class="rte">In CKD, the failing kidney loses 1-alpha-hydroxylase activity (low calcitriol → less gut calcium absorption) AND cannot excrete phosphate (hyperphosphatemia, which further binds calcium and suppresses calcitriol). The combined hypocalcemia drives secondary hyperparathyroidism: high PTH, low calcitriol, high phosphate. Chronic high PTH can progress to tertiary HPT (autonomous, hypercalcemic).</div><div class="rtt">⚠️ A CKD patient with hypocalcemia, high phosphate, and high PTH is treated only with calcium without addressing phosphate or calcitriol — WRONG/incomplete. CKD-mineral bone disease needs phosphate binders, active vitamin D (calcitriol), and sometimes calcimimetics. The discriminator: CKD hypocalcemia is multifactorial (low calcitriol + phosphate retention) — manage the whole axis, not just calcium.</div></div><div class="rt"><div class="rtl">10. Pseudohypoparathyroidism (PHP, resistance)</div><div class="rte">Pseudohypoparathyroidism (PHP type 1a, GNAS mutation, maternal allele) is end-organ RESISTANCE to PTH: the gland works and secretes plenty of PTH, but the kidney/bone receptor (Gs-alpha coupled) cannot respond. Result: low Ca, high PO4, but HIGH PTH. Type 1a has Albright hereditary osteodystrophy — short stature, round face, brachydactyly (short 4th/5th metacarpals), obesity.</div><div class="rtt">⚠️ A short patient with round face, short fourth metacarpals, low Ca, and high phosphate is diagnosed with true hypoparathyroidism — WRONG. The HIGH PTH (not low) plus the Albright phenotype defines pseudohypoparathyroidism (PTH resistance). The discriminator: identical chemistry to hypoPTH (low Ca, high PO4) but PTH is HIGH — that elevated PTH is the key distinguishing feature.</div></div><div class="rt"><div class="rtl">11. Sequestration: pancreatitis / saponification</div><div class="rte">Calcium can be acutely consumed or sequestered: in acute pancreatitis, free fatty acids from fat necrosis chelate calcium (saponification → calcium soaps); in tumor lysis syndrome and rhabdomyolysis, released phosphate complexes with calcium; massive transfusion citrate chelates ionized calcium. PTH rises appropriately, but the calcium is being bound/lost faster than it can be replaced.</div><div class="rtt">⚠️ A patient with acute pancreatitis and hypocalcemia has the low calcium dismissed as incidental — WRONG; hypocalcemia in pancreatitis (from saponification) is a marker of SEVERITY and a Ranson/prognostic criterion. The discriminator: low calcium in pancreatitis is clinically meaningful, signals fat necrosis and worse prognosis, and may need repletion if symptomatic.</div></div><div class="rt"><div class="rtl">12. Alkalosis trap (total normal, ionized low)</div><div class="rte">Alkalosis increases calcium binding to albumin, lowering the active IONIZED fraction while leaving TOTAL calcium normal. This produces full hypocalcemic symptoms (tingling, tetany, Chvostek/Trousseau) with a reassuring-looking total calcium and total-body calcium that is actually normal. The classic acute cause is hyperventilation-induced respiratory alkalosis.</div><div class="rtt">⚠️ A hyperventilating patient with tetany and a normal total calcium is told they have no calcium problem — WRONG. Alkalosis has dropped the ionized fraction despite a normal total. The discriminator: when symptoms suggest hypocalcemia but total Ca is normal, check pH and ionized calcium; treat the alkalosis rather than infusing calcium.</div></div><div class="rt"><div class="rtl">13. Corrected-Ca formula</div><div class="rte">Before diagnosing true hypocalcemia, correct total calcium for albumin: corrected Ca = measured Ca + 0.8 x (4 - albumin in g/dL), or measure ionized calcium directly. This rules out pseudohypocalcemia from hypoalbuminemia (common in hospitalized, cirrhotic, nephrotic, and critically ill patients), avoiding unnecessary calcium treatment.</div><div class="rtt">⚠️ A hospitalized patient with low albumin and a low total calcium is launched into a full hypocalcemia workup (PTH, vitamin D, magnesium) without correcting first — WRONG/wasteful. The corrected value may be normal (pseudohypocalcemia). The discriminator: always albumin-correct or check ionized calcium FIRST; only a truly low corrected/ionized calcium warrants the workup.</div></div><div class="rt"><div class="rtl">14. Acute treatment — IV calcium gluconate, replace Mg first</div><div class="rte">Symptomatic or severe hypocalcemia (tetany, seizures, laryngospasm, prolonged QT/arrhythmia) is treated with IV calcium gluconate (e.g., 1-2 g in 50-100 mL D5W over 10-20 min, then an infusion). Concurrently CHECK and REPLACE magnesium, since hypomagnesemia causes refractory hypocalcemia. For chronic hypoPTH, add oral calcium and calcitriol (active vitamin D).</div><div class="rtt">⚠️ Calcium CHLORIDE is given through a peripheral IV for symptomatic hypocalcemia — WRONG choice peripherally. Calcium chloride is highly irritating and causes tissue necrosis on extravasation, so it is preferred only via central access; calcium GLUCONATE is the peripheral agent of choice. The discriminator: peripheral line = gluconate; central line = chloride; and always replace magnesium or calcium won't correct.</div></div><div class="rt"><div class="rtl">15. Classic signs: Chvostek / Trousseau / long QT</div><div class="rte">Hypocalcemia increases neuromuscular excitability (low ionized Ca lowers the threshold for nerve depolarization): Chvostek sign (tapping the facial nerve anterior to the ear → facial twitch), Trousseau sign (BP cuff inflated above systolic for 3 min → carpopedal spasm, the more specific sign), perioral/acral paresthesias, and a PROLONGED QT interval (risk of torsades de pointes), plus seizures and laryngospasm in severe cases.</div><div class="rtt">⚠️ An ECG with a prolonged QT in a symptomatic patient is attributed to hypercalcemia — WRONG and reversed. Hypocalcemia PROLONGS the QT (lengthened ST segment, torsades risk); HYPERcalcemia SHORTENS it. The discriminator: low Ca = long QT, high Ca = short QT — never mix the two directions.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_04_fgf23.html" title="Calcium/PTH/VitD — The FGF23 Saboteur Guild &amp; Hyperphosphatemia Ward">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="capth_16_magnesium.html" title="Calcium/PTH/VitD — The Magnesium Triangle Tavern">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Polycythemia / MPN — Myelofibrosis clinical features &amp; diagnosis</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Teardrop RBCs (dacrocytes)</b> — WRONG: dacrocytes are specific for primary myelofibrosis. They are NOT — teardrop cells appear in ANY myelophthisic/infiltrative marrow process (metastatic cancer, thalassemia, myelodysplasia), so they indicate marrow disruption, not a specific diagnosis.</li><li><b>Leukoerythroblastic smear</b> — WRONG: a leukoerythroblastic smear with a few circulating blasts means the patient already has AML. A small number of circulating blasts is expected in chronic-phase PMF; AML transformation requires &gt;=20% blasts in blood or marrow.</li><li><b>Dry tap (fibrotic marrow)</b> — WRONG: when the aspirate is dry you can still establish the diagnosis from the aspirate smear alone. You cannot — a dry tap mandates a trephine BIOPSY; relying on the failed aspirate misses the fibrosis and atypical megakaryocyte clusters that define PMF.</li><li><b>Hypercellular fibrotic marrow</b> — WRONG: a hypercellular marrow rules out myelofibrosis (which should look empty/fibrotic). Early PMF is typically HYPERcellular — the hypocellular, scarred marrow is a late finding, so cellularity does not exclude the diagnosis.</li><li><b>Massive splenomegaly</b> — WRONG: massive splenomegaly in an older adult points first to lymphoma. The classic causes of MASSIVE (rather than mild) splenomegaly are myeloproliferative — PMF and CML — plus chronic infections/storage disease; most lymphomas give only mild-moderate enlargement.</li><li><b>Extramedullary hematopoiesis</b> — WRONG: EMH is harmless residual blood production. EMH foci can be clinically dangerous — paraspinal EMH causing cord compression and pericardial/pleural EMH effusions are emergencies treated with low-dose radiation.</li><li><b>Osteosclerosis on X-ray</b> — WRONG: bony lesions in this MPN are lytic. PMF produces sclerotic (dense) bone, not lytic lesions; lytic 'punched-out' lesions point to multiple myeloma instead.</li><li><b>Constitutional symptoms</b> — WRONG: constitutional symptoms in PMF always signal leukemic transformation and need a marrow biopsy first. They are usually cytokine-driven features of chronic-phase disease itself; transformation is defined by rising blasts, not symptoms alone.</li><li><b>IPSS at diagnosis</b> — WRONG: IPSS can be reapplied during follow-up to track changing risk. IPSS is a baseline-only (at-diagnosis) tool; for risk at any later time point you must use DIPSS or DIPSS-Plus.</li><li><b>DIPSS (any time)</b> — WRONG: DIPSS and IPSS score anemia identically. The key difference is that DIPSS gives anemia DOUBLE weight (2 points) and, unlike IPSS, is valid at any time, not just at diagnosis.</li><li><b>DIPSS Plus (karyotype/platelets)</b> — WRONG: DIPSS-Plus is a molecular score based on mutation panels. DIPSS-Plus is cytogenetic/clinical (karyotype, platelets, transfusion need); mutation-based refinement (ASXL1, etc.) comes from MIPSS70/GIPSS, not DIPSS-Plus.</li><li><b>High-risk mutations</b> — WRONG: these high-risk mutations are the disease-defining DRIVER mutations of PMF. They are NOT drivers — the drivers are JAK2/CALR/MPL; ASXL1/EZH2/SRSF2/IDH1-2 are SUBCLONAL prognostic modifiers that worsen outcome.</li><li><b>Low JAK2 VAF → faster anemia</b> — WRONG: higher JAK2 allele burden always means worse prognosis. In PMF the opposite can hold — a LOW JAK2 VAF flags more rapid anemia/progression, an exam-favorite counterintuitive point.</li><li><b>Accelerated → AML</b> — WRONG: any blasts in the blood of a PMF patient define AML transformation. Chronic-phase PMF normally has rare circulating blasts; ACCELERATED phase is 10-19% and AML requires &gt;=20% blasts in blood or marrow.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Teardrop RBCs (dacrocytes)</div><div class="rte">Dacrocytes (teardrop-shaped RBCs) are the classic peripheral-smear hallmark of myelofibrosis — red cells deformed as they squeeze through the fibrotic marrow and through splenic cords during extramedullary hematopoiesis. On boards, teardrop cells + nucleated RBCs + immature myeloid cells = marrow infiltration/fibrosis.</div><div class="rtt">⚠️ WRONG: dacrocytes are specific for primary myelofibrosis. They are NOT — teardrop cells appear in ANY myelophthisic/infiltrative marrow process (metastatic cancer, thalassemia, myelodysplasia), so they indicate marrow disruption, not a specific diagnosis.</div></div><div class="rt"><div class="rtl">2. Leukoerythroblastic smear</div><div class="rte">A leukoerythroblastic blood picture = nucleated RBCs (normoblasts) PLUS immature myeloid precursors (myelocytes, metamyelocytes, occasional blasts) spilling into the peripheral blood. It reflects marrow stress/infiltration forcing premature release and extramedullary hematopoiesis. Pair with teardrop cells for the myelofibrosis pattern.</div><div class="rtt">⚠️ WRONG: a leukoerythroblastic smear with a few circulating blasts means the patient already has AML. A small number of circulating blasts is expected in chronic-phase PMF; AML transformation requires &gt;=20% blasts in blood or marrow.</div></div><div class="rt"><div class="rtl">3. Dry tap (fibrotic marrow)</div><div class="rte">Bone marrow ASPIRATION fails to yield a sample ('dry tap' / punctio sicca') because the dense reticulin/collagen fibrosis prevents marrow from being drawn up. Diagnosis therefore requires a marrow BIOPSY (core), not aspirate, to demonstrate fibrosis and megakaryocyte atypia.</div><div class="rtt">⚠️ WRONG: when the aspirate is dry you can still establish the diagnosis from the aspirate smear alone. You cannot — a dry tap mandates a trephine BIOPSY; relying on the failed aspirate misses the fibrosis and atypical megakaryocyte clusters that define PMF.</div></div><div class="rt"><div class="rtl">4. Hypercellular fibrotic marrow</div><div class="rte">Early/cellular-phase PMF biopsy shows a HYPERcellular marrow with clustered, atypical (bulbous, hyperchromatic) megakaryocytes and increasing reticulin fibrosis; later 'fibrotic phase' becomes hypocellular with dense collagen and osteosclerosis. Reticulin stain grades fibrosis MF-0 to MF-3.</div><div class="rtt">⚠️ WRONG: a hypercellular marrow rules out myelofibrosis (which should look empty/fibrotic). Early PMF is typically HYPERcellular — the hypocellular, scarred marrow is a late finding, so cellularity does not exclude the diagnosis.</div></div><div class="rt"><div class="rtl">5. Massive splenomegaly</div><div class="rte">Massive splenomegaly (spleen often crossing the midline/into the pelvis) is the most prominent physical finding in PMF, driven by extramedullary hematopoiesis plus portal congestion. It causes early satiety, LUQ pain, and can infarct. Differential for MASSIVE splenomegaly: PMF, CML, hairy cell leukemia, malaria, visceral leishmaniasis, Gaucher.</div><div class="rtt">⚠️ WRONG: massive splenomegaly in an older adult points first to lymphoma. The classic causes of MASSIVE (rather than mild) splenomegaly are myeloproliferative — PMF and CML — plus chronic infections/storage disease; most lymphomas give only mild-moderate enlargement.</div></div><div class="rt"><div class="rtl">6. Extramedullary hematopoiesis</div><div class="rte">With marrow displaced by fibrosis, hematopoiesis relocates outside the marrow (extramedullary hematopoiesis, EMH). Beyond spleen/liver, EMH foci can appear in skin, lymph nodes, pleura/pericardium (effusions/tamponade), paraspinal tissue (spinal cord compression — a radiotherapy emergency), and cause portal hypertension/ascites.</div><div class="rtt">⚠️ WRONG: EMH is harmless residual blood production. EMH foci can be clinically dangerous — paraspinal EMH causing cord compression and pericardial/pleural EMH effusions are emergencies treated with low-dose radiation.</div></div><div class="rt"><div class="rtl">7. Osteosclerosis on X-ray</div><div class="rte">Plain radiographs in advanced PMF may show OSTEOSCLEROSIS — diffusely increased bone density, especially axial skeleton and metaphyses — reflecting the osteoblastic/OPG imbalance accompanying marrow fibrosis.</div><div class="rtt">⚠️ WRONG: bony lesions in this MPN are lytic. PMF produces sclerotic (dense) bone, not lytic lesions; lytic 'punched-out' lesions point to multiple myeloma instead.</div></div><div class="rt"><div class="rtl">8. Constitutional symptoms</div><div class="rte">A heavy inflammatory cytokine burden (TNF-alpha, IL-6, IL-8) drives constitutional symptoms: profound fatigue, weight loss, drenching night sweats, low-grade fevers, pruritus, and cachexia. Symptom burden is captured by the MPN-SAS/MPN10 score and is a target of JAK-inhibitor therapy.</div><div class="rtt">⚠️ WRONG: constitutional symptoms in PMF always signal leukemic transformation and need a marrow biopsy first. They are usually cytokine-driven features of chronic-phase disease itself; transformation is defined by rising blasts, not symptoms alone.</div></div><div class="rt"><div class="rtl">9. IPSS at diagnosis</div><div class="rte">The IPSS (International Prognostic Scoring System) is applied ONLY at diagnosis. Its 5 adverse factors, each 1 point: hemoglobin &lt;10 g/dL, WBC &gt;25,000/uL, peripheral blasts &gt;=1%, constitutional symptoms, and age &gt;65. Risk strata range from low (0) to high (&gt;=3) and guide whether to pursue transplant.</div><div class="rtt">⚠️ WRONG: IPSS can be reapplied during follow-up to track changing risk. IPSS is a baseline-only (at-diagnosis) tool; for risk at any later time point you must use DIPSS or DIPSS-Plus.</div></div><div class="rt"><div class="rtl">10. DIPSS (any time)</div><div class="rte">The Dynamic IPSS (DIPSS) uses the same variables but can be applied at ANY time during the disease course, and it weights anemia (Hgb &lt;10) as 2 points (the others 1 point each). This lets clinicians recompute prognosis as the patient evolves.</div><div class="rtt">⚠️ WRONG: DIPSS and IPSS score anemia identically. The key difference is that DIPSS gives anemia DOUBLE weight (2 points) and, unlike IPSS, is valid at any time, not just at diagnosis.</div></div><div class="rt"><div class="rtl">11. DIPSS Plus (karyotype/platelets)</div><div class="rte">DIPSS-Plus adds three more adverse factors to DIPSS: unfavorable karyotype, platelet count &lt;100,000/uL, and red-cell transfusion dependence. It refines risk stratification and is the version most often cited for transplant decision-making.</div><div class="rtt">⚠️ WRONG: DIPSS-Plus is a molecular score based on mutation panels. DIPSS-Plus is cytogenetic/clinical (karyotype, platelets, transfusion need); mutation-based refinement (ASXL1, etc.) comes from MIPSS70/GIPSS, not DIPSS-Plus.</div></div><div class="rt"><div class="rtl">12. High-risk mutations</div><div class="rte">High-molecular-risk (HMR) mutations — ASXL1, EZH2, SRSF2, and IDH1/2 — independently predict worse survival and higher leukemic transformation; &gt;=2 HMR mutations is especially adverse. These feed mutation-enhanced scores (MIPSS70/MIPSS70+, GIPSS) used in younger transplant candidates.</div><div class="rtt">⚠️ WRONG: these high-risk mutations are the disease-defining DRIVER mutations of PMF. They are NOT drivers — the drivers are JAK2/CALR/MPL; ASXL1/EZH2/SRSF2/IDH1-2 are SUBCLONAL prognostic modifiers that worsen outcome.</div></div><div class="rt"><div class="rtl">13. Low JAK2 VAF → faster anemia</div><div class="rte">A LOW JAK2 V617F allele burden (variant allele frequency &lt;=25%) is paradoxically associated with more aggressive disease — faster development of anemia and worse outcomes — because a low driver burden often reflects a clone enriched for high-risk subclonal mutations or a more myelodepleted, fibrotic marrow.</div><div class="rtt">⚠️ WRONG: higher JAK2 allele burden always means worse prognosis. In PMF the opposite can hold — a LOW JAK2 VAF flags more rapid anemia/progression, an exam-favorite counterintuitive point.</div></div><div class="rt"><div class="rtl">14. Accelerated → AML</div><div class="rte">PMF can progress from chronic phase to accelerated phase (10-19% blasts in blood/marrow) and then to secondary AML (&gt;=20% blasts). Post-MPN AML is treatment-resistant with poor survival; rising blast count, worsening cytopenias, and new constitutional symptoms herald transformation.</div><div class="rtt">⚠️ WRONG: any blasts in the blood of a PMF patient define AML transformation. Chronic-phase PMF normally has rare circulating blasts; ACCELERATED phase is 10-19% and AML requires &gt;=20% blasts in blood or marrow.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcv_mpn_overview.html" title="Polycythemia / MPN — MPN overview (PV vs PMF vs ET)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcv_myelofibrosis_treatment.html" title="Polycythemia / MPN — Myelofibrosis treatment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Arrhythmias — Idiopathic VT (RVOT &amp; Fascicular)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Idiopathic VT = normal heart, benign</b> — WRONG: assuming all sustained VT implies structural heart disease and an ICD — idiopathic VT in a normal heart is benign and managed with drugs/ablation, not an ICD. Confirm a truly normal heart before applying this benign label.</li><li><b>No ICD needed</b> — WRONG: implanting an ICD for idiopathic RVOT VT — it is benign and curable by ablation, so an ICD is unnecessary. The trap reverses the rule: ICDs are for scar/structural VT and inherited high-risk conditions, not idiopathic VT in a normal heart.</li><li><b>RVOT VT — most common idiopathic</b> — WRONG: equating LBBB-pattern outflow VT with a malignant disease — RVOT VT is benign, BUT a similar LBBB/inferior-axis VT can be the first sign of ARVC, so structural disease must be excluded before calling it RVOT VT.</li><li><b>LBBB + inferior axis</b> — WRONG: reading LBBB-morphology VT as proof of a left-sided/benign origin — LBBB pattern actually indicates a RIGHT ventricular (or septal) exit. The morphology localizes the exit site; pair it with the inferior axis to identify RVOT.</li><li><b>Triggered automaticity</b> — WRONG: assuming RVOT VT is scar-based reentry like post-MI VT — it is triggered activity, which is why it responds to beta-blockers/adenosine. Reentrant scar VT does not terminate with adenosine.</li><li><b>Beta-blocker / CCB first-line</b> — WRONG: giving flecainide (or other class Ic agents) to a VT patient WITH structural/ischemic heart disease — class Ic drugs are contraindicated there (CAST trial, proarrhythmic). Flecainide is acceptable ONLY because idiopathic VT occurs in a structurally normal heart.</li><li><b>Ablation ~80% curative</b> — WRONG: reserving ablation only for drug failures in RVOT VT — given its high cure rate and low risk in a normal heart, ablation is a reasonable first-line option, not merely a last resort.</li><li><b>Fascicular VT (Belhassen)</b> — WRONG: lumping fascicular VT with RVOT mechanistically — RVOT is triggered automaticity (beta-blocker/adenosine sensitive) while fascicular VT is reentry (verapamil sensitive). Mechanism dictates the drug that works.</li><li><b>RBBB + left axis</b> — WRONG: confusing the RBBB+left-axis fascicular pattern with the RVOT LBBB+inferior-axis pattern — they are mirror clues. RBBB/left-axis → fascicular (verapamil); LBBB/inferior-axis → RVOT (beta-blocker/CCB).</li><li><b>IV verapamil terminates</b> — WRONG: giving verapamil to ANY wide-complex tachycardia — in scar-related VT (structural heart disease) IV verapamil causes profound hypotension and hemodynamic collapse. Verapamil is appropriate ONLY for confirmed idiopathic fascicular VT in a normal heart.</li><li><b>Two most common idiopathic VTs</b> — WRONG: mismatching the drug to the VT — RVOT responds to beta-blockers/adenosine, fascicular to verapamil. Swapping them (e.g., verapamil for RVOT 'because both are idiopathic') is the common error.</li><li><b>Exclude ARVC</b> — WRONG: calling LBBB-morphology VT automatically benign RVOT VT — ARVC mimics it but is malignant. The discriminator is structural imaging and ECG repolarization/depolarization abnormalities (T-wave inversions V1–V3, epsilon wave); a normal MRI is required to call it idiopathic.</li><li><b>CPVT — bidirectional/exercise VT</b> — WRONG: dismissing exertional syncope with a normal resting ECG as benign or RVOT VT — CPVT has a normal baseline ECG and only reveals itself on exercise/stress testing. Bidirectional VT should trigger thought of CPVT or digoxin toxicity, not idiopathic RVOT VT.</li><li><b>Tachycardia-induced cardiomyopathy</b> — WRONG: attributing a low EF in a patient with incessant idiopathic VT to irreversible primary cardiomyopathy and writing off recovery — the LV dysfunction is often reversible after arrhythmia control/ablation. Don't mistake tachycardia-induced cardiomyopathy for a fixed structural disease requiring lifelong ICD.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Idiopathic VT = normal heart, benign</div><div class="rte">Idiopathic VT occurs in a structurally normal heart — no scar, normal EF, normal coronaries, normal imaging — and carries a benign prognosis with very low SCD risk. It is the exception to the rule that VT means structural disease. Diagnosis is one of exclusion: normal echo, normal MRI (no late gadolinium enhancement), and exclusion of ischemia, ARVC, and channelopathies.</div><div class="rtt">⚠️ WRONG: assuming all sustained VT implies structural heart disease and an ICD — idiopathic VT in a normal heart is benign and managed with drugs/ablation, not an ICD. Confirm a truly normal heart before applying this benign label.</div></div><div class="rt"><div class="rtl">2. No ICD needed</div><div class="rte">Because idiopathic VT arises in a structurally normal heart with negligible SCD risk, an ICD is generally NOT indicated — treatment is symptom-directed with beta-blockers/CCBs and curative catheter ablation. Distinguishing idiopathic VT from scar/structural VT (which DOES warrant an ICD) is the management-defining step. The discriminator is presence vs absence of structural disease, not the VT itself.</div><div class="rtt">⚠️ WRONG: implanting an ICD for idiopathic RVOT VT — it is benign and curable by ablation, so an ICD is unnecessary. The trap reverses the rule: ICDs are for scar/structural VT and inherited high-risk conditions, not idiopathic VT in a normal heart.</div></div><div class="rt"><div class="rtl">3. RVOT VT — most common idiopathic</div><div class="rte">Right ventricular outflow tract VT is the most common idiopathic VT, arising from cAMP-mediated triggered activity just below the pulmonic valve. Classic presentation: a young/middle-aged patient with palpitations or exercise/stress-induced VT, often as repetitive nonsustained runs (monomorphic) with a structurally normal heart. It is frequently catecholamine-sensitive and adenosine-sensitive.</div><div class="rtt">⚠️ WRONG: equating LBBB-pattern outflow VT with a malignant disease — RVOT VT is benign, BUT a similar LBBB/inferior-axis VT can be the first sign of ARVC, so structural disease must be excluded before calling it RVOT VT.</div></div><div class="rt"><div class="rtl">4. LBBB + inferior axis</div><div class="rte">RVOT VT shows an LBBB morphology (dominant S in V1, originating in the right ventricle) with an INFERIOR axis (tall positive R waves in II, III, aVF) because the focus sits high in the outflow tract and depolarizes downward. Recognizing 'LBBB + inferior axis, normal heart, young patient' is the board signature of RVOT VT.</div><div class="rtt">⚠️ WRONG: reading LBBB-morphology VT as proof of a left-sided/benign origin — LBBB pattern actually indicates a RIGHT ventricular (or septal) exit. The morphology localizes the exit site; pair it with the inferior axis to identify RVOT.</div></div><div class="rt"><div class="rtl">5. Triggered automaticity</div><div class="rte">The mechanism of RVOT VT is cAMP-mediated triggered activity (delayed afterdepolarizations from calcium overload), making it catecholamine-sensitive and provoked by exercise, stress, or caffeine. This explains its response to beta-blockers, calcium-channel blockers, adenosine, and vagal maneuvers — therapies that lower cAMP/calcium.</div><div class="rtt">⚠️ WRONG: assuming RVOT VT is scar-based reentry like post-MI VT — it is triggered activity, which is why it responds to beta-blockers/adenosine. Reentrant scar VT does not terminate with adenosine.</div></div><div class="rt"><div class="rtl">6. Beta-blocker / CCB first-line</div><div class="rte">First-line drug therapy for symptomatic RVOT VT is a beta-blocker or a non-dihydropyridine calcium-channel blocker (verapamil/diltiazem), targeting the catecholamine/cAMP-driven mechanism. Flecainide is a reasonable option BECAUSE the heart is structurally normal. Adenosine or vagal maneuvers can terminate acute episodes.</div><div class="rtt">⚠️ WRONG: giving flecainide (or other class Ic agents) to a VT patient WITH structural/ischemic heart disease — class Ic drugs are contraindicated there (CAST trial, proarrhythmic). Flecainide is acceptable ONLY because idiopathic VT occurs in a structurally normal heart.</div></div><div class="rt"><div class="rtl">7. Ablation ~80% curative</div><div class="rte">Catheter ablation of the focal RVOT origin is highly effective (~80–90% cure) and is the definitive therapy for symptomatic, frequent, or drug-refractory idiopathic RVOT VT. Because the heart is normal and the focus is discrete, ablation is low-risk and often offered early, even as a first-line choice in motivated patients.</div><div class="rtt">⚠️ WRONG: reserving ablation only for drug failures in RVOT VT — given its high cure rate and low risk in a normal heart, ablation is a reasonable first-line option, not merely a last resort.</div></div><div class="rt"><div class="rtl">8. Fascicular VT (Belhassen)</div><div class="rte">Fascicular (Belhassen) VT is the second main idiopathic VT — a REENTRANT circuit within the left posterior fascicle / Purkinje network of the left ventricle (mechanism differs from RVOT's triggered activity). It typically affects young men, is often relatively narrow for a VT, and is the classic verapamil-sensitive VT.</div><div class="rtt">⚠️ WRONG: lumping fascicular VT with RVOT mechanistically — RVOT is triggered automaticity (beta-blocker/adenosine sensitive) while fascicular VT is reentry (verapamil sensitive). Mechanism dictates the drug that works.</div></div><div class="rt"><div class="rtl">9. RBBB + left axis</div><div class="rte">Fascicular VT shows an RBBB morphology (dominant R in V1, left-ventricular origin) with LEFT-axis deviation, reflecting its exit from the left posterior fascicle. (A less common left-anterior-fascicular variant gives RBBB with right-axis deviation.) The RBBB + left-axis pattern in a young patient is the fascicular VT signature.</div><div class="rtt">⚠️ WRONG: confusing the RBBB+left-axis fascicular pattern with the RVOT LBBB+inferior-axis pattern — they are mirror clues. RBBB/left-axis → fascicular (verapamil); LBBB/inferior-axis → RVOT (beta-blocker/CCB).</div></div><div class="rt"><div class="rtl">10. IV verapamil terminates</div><div class="rte">Fascicular (Belhassen) VT is uniquely verapamil-sensitive: IV verapamil (or diltiazem) terminates it because the reentry circuit depends on calcium-dependent slow-conducting Purkinje tissue. Mnemonic: 'calci-yum' — fascicular VT loves calcium-channel blockers. Catheter ablation is curative for recurrent cases.</div><div class="rtt">⚠️ WRONG: giving verapamil to ANY wide-complex tachycardia — in scar-related VT (structural heart disease) IV verapamil causes profound hypotension and hemodynamic collapse. Verapamil is appropriate ONLY for confirmed idiopathic fascicular VT in a normal heart.</div></div><div class="rt"><div class="rtl">11. Two most common idiopathic VTs</div><div class="rte">The two most commonly tested idiopathic VTs are RVOT VT (most common overall; triggered activity; LBBB+inferior axis; beta-blocker/CCB) and fascicular/Belhassen VT (Purkinje reentry; RBBB+left axis; verapamil). Knowing the paired morphology and drug for each is the high-yield board takeaway. Both occur in structurally normal hearts.</div><div class="rtt">⚠️ WRONG: mismatching the drug to the VT — RVOT responds to beta-blockers/adenosine, fascicular to verapamil. Swapping them (e.g., verapamil for RVOT 'because both are idiopathic') is the common error.</div></div><div class="rt"><div class="rtl">12. Exclude ARVC</div><div class="rte">Before labeling outflow-tract VT 'idiopathic,' exclude arrhythmogenic right ventricular cardiomyopathy (ARVC) — a malignant desmosomal disease that also produces LBBB-pattern VT but causes SCD in young athletes. Red flags: epsilon waves and T-wave inversions in V1–V3 on ECG, RV dilation/dysfunction with fibrofatty replacement on MRI, and family history of SCD. ARVC needs an ICD; idiopathic RVOT VT does not.</div><div class="rtt">⚠️ WRONG: calling LBBB-morphology VT automatically benign RVOT VT — ARVC mimics it but is malignant. The discriminator is structural imaging and ECG repolarization/depolarization abnormalities (T-wave inversions V1–V3, epsilon wave); a normal MRI is required to call it idiopathic.</div></div><div class="rt"><div class="rtl">13. CPVT — bidirectional/exercise VT</div><div class="rte">Catecholaminergic polymorphic VT (CPVT) is an inherited RyR2 channelopathy (calcium leak → delayed afterdepolarizations) causing exercise- or emotion-induced bidirectional or polymorphic VT and syncope/SCD in young people, with a structurally normal heart and normal resting ECG. Treatment: high-dose beta-blockers (nadolol), flecainide, exercise restriction, and ICD for high-risk/aborted arrest. Bidirectional VT also classically suggests digoxin toxicity.</div><div class="rtt">⚠️ WRONG: dismissing exertional syncope with a normal resting ECG as benign or RVOT VT — CPVT has a normal baseline ECG and only reveals itself on exercise/stress testing. Bidirectional VT should trigger thought of CPVT or digoxin toxicity, not idiopathic RVOT VT.</div></div><div class="rt"><div class="rtl">14. Tachycardia-induced cardiomyopathy</div><div class="rte">Incessant or very frequent idiopathic VT/PVCs can cause a tachycardia-induced (tachycardiomyopathy) reduction in LV function that is REVERSIBLE — controlling or ablating the arrhythmia restores the ejection fraction. So a low EF in this setting may be the CONSEQUENCE of the arrhythmia, not evidence of primary structural disease. Suspect it with high PVC burden (often &gt;10–15%) and otherwise unexplained cardiomyopathy.</div><div class="rtt">⚠️ WRONG: attributing a low EF in a patient with incessant idiopathic VT to irreversible primary cardiomyopathy and writing off recovery — the LV dysfunction is often reversible after arrhythmia control/ablation. Don't mistake tachycardia-induced cardiomyopathy for a fixed structural disease requiring lifelong ICD.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="arr_svt_approach.html" title="Arrhythmias — Approach to Supraventricular Arrhythmias">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="arr_channelopathies.html" title="Arrhythmias — Inherited Channelopathies (LQTS, Brugada, CPVT, Short QT)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

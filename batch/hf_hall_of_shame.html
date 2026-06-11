@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — SCENE 6: HF Hall of Shame &amp; Comorbidities</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Verapamil — non-DHP CCB</b> — Trap: an AF + HFrEF (EF 30%) patient needing rate control, answer 'start verapamil/diltiazem.' WRONG — non-DHP CCBs are contraindicated in HFrEF. Discriminator: use a beta-blocker for rate control (and digoxin if needed); reserve verapamil/diltiazem for AF with PRESERVED EF. Combining a non-DHP CCB with a beta-blocker also risks profound bradycardia/heart block.</li><li><b>Diltiazem caged</b> — Trap: 'diltiazem is the safe non-DHP CCB I can use in low-EF heart failure because it's gentler than verapamil.' WRONG — both verapamil AND diltiazem are contraindicated in HFrEF. Discriminator: 'less negatively inotropic' does not equal 'safe' in reduced EF; use a beta-blocker for rate control instead.</li><li><b>TZD (pioglitazone)</b> — Trap: 'TZDs are weight-neutral/cardiac-neutral, so pioglitazone is fine for this diabetic with HFrEF.' WRONG — TZDs cause fluid retention and worsen HF (contraindicated in NYHA III–IV). Discriminator: in a diabetic with HF, choose an SGLT2i (which BENEFITS HF) or metformin; avoid TZDs and the DPP-4 inhibitor saxagliptin (and alogliptin), which increased HF hospitalization (SAVOR-TIMI).</li><li><b>NSAIDs</b> — Trap: a HF patient with arthritis pain is given an NSAID for symptom control. WRONG — NSAIDs precipitate HF decompensation and AKI. Discriminator: prefer acetaminophen (or topical agents) for analgesia in HF; the 'triple whammy' (NSAID + ACEi/ARB + diuretic) is a high-yield cause of acute kidney injury and fluid overload.</li><li><b>Amlodipine / Felodipine — neutral</b> — Trap: 'all calcium channel blockers are contraindicated in HFrEF.' WRONG — the DHP CCBs amlodipine and felodipine are safe (neutral) and can be used for BP/angina. Discriminator: the contraindication applies to the NON-DHP CCBs (verapamil, diltiazem); amlodipine/felodipine are the acceptable CCBs in reduced EF (just no mortality benefit).</li><li><b>Tolvaptan — no mortality benefit</b> — Trap: 'add tolvaptan to reduce mortality / as routine therapy in decompensated HF.' WRONG — EVEREST showed symptomatic/sodium improvement but no survival benefit. Discriminator: tolvaptan is for symptomatic hyponatremia, not a survival drug; correct Na+ slowly to avoid osmotic demyelination.</li><li><b>Dronedarone — increases mortality</b> — Trap: 'dronedarone is the preferred/safe antiarrhythmic in heart failure because it lacks amiodarone's toxicities.' WRONG — dronedarone increases mortality in HF and is contraindicated. Discriminator: in HFrEF the antiarrhythmics that are mortality-NEUTRAL and safe are amiodarone and dofetilide; dronedarone is forbidden.</li><li><b>Amiodarone / dofetilide — safe</b> — Trap: using a class IC agent (flecainide/propafenone) for AF in a patient with HFrEF or prior MI. WRONG — class IC drugs are proarrhythmic and increase mortality in structural heart disease (CAST). Discriminator: in structural HF, restrict to amiodarone or dofetilide; flecainide/propafenone are only for structurally NORMAL hearts.</li><li><b>Digoxin — narrow TI</b> — Trap: 'digoxin lowers mortality in HFrEF.' WRONG — DIG showed reduced hospitalizations only, with a neutral effect on mortality (and possible harm at higher levels/in women). Discriminator: digoxin is a symptom/hospitalization and rate-control drug, not a survival drug; keep levels 0.5–0.9 ng/mL and correct K+/Mg to avoid toxicity.</li><li><b>LV thrombus → anticoagulate</b> — Trap: a patient with a freshly diagnosed LV thrombus is managed with antiplatelet therapy alone. WRONG — an established LV thrombus requires therapeutic ANTICOAGULATION (3–6 months), not just aspirin. Discriminator: thrombus present → anticoagulate; this differs from the no-thrombus, sinus-rhythm HFrEF patient who should NOT be routinely anticoagulated.</li><li><b>HFrEF in sinus rhythm — no routine OAC</b> — Trap: 'low EF causes stasis, so anticoagulate every HFrEF patient to prevent stroke.' WRONG — routine anticoagulation in sinus-rhythm HFrEF is not beneficial and increases bleeding (WARCEF). Discriminator: anticoagulate only with a discrete indication (AF, LV thrombus, mechanical valve, recent VTE), not for low EF alone.</li><li><b>AF + HF → anticoagulate</b> — Trap: deferring anticoagulation in an AF + HF patient because the CHA2DS2-VASc was 'borderline.' WRONG — HF scores a point, so AF + HF almost always meets the anticoagulation threshold. Discriminator: AF + HF → anticoagulate (DOAC preferred in nonvalvular AF); contrast with sinus-rhythm HFrEF where routine OAC is not indicated.</li><li><b>IV iron for iron deficiency</b> — Trap: treating documented iron deficiency in a HFrEF patient with oral ferrous sulfate. WRONG — oral iron does not improve outcomes in HF (IRONOUT). Discriminator: use INTRAVENOUS iron (ferric carboxymaltose); also note iron deficiency is worth treating even when hemoglobin is normal (non-anemic iron deficiency).</li><li><b>Depression — screen, SSRI no benefit</b> — Trap: 'start an SSRI to improve heart-failure outcomes/prognosis in a depressed HF patient.' WRONG — SSRIs are safe but show no mortality, hospitalization, or even reliable mood benefit in HF trials. Discriminator: screen and manage depression for its own sake, but do not expect (or choose) an SSRI to improve HF outcomes; avoid TCAs in HF.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Verapamil — non-DHP CCB</div><div class="rte">Non-dihydropyridine CCBs — verapamil (the most negatively inotropic) and diltiazem — are CONTRAINDICATED in HFrEF because their negative inotropy depresses an already failing ventricle and can precipitate decompensation (and bradycardia/AV block, especially combined with a beta-blocker). They are acceptable only for rate control in HFpEF (preserved EF) where contractility is intact.</div><div class="rtt">⚠️ Trap: an AF + HFrEF (EF 30%) patient needing rate control, answer 'start verapamil/diltiazem.' WRONG — non-DHP CCBs are contraindicated in HFrEF. Discriminator: use a beta-blocker for rate control (and digoxin if needed); reserve verapamil/diltiazem for AF with PRESERVED EF. Combining a non-DHP CCB with a beta-blocker also risks profound bradycardia/heart block.</div></div><div class="rt"><div class="rtl">2. Diltiazem caged</div><div class="rte">Diltiazem, like verapamil, is a negative-inotrope non-DHP CCB that worsens HFrEF and should be avoided for AF rate control when LVEF is reduced. It is somewhat less negatively inotropic than verapamil but still unsafe in low-EF HF; both also slow AV conduction.</div><div class="rtt">⚠️ Trap: 'diltiazem is the safe non-DHP CCB I can use in low-EF heart failure because it's gentler than verapamil.' WRONG — both verapamil AND diltiazem are contraindicated in HFrEF. Discriminator: 'less negatively inotropic' does not equal 'safe' in reduced EF; use a beta-blocker for rate control instead.</div></div><div class="rt"><div class="rtl">3. TZD (pioglitazone)</div><div class="rte">Thiazolidinediones (pioglitazone, rosiglitazone) cause renal sodium and fluid RETENTION via ENaC upregulation, leading to edema and increased HF hospitalization; they are contraindicated in NYHA III–IV HF and should be avoided in HFrEF generally. (Pioglitazone also carries bladder-cancer and fracture cautions.)</div><div class="rtt">⚠️ Trap: 'TZDs are weight-neutral/cardiac-neutral, so pioglitazone is fine for this diabetic with HFrEF.' WRONG — TZDs cause fluid retention and worsen HF (contraindicated in NYHA III–IV). Discriminator: in a diabetic with HF, choose an SGLT2i (which BENEFITS HF) or metformin; avoid TZDs and the DPP-4 inhibitor saxagliptin (and alogliptin), which increased HF hospitalization (SAVOR-TIMI).</div></div><div class="rt"><div class="rtl">4. NSAIDs</div><div class="rte">NSAIDs (and COX-2 inhibitors) inhibit renal prostaglandins → sodium/water retention, vasoconstriction with rising afterload, blunting of diuretic and ACEi/ARB efficacy, and worsening renal function; they are a classic precipitant of acute HF decompensation. Combining NSAIDs with an ACEi/ARB + diuretic is the nephrotoxic 'triple whammy.'</div><div class="rtt">⚠️ Trap: a HF patient with arthritis pain is given an NSAID for symptom control. WRONG — NSAIDs precipitate HF decompensation and AKI. Discriminator: prefer acetaminophen (or topical agents) for analgesia in HF; the 'triple whammy' (NSAID + ACEi/ARB + diuretic) is a high-yield cause of acute kidney injury and fluid overload.</div></div><div class="rt"><div class="rtl">5. Amlodipine / Felodipine — neutral</div><div class="rte">Amlodipine and felodipine are dihydropyridine CCBs that are HEMODYNAMICALLY NEUTRAL in HFrEF (PRAISE, V-HeFT III) — they do not improve survival but are SAFE add-ons for refractory hypertension or angina when GDMT alone is insufficient. They lack significant negative inotropy, unlike the non-DHP CCBs.</div><div class="rtt">⚠️ Trap: 'all calcium channel blockers are contraindicated in HFrEF.' WRONG — the DHP CCBs amlodipine and felodipine are safe (neutral) and can be used for BP/angina. Discriminator: the contraindication applies to the NON-DHP CCBs (verapamil, diltiazem); amlodipine/felodipine are the acceptable CCBs in reduced EF (just no mortality benefit).</div></div><div class="rt"><div class="rtl">6. Tolvaptan — no mortality benefit</div><div class="rte">Tolvaptan is a vasopressin V2-receptor antagonist (aquaretic) that raises serum sodium and relieves congestion/dyspnea short-term but provides NO mortality or long-term morbidity benefit in HF (EVEREST). Its niche is hypervolemic/euvolemic HYPONATREMIA; watch for over-rapid sodium correction (osmotic demyelination) and hepatotoxicity.</div><div class="rtt">⚠️ Trap: 'add tolvaptan to reduce mortality / as routine therapy in decompensated HF.' WRONG — EVEREST showed symptomatic/sodium improvement but no survival benefit. Discriminator: tolvaptan is for symptomatic hyponatremia, not a survival drug; correct Na+ slowly to avoid osmotic demyelination.</div></div><div class="rt"><div class="rtl">7. Dronedarone — increases mortality</div><div class="rte">Dronedarone is CONTRAINDICATED in symptomatic HF (NYHA III–IV or recently decompensated) and in permanent AF — it INCREASED mortality in decompensated HFrEF (ANDROMEDA) and increased CV events in permanent AF (PALLAS). It also causes hepatotoxicity.</div><div class="rtt">⚠️ Trap: 'dronedarone is the preferred/safe antiarrhythmic in heart failure because it lacks amiodarone's toxicities.' WRONG — dronedarone increases mortality in HF and is contraindicated. Discriminator: in HFrEF the antiarrhythmics that are mortality-NEUTRAL and safe are amiodarone and dofetilide; dronedarone is forbidden.</div></div><div class="rt"><div class="rtl">8. Amiodarone / dofetilide — safe</div><div class="rte">Amiodarone and dofetilide are the antiarrhythmics considered mortality-NEUTRAL and safe to use for AF/VT in HFrEF. Amiodarone has extensive organ toxicities (thyroid, pulmonary fibrosis, hepatic, corneal/skin) requiring monitoring; dofetilide requires in-hospital initiation with QT/renal dosing because of torsades risk. Class IC agents (flecainide, propafenone) are CONTRAINDICATED in structural heart disease/HF (CAST).</div><div class="rtt">⚠️ Trap: using a class IC agent (flecainide/propafenone) for AF in a patient with HFrEF or prior MI. WRONG — class IC drugs are proarrhythmic and increase mortality in structural heart disease (CAST). Discriminator: in structural HF, restrict to amiodarone or dofetilide; flecainide/propafenone are only for structurally NORMAL hearts.</div></div><div class="rt"><div class="rtl">9. Digoxin — narrow TI</div><div class="rte">Digoxin reduces HF HOSPITALIZATION but has NO mortality benefit (DIG trial); reserve it for persistent symptoms despite GDMT or for AF rate control. It has a narrow therapeutic index — target a low level (0.5–0.9 ng/mL); toxicity (nausea, confusion, visual halos/xanthopsia, arrhythmias) is potentiated by HYPOKALEMIA, hypomagnesemia, renal impairment, and is worse in women and the elderly.</div><div class="rtt">⚠️ Trap: 'digoxin lowers mortality in HFrEF.' WRONG — DIG showed reduced hospitalizations only, with a neutral effect on mortality (and possible harm at higher levels/in women). Discriminator: digoxin is a symptom/hospitalization and rate-control drug, not a survival drug; keep levels 0.5–0.9 ng/mL and correct K+/Mg to avoid toxicity.</div></div><div class="rt"><div class="rtl">10. LV thrombus → anticoagulate</div><div class="rte">A documented LV thrombus (common after large anterior MI with apical akinesis, or in severe HFrEF/LV aneurysm) warrants anticoagulation, typically with warfarin (most evidence) or a DOAC, for at least 3–6 months with follow-up imaging to confirm resolution. This reduces systemic/embolic stroke risk.</div><div class="rtt">⚠️ Trap: a patient with a freshly diagnosed LV thrombus is managed with antiplatelet therapy alone. WRONG — an established LV thrombus requires therapeutic ANTICOAGULATION (3–6 months), not just aspirin. Discriminator: thrombus present → anticoagulate; this differs from the no-thrombus, sinus-rhythm HFrEF patient who should NOT be routinely anticoagulated.</div></div><div class="rt"><div class="rtl">11. HFrEF in sinus rhythm — no routine OAC</div><div class="rte">HFrEF in SINUS RHYTHM without AF, LV thrombus, or a prior thromboembolic event should NOT be routinely anticoagulated — WARCEF showed warfarin vs aspirin had no net benefit (fewer ischemic strokes offset by more major bleeding). Reserve anticoagulation for a specific indication (AF, thrombus, mechanical valve, VTE).</div><div class="rtt">⚠️ Trap: 'low EF causes stasis, so anticoagulate every HFrEF patient to prevent stroke.' WRONG — routine anticoagulation in sinus-rhythm HFrEF is not beneficial and increases bleeding (WARCEF). Discriminator: anticoagulate only with a discrete indication (AF, LV thrombus, mechanical valve, recent VTE), not for low EF alone.</div></div><div class="rt"><div class="rtl">12. AF + HF → anticoagulate</div><div class="rte">Atrial fibrillation in a HF patient warrants anticoagulation based on CHA2DS2-VASc — and HF (the 'C') itself contributes a point, so essentially all AF + HF patients qualify. DOACs are preferred over warfarin for nonvalvular AF (except mechanical valves/moderate-severe mitral stenosis). Manage rate (beta-blocker ± digoxin) and consider rhythm control where appropriate.</div><div class="rtt">⚠️ Trap: deferring anticoagulation in an AF + HF patient because the CHA2DS2-VASc was 'borderline.' WRONG — HF scores a point, so AF + HF almost always meets the anticoagulation threshold. Discriminator: AF + HF → anticoagulate (DOAC preferred in nonvalvular AF); contrast with sinus-rhythm HFrEF where routine OAC is not indicated.</div></div><div class="rt"><div class="rtl">13. IV iron for iron deficiency</div><div class="rte">Iron deficiency (ferritin &lt;100, or 100–299 with TSAT &lt;20%) is common in HFrEF even WITHOUT anemia and worsens symptoms/exercise capacity. IV iron (ferric carboxymaltose — FAIR-HF, CONFIRM-HF, AFFIRM-AHF) improves symptoms, QOL, and reduces HF hospitalization; ORAL iron is ineffective in HF (IRONOUT-HF, due to poor absorption from hepcidin upregulation).</div><div class="rtt">⚠️ Trap: treating documented iron deficiency in a HFrEF patient with oral ferrous sulfate. WRONG — oral iron does not improve outcomes in HF (IRONOUT). Discriminator: use INTRAVENOUS iron (ferric carboxymaltose); also note iron deficiency is worth treating even when hemoglobin is normal (non-anemic iron deficiency).</div></div><div class="rt"><div class="rtl">14. Depression — screen, SSRI no benefit</div><div class="rte">Depression is common in HF and associated with worse outcomes, so SCREEN for it; however, SSRIs (e.g., sertraline in SADHART-CHF, escitalopram in MOOD-HF) are SAFE but did NOT improve depression scores or cardiovascular outcomes in HF trials. Avoid tricyclic antidepressants (anticholinergic/arrhythmogenic). Consider cognitive-behavioral therapy and exercise.</div><div class="rtt">⚠️ Trap: 'start an SSRI to improve heart-failure outcomes/prognosis in a depressed HF patient.' WRONG — SSRIs are safe but show no mortality, hospitalization, or even reliable mood benefit in HF trials. Discriminator: screen and manage depression for its own sake, but do not expect (or choose) an SSRI to improve HF outcomes; avoid TCAs in HF.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_mortality_curve.html" title="Heart Failure — SCENE 5 — HFrEF MORTALITY U-CURVE">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_adhf_phenotypes.html" title="Heart Failure — SCENE 7: ADHF Phenotypes (ER Triage 4 Beds)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

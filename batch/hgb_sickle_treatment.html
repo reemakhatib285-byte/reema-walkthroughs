@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hemoglobinopathy — The Sickle Armory</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Hydroxyurea — base of ladder</b> — Trap: reserving hydroxyurea for only severe/frequent-crisis patients. Discriminator: current guidance is to offer it to ALL HbSS infants from 9 months, not just symptomatic ones, because it reduces complications and mortality. Monitor the CBC for myelosuppression; it is teratogenic, so counsel on contraception.</li><li><b>Voxelotor</b> — Trap: assuming voxelotor abolishes vaso-occlusive crises like an anti-adhesion agent. Discriminator: voxelotor's proven benefit is RAISING hemoglobin (anti-hemolytic, left-shifts O2 affinity), not robustly cutting pain crises — for crisis reduction think hydroxyurea or crizanlizumab. Because it increases O2 affinity, it can blunt the apparent benefit and complicate O2 unloading.</li><li><b>Crizanlizumab</b> — Trap: confusing the mechanisms of the newer agents. Discriminator: crizanlizumab = anti-P-SELECTIN (blocks ADHESION → fewer pain crises); voxelotor = polymerization inhibitor (raises Hgb); L-glutamine = antioxidant. Matching drug to mechanism (adhesion vs polymerization vs oxidative stress) is the classic test point.</li><li><b>L-glutamine</b> — Trap: positioning L-glutamine as a first-line or stand-alone therapy. Discriminator: it is an ADJUNCT with modest benefit acting via reduced oxidative stress — never the answer over hydroxyurea for baseline disease modification, and not a crisis treatment.</li><li><b>Hydroxyurea mechanism</b> — Trap: thinking hydroxyurea's benefit is mainly the drop in WBC/platelets. Discriminator: the PRINCIPAL mechanism is HbF induction; the cytoreduction and NO effects are secondary contributors. This is why it works across the whole sickle phenotype, not just the inflammatory component.</li><li><b>Transfusion indications</b> — Trap: transfusing a patient in an uncomplicated VOC pain crisis. Discriminator: simple transfusion does not abort a pain crisis — reserve it for ACS, stroke, sequestration, severe symptomatic anemia, or preop. Over-transfusing toward Hgb &gt;10–11 risks hyperviscosity, which can paradoxically worsen vaso-occlusion.</li><li><b>Transfusion hazards</b> — Trap: ordering standard ABO/Rh(D)-matched blood for a chronically transfused SCD patient. Discriminator: because alloimmunization is so common, use EXTENDED antigen-matched (Rh subtypes C/E, Kell) units. A patient who hemolyzes both transfused AND native cells after a transfusion = hyperhemolysis syndrome — give IVIG/steroids and AVOID further transfusion.</li><li><b>Exchange transfusion</b> — Trap: choosing SIMPLE transfusion for acute stroke or severe ACS. Discriminator: when you must quickly drop %HbS (stroke, severe ACS), EXCHANGE transfusion is preferred because it lowers HbS fast and limits iron loading. Simple transfusion is fine for sequestration/aplastic crisis/mild anemia where you just need to raise Hgb.</li><li><b>Gene therapy — exa-cel</b> — Trap: confusing the two gene therapies. Discriminator: exa-cel/Casgevy = CRISPR EDIT of the BCL11A enhancer to turn HbF back ON; lovo-cel = lentiviral ADDITION of an anti-sickling β-globin gene. Both use the patient's OWN cells (autologous) with myeloablative conditioning — so no GVHD, unlike allogeneic HSCT.</li><li><b>Gene therapy — beti-cel</b> — Trap: thinking lentiviral gene therapy carries graft-versus-host risk. Discriminator: because it is AUTOLOGOUS (patient's own edited cells), there is no GVHD and no donor needed — the trade-offs are myeloablative chemotherapy toxicity/infertility and a theoretical malignancy risk. Contrast with allogeneic HSCT, which DOES carry GVHD and needs an HLA-matched donor.</li><li><b>HSCT — curative</b> — Trap: offering HSCT broadly as routine therapy. Discriminator: it is curative but limited by HLA-matched donor availability and carries GVHD/conditioning risk — historically reserved for severe disease with a matched sibling, ideally in childhood. The new autologous gene therapies are the alternative for patients lacking a matched donor.</li><li><b>Vaccines &amp; penicillin</b> — Trap: managing a febrile SCD child as an outpatient with watchful waiting. Discriminator: functional asplenia means overwhelming pneumococcal sepsis can kill within hours — fever mandates prompt cultures and EMPIRIC ceftriaxone, never delay. Skipping penicillin prophylaxis or vaccines against encapsulated organisms is the prevention error tested here.</li><li><b>Folic acid &amp; screening</b> — Trap: omitting folate supplementation or assuming a falling Hgb is always sickle-related. Discriminator: high cell turnover makes folate deficiency a real, preventable cause of worsening anemia — supplement routinely. Remember the surveillance bundle (newborn screen, TCD, retinal exam, albuminuria, echo) is part of standard preventive care, not optional.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Hydroxyurea — base of ladder</div><div class="rte">Hydroxyurea is the first-line disease-modifying drug for SCD: it induces fetal hemoglobin (HbF), lowers WBC/platelet adhesion, and raises NO → fewer pain crises, less acute chest syndrome, fewer transfusions/hospitalizations, and reduced mortality (MSH and BABY HUG trials). Offer to ALL HbSS/Sβ0 patients starting at 9 months of age regardless of symptoms; titrate to max tolerated dose by ANC. Main toxicity: dose-dependent myelosuppression (cytopenias).</div><div class="rtt">⚠️ Trap: reserving hydroxyurea for only severe/frequent-crisis patients. Discriminator: current guidance is to offer it to ALL HbSS infants from 9 months, not just symptomatic ones, because it reduces complications and mortality. Monitor the CBC for myelosuppression; it is teratogenic, so counsel on contraception.</div></div><div class="rt"><div class="rtl">2. Voxelotor</div><div class="rte">Voxelotor (1500 mg/day) is an HbS POLYMERIZATION inhibitor that binds the α-chain N-terminus and stabilizes the oxygenated, high-affinity R-state, keeping more HbS oxygenated so it cannot polymerize → raises hemoglobin level and lowers hemolytic markers. Used for chronic anemia. Note it primarily improves the Hgb number; its effect on reducing pain crises is limited.</div><div class="rtt">⚠️ Trap: assuming voxelotor abolishes vaso-occlusive crises like an anti-adhesion agent. Discriminator: voxelotor's proven benefit is RAISING hemoglobin (anti-hemolytic, left-shifts O2 affinity), not robustly cutting pain crises — for crisis reduction think hydroxyurea or crizanlizumab. Because it increases O2 affinity, it can blunt the apparent benefit and complicate O2 unloading.</div></div><div class="rt"><div class="rtl">3. Crizanlizumab</div><div class="rte">Crizanlizumab is a monoclonal antibody against P-SELECTIN, an adhesion molecule on endothelium/platelets. By blocking P-selectin–mediated multicellular adhesion it interrupts the vaso-occlusion cascade → fewer/longer-interval vaso-occlusive crises (SUSTAIN trial). Given IV; an add-on for patients with recurrent crises despite/alongside hydroxyurea.</div><div class="rtt">⚠️ Trap: confusing the mechanisms of the newer agents. Discriminator: crizanlizumab = anti-P-SELECTIN (blocks ADHESION → fewer pain crises); voxelotor = polymerization inhibitor (raises Hgb); L-glutamine = antioxidant. Matching drug to mechanism (adhesion vs polymerization vs oxidative stress) is the classic test point.</div></div><div class="rt"><div class="rtl">4. L-glutamine</div><div class="rte">L-glutamine (oral) is an adjunct that boosts NAD redox potential in red cells, reducing OXIDATIVE STRESS and yielding a modest reduction in pain crises and ACS. It is added on, often with hydroxyurea. Its effect size is small relative to hydroxyurea.</div><div class="rtt">⚠️ Trap: positioning L-glutamine as a first-line or stand-alone therapy. Discriminator: it is an ADJUNCT with modest benefit acting via reduced oxidative stress — never the answer over hydroxyurea for baseline disease modification, and not a crisis treatment.</div></div><div class="rt"><div class="rtl">5. Hydroxyurea mechanism</div><div class="rte">Mechanistically hydroxyurea is a ribonucleotide reductase inhibitor whose dominant benefit is inducing HbF (which cannot enter the deoxy-HbS polymer); it also lowers leukocyte/platelet counts (less adhesion/inflammation) and increases nitric oxide. Net clinical effect in adults: roughly a 40% reduction in mortality plus fewer crises, ACS episodes, and transfusions.</div><div class="rtt">⚠️ Trap: thinking hydroxyurea's benefit is mainly the drop in WBC/platelets. Discriminator: the PRINCIPAL mechanism is HbF induction; the cytoreduction and NO effects are secondary contributors. This is why it works across the whole sickle phenotype, not just the inflammatory component.</div></div><div class="rt"><div class="rtl">6. Transfusion indications</div><div class="rte">Transfusion (simple or exchange) is indicated for: symptomatic SEVERE anemia (incl. acute splenic sequestration, aplastic crisis), SEVERE acute chest syndrome, ACUTE stroke, acute multiorgan failure, and PREOPERATIVE optimization to Hgb ~10 g/dL for moderate/high-risk surgery. Chronic transfusion is used for primary/secondary STROKE prevention (keep HbS &lt;30%). It is NOT used for routine uncomplicated pain crises.</div><div class="rtt">⚠️ Trap: transfusing a patient in an uncomplicated VOC pain crisis. Discriminator: simple transfusion does not abort a pain crisis — reserve it for ACS, stroke, sequestration, severe symptomatic anemia, or preop. Over-transfusing toward Hgb &gt;10–11 risks hyperviscosity, which can paradoxically worsen vaso-occlusion.</div></div><div class="rt"><div class="rtl">7. Transfusion hazards</div><div class="rte">Key transfusion hazards in SCD: HYPERVISCOSITY (keep post-transfusion Hgb ≤10–11 g/dL), ALLOIMMUNIZATION (~18–27%; prevent with extended phenotype matching for Rh [C, E], Kell, and ABO), delayed hemolytic transfusion reactions / hyperhemolysis syndrome, and IRON OVERLOAD from chronic simple transfusion (treat with chelation — deferasirox/deferoxamine/deferiprone).</div><div class="rtt">⚠️ Trap: ordering standard ABO/Rh(D)-matched blood for a chronically transfused SCD patient. Discriminator: because alloimmunization is so common, use EXTENDED antigen-matched (Rh subtypes C/E, Kell) units. A patient who hemolyzes both transfused AND native cells after a transfusion = hyperhemolysis syndrome — give IVIG/steroids and AVOID further transfusion.</div></div><div class="rt"><div class="rtl">8. Exchange transfusion</div><div class="rte">Exchange transfusion (red-cell apheresis) rapidly lowers the percentage of HbS WITHOUT adding net iron, avoiding the iron overload of simple transfusion. It is preferred for ACUTE STROKE, severe/progressive acute chest syndrome, acute multiorgan failure, and as chronic therapy when iron overload must be avoided. Goal is typically HbS &lt;30%.</div><div class="rtt">⚠️ Trap: choosing SIMPLE transfusion for acute stroke or severe ACS. Discriminator: when you must quickly drop %HbS (stroke, severe ACS), EXCHANGE transfusion is preferred because it lowers HbS fast and limits iron loading. Simple transfusion is fine for sequestration/aplastic crisis/mild anemia where you just need to raise Hgb.</div></div><div class="rt"><div class="rtl">9. Gene therapy — exa-cel</div><div class="rte">Exa-cel (exagamglogene autotemcel / Casgevy) is a CRISPR-Cas9 ex-vivo gene-EDITING therapy that disrupts the BCL11A erythroid enhancer in the patient's own hematopoietic stem cells, de-repressing γ-globin to reactivate HbF (often &gt;30–50%) → near-elimination of vaso-occlusive crises. FDA-approved (Dec 2023); requires myeloablative conditioning (busulfan) and autologous transplant.</div><div class="rtt">⚠️ Trap: confusing the two gene therapies. Discriminator: exa-cel/Casgevy = CRISPR EDIT of the BCL11A enhancer to turn HbF back ON; lovo-cel = lentiviral ADDITION of an anti-sickling β-globin gene. Both use the patient's OWN cells (autologous) with myeloablative conditioning — so no GVHD, unlike allogeneic HSCT.</div></div><div class="rt"><div class="rtl">10. Gene therapy — beti-cel</div><div class="rte">Lovo-cel (lovotibeglogene autotemcel / Lyfgenia) uses a LENTIVIRAL vector to ADD a modified anti-sickling β-globin gene (βA-T87Q) into the patient's own stem cells, producing HbAT87Q that resists polymerization → higher total Hgb and fewer crises. FDA-approved (Dec 2023) for SCD; also requires busulfan conditioning and autologous transplant. (beti-cel/Zynteglo uses the same platform for β-thalassemia.)</div><div class="rtt">⚠️ Trap: thinking lentiviral gene therapy carries graft-versus-host risk. Discriminator: because it is AUTOLOGOUS (patient's own edited cells), there is no GVHD and no donor needed — the trade-offs are myeloablative chemotherapy toxicity/infertility and a theoretical malignancy risk. Contrast with allogeneic HSCT, which DOES carry GVHD and needs an HLA-matched donor.</div></div><div class="rt"><div class="rtl">11. HSCT — curative</div><div class="rte">Allogeneic hematopoietic stem cell transplant from an HLA-MATCHED SIBLING is the only long-established CURE for SCD, with &gt;90–95% event-free survival in children. Best outcomes when done early (before chronic organ damage). Limited by donor availability and risks of conditioning toxicity, infertility, and graft-versus-host disease/graft rejection.</div><div class="rtt">⚠️ Trap: offering HSCT broadly as routine therapy. Discriminator: it is curative but limited by HLA-matched donor availability and carries GVHD/conditioning risk — historically reserved for severe disease with a matched sibling, ideally in childhood. The new autologous gene therapies are the alternative for patients lacking a matched donor.</div></div><div class="rt"><div class="rtl">12. Vaccines &amp; penicillin</div><div class="rte">Functional ASPLENIA (autosplenectomy from repeated infarction) leaves SCD patients vulnerable to ENCAPSULATED organisms (S. pneumoniae, H. influenzae, N. meningitidis). Give prophylactic oral PENICILLIN from age 2 months until at least age 5, plus the full vaccine set: pneumococcal (PCV + PPSV23), Hib, and meningococcal. Any FEVER in an SCD child is an emergency requiring immediate evaluation and empiric antibiotics.</div><div class="rtt">⚠️ Trap: managing a febrile SCD child as an outpatient with watchful waiting. Discriminator: functional asplenia means overwhelming pneumococcal sepsis can kill within hours — fever mandates prompt cultures and EMPIRIC ceftriaxone, never delay. Skipping penicillin prophylaxis or vaccines against encapsulated organisms is the prevention error tested here.</div></div><div class="rt"><div class="rtl">13. Folic acid &amp; screening</div><div class="rte">Chronic hemolysis drives high RBC turnover, so give daily FOLIC ACID (~1 mg/day) to prevent megaloblastic/folate-deficiency crises. Comprehensive screening/prevention: universal NEWBORN screening (early dx), annual transcranial Doppler ages 2–16 (stroke prevention), annual dilated retinal exams, blood-pressure/renal (urine albumin) monitoring, echocardiography for pulmonary HTN, and genetic counseling for trait carriers.</div><div class="rtt">⚠️ Trap: omitting folate supplementation or assuming a falling Hgb is always sickle-related. Discriminator: high cell turnover makes folate deficiency a real, preventable cause of worsening anemia — supplement routinely. Remember the surveillance bundle (newborn screen, TCD, retinal exam, albuminuria, echo) is part of standard preventive care, not optional.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hgb_structure.html" title="Hemoglobinopathy — The Hemoglobin Forge">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hgb_sickle_catastrophes.html" title="Hemoglobinopathy — The Sickle River: Catastrophes">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

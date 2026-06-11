@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">AML — Induction (7+3)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Induction furnace</b> — CR (&lt;5% blasts) is the goal of induction, but achieving CR alone does NOT cure AML — consolidation is mandatory. Do not confuse induction with the curative endpoint.</li><li><b>Cytarabine 7 days</b> — In 7+3 the 7 days is cytarabine and the 3 days is the anthracycline — reversing them is a classic distractor. High-dose cytarabine belongs to consolidation, not standard induction.</li><li><b>Cytarabine = antimetabolite</b> — High-dose cytarabine neurotoxicity is cerebellar (ataxia/dysarthria), not peripheral neuropathy — and is an indication to HOLD the drug. Prophylactic steroid eye drops are required to prevent the cytarabine keratoconjunctivitis.</li><li><b>Anthracycline 3 days</b> — Anthracycline cardiotoxicity is cumulative and dose-dependent (irreversible dilated cardiomyopathy); check baseline LVEF. The acute red urine after daunorubicin/idarubicin is harmless and must not be mistaken for hematuria.</li><li><b>Dauno 60 / Ida 12</b> — For secondary/therapy-related AML and AML-MRC in older adults, CPX-351 (liposomal dauno/cytarabine) is preferred over conventional 7+3 — a frequently tested substitution.</li><li><b>Topo II / DNA crushed</b> — Topoisomerase II inhibition is the anthracycline mechanism — and prior topo-II exposure later causes therapy-related AML with KMT2A/11q23 rearrangement and short (1-3 yr) latency, distinct from alkylator-induced t-AML.</li><li><b>FLT3 TKI add-on</b> — Midostaurin is added to 7+3 up front for FLT3-mutated AML (induction/consolidation); gilteritinib is for relapsed/refractory FLT3 disease. FLT3-ITD-positive patients should proceed to allo-HCT in CR1.</li><li><b>HMA + venetoclax (unfit)</b> — Frail/elderly or comorbid patients → azacitidine/decitabine + venetoclax, NOT intensive 7+3. Venetoclax needs a ramp-up dose schedule with TLS prophylaxis; starting at full dose can precipitate fatal tumor lysis.</li><li><b>&lt;5% blasts = CR</b> — CR demands BOTH &lt;5% marrow blasts AND peripheral count recovery — &lt;5% blasts without count recovery is only CRi. MRD positivity in apparent CR still portends relapse and may change management.</li><li><b>ANC / PLT recovery</b> — The CR count thresholds are ANC &gt;1000 and platelets &gt;100k — values short of these (e.g., persistent thrombocytopenia) downgrade the response to CRi, not CR.</li><li><b>Transfusion support</b> — Blood products for AML/transplant candidates must be irradiated (prevents TA-GVHD) and leukoreduced (CMV risk, alloimmunization). Neutropenic fever is a medical emergency requiring empiric broad-spectrum antibiotics within an hour, before cultures result.</li><li><b>Allo / rasburicase</b> — Rasburicase, not allopurinol, is used when uric acid is already high (it breaks down existing urate) and is contraindicated in G6PD deficiency (causes hemolysis/methemoglobinemia). Allopurinol only prevents new urate and does not lower an already-elevated level.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Induction furnace</div><div class="rte">Induction is the first, intensive phase of AML therapy whose goal is complete remission (CR) — defined as &lt;5% marrow blasts with hematologic recovery — not cure. CR is necessary but not sufficient: nearly all patients relapse without post-remission (consolidation) therapy, so induction is always followed by consolidation chemo and/or allo-HCT depending on ELN risk. Fit patients &lt;60-75 yr with good performance status are candidates for intensive induction; APL (t(15;17)) is the exception and is treated with ATRA + arsenic trioxide, not 7+3.</div><div class="rtt">⚠️ CR (&lt;5% blasts) is the goal of induction, but achieving CR alone does NOT cure AML — consolidation is mandatory. Do not confuse induction with the curative endpoint.</div></div><div class="rt"><div class="rtl">2. Cytarabine 7 days</div><div class="rte">The 7+3 regimen pairs cytarabine (Ara-C) as a continuous IV infusion for 7 days with an anthracycline given on the first 3 days. Cytarabine is the antimetabolite backbone and is dosed at standard 100-200 mg/m2/day continuous infusion in induction (high-dose cytarabine is reserved mainly for consolidation). The '7' in 7+3 always refers to the cytarabine days.</div><div class="rtt">⚠️ In 7+3 the 7 days is cytarabine and the 3 days is the anthracycline — reversing them is a classic distractor. High-dose cytarabine belongs to consolidation, not standard induction.</div></div><div class="rt"><div class="rtl">3. Cytarabine = antimetabolite</div><div class="rte">Cytarabine is a pyrimidine (cytidine) analog antimetabolite: after intracellular phosphorylation to Ara-CTP it incorporates into DNA and inhibits DNA polymerase, halting S-phase synthesis. Its signature high-dose toxicities are cerebellar dysfunction (ataxia, nystagmus — check cerebellar exam before each dose and hold if abnormal), conjunctivitis (give prophylactic steroid eye drops), and chemical pancreatitis. It is the single most important drug in AML therapy.</div><div class="rtt">⚠️ High-dose cytarabine neurotoxicity is cerebellar (ataxia/dysarthria), not peripheral neuropathy — and is an indication to HOLD the drug. Prophylactic steroid eye drops are required to prevent the cytarabine keratoconjunctivitis.</div></div><div class="rt"><div class="rtl">4. Anthracycline 3 days</div><div class="rte">The '3' of 7+3 is an anthracycline given on days 1-3, most commonly daunorubicin or idarubicin. Anthracyclines provide the cytotoxic punch through topoisomerase II inhibition and free-radical DNA damage. Their dose-limiting long-term toxicity is cumulative, dose-dependent cardiomyopathy/heart failure, so a baseline echocardiogram (LVEF) is obtained before induction.</div><div class="rtt">⚠️ Anthracycline cardiotoxicity is cumulative and dose-dependent (irreversible dilated cardiomyopathy); check baseline LVEF. The acute red urine after daunorubicin/idarubicin is harmless and must not be mistaken for hematuria.</div></div><div class="rt"><div class="rtl">5. Dauno 60 / Ida 12</div><div class="rte">Standard induction doses are daunorubicin 60-90 mg/m2/day or idarubicin 12 mg/m2/day on days 1-3. Daunorubicin 90 mg/m2 (intensified) improves outcomes in younger fit patients versus 45 mg/m2. CPX-351 (liposomal daunorubicin + cytarabine) is the preferred induction for therapy-related AML and AML with myelodysplasia-related changes in older adults.</div><div class="rtt">⚠️ For secondary/therapy-related AML and AML-MRC in older adults, CPX-351 (liposomal dauno/cytarabine) is preferred over conventional 7+3 — a frequently tested substitution.</div></div><div class="rt"><div class="rtl">6. Topo II / DNA crushed</div><div class="rte">Anthracyclines act primarily by inhibiting topoisomerase II, trapping the enzyme-DNA cleavage complex and generating double-strand DNA breaks; they also intercalate DNA and generate reactive oxygen species. This same topo-II mechanism is why prior etoposide/anthracycline exposure causes short-latency therapy-related AML with KMT2A (11q23) rearrangements.</div><div class="rtt">⚠️ Topoisomerase II inhibition is the anthracycline mechanism — and prior topo-II exposure later causes therapy-related AML with KMT2A/11q23 rearrangement and short (1-3 yr) latency, distinct from alkylator-induced t-AML.</div></div><div class="rt"><div class="rtl">7. FLT3 TKI add-on</div><div class="rte">If AML is FLT3-mutated (ITD or TKD), add the FLT3 inhibitor midostaurin to 7+3 induction and consolidation — this improved overall survival in the RATIFY trial. For relapsed/refractory FLT3-ITD AML, gilteritinib is the agent of choice. FLT3-ITD carries adverse prognostic weight, so these patients are generally referred for allo-HCT in CR1.</div><div class="rtt">⚠️ Midostaurin is added to 7+3 up front for FLT3-mutated AML (induction/consolidation); gilteritinib is for relapsed/refractory FLT3 disease. FLT3-ITD-positive patients should proceed to allo-HCT in CR1.</div></div><div class="rt"><div class="rtl">8. HMA + venetoclax (unfit)</div><div class="rte">Older (typically ≥75 yr) or unfit patients who cannot tolerate intensive 7+3 receive a hypomethylating agent (azacitidine or decitabine) plus the BCL-2 inhibitor venetoclax — the VIALE-A regimen, which roughly tripled survival versus azacitidine alone. Venetoclax requires careful ramp-up with tumor lysis prophylaxis. IDH inhibitors (ivosidenib for IDH1, enasidenib for IDH2) are alternatives in mutated, unfit patients.</div><div class="rtt">⚠️ Frail/elderly or comorbid patients → azacitidine/decitabine + venetoclax, NOT intensive 7+3. Venetoclax needs a ramp-up dose schedule with TLS prophylaxis; starting at full dose can precipitate fatal tumor lysis.</div></div><div class="rt"><div class="rtl">9. &lt;5% blasts = CR</div><div class="rte">Complete remission requires &lt;5% blasts in a marrow with adequate cellularity, no Auer rods, no extramedullary disease, AND peripheral count recovery (ANC ≥1000, platelets ≥100k). CR with incomplete count recovery (CRi) and measurable residual disease (MRD) positivity by flow/PCR predict relapse, so MRD status increasingly guides whether to escalate to transplant.</div><div class="rtt">⚠️ CR demands BOTH &lt;5% marrow blasts AND peripheral count recovery — &lt;5% blasts without count recovery is only CRi. MRD positivity in apparent CR still portends relapse and may change management.</div></div><div class="rt"><div class="rtl">10. ANC / PLT recovery</div><div class="rte">Hematologic recovery thresholds defining true CR are ANC &gt;1000/µL and platelets &gt;100,000/µL. A day-14 marrow is often checked to confirm blast clearance; persistent disease may prompt re-induction. Expect a profound 3-4 week aplastic nadir after 7+3 during which neutropenic fever and bleeding risk are highest.</div><div class="rtt">⚠️ The CR count thresholds are ANC &gt;1000 and platelets &gt;100k — values short of these (e.g., persistent thrombocytopenia) downgrade the response to CRi, not CR.</div></div><div class="rt"><div class="rtl">11. Transfusion support</div><div class="rte">During the induction aplasia, supportive care is as important as the chemo: transfuse platelets prophylactically (&lt;10k, or higher if febrile/bleeding) and RBCs for symptomatic anemia, use leukoreduced and irradiated products to prevent CMV transmission and transfusion-associated GVHD, and give broad-spectrum antibacterial/antifungal/antiviral prophylaxis plus prompt empiric antibiotics for neutropenic fever.</div><div class="rtt">⚠️ Blood products for AML/transplant candidates must be irradiated (prevents TA-GVHD) and leukoreduced (CMV risk, alloimmunization). Neutropenic fever is a medical emergency requiring empiric broad-spectrum antibiotics within an hour, before cultures result.</div></div><div class="rt"><div class="rtl">12. Allo / rasburicase</div><div class="rte">Tumor lysis syndrome prophylaxis starts before/with induction: aggressive IV hydration plus allopurinol (xanthine oxidase inhibitor, prevents new urate formation) for lower-risk disease, and rasburicase (recombinant urate oxidase, degrades existing uric acid) for high tumor burden/hyperuricemia. Monitor for the TLS tetrad — hyperkalemia, hyperphosphatemia, hyperuricemia, hypocalcemia — with rising creatinine.</div><div class="rtt">⚠️ Rasburicase, not allopurinol, is used when uric acid is already high (it breaks down existing urate) and is contraindicated in G6PD deficiency (causes hemolysis/methemoglobinemia). Allopurinol only prevents new urate and does not lower an already-elevated level.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aml_classification_favorable.html" title="AML — Favorable Genetics (Classification)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aml_presentation.html" title="AML — Presentation &amp; Diagnosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

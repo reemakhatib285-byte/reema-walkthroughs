@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Glomerular (Nephrotic) — Diabetic Nephropathy: Pathology &amp; Natural History</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>#1 cause CKD/ESKD</b> — Wrong answer: 'hypertension is the #1 cause of ESKD worldwide.' Discriminator — hypertension is the SECOND most common cause; diabetes is first (~45% of incident dialysis). Hypertensive nephrosclerosis gives small shrunken kidneys with mild proteinuria, whereas diabetic kidneys stay LARGE with heavy proteinuria.</li><li><b>Hyperfiltration (earliest)</b> — Wrong answer: 'diabetic nephropathy begins with a LOW GFR.' Discriminator — the earliest phase is a HIGH GFR (hyperfiltration), not a low one. GFR only falls later, after years of glomerular injury. Mistaking early high GFR for 'normal kidneys' misses the disease at its most treatable stage.</li><li><b>Microalbuminuria</b> — Wrong answer: 'overt (dipstick-positive) proteinuria is the first detectable sign.' Discriminator — dipstick only turns positive at MACROalbuminuria (&gt;300 mg/day). The earliest detectable abnormality is MICROalbuminuria, which the standard dipstick MISSES — you must order a UACR. Missing this is the trap.</li><li><b>Albuminuria = best predictor</b> — Wrong answer: 'serum creatinine is the strongest EARLY predictor of progression.' Discriminator — creatinine rises late (only after substantial nephron loss and after hyperfiltration masks early damage). Albuminuria predicts progression years earlier and is the high-yield answer for early risk stratification.</li><li><b>Macroalbuminuria → nephrotic</b> — Wrong answer: 'diabetic nephropathy never causes nephrotic-range proteinuria.' Discriminator — it is in fact the most common cause of nephrotic syndrome in adults. The trap is treating nephrotic-range proteinuria in a long-standing diabetic with retinopathy as if it must be a primary glomerulopathy.</li><li><b>Kimmelstiel-Wilson nodules</b> — Wrong answer: 'crescents are the pathognomonic finding in diabetic nephropathy.' Discriminator — crescents indicate RAPIDLY PROGRESSIVE/crescentic GN (anti-GBM, ANCA, immune-complex), a nephritic process. Diabetic nephropathy = non-inflammatory PAS-positive Kimmelstiel-Wilson nodules with a bland urine sediment.</li><li><b>GBM thickening</b> — Wrong answer: 'GBM THINNING is the hallmark of diabetic nephropathy.' Discriminator — GBM thinning characterizes thin basement membrane disease (benign familial hematuria) and early Alport syndrome. Diabetes causes GBM THICKENING; thinning is the opposite and a distractor.</li><li><b>Mesangial expansion</b> — Wrong answer: 'mesangial expansion here is immune-complex driven (so look for low complement / positive serologies).' Discriminator — diabetic mesangial expansion is a metabolic/matrix process, NOT immune-complex deposition. Complement is normal and immunofluorescence shows no true immune complexes — unlike lupus or MPGN.</li><li><b>Linear IgG (non-specific)</b> — Wrong answer: 'linear IgG along the GBM = anti-GBM (Goodpasture) disease.' Discriminator — true anti-GBM disease has bright RIBBON-like linear IgG with crescents, hematuria/RPGN, hemoptysis, and positive anti-GBM antibodies. The diabetic linear IgG is faint, non-specific trapping with a bland sediment and negative serology.</li><li><b>Kidneys stay large</b> — Wrong answer: 'the kidneys become small and shrunken in advanced diabetic nephropathy.' Discriminator — small kidneys on ultrasound suggest another chronic process (hypertensive nephrosclerosis, chronic GN). Large kidneys with heavy proteinuria in a diabetic point to diabetic nephropathy (or amyloid/HIV nephropathy, the other 'big kidney' diseases).</li><li><b>Retinopathy correlation</b> — Wrong answer: 'retinopathy and nephropathy are unrelated microvascular processes.' Discriminator — they share the same hyperglycemic microvascular pathophysiology and co-occur; the PRESENCE of retinopathy supports a diabetic etiology for proteinuria, while its absence (especially in T1DM) argues against it.</li><li><b>No retinopathy → reconsider</b> — Wrong answer: 'absence of retinopathy still confirms diabetic nephropathy in a T1DM patient.' Discriminator — in T1DM, NO retinopathy makes diabetic nephropathy unlikely and mandates considering another diagnosis (and biopsy). Anchoring on diabetes despite the missing retinopathy is the tested error.</li><li><b>RAAS hyperfiltration engine</b> — Wrong answer: 'diabetic glomeruli are hypofiltering from the start.' Discriminator — early diabetic glomeruli HYPERfilter (high intraglomerular pressure), driven by afferent dilation + efferent constriction. The therapeutic logic (RAAS blockade dilates the efferent to relieve pressure) only makes sense once you recognize the hyperfiltration.</li><li><b>SGLT2i restores feedback</b> — Wrong answer: 'SGLT2 inhibitors WORSEN hyperfiltration' — or 'the initial eGFR dip means the drug is nephrotoxic and must be stopped.' Discriminator — SGLT2i REDUCE hyperfiltration via afferent constriction (the opposite of harm), and the early eGFR dip is an expected hemodynamic effect signaling the drug is working, not toxicity.</li><li><b>CV mortality shadow</b> — Wrong answer: 'nearly all diabetic nephropathy patients survive to reach dialysis.' Discriminator — the competing risk of cardiovascular death is so high that many patients die BEFORE progressing to ESKD. Ignoring CV risk and focusing only on the kidney is the strategic error the exam punishes.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. #1 cause CKD/ESKD</div><div class="rte">Diabetic nephropathy (diabetic kidney disease) is the SINGLE most common cause of CKD and end-stage kidney disease worldwide, accounting for roughly 40–45% of patients starting dialysis. It is also the most common cause of nephrotic syndrome in adults overall (because diabetes is so prevalent), even though primary glomerular diseases are individually 'classic' nephrotic causes.</div><div class="rtt">⚠️ Wrong answer: 'hypertension is the #1 cause of ESKD worldwide.' Discriminator — hypertension is the SECOND most common cause; diabetes is first (~45% of incident dialysis). Hypertensive nephrosclerosis gives small shrunken kidneys with mild proteinuria, whereas diabetic kidneys stay LARGE with heavy proteinuria.</div></div><div class="rt"><div class="rtl">2. Hyperfiltration (earliest)</div><div class="rte">Stage 1 of the natural history is glomerular HYPERFILTRATION: hyperglycemia drives an ELEVATED (supranormal) GFR with renal hypertrophy and enlarged glomeruli. This is mediated by afferent arteriolar dilation and efferent constriction (RAAS), raising intraglomerular pressure — the hemodynamic stress that eventually damages the filter.</div><div class="rtt">⚠️ Wrong answer: 'diabetic nephropathy begins with a LOW GFR.' Discriminator — the earliest phase is a HIGH GFR (hyperfiltration), not a low one. GFR only falls later, after years of glomerular injury. Mistaking early high GFR for 'normal kidneys' misses the disease at its most treatable stage.</div></div><div class="rt"><div class="rtl">3. Microalbuminuria</div><div class="rte">Stage 2/3: moderately increased albuminuria — 'microalbuminuria,' 30–300 mg/24h (or UACR 30–300 mg/g) — is the FIRST measurable laboratory marker, typically appearing 5–10 years into disease. It is below the dipstick detection threshold, so it must be sought specifically with a UACR. This is the window where ACEi/ARB therapy is most beneficial.</div><div class="rtt">⚠️ Wrong answer: 'overt (dipstick-positive) proteinuria is the first detectable sign.' Discriminator — dipstick only turns positive at MACROalbuminuria (&gt;300 mg/day). The earliest detectable abnormality is MICROalbuminuria, which the standard dipstick MISSES — you must order a UACR. Missing this is the trap.</div></div><div class="rt"><div class="rtl">4. Albuminuria = best predictor</div><div class="rte">ALBUMINURIA (and its rate of rise) is the strongest predictor of progression to ESKD and of cardiovascular risk in diabetes. Reducing albuminuria with RAAS blockade and SGLT2 inhibitors is a validated surrogate for slowing kidney decline — which is why therapy is titrated to lower it.</div><div class="rtt">⚠️ Wrong answer: 'serum creatinine is the strongest EARLY predictor of progression.' Discriminator — creatinine rises late (only after substantial nephron loss and after hyperfiltration masks early damage). Albuminuria predicts progression years earlier and is the high-yield answer for early risk stratification.</div></div><div class="rt"><div class="rtl">5. Macroalbuminuria → nephrotic</div><div class="rte">Stage 4: macroalbuminuria / overt proteinuria (&gt;300 mg/24h, dipstick positive) marks established nephropathy, and proteinuria can climb into the NEPHROTIC range (&gt;3.5 g/day) with edema, hypoalbuminemia, and hyperlipidemia. Once overt proteinuria appears, GFR typically declines toward ESKD over the following years.</div><div class="rtt">⚠️ Wrong answer: 'diabetic nephropathy never causes nephrotic-range proteinuria.' Discriminator — it is in fact the most common cause of nephrotic syndrome in adults. The trap is treating nephrotic-range proteinuria in a long-standing diabetic with retinopathy as if it must be a primary glomerulopathy.</div></div><div class="rt"><div class="rtl">6. Kimmelstiel-Wilson nodules</div><div class="rte">The pathognomonic light-microscopy lesion is NODULAR glomerulosclerosis with Kimmelstiel-Wilson nodules: acellular, eosinophilic, PAS-POSITIVE mesangial nodules at the glomerular periphery. They reflect long-standing mesangial matrix accumulation. (Diffuse mesangial sclerosis is more common but less specific.)</div><div class="rtt">⚠️ Wrong answer: 'crescents are the pathognomonic finding in diabetic nephropathy.' Discriminator — crescents indicate RAPIDLY PROGRESSIVE/crescentic GN (anti-GBM, ANCA, immune-complex), a nephritic process. Diabetic nephropathy = non-inflammatory PAS-positive Kimmelstiel-Wilson nodules with a bland urine sediment.</div></div><div class="rt"><div class="rtl">7. GBM thickening</div><div class="rte">The EARLIEST structural change on EM is diffuse GLOMERULAR BASEMENT MEMBRANE THICKENING, from nonenzymatic glycation and matrix overproduction. Loss of heparan sulfate proteoglycan reduces the GBM's negative charge barrier, allowing negatively charged albumin to leak through — the structural basis of albuminuria.</div><div class="rtt">⚠️ Wrong answer: 'GBM THINNING is the hallmark of diabetic nephropathy.' Discriminator — GBM thinning characterizes thin basement membrane disease (benign familial hematuria) and early Alport syndrome. Diabetes causes GBM THICKENING; thinning is the opposite and a distractor.</div></div><div class="rt"><div class="rtl">8. Mesangial expansion</div><div class="rte">Mesangial matrix EXPANSION is the change that correlates best with declining renal function; progressive accumulation produces diffuse then nodular (Kimmelstiel-Wilson) glomerulosclerosis. The mesangial cells are stimulated by hyperglycemia, advanced glycation end-products, and TGF-β.</div><div class="rtt">⚠️ Wrong answer: 'mesangial expansion here is immune-complex driven (so look for low complement / positive serologies).' Discriminator — diabetic mesangial expansion is a metabolic/matrix process, NOT immune-complex deposition. Complement is normal and immunofluorescence shows no true immune complexes — unlike lupus or MPGN.</div></div><div class="rt"><div class="rtl">9. Linear IgG (non-specific)</div><div class="rte">Immunofluorescence in diabetic nephropathy can show a NON-SPECIFIC LINEAR staining of IgG and albumin along the GBM — this is passive 'trapping'/insudation of plasma proteins, NOT immune-mediated, and there are no electron-dense immune deposits on EM.</div><div class="rtt">⚠️ Wrong answer: 'linear IgG along the GBM = anti-GBM (Goodpasture) disease.' Discriminator — true anti-GBM disease has bright RIBBON-like linear IgG with crescents, hematuria/RPGN, hemoptysis, and positive anti-GBM antibodies. The diabetic linear IgG is faint, non-specific trapping with a bland sediment and negative serology.</div></div><div class="rt"><div class="rtl">10. Kidneys stay large</div><div class="rte">A distinctive feature: diabetic kidneys remain NORMAL-SIZED or ENLARGED even into advanced CKD/ESKD, because of glomerular hypertrophy and matrix accumulation. This contrasts with nearly every other chronic kidney disease, where the kidneys shrink as nephrons are lost.</div><div class="rtt">⚠️ Wrong answer: 'the kidneys become small and shrunken in advanced diabetic nephropathy.' Discriminator — small kidneys on ultrasound suggest another chronic process (hypertensive nephrosclerosis, chronic GN). Large kidneys with heavy proteinuria in a diabetic point to diabetic nephropathy (or amyloid/HIV nephropathy, the other 'big kidney' diseases).</div></div><div class="rt"><div class="rtl">11. Retinopathy correlation</div><div class="rte">Diabetic RETINOPATHY and nephropathy are tightly linked microvascular complications. In type 1 diabetes, &gt;90% of patients with nephropathy have retinopathy; in type 2 the correlation is weaker (~60%). Retinopathy essentially always precedes or accompanies T1DM nephropathy, making it a powerful clinical corroborator.</div><div class="rtt">⚠️ Wrong answer: 'retinopathy and nephropathy are unrelated microvascular processes.' Discriminator — they share the same hyperglycemic microvascular pathophysiology and co-occur; the PRESENCE of retinopathy supports a diabetic etiology for proteinuria, while its absence (especially in T1DM) argues against it.</div></div><div class="rt"><div class="rtl">12. No retinopathy → reconsider</div><div class="rte">Because retinopathy almost always accompanies T1DM nephropathy, a type 1 diabetic with proteinuria but NO retinopathy should trigger a search for an alternative or superimposed glomerular disease (e.g., membranous, FSGS, lupus, vasculitis) — this is a classic indication for kidney BIOPSY. Other red flags: rapid GFR decline, active urinary sediment (RBC casts), or sudden nephrotic-range proteinuria.</div><div class="rtt">⚠️ Wrong answer: 'absence of retinopathy still confirms diabetic nephropathy in a T1DM patient.' Discriminator — in T1DM, NO retinopathy makes diabetic nephropathy unlikely and mandates considering another diagnosis (and biopsy). Anchoring on diabetes despite the missing retinopathy is the tested error.</div></div><div class="rt"><div class="rtl">13. RAAS hyperfiltration engine</div><div class="rte">The hemodynamic engine: hyperglycemia activates the intrarenal RAAS, dilating the AFFERENT arteriole and constricting the EFFERENT arteriole (angiotensin II effect). The net result is raised intraglomerular pressure and hyperfiltration, which mechanically damages the filtration barrier over time. This is precisely why ACEi/ARB (efferent dilation) lower intraglomerular pressure and are renoprotective.</div><div class="rtt">⚠️ Wrong answer: 'diabetic glomeruli are hypofiltering from the start.' Discriminator — early diabetic glomeruli HYPERfilter (high intraglomerular pressure), driven by afferent dilation + efferent constriction. The therapeutic logic (RAAS blockade dilates the efferent to relieve pressure) only makes sense once you recognize the hyperfiltration.</div></div><div class="rt"><div class="rtl">14. SGLT2i restores feedback</div><div class="rte">SGLT2 inhibitors (e.g., empagliflozin, dapagliflozin, canagliflozin) block proximal sodium-glucose reabsorption, so MORE sodium reaches the macula densa. Tubuloglomerular feedback then CONSTRICTS the afferent arteriole, lowering intraglomerular pressure and hyperfiltration — a glucose-independent renoprotective mechanism. Expect a small, benign initial dip in eGFR (~3–5 mL/min) that should NOT prompt stopping the drug.</div><div class="rtt">⚠️ Wrong answer: 'SGLT2 inhibitors WORSEN hyperfiltration' — or 'the initial eGFR dip means the drug is nephrotoxic and must be stopped.' Discriminator — SGLT2i REDUCE hyperfiltration via afferent constriction (the opposite of harm), and the early eGFR dip is an expected hemodynamic effect signaling the drug is working, not toxicity.</div></div><div class="rt"><div class="rtl">15. CV mortality shadow</div><div class="rte">Most diabetics with kidney disease DIE OF CARDIOVASCULAR DISEASE before they ever reach dialysis — albuminuria and reduced eGFR are each independent, powerful cardiovascular risk markers. This is why management is a combined CARDIO-RENAL strategy (RAAS blockade, SGLT2i, statins, BP control), not kidney-protection alone.</div><div class="rtt">⚠️ Wrong answer: 'nearly all diabetic nephropathy patients survive to reach dialysis.' Discriminator — the competing risk of cardiovascular death is so high that many patients die BEFORE progressing to ESKD. Ignoring CV risk and focusing only on the kidney is the strategic error the exam punishes.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="glom_nephrotic_diabetic2.html" title="Glomerular (Nephrotic) — Diabetic Nephropathy: Management">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="glom_nephrotic_fabry.html" title="Glomerular (Nephrotic) — Fabry&#x27;s Disease">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

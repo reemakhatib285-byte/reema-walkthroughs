@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Platelet disorders — Drug-induced thrombocytopenia &amp; HIT (part 1)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Chemo predictable</b> — Don't reach for steroids or IVIG for chemo-induced thrombocytopenia — it's marrow suppression (production failure), not immune destruction. The fix is dose adjustment/delay, transfusion support if &lt;10K, and time for marrow recovery, not immunosuppression.</li><li><b>Pancytopenia</b> — Don't call pancytopenia after chemo a separate hematologic disease — it's expected marrow suppression. The mirror-image trap is the opposite: isolated thrombocytopenia (one line only) is NOT typical chemo toxicity and should prompt a search for an immune/drug-dependent cause.</li><li><b>Recovery when drug removed</b> — Don't keep dosing through a deep nadir assuming it will 'recover anyway' — failure to delay/reduce when platelets are &lt;50K (and certainly &lt;25K) risks dangerous bleeding; recovery requires removing or reducing the offending agent first.</li><li><b>Isolated platelet drop</b> — Don't dismiss an isolated platelet drop in a patient on a culprit drug (quinine/tonic water, sulfa, vancomycin, GPIIb/IIIa inhibitors) as ITP — drug-dependent antibody thrombocytopenia is the real cause, and the treatment is to STOP the drug, not to start chronic ITP immunosuppression.</li><li><b>Recovery 7-10 days</b> — Don't conclude the drug is 'cleared' as an exoneration and then re-challenge — re-exposure produces a faster, often more severe drop because antibodies are already primed. Recovery after withdrawal confirms causation; it does not make rechallenge safe.</li><li><b>First exposure 21 days</b> — Don't exclude a drug because thrombocytopenia appeared 'too soon' (within a day) — rapid onset is expected on re-exposure (anamnestic response). Conversely, a drug started the same day rarely causes first-exposure immune thrombocytopenia, which needs ~1–3 weeks to sensitize.</li><li><b>Hapten mechanism</b> — Don't expect drug-dependent antibodies to keep destroying platelets after the drug is gone — they only bind in the drug's presence. Persistent thrombocytopenia after true drug withdrawal should redirect you to a different cause (ITP, infection, marrow process).</li><li><b>Always rule out HIT on heparin</b> — Don't 'switch heparin to LMWH' for thrombocytopenia on heparin — LMWH cross-reacts with HIT antibodies. And don't transfuse platelets in suspected HIT; HIT is prothrombotic, so platelets add fuel for clotting rather than fixing a bleeding problem.</li><li><b>GpIIb/IIIa inhibitors acute</b> — Don't assume thrombocytopenia after PCI is automatically HIT — GPIIb/IIIa-inhibitor thrombocytopenia is far more rapid (hours, not days 5–10) and is a BLEEDING risk, whereas HIT peaks at days 5–10 and is a clotting risk. Confusing the two leads to the wrong anticoagulation decision.</li><li><b>Far lower platelets</b> — Don't withhold platelet transfusion in severe symptomatic GPIIb/IIIa-inhibitor thrombocytopenia out of 'HIT' reflex — here the danger is bleeding, and transfusion is appropriate. The depth (&lt;20K, often near zero) and speed (hours) are the discriminators from HIT's shallower, slower drop.</li><li><b>Step 1: stop the drug</b> — Don't just lower the dose or 'watch' a clearly implicated immune culprit — partial continuation perpetuates antibody-mediated destruction. Stopping the specific drug is the definitive treatment; ongoing thrombocytopenia despite full withdrawal means you have the wrong diagnosis.</li><li><b>Rule out HIT if on heparin</b> — Don't blame the 'other' drug and continue heparin while you investigate — missing HIT risks limb- and life-threatening thrombosis. The classic wrong answers are continuing/switching to LMWH, transfusing platelets, or starting warfarin alone; the right move is to stop heparin and bridge with a non-heparin anticoagulant.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Chemo predictable</div><div class="rte">Cytotoxic chemotherapy (and other myelosuppressives) causes PREDICTABLE, dose-dependent marrow suppression rather than an immune drug reaction. The nadir is timing-predictable — typically 7–14 days after a cycle for most agents — and the mechanism is direct toxicity to megakaryocyte precursors, so the platelet drop tracks with the dose and the drug's known toxicity profile. This is a PRODUCTION problem, contrasting with the peripheral DESTRUCTION of immune drug-induced thrombocytopenia.</div><div class="rtt">⚠️ Don't reach for steroids or IVIG for chemo-induced thrombocytopenia — it's marrow suppression (production failure), not immune destruction. The fix is dose adjustment/delay, transfusion support if &lt;10K, and time for marrow recovery, not immunosuppression.</div></div><div class="rt"><div class="rtl">2. Pancytopenia</div><div class="rte">Because myelosuppressive drugs hit the shared marrow precursor pool, ALL three cell lines fall — anemia, leukopenia (neutropenia), and thrombocytopenia together (pancytopenia). The presence of pancytopenia is itself the clue that the problem is in the marrow (production) rather than isolated peripheral platelet destruction. Neutropenia drives infection risk; thrombocytopenia drives bleeding risk; both bottom out near the same nadir.</div><div class="rtt">⚠️ Don't call pancytopenia after chemo a separate hematologic disease — it's expected marrow suppression. The mirror-image trap is the opposite: isolated thrombocytopenia (one line only) is NOT typical chemo toxicity and should prompt a search for an immune/drug-dependent cause.</div></div><div class="rt"><div class="rtl">3. Recovery when drug removed</div><div class="rte">Marrow-suppression thrombocytopenia recovers once the myelosuppressive agent is stopped and precursors regenerate — counts climb as the marrow repopulates, usually within days to a couple of weeks depending on the drug and reserve. For chemotherapy this is the basis of cycle scheduling (dosing timed to allow nadir recovery before the next cycle). TPO-receptor agonists or dose reduction can support recovery if it is delayed or severe.</div><div class="rtt">⚠️ Don't keep dosing through a deep nadir assuming it will 'recover anyway' — failure to delay/reduce when platelets are &lt;50K (and certainly &lt;25K) risks dangerous bleeding; recovery requires removing or reducing the offending agent first.</div></div><div class="rt"><div class="rtl">4. Isolated platelet drop</div><div class="rte">Immune (drug-dependent antibody) thrombocytopenia classically drops platelets in ISOLATION — RBCs and WBCs are spared because the antibody targets only platelet surface glycoproteins (often GPIIb/IIIa or GPIb) when the drug is present. So 'isolated, often severe thrombocytopenia in a patient on a new drug' is the signature, in contrast to the pancytopenia of marrow suppression. Counts can fall profoundly (&lt;20K) and bleeding (petechiae, mucosal) can occur.</div><div class="rtt">⚠️ Don't dismiss an isolated platelet drop in a patient on a culprit drug (quinine/tonic water, sulfa, vancomycin, GPIIb/IIIa inhibitors) as ITP — drug-dependent antibody thrombocytopenia is the real cause, and the treatment is to STOP the drug, not to start chronic ITP immunosuppression.</div></div><div class="rt"><div class="rtl">5. Recovery 7-10 days</div><div class="rte">Drug-induced IMMUNE thrombocytopenia recovers about 7–10 days after the offending drug is discontinued — the lag reflects the time to clear the drug and for antibody-coated platelet destruction to subside and new platelets to circulate. This relatively quick, predictable recovery after withdrawal helps confirm the diagnosis (de-challenge response). Severe bleeding in the interim may warrant platelet transfusion or IVIG, but stopping the drug is the definitive step.</div><div class="rtt">⚠️ Don't conclude the drug is 'cleared' as an exoneration and then re-challenge — re-exposure produces a faster, often more severe drop because antibodies are already primed. Recovery after withdrawal confirms causation; it does not make rechallenge safe.</div></div><div class="rt"><div class="rtl">6. First exposure 21 days</div><div class="rte">On FIRST exposure to a culprit drug, drug-dependent antibodies take time to develop, so thrombocytopenia typically appears around 1–3 weeks (~21 days) into therapy — the window needed to mount an IgG response. On RE-exposure, antibodies already exist, so the platelet drop is much faster (often within hours to 1–2 days). This timing is a key historical clue distinguishing immune drug reaction from direct toxicity or other causes.</div><div class="rtt">⚠️ Don't exclude a drug because thrombocytopenia appeared 'too soon' (within a day) — rapid onset is expected on re-exposure (anamnestic response). Conversely, a drug started the same day rarely causes first-exposure immune thrombocytopenia, which needs ~1–3 weeks to sensitize.</div></div><div class="rt"><div class="rtl">7. Hapten mechanism</div><div class="rte">In drug-dependent immune thrombocytopenia the small-molecule drug acts as a HAPTEN — it binds the platelet membrane glycoprotein and creates a neo-epitope, so the resulting antibodies bind platelets ONLY when the drug is present (drug-dependent antibodies). Remove the drug and the antibody has no target, which is why thrombocytopenia resolves after withdrawal. HIT is a special variant where the antigen is the heparin–PF4 complex rather than a simple hapten.</div><div class="rtt">⚠️ Don't expect drug-dependent antibodies to keep destroying platelets after the drug is gone — they only bind in the drug's presence. Persistent thrombocytopenia after true drug withdrawal should redirect you to a different cause (ITP, infection, marrow process).</div></div><div class="rt"><div class="rtl">8. Always rule out HIT on heparin</div><div class="rte">Any new thrombocytopenia in a patient receiving heparin (UFH, LMWH, or even line flushes) must trigger an evaluation for HIT before blaming another drug. Use the 4Ts score (Thrombocytopenia magnitude, Timing 5–10 days, Thrombosis/sequelae, oTher causes); intermediate/high probability → stop ALL heparin and start a non-heparin anticoagulant (argatroban/bivalirudin/fondaparinux/DOAC) while sending PF4 ELISA and confirmatory serotonin release assay.</div><div class="rtt">⚠️ Don't 'switch heparin to LMWH' for thrombocytopenia on heparin — LMWH cross-reacts with HIT antibodies. And don't transfuse platelets in suspected HIT; HIT is prothrombotic, so platelets add fuel for clotting rather than fixing a bleeding problem.</div></div><div class="rt"><div class="rtl">9. GpIIb/IIIa inhibitors acute</div><div class="rte">GPIIb/IIIa inhibitors (abciximab, eptifibatide, tirofiban) used in ACS/PCI can cause ACUTE, sometimes profound thrombocytopenia within HOURS (often &lt;24 h) of first exposure — driven by pre-formed (naturally occurring) antibodies recognizing the drug-bound conformational epitope on GPIIb/IIIa. Abciximab (a chimeric Fab) is most associated. Management is to stop the agent; platelet transfusion may be needed if counts are very low with bleeding.</div><div class="rtt">⚠️ Don't assume thrombocytopenia after PCI is automatically HIT — GPIIb/IIIa-inhibitor thrombocytopenia is far more rapid (hours, not days 5–10) and is a BLEEDING risk, whereas HIT peaks at days 5–10 and is a clotting risk. Confusing the two leads to the wrong anticoagulation decision.</div></div><div class="rt"><div class="rtl">10. Far lower platelets</div><div class="rte">The GPIIb/IIIa-inhibitor drop can be dramatic and very rapid — counts may plunge to &lt;20,000/µL (occasionally near zero) within hours, far lower than the modest ~50% fall seen in HIT. Because this is true severe thrombocytopenia with bleeding risk, management includes stopping the drug and, if bleeding or count &lt;10–20K, platelet transfusion — the opposite approach to HIT.</div><div class="rtt">⚠️ Don't withhold platelet transfusion in severe symptomatic GPIIb/IIIa-inhibitor thrombocytopenia out of 'HIT' reflex — here the danger is bleeding, and transfusion is appropriate. The depth (&lt;20K, often near zero) and speed (hours) are the discriminators from HIT's shallower, slower drop.</div></div><div class="rt"><div class="rtl">11. Step 1: stop the drug</div><div class="rte">The universal first management step in drug-induced thrombocytopenia is to IDENTIFY and STOP the offending agent, then monitor for recovery (expected ~7–10 days for immune types). Document the reaction to prevent re-exposure. Supportive measures depend on the mechanism: transfusion/IVIG for bleeding in immune destruction, dose adjustment for marrow suppression, and a NON-heparin anticoagulant (not transfusion) if the culprit is heparin/HIT.</div><div class="rtt">⚠️ Don't just lower the dose or 'watch' a clearly implicated immune culprit — partial continuation perpetuates antibody-mediated destruction. Stopping the specific drug is the definitive treatment; ongoing thrombocytopenia despite full withdrawal means you have the wrong diagnosis.</div></div><div class="rt"><div class="rtl">12. Rule out HIT if on heparin</div><div class="rte">Before attributing thrombocytopenia to any other drug, specifically rule out HIT whenever heparin is on board — HIT is the dangerous, prothrombotic, must-not-miss drug reaction. Calculate the 4Ts, stop all heparin sources (including flushes and LMWH), start argatroban/bivalirudin/fondaparinux/DOAC, and send PF4 ELISA + serotonin release assay. Never give warfarin alone in acute HIT (venous limb gangrene/skin necrosis) and never re-expose to heparin in the future.</div><div class="rtt">⚠️ Don't blame the 'other' drug and continue heparin while you investigate — missing HIT risks limb- and life-threatening thrombosis. The classic wrong answers are continuing/switching to LMWH, transfusing platelets, or starting warfarin alone; the right move is to stop heparin and bridge with a non-heparin anticoagulant.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="anticoag_dti.html" title="Anticoagulation — DTIs (River Intruders: Argatroban vs Bivalirudin)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="plt_hit_2.html" title="Platelet disorders — HIT (The HIT Battlefield)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

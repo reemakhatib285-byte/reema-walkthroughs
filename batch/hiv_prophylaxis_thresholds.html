@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">HIV — OI Prophylaxis CD4 Thresholds &amp; ART Timing</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>OI Prophylaxis Threshold Tower</b> — WRONG: 'Use viral load to decide OI prophylaxis.' Prophylaxis thresholds are driven by the CD4 count, not viral load — memorize 200/100/50. Viral load guides treatment response and U=U, but the OI-risk gauge is CD4. Picking a viral-load cutoff for starting TMP-SMX is the distractor.</li><li><b>CD4 gauge / counter</b> — WRONG: 'A drop in CD4 during acute illness means the patient now has AIDS.' Acute infections, acute HIV seroconversion, or steroids can transiently depress CD4, with partial recovery afterward — don't label AIDS off a single low value during intercurrent illness. Repeat the count when clinically stable before committing to staging/prophylaxis changes.</li><li><b>PJP prophylaxis — CD4 &lt;200</b> — WRONG: 'Only the absolute CD4 &lt;200 triggers PJP prophylaxis.' You also start if oropharyngeal candidiasis is present or there's an AIDS-defining illness, even with CD4 just above 200 — thrush is a clinical marker of risk. Anchoring solely on the number and ignoring thrush is the trap.</li><li><b>STOP when CD4 &gt;200 for 3 months</b> — WRONG: 'Stop prophylaxis as soon as one CD4 reads &gt;200.' A single &gt;200 value is not enough — you need a sustained recovery (&gt;200 for ≥3 months) on suppressive ART. Stopping prematurely on a transient bump risks breakthrough PCP. Durability of response, not a one-off lab, is the discriminator.</li><li><b>Toxoplasma prophylaxis — CD4 &lt;100</b> — WRONG: 'Give Toxo prophylaxis to every patient with CD4 &lt;100.' Only Toxo IgG-POSITIVE patients need primary Toxo prophylaxis — a seronegative patient isn't at risk of reactivation. Forgetting to check (or ignoring) the IgG serostatus is the trap; serology gates the indication.</li><li><b>One pill covers PJP + Toxo</b> — WRONG: 'Any sulfa-allergy alternative for PJP also covers Toxo.' Alternatives differ: dapsone-pyrimethamine-leucovorin and atovaquone cover Toxo, but aerosolized pentamidine and dapsone-monotherapy do NOT cover Toxoplasma. Always confirm G6PD before dapsone/primaquine. Assuming the PJP substitute automatically covers Toxo is the trap.</li><li><b>MAC prophylaxis — CD4 &lt;50</b> — WRONG: 'Always give azithromycin MAC prophylaxis at CD4 &lt;50.' Updated guidance dropped routine primary MAC prophylaxis when ART is started promptly — ART itself prevents MAC. Reflexively starting azithromycin for every CD4 &lt;50 patient who is beginning ART is now the outdated/trap answer.</li><li><b>MAC average CD4 ~10</b> — WRONG: 'MAC can occur at any CD4 like TB.' MAC disseminated disease is specifically a very-late/end-stage event (average CD4 ~10), whereas TB can occur at any CD4. The discriminator: extremely low CD4, blood-culture positivity, high alk phos, and hepatosplenomegaly point to MAC. Treating it as an early/any-CD4 problem is wrong.</li><li><b>CMV retinitis — CD4 &lt;50</b> — WRONG: 'Start prophylactic valganciclovir at CD4 &lt;50 to prevent CMV.' Primary CMV prophylaxis is NOT recommended (toxicity, resistance, no mortality benefit) — instead use surveillance and treat established disease. The discriminator from MAC/Toxo: CMV has no primary prophylaxis tier, only screening and treatment.</li><li><b>Start ART in EVERYONE</b> — WRONG: 'Wait until CD4 falls below 350 (or 500) before starting ART.' The old CD4-threshold-to-treat teaching is obsolete — the current answer is treat everyone, immediately, regardless of CD4 or viral load. Picking a CD4 cutoff to initiate ART is the classic outdated trap.</li><li><b>Delay 4–6 weeks — cryptococcal meningitis</b> — WRONG: 'Cryptococcal meningitis is treated like any OI — start ART right away.' Concurrent/early ART in crypto meningitis increases death from CNS IRIS; you must delay ~4–6 weeks. This is the standout exception to the 'treat all promptly' rule, and choosing immediate ART is the trap.</li><li><b>Delay 2–8 weeks — TB</b> — WRONG: 'Start ART and TB drugs simultaneously in everyone with TB.' ART timing is CD4-dependent — within 2 weeks only if CD4 &lt;50, otherwise around 8 weeks — to mitigate TB-IRIS. Also watch rifampin–ART interactions (rifabutin or dose adjustments). Ignoring CD4-based timing and rifampin interactions is the trap.</li><li><b>P24 antigen / window period</b> — WRONG: 'A negative HIV antibody test excludes acute HIV.' Antibody-only tests miss acute/early HIV in the window period — use a 4th-generation Ag/Ab combo assay or HIV RNA when acute infection is suspected. A patient with mono-like illness and high-risk exposure but negative antibody needs RNA/p24 testing, not reassurance.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. OI Prophylaxis Threshold Tower</div><div class="rte">Opportunistic-infection (OI) primary prophylaxis is layered by descending CD4 count, each 'floor' adding a new bug. The three numbers to memorize: CD4 &lt;200 → start PJP prophylaxis (TMP-SMX); CD4 &lt;100 → add Toxoplasma prophylaxis if Toxo IgG-positive (TMP-SMX covers both); CD4 &lt;50 → historically MAC prophylaxis (azithromycin). Mnemonic: 'Pee (200) Toe (100) MAC (50)' descending — Pneumocystis, Toxo, MAC.</div><div class="rtt">⚠️ WRONG: 'Use viral load to decide OI prophylaxis.' Prophylaxis thresholds are driven by the CD4 count, not viral load — memorize 200/100/50. Viral load guides treatment response and U=U, but the OI-risk gauge is CD4. Picking a viral-load cutoff for starting TMP-SMX is the distractor.</div></div><div class="rt"><div class="rtl">2. CD4 gauge / counter</div><div class="rte">The absolute CD4 count is the central driver of OI risk and the trigger for each prophylaxis layer. Normal CD4 is ~500–1500 cells/µL; AIDS is defined by CD4 &lt;200 (or an AIDS-defining illness). The CD4 percentage (&lt;14%) approximates CD4 &lt;200 when the absolute count is borderline. Trend matters: a falling count predicts impending OI risk and need to escalate prophylaxis.</div><div class="rtt">⚠️ WRONG: 'A drop in CD4 during acute illness means the patient now has AIDS.' Acute infections, acute HIV seroconversion, or steroids can transiently depress CD4, with partial recovery afterward — don't label AIDS off a single low value during intercurrent illness. Repeat the count when clinically stable before committing to staging/prophylaxis changes.</div></div><div class="rt"><div class="rtl">3. PJP prophylaxis — CD4 &lt;200</div><div class="rte">Start PJP (Pneumocystis) primary prophylaxis when CD4 &lt;200, with TMP-SMX one DS tablet daily (SS daily or DS three times weekly also effective). Also start regardless of count if there is oropharyngeal candidiasis (thrush), an AIDS-defining illness, or CD4 &lt;14%. Alternatives for sulfa intolerance: dapsone (check G6PD), atovaquone, or aerosolized pentamidine.</div><div class="rtt">⚠️ WRONG: 'Only the absolute CD4 &lt;200 triggers PJP prophylaxis.' You also start if oropharyngeal candidiasis is present or there's an AIDS-defining illness, even with CD4 just above 200 — thrush is a clinical marker of risk. Anchoring solely on the number and ignoring thrush is the trap.</div></div><div class="rt"><div class="rtl">4. STOP when CD4 &gt;200 for 3 months</div><div class="rte">Discontinue PJP (and Toxo) primary prophylaxis once CD4 is sustained &gt;200 for ≥3 months on suppressive ART. Some guidance permits stopping at CD4 100–200 if the viral load is suppressed. Restart prophylaxis if CD4 falls back below 200 (or 100–200 with detectable viral load).</div><div class="rtt">⚠️ WRONG: 'Stop prophylaxis as soon as one CD4 reads &gt;200.' A single &gt;200 value is not enough — you need a sustained recovery (&gt;200 for ≥3 months) on suppressive ART. Stopping prematurely on a transient bump risks breakthrough PCP. Durability of response, not a one-off lab, is the discriminator.</div></div><div class="rt"><div class="rtl">5. Toxoplasma prophylaxis — CD4 &lt;100</div><div class="rte">Add Toxoplasma gondii encephalitis prophylaxis when CD4 &lt;100 AND the patient is Toxoplasma IgG-positive (seropositive). First-line is TMP-SMX one DS daily, which conveniently also covers PJP. Toxo-seronegative patients with CD4 &lt;100 do not need primary Toxo prophylaxis but should be counseled on avoiding exposure (undercooked meat, cat litter).</div><div class="rtt">⚠️ WRONG: 'Give Toxo prophylaxis to every patient with CD4 &lt;100.' Only Toxo IgG-POSITIVE patients need primary Toxo prophylaxis — a seronegative patient isn't at risk of reactivation. Forgetting to check (or ignoring) the IgG serostatus is the trap; serology gates the indication.</div></div><div class="rt"><div class="rtl">6. One pill covers PJP + Toxo</div><div class="rte">TMP-SMX is first-line for BOTH PJP and Toxoplasma prophylaxis — one drug, two bugs — which is why a patient at CD4 &lt;100 on daily DS TMP-SMX is already covered for both. This is a high-yield efficiency point on exams. If the patient cannot take TMP-SMX, the alternative regimens must individually account for Toxo coverage.</div><div class="rtt">⚠️ WRONG: 'Any sulfa-allergy alternative for PJP also covers Toxo.' Alternatives differ: dapsone-pyrimethamine-leucovorin and atovaquone cover Toxo, but aerosolized pentamidine and dapsone-monotherapy do NOT cover Toxoplasma. Always confirm G6PD before dapsone/primaquine. Assuming the PJP substitute automatically covers Toxo is the trap.</div></div><div class="rt"><div class="rtl">7. MAC prophylaxis — CD4 &lt;50</div><div class="rte">Historically, MAC primary prophylaxis (azithromycin 1200 mg weekly, or clarithromycin) was started at CD4 &lt;50. Current guidance: routine primary MAC prophylaxis is NO LONGER recommended for patients who start effective ART promptly, because ART-driven immune recovery prevents disseminated MAC. It is reserved for those not on/responding to ART. Rule out active MAC disease before starting prophylaxis.</div><div class="rtt">⚠️ WRONG: 'Always give azithromycin MAC prophylaxis at CD4 &lt;50.' Updated guidance dropped routine primary MAC prophylaxis when ART is started promptly — ART itself prevents MAC. Reflexively starting azithromycin for every CD4 &lt;50 patient who is beginning ART is now the outdated/trap answer.</div></div><div class="rt"><div class="rtl">8. MAC average CD4 ~10</div><div class="rte">Disseminated MAC is an end-stage OI — the average CD4 at disease onset is around 10. It signals profound immunosuppression and is associated with persistent fevers, night sweats, weight loss, anemia, elevated alkaline phosphatase, and hepatosplenomegaly. Because it is so late, the modern strategy is prompt ART (which prevents it) rather than primary chemoprophylaxis.</div><div class="rtt">⚠️ WRONG: 'MAC can occur at any CD4 like TB.' MAC disseminated disease is specifically a very-late/end-stage event (average CD4 ~10), whereas TB can occur at any CD4. The discriminator: extremely low CD4, blood-culture positivity, high alk phos, and hepatosplenomegaly point to MAC. Treating it as an early/any-CD4 problem is wrong.</div></div><div class="rt"><div class="rtl">9. CMV retinitis — CD4 &lt;50</div><div class="rte">CMV end-organ disease (especially retinitis) occurs at CD4 &lt;50, presenting with painless floaters, blurred vision, or visual field loss and a 'pizza-pie' (hemorrhage + exudate) fundus. There is NO primary CMV prophylaxis; management is dilated-eye surveillance in advanced disease plus treatment when disease appears (valganciclovir oral, or ganciclovir/foscarnet IV; intravitreal therapy for sight-threatening lesions).</div><div class="rtt">⚠️ WRONG: 'Start prophylactic valganciclovir at CD4 &lt;50 to prevent CMV.' Primary CMV prophylaxis is NOT recommended (toxicity, resistance, no mortality benefit) — instead use surveillance and treat established disease. The discriminator from MAC/Toxo: CMV has no primary prophylaxis tier, only screening and treatment.</div></div><div class="rt"><div class="rtl">10. Start ART in EVERYONE</div><div class="rte">Treat ALL people with HIV with ART regardless of CD4 count or viral load, and start as soon as possible after diagnosis (even same-day in many programs). Benefits: lower mortality, slower progression, immune preservation, and prevention of transmission (U=U). Preferred initial regimens are integrase-inhibitor based, e.g., bictegravir/tenofovir alafenamide/emtricitabine or dolutegravir-based combinations.</div><div class="rtt">⚠️ WRONG: 'Wait until CD4 falls below 350 (or 500) before starting ART.' The old CD4-threshold-to-treat teaching is obsolete — the current answer is treat everyone, immediately, regardless of CD4 or viral load. Picking a CD4 cutoff to initiate ART is the classic outdated trap.</div></div><div class="rt"><div class="rtl">11. Delay 4–6 weeks — cryptococcal meningitis</div><div class="rte">Cryptococcal meningitis is the major EXCEPTION to 'start ART immediately': delay ART ~4–6 weeks after beginning antifungal therapy. Early ART here triggers immune reconstitution inflammatory syndrome (IRIS) within the CNS, which significantly increases mortality. First control the infection (ampho B + flucytosine induction, manage raised ICP), then introduce ART.</div><div class="rtt">⚠️ WRONG: 'Cryptococcal meningitis is treated like any OI — start ART right away.' Concurrent/early ART in crypto meningitis increases death from CNS IRIS; you must delay ~4–6 weeks. This is the standout exception to the 'treat all promptly' rule, and choosing immediate ART is the trap.</div></div><div class="rt"><div class="rtl">12. Delay 2–8 weeks — TB</div><div class="rte">In active TB, start anti-TB therapy first, then add ART with timing based on CD4: if CD4 &lt;50, start ART within 2 weeks of TB treatment; if CD4 ≥50, start by ~8 weeks. This balances the survival benefit of early ART against TB-IRIS risk. (TB meningitis is handled more cautiously given the danger of CNS IRIS.)</div><div class="rtt">⚠️ WRONG: 'Start ART and TB drugs simultaneously in everyone with TB.' ART timing is CD4-dependent — within 2 weeks only if CD4 &lt;50, otherwise around 8 weeks — to mitigate TB-IRIS. Also watch rifampin–ART interactions (rifabutin or dose adjustments). Ignoring CD4-based timing and rifampin interactions is the trap.</div></div><div class="rt"><div class="rtl">13. P24 antigen / window period</div><div class="rte">During acute HIV, p24 antigen and HIV RNA become detectable BEFORE antibodies seroconvert (~3–6 weeks; the 'window period'). Acute retroviral syndrome looks mononucleosis-like (fever, pharyngitis, lymphadenopathy, rash, myalgias) with very high viral load. Fourth-generation antigen/antibody combo assays detect p24 + antibodies, narrowing the window; HIV RNA is earliest.</div><div class="rtt">⚠️ WRONG: 'A negative HIV antibody test excludes acute HIV.' Antibody-only tests miss acute/early HIV in the window period — use a 4th-generation Ag/Ab combo assay or HIV RNA when acute infection is suspected. A patient with mono-like illness and high-risk exposure but negative antibody needs RNA/p24 testing, not reassurance.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hiv_iris_complications.html" title="HIV — IRIS, EBV/OHL, Lymphomas &amp; Drug Side Effects">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hiv_oi_treatment.html" title="HIV — OI Treatment Wards (PCP, Cryptococcus, MAC, PML)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

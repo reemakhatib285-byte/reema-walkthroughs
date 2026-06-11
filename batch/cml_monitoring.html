@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CML — Monitoring, Response Milestones &amp; Resistance</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>3-mo milestone ≤10%</b> — The 3-month ≤10% milestone is the key early predictor; &gt;10% at 3-6 months = warning/failure. Check ADHERENCE first before assuming biologic resistance.</li><li><b>CCyR / MR2 ≤1%</b> — CCyR ≈ BCR-ABL1 ≤1% IS. Failure to reach ≤1% by 12 months counts as treatment failure → mutation testing and consider switching TKI.</li><li><b>MMR / MR3 ≤0.1%</b> — MMR (≤0.1%) is the main therapeutic goal — but reaching MMR alone is NOT sufficient to stop therapy; deeper sustained response is needed for TFR.</li><li><b>No extra survival above MMR</b> — Deeper than MMR (MR4 vs MR4.5) gives the SAME survival — the only reason to pursue/maintain deep molecular response is eligibility to stop therapy (TFR), not extra survival.</li><li><b>DMR / MR4-4.5 ≤0.01%</b> — DMR (MR4/MR4.5) is required to consider stopping a TKI; it does not by itself improve survival beyond MMR.</li><li><b>TFR (stop attempt)</b> — TFR is only for patients meeting strict criteria (typical transcript, several years of TKI, sustained DMR); it is NOT offered simply because a patient reached MMR. Most relapses occur in the first 6 months — requiring monthly PCR initially.</li><li><b>TFR criteria</b> — All criteria must be met — atypical transcripts (can't be monitored on IS) and prior advanced phase are exclusions for a TFR attempt.</li><li><b>TFR success ~50%</b> — Losing molecular response after stopping is common (~50%) but reversible — restart the TKI and the great majority regain MMR. TFR failure is not a catastrophe if caught early with monitoring.</li><li><b>6-mo failure &gt;10%</b> — Persistent &gt;10% at 6 months = failure (not just warning). Workup order: adherence → interactions → mutation testing → switch TKI.</li><li><b>12-mo failure &gt;1%</b> — Not reaching ≤1% by 12 months = failure → do mutation testing and switch; do not simply continue the same TKI at the same dose.</li><li><b>Mutation testing on failure</b> — Always do mutation testing before switching for resistance — the next TKI is chosen by the specific mutation, not at random. Also confirm adherence, as non-adherence mimics resistance.</li><li><b>Y253H/E255K -&gt; dasatinib</b> — Y253H/E255K (P-loop) → choose DASATINIB, NOT nilotinib.</li><li><b>V299L/F317L -&gt; nilotinib</b> — V299L/F317L (dasatinib-resistant) → choose NILOTINIB, NOT dasatinib (mirror image of the Y253H/E255K rule).</li><li><b>T315I -&gt; ponatinib</b> — T315I does NOT respond to imatinib, dasatinib, nilotinib, or bosutinib — only PONATINIB or ASCIMINIB (allosteric) work, with HSCT for fit candidates.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Diagnosis baseline 100%</div><div class="rte">Monitoring starts at the diagnostic baseline BCR-ABL1 ~100% on the International Scale (IS) and tracks log reductions over time by quantitative RT-PCR (the gold-standard monitoring test). Each log fall corresponds to a named molecular response (MR1=10%, MR2=1%, MR3=0.1%, MR4=0.01%, MR4.5=0.0032%).</div></div><div class="rt"><div class="rtl">2. 3-mo milestone ≤10%</div><div class="rte">BCR-ABL1 ≤10% IS at 3 months is the single most important early molecular milestone — it strongly predicts long-term survival and deep response. Patients above 10% at 3 months are flagged as 'warning,' prompting adherence checks and close follow-up.</div><div class="rtt">⚠️ The 3-month ≤10% milestone is the key early predictor; &gt;10% at 3-6 months = warning/failure. Check ADHERENCE first before assuming biologic resistance.</div></div><div class="rt"><div class="rtl">3. CCyR / MR2 ≤1%</div><div class="rte">Complete cytogenetic response (CCyR) corresponds to BCR-ABL1 ≤1% IS (MR2, a 2-log reduction) and should ideally be reached by 12 months. CCyR confers a survival benefit similar to that of the general population.</div><div class="rtt">⚠️ CCyR ≈ BCR-ABL1 ≤1% IS. Failure to reach ≤1% by 12 months counts as treatment failure → mutation testing and consider switching TKI.</div></div><div class="rt"><div class="rtl">4. MMR / MR3 ≤0.1%</div><div class="rte">Major molecular response (MMR/MR3) = BCR-ABL1 ≤0.1% IS (3-log reduction) and is the central long-term goal of TKI therapy. Achieving MMR is associated with excellent progression-free survival and a very low risk of progression.</div><div class="rtt">⚠️ MMR (≤0.1%) is the main therapeutic goal — but reaching MMR alone is NOT sufficient to stop therapy; deeper sustained response is needed for TFR.</div></div><div class="rt"><div class="rtl">5. No extra survival above MMR</div><div class="rte">Once MMR is achieved, deeper responses (MR4/MR4.5) do NOT add further overall survival benefit. The value of deeper response is solely that it is the prerequisite to attempt treatment-free remission.</div><div class="rtt">⚠️ Deeper than MMR (MR4 vs MR4.5) gives the SAME survival — the only reason to pursue/maintain deep molecular response is eligibility to stop therapy (TFR), not extra survival.</div></div><div class="rt"><div class="rtl">6. DMR / MR4-4.5 ≤0.01%</div><div class="rte">Deep molecular response = MR4 (BCR-ABL1 ≤0.01% IS, 4-log) or MR4.5 (≤0.0032%, 4.5-log). Sustained DMR is the gateway to attempting treatment-free remission and reflects very low residual disease burden.</div><div class="rtt">⚠️ DMR (MR4/MR4.5) is required to consider stopping a TKI; it does not by itself improve survival beyond MMR.</div></div><div class="rt"><div class="rtl">7. TFR (stop attempt)</div><div class="rte">Treatment-free remission (TFR) is a supervised TKI-discontinuation attempt for carefully selected patients in sustained deep molecular response. It requires very frequent PCR monitoring after stopping, with prompt TKI restart if BCR-ABL1 rises (loss of MMR).</div><div class="rtt">⚠️ TFR is only for patients meeting strict criteria (typical transcript, several years of TKI, sustained DMR); it is NOT offered simply because a patient reached MMR. Most relapses occur in the first 6 months — requiring monthly PCR initially.</div></div><div class="rt"><div class="rtl">8. TFR criteria</div><div class="rte">Typical TFR eligibility: chronic phase only, typical/quantifiable transcript (e13a2/e14a2), ≥3-5 years of TKI therapy, and a sustained deep molecular response (e.g. MR4 for ≥2 years), with access to reliable rapid PCR monitoring.</div><div class="rtt">⚠️ All criteria must be met — atypical transcripts (can't be monitored on IS) and prior advanced phase are exclusions for a TFR attempt.</div></div><div class="rt"><div class="rtl">9. TFR success ~50%</div><div class="rte">About 40-50% of eligible patients maintain remission off therapy long-term; the remainder lose response (most within the first 6 months) and nearly all regain MMR after restarting the TKI. Relapse off therapy is generally not dangerous if monitored closely.</div><div class="rtt">⚠️ Losing molecular response after stopping is common (~50%) but reversible — restart the TKI and the great majority regain MMR. TFR failure is not a catastrophe if caught early with monitoring.</div></div><div class="rt"><div class="rtl">10. 6-mo failure &gt;10%</div><div class="rte">BCR-ABL1 &gt;10% IS at 6 months indicates treatment failure/resistance and predicts poor outcome — it warrants reassessment of adherence, drug interactions, kinase-domain mutation testing, and a switch of TKI.</div><div class="rtt">⚠️ Persistent &gt;10% at 6 months = failure (not just warning). Workup order: adherence → interactions → mutation testing → switch TKI.</div></div><div class="rt"><div class="rtl">11. 12-mo failure &gt;1%</div><div class="rte">Failure to achieve CCyR (BCR-ABL1 ≤1% IS) by 12 months is treatment failure. It triggers BCR-ABL1 kinase-domain mutation analysis to guide selection of the next TKI.</div><div class="rtt">⚠️ Not reaching ≤1% by 12 months = failure → do mutation testing and switch; do not simply continue the same TKI at the same dose.</div></div><div class="rt"><div class="rtl">12. Mutation testing on failure</div><div class="rte">On resistance/failure, BCR-ABL1 kinase-domain mutation testing (Sanger or NGS) identifies the resistant clone and directs the next TKI. Different mutations have different TKI sensitivities, so the choice of salvage drug is mutation-specific.</div><div class="rtt">⚠️ Always do mutation testing before switching for resistance — the next TKI is chosen by the specific mutation, not at random. Also confirm adherence, as non-adherence mimics resistance.</div></div><div class="rt"><div class="rtl">13. Y253H/E255K -&gt; dasatinib</div><div class="rte">P-loop mutations such as Y253H and E255K confer resistance to nilotinib but remain sensitive to dasatinib — so switch to dasatinib.</div><div class="rtt">⚠️ Y253H/E255K (P-loop) → choose DASATINIB, NOT nilotinib.</div></div><div class="rt"><div class="rtl">14. V299L/F317L -&gt; nilotinib</div><div class="rte">V299L and F317L mutations confer resistance to dasatinib but remain sensitive to nilotinib — so switch to nilotinib.</div><div class="rtt">⚠️ V299L/F317L (dasatinib-resistant) → choose NILOTINIB, NOT dasatinib (mirror image of the Y253H/E255K rule).</div></div><div class="rt"><div class="rtl">15. T315I -&gt; ponatinib</div><div class="rte">The T315I gatekeeper mutation is resistant to imatinib and all standard 2nd-generation TKIs. Treat with ponatinib or asciminib (or omacetaxine/HSCT), as these retain activity against T315I.</div><div class="rtt">⚠️ T315I does NOT respond to imatinib, dasatinib, nilotinib, or bosutinib — only PONATINIB or ASCIMINIB (allosteric) work, with HSCT for fit candidates.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="cml_diagnosis.html" title="CML — Diagnosis &amp; Lab Workup">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="cml_pathophysiology.html" title="CML — Pathophysiology (Philadelphia / BCR-ABL1)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

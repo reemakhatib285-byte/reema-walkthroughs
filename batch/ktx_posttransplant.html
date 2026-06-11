@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Kidney Transplant — Peri-op to 2 Weeks Post-Transplant</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Pre-op dialyze for K</b> — Board trap: don't aggressively ultrafiltrate to a 'dry' weight right before transplant. Over-dialysis → intra-operative hypovolemia → poor graft perfusion and post-transplant ATN/delayed graft function. The pre-op dialysis goal is correcting hyperkalemia/overload, not maximal volume removal.</li><li><b>Dialyze within 48 hrs caution</b> — Board trap: a recipient who was heavily dialyzed just before surgery and then has poor early graft function should make you think hypovolemia/ATN (delayed graft function), NOT immediately rejection — the wrong move is escalating immunosuppression instead of correcting volume and supporting the graft.</li><li><b>Iliac fossa placement</b> — Board trap: the new kidney does NOT go into the native renal bed/retroperitoneal flank position — it goes into the pelvis/iliac fossa. A stem describing flank placement or replacing the native kidney is wrong.</li><li><b>Anastomosis to iliac vessels</b> — Board trap: sudden anuria with a tender graft in the first days post-op is a vascular catastrophe (renal vein/artery thrombosis) needing emergent Doppler/surgery — not rejection. A fluid collection compressing the ureter (lymphocele) causing rising Cr is a surgical/mechanical cause, distinguished by ultrasound, not treated with steroids.</li><li><b>Native kidneys stay</b> — Board trap: routine bilateral native nephrectomy is NOT performed at transplant — choosing it as a standard step is wrong. Nephrectomy is the exception (specific indications only), not the rule.</li><li><b>Post-op polyuria → replace</b> — Board trap: heavy urine output post-transplant is usually GOOD graft function, not a problem to 'fix' by restricting fluids. Under-replacing the diuresis → hypovolemia → pre-renal injury and rising Cr that can be mistaken for graft failure/rejection. The answer is to match losses, not restrict.</li><li><b>Immediate urine = good</b> — Board trap: don't equate early oliguria with rejection. Early graft function correlates with ischemia time and donor type; immediate urine = good, while early oliguria points to ATN/delayed graft function (or a surgical/vascular cause) far more often than to acute rejection in the first days.</li><li><b>Day-0 induction starts</b> — Board trap: don't forget that day-0 immunosuppression obligates day-0 prophylaxis — omitting TMP-SMX (PJP) or CMV prophylaxis is a setup for the 1-6 month opportunistic infections. Also, induction (basiliximab/ATG) is the day-0 antibody, distinct from lifelong maintenance.</li><li><b>CNI can be delayed</b> — Board trap: in a recipient with delayed graft function or high ATN risk who received depleting induction, the right move is to delay/minimize the nephrotoxic CNI — NOT to push full-dose tacrolimus immediately (which adds vasoconstrictive nephrotoxicity to an already injured graft).</li><li><b>Creatinine recovery curve</b> — Board trap: don't ignore a Cr that simply isn't falling — a flat or rising early Cr is abnormal and signals delayed graft function. But equally, a steadily (if slowly) improving Cr does NOT need intervention; over-reacting to a downtrending Cr by biopsying or changing meds is the opposite error.</li><li><b>Stalled = delayed graft function</b> — Board trap: don't reflexively call DGF 'rejection' — most DGF is ATN and resolves with support. The discriminator is biopsy: ATN shows tubular injury without infiltrate, whereas rejection shows tubulitis/interstitial infiltrate (TCMR) or C4d/DSA (ABMR). Treating ATN with pulse steroids is the wrong answer.</li><li><b>Biopsy decision card</b> — Board trap: don't empirically intensify (or reduce) immunosuppression based on Cr alone — get tissue/imaging first. Pulsing steroids for what turns out to be CNI toxicity or BK nephropathy worsens outcomes; biopsy before changing therapy is the high-yield step.</li><li><b>Slow Cr fall → don't biopsy</b> — Board trap: biopsying or escalating immunosuppression in a patient whose Cr is steadily falling is over-treatment. The trigger to act is a plateau/rise or unexplained dysfunction, not a slow-but-steady recovery.</li><li><b>Native kidney museum</b> — Board trap: native nephrectomy is the EXCEPTION with defined indications (huge symptomatic ADPKD, chronic infection, intractable HTN/proteinuria/malignancy) — choosing routine native nephrectomy at the time of every transplant is wrong; the natives normally stay in place.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Pre-op dialyze for K</div><div class="rte">Before transplant, dialysis is used to correct dangerous hyperkalemia (target K roughly &lt;5.5 mEq/L) and severe volume overload so the patient can safely tolerate anesthesia and avoid intra-operative arrhythmia. The goal is metabolic safety, not aggressive fluid removal — euvolemia favors immediate graft perfusion. Living-donor recipients are often transplanted pre-emptively (before ever starting dialysis), which has the best outcomes.</div><div class="rtt">⚠️ Board trap: don't aggressively ultrafiltrate to a 'dry' weight right before transplant. Over-dialysis → intra-operative hypovolemia → poor graft perfusion and post-transplant ATN/delayed graft function. The pre-op dialysis goal is correcting hyperkalemia/overload, not maximal volume removal.</div></div><div class="rt"><div class="rtl">2. Dialyze within 48 hrs caution</div><div class="rte">Heavy dialysis with significant fluid removal in the ~48 hours immediately before transplant leaves the recipient relatively hypovolemic, which reduces perfusion of the freshly reperfused graft and predisposes to ischemic acute tubular necrosis and delayed graft function. When dialysis is needed close to surgery, it should be gentle and primarily for electrolyte/volume safety, preserving intravascular volume.</div><div class="rtt">⚠️ Board trap: a recipient who was heavily dialyzed just before surgery and then has poor early graft function should make you think hypovolemia/ATN (delayed graft function), NOT immediately rejection — the wrong move is escalating immunosuppression instead of correcting volume and supporting the graft.</div></div><div class="rt"><div class="rtl">3. Iliac fossa placement</div><div class="rte">The donor kidney is placed heterotopically in the iliac fossa (usually right) in a RETROPERITONEAL pocket, where the iliac vessels and bladder are easily reachable for anastomosis and the graft is palpable/biopsy-accessible through the abdominal wall. The native kidneys are left in place. This explains why a transplant kidney is examined and biopsied over the lower abdomen, not the flank.</div><div class="rtt">⚠️ Board trap: the new kidney does NOT go into the native renal bed/retroperitoneal flank position — it goes into the pelvis/iliac fossa. A stem describing flank placement or replacing the native kidney is wrong.</div></div><div class="rt"><div class="rtl">4. Anastomosis to iliac vessels</div><div class="rte">Vascular reconstruction connects the donor renal artery and vein to the recipient's EXTERNAL iliac artery and vein (end-to-side), and the donor ureter is implanted into the recipient bladder (ureteroneocystostomy), often over a temporary stent. Early surgical complications follow this anatomy: renal artery/vein thrombosis (sudden anuria, graft pain), ureteral leak/obstruction, and lymphocele (compressing the ureter → rising Cr/hydronephrosis).</div><div class="rtt">⚠️ Board trap: sudden anuria with a tender graft in the first days post-op is a vascular catastrophe (renal vein/artery thrombosis) needing emergent Doppler/surgery — not rejection. A fluid collection compressing the ureter (lymphocele) causing rising Cr is a surgical/mechanical cause, distinguished by ultrasound, not treated with steroids.</div></div><div class="rt"><div class="rtl">5. Native kidneys stay</div><div class="rte">Native kidneys are routinely left in situ because nephrectomy adds operative morbidity without benefit; they may retain some residual function and EPO production. Removal is reserved for specific indications. This is why a transplant patient has three kidneys on imaging — two atrophic natives plus one functioning graft in the pelvis.</div><div class="rtt">⚠️ Board trap: routine bilateral native nephrectomy is NOT performed at transplant — choosing it as a standard step is wrong. Nephrectomy is the exception (specific indications only), not the rule.</div></div><div class="rt"><div class="rtl">6. Post-op polyuria → replace</div><div class="rte">A well-functioning graft (especially living-donor) often produces brisk post-operative diuresis as accumulated solutes/urea are cleared and tubular concentrating ability is still recovering. Urine output must be replaced aggressively (often mL-for-mL with appropriate crystalloid) to maintain intravascular volume and graft perfusion; under-replacement causes pre-renal/hypovolemic injury to the new kidney.</div><div class="rtt">⚠️ Board trap: heavy urine output post-transplant is usually GOOD graft function, not a problem to 'fix' by restricting fluids. Under-replacing the diuresis → hypovolemia → pre-renal injury and rising Cr that can be mistaken for graft failure/rejection. The answer is to match losses, not restrict.</div></div><div class="rt"><div class="rtl">7. Immediate urine = good</div><div class="rte">Immediate urine production on the operating table or within hours is a favorable sign of prompt graft function, most common with living-donor kidneys (short cold ischemia time). The contrasting scenario — oliguria/anuria requiring dialysis in the first week — defines delayed graft function and is more common after long cold ischemia or deceased-donor grafts.</div><div class="rtt">⚠️ Board trap: don't equate early oliguria with rejection. Early graft function correlates with ischemia time and donor type; immediate urine = good, while early oliguria points to ATN/delayed graft function (or a surgical/vascular cause) far more often than to acute rejection in the first days.</div></div><div class="rt"><div class="rtl">8. Day-0 induction starts</div><div class="rte">Immunosuppression begins on day 0: an induction antibody (basiliximab for standard risk; ATG/alemtuzumab for high risk) plus corticosteroids plus an antimetabolite (mycophenolate). This blunts the intense early alloresponse during the highest-risk window. Infection prophylaxis is started alongside: TMP-SMX for PJP (and UTI/Nocardia/Toxo coverage) and valganciclovir for CMV in at-risk serostatus.</div><div class="rtt">⚠️ Board trap: don't forget that day-0 immunosuppression obligates day-0 prophylaxis — omitting TMP-SMX (PJP) or CMV prophylaxis is a setup for the 1-6 month opportunistic infections. Also, induction (basiliximab/ATG) is the day-0 antibody, distinct from lifelong maintenance.</div></div><div class="rt"><div class="rtl">9. CNI can be delayed</div><div class="rte">When potent depleting induction (ATG or alemtuzumab) is used, the nephrotoxic calcineurin inhibitor (tacrolimus) can be DELAYED or started at reduced dose for the first days, because the depleting antibody already provides strong protection against early rejection. This spares the freshly reperfused graft from CNI-induced afferent vasoconstriction, reducing the risk of ATN/delayed graft function.</div><div class="rtt">⚠️ Board trap: in a recipient with delayed graft function or high ATN risk who received depleting induction, the right move is to delay/minimize the nephrotoxic CNI — NOT to push full-dose tacrolimus immediately (which adds vasoconstrictive nephrotoxicity to an already injured graft).</div></div><div class="rt"><div class="rtl">10. Creatinine recovery curve</div><div class="rte">After a successful transplant, serum creatinine should decline steadily toward a new baseline within roughly 1-2 weeks as the graft takes over clearance. A smooth downward trajectory is reassuring. Failure of Cr to fall (or a plateau/rise) within this window defines delayed graft function and triggers a workup to find the cause.</div><div class="rtt">⚠️ Board trap: don't ignore a Cr that simply isn't falling — a flat or rising early Cr is abnormal and signals delayed graft function. But equally, a steadily (if slowly) improving Cr does NOT need intervention; over-reacting to a downtrending Cr by biopsying or changing meds is the opposite error.</div></div><div class="rt"><div class="rtl">11. Stalled = delayed graft function</div><div class="rte">Delayed graft function (DGF) = need for dialysis in the first week and/or failure of Cr to improve; the most common cause is ischemia-reperfusion ATN, especially after long cold ischemia or deceased-donor grafts. It is usually self-limited with supportive care while immunosuppression is maintained, but it can mask or coexist with rejection, so persistent/worsening cases warrant biopsy.</div><div class="rtt">⚠️ Board trap: don't reflexively call DGF 'rejection' — most DGF is ATN and resolves with support. The discriminator is biopsy: ATN shows tubular injury without infiltrate, whereas rejection shows tubulitis/interstitial infiltrate (TCMR) or C4d/DSA (ABMR). Treating ATN with pulse steroids is the wrong answer.</div></div><div class="rt"><div class="rtl">12. Biopsy decision card</div><div class="rte">When Cr plateaus/rises unexpectedly or rejection is suspected, allograft biopsy is the gold-standard next step to distinguish the major causes — ATN, acute rejection (TCMR vs ABMR), CNI nephrotoxicity, and BK nephropathy — because their treatments diverge sharply. Imaging (Doppler ultrasound) first excludes surgical/vascular/obstructive causes (thrombosis, hydronephrosis, lymphocele) before tissue diagnosis.</div><div class="rtt">⚠️ Board trap: don't empirically intensify (or reduce) immunosuppression based on Cr alone — get tissue/imaging first. Pulsing steroids for what turns out to be CNI toxicity or BK nephropathy worsens outcomes; biopsy before changing therapy is the high-yield step.</div></div><div class="rt"><div class="rtl">13. Slow Cr fall → don't biopsy</div><div class="rte">A creatinine that is improving steadily, even if slowly (the typical course of recovering ATN/delayed graft function), does not require immediate biopsy — the trend is in the right direction and intervention risks harm. Continue supportive care and maintain immunosuppression; biopsy is reserved for stalled, rising, or otherwise unexplained dysfunction.</div><div class="rtt">⚠️ Board trap: biopsying or escalating immunosuppression in a patient whose Cr is steadily falling is over-treatment. The trigger to act is a plateau/rise or unexplained dysfunction, not a slow-but-steady recovery.</div></div><div class="rt"><div class="rtl">14. Native kidney museum</div><div class="rte">Native nephrectomy is performed only for specific indications, not routinely: massive symptomatic polycystic kidneys (to create space for the graft or for pain/bleeding/infection), chronic/recurrent upper-tract infection (e.g., chronic pyelonephritis, infected stones, reflux), refractory hypertension renin-driven by native kidneys, or massive proteinuria/suspected renal malignancy. It may be done before, during, or after transplant depending on the indication.</div><div class="rtt">⚠️ Board trap: native nephrectomy is the EXCEPTION with defined indications (huge symptomatic ADPKD, chronic infection, intractable HTN/proteinuria/malignancy) — choosing routine native nephrectomy at the time of every transplant is wrong; the natives normally stay in place.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ktx_management1.html" title="Kidney Transplant — Immunosuppression by Signal (Management 1)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ktx_rejection.html" title="Kidney Transplant — Rejection (TCMR vs ABMR)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Reference — Urine Sediment Cheat Sheet</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>11</em></summary><ol class="traps"><li><b>Bland sediment + hyaline casts → Prerenal</b> — WRONG: equating a bland sediment with ATN or assuming hyaline casts indicate disease. Bland sediment + hyaline casts = prerenal, NOT ATN (which shows muddy-brown granular casts). Discriminator: hyaline casts can be entirely normal in concentrated urine — they do not signify intrinsic injury.</li><li><b>Muddy brown granular casts → ATN</b> — WRONG: calling muddy-brown casts evidence of glomerular disease. Muddy-brown granular casts are specific for tubular injury (ATN), not GN (which gives RBC casts). Discriminator: granular/pigmented casts + RTE cells + nephrotoxin or ischemic insult = ATN; treat supportively, not with immunosuppression.</li><li><b>Renal tubular epithelial cells/casts → ATN</b> — WRONG: mistaking RTE cells for squamous epithelial cells (contamination) or dysmorphic RBCs. RTE cells are larger with a single large central nucleus and signify tubular necrosis; abundant squamous cells just mean a poorly collected specimen. Discriminator: RTE cells/casts localize injury to the tubule (ATN), not the glomerulus.</li><li><b>RBC casts → GN</b> — WRONG: attributing hematuria with RBC casts to a stone, tumor, or bladder source. RBC casts are essentially pathognomonic for glomerular bleeding — a urologic (lower-tract) source does NOT produce casts. Discriminator: RBC casts + dysmorphic RBCs + proteinuria + HTN = GN; pursue serologies/biopsy, not just a CT urogram.</li><li><b>Dysmorphic RBCs → GN / vasculitis</b> — WRONG: assuming any microscopic hematuria warrants a urologic malignancy workup first. Isomorphic (normal, uniform) RBCs point to a urologic/lower-tract source (stone, tumor, trauma), while dysmorphic RBCs point to the glomerulus. Discriminator: RBC morphology triages the hematuria — dysmorphic → nephrology/serologies; isomorphic → urology/imaging.</li><li><b>WBC casts → AIN / pyelonephritis</b> — WRONG: interpreting pyuria with WBC casts as simple cystitis. WBC casts indicate UPPER-tract/renal inflammation, distinguishing pyelonephritis (or AIN) from lower-tract cystitis, which does not cast. Discriminator: WBC casts + fever/flank pain → pyelonephritis; WBC casts + new drug + sterile culture → AIN.</li><li><b>Sterile pyuria → AIN</b> — WRONG: assuming sterile pyuria always equals AIN. Genitourinary TB and chlamydial urethritis are classic boards causes of sterile pyuria that get missed. Discriminator: in sterile pyuria, weigh AIN (new drug, eosinophils, WBC casts) against TB (risk factors, send AFB cultures) and STI (sexual history, NAAT) before settling on AIN.</li><li><b>Heme+ dipstick + few/no RBCs → Rhabdo/hemolysis</b> — WRONG: treating heme-positive dipstick with no RBCs as glomerular hematuria. Heme+ without RBCs is pigment (myoglobin/hemoglobin), not RBC bleeding. Discriminator: check CK (rhabdo) and haptoglobin/LDH/plasma color (hemolysis); pigment nephropathy can also give a deceptively LOW FENa from early renal vasoconstriction.</li><li><b>Calcium oxalate crystals → Ethylene glycol</b> — WRONG: chalking up oxalate crystals to dehydration or diet and missing the toxic alcohol. Calcium oxalate crystals + high anion-gap acidosis + osmolar gap = ethylene glycol toxicity (an emergency). Discriminator: methanol gives the same gaps but causes visual loss without prominent oxalate crystals — both need fomepizole ± dialysis.</li><li><b>Uric acid crystals → Tumor lysis</b> — WRONG: conflating uric acid AKI in TLS with chronic gouty/urate nephropathy. Acute uric acid crystal AKI = tumor lysis (prevent with hydration + rasburicase), a different entity from chronic gout nephropathy. Discriminator: a chemo/high-turnover-tumor setting with the TLS electrolyte panel points to TLS — start rasburicase, not just allopurinol, in high-risk patients.</li><li><b>Drug crystals → Acyclovir / indinavir</b> — WRONG: managing crystalline drug AKI like AIN with steroids. Crystal nephropathy (acyclovir/indinavir/sulfa/MTX) is an intratubular OBSTRUCTIVE injury treated with hydration and stopping/adjusting the drug — distinct from immune-mediated AIN. Discriminator: drug-specific crystals on microscopy + the offending agent + recovery with hydration confirm crystalline AKI rather than AIN.</li></ol></details><details class="panel"><summary>📖 Read-through — all 11 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Bland sediment + hyaline casts → Prerenal</div><div class="rte">A bland (acellular, cast-poor) sediment points to a functional, non-structural cause — prerenal azotemia from low effective volume or low cardiac output. Hyaline casts are pure Tamm-Horsfall (uromodulin) protein, are non-specific, and form in concentrated/low-flow urine, after exercise, or with diuretics. Prerenal labs: FENa &lt;1%, urine osm &gt;500, BUN:Cr &gt;20:1; the AKI corrects with volume.</div><div class="rtt">⚠️ WRONG: equating a bland sediment with ATN or assuming hyaline casts indicate disease. Bland sediment + hyaline casts = prerenal, NOT ATN (which shows muddy-brown granular casts). Discriminator: hyaline casts can be entirely normal in concentrated urine — they do not signify intrinsic injury.</div></div><div class="rt"><div class="rtl">2. Muddy brown granular casts → ATN</div><div class="rte">Muddy-brown coarse granular ('dirty brown') casts are sloughed necrotic tubular epithelial cells and debris packed into a Tamm-Horsfall matrix — the hallmark of established ischemic or nephrotoxic ATN. A higher cast/RTE-cell score correlates with worse AKI and lower odds of recovery. Pairs with FENa &gt;2% (off diuretics) and a non-oliguric or oliguric course.</div><div class="rtt">⚠️ WRONG: calling muddy-brown casts evidence of glomerular disease. Muddy-brown granular casts are specific for tubular injury (ATN), not GN (which gives RBC casts). Discriminator: granular/pigmented casts + RTE cells + nephrotoxin or ischemic insult = ATN; treat supportively, not with immunosuppression.</div></div><div class="rt"><div class="rtl">3. Renal tubular epithelial cells/casts → ATN</div><div class="rte">Free renal tubular epithelial (RTE) cells and RTE-cell casts are directly sloughed dead tubular cells, confirming tubular necrosis. They co-occur with muddy-brown granular casts in ATN and, together, form a quantifiable urinary microscopy score that predicts AKI severity and dialysis need.</div><div class="rtt">⚠️ WRONG: mistaking RTE cells for squamous epithelial cells (contamination) or dysmorphic RBCs. RTE cells are larger with a single large central nucleus and signify tubular necrosis; abundant squamous cells just mean a poorly collected specimen. Discriminator: RTE cells/casts localize injury to the tubule (ATN), not the glomerulus.</div></div><div class="rt"><div class="rtl">4. RBC casts → GN</div><div class="rte">Red-cell casts form when RBCs that bled through an inflamed glomerular basement membrane are molded into a tubular cast — the signature of glomerulonephritis/nephritic syndrome. Their presence mandates GN serologies (ANA/dsDNA, ANCA, anti-GBM, complement C3/C4, ASO, hepatitis/HIV, cryoglobulins) and usually kidney biopsy.</div><div class="rtt">⚠️ WRONG: attributing hematuria with RBC casts to a stone, tumor, or bladder source. RBC casts are essentially pathognomonic for glomerular bleeding — a urologic (lower-tract) source does NOT produce casts. Discriminator: RBC casts + dysmorphic RBCs + proteinuria + HTN = GN; pursue serologies/biopsy, not just a CT urogram.</div></div><div class="rt"><div class="rtl">5. Dysmorphic RBCs → GN / vasculitis</div><div class="rte">Dysmorphic (irregular, acanthocytic/'Mickey Mouse') RBCs are deformed as they squeeze through the damaged glomerular basement membrane, indicating a glomerular source of hematuria (GN/vasculitis). Acanthocytes (ring forms with membrane blebs) &gt;5% are particularly specific for glomerular bleeding.</div><div class="rtt">⚠️ WRONG: assuming any microscopic hematuria warrants a urologic malignancy workup first. Isomorphic (normal, uniform) RBCs point to a urologic/lower-tract source (stone, tumor, trauma), while dysmorphic RBCs point to the glomerulus. Discriminator: RBC morphology triages the hematuria — dysmorphic → nephrology/serologies; isomorphic → urology/imaging.</div></div><div class="rt"><div class="rtl">6. WBC casts → AIN / pyelonephritis</div><div class="rte">White-cell casts form when leukocytes from interstitial or renal parenchymal inflammation are packed into a cast, localizing the process to the upper tract/kidney. Seen in acute interstitial nephritis (drug-induced: PPIs, NSAIDs, beta-lactams, sulfa, checkpoint inhibitors) and in acute pyelonephritis.</div><div class="rtt">⚠️ WRONG: interpreting pyuria with WBC casts as simple cystitis. WBC casts indicate UPPER-tract/renal inflammation, distinguishing pyelonephritis (or AIN) from lower-tract cystitis, which does not cast. Discriminator: WBC casts + fever/flank pain → pyelonephritis; WBC casts + new drug + sterile culture → AIN.</div></div><div class="rt"><div class="rtl">7. Sterile pyuria → AIN</div><div class="rte">Sterile pyuria is WBCs in the urine with a NEGATIVE standard bacterial culture. In the AKI context it suggests acute interstitial nephritis (drug-induced), but the full differential is broad: renal TB, Chlamydia/gonorrhea and other urethritis, recently/partially treated UTI, fastidious organisms, nephrolithiasis, and contamination.</div><div class="rtt">⚠️ WRONG: assuming sterile pyuria always equals AIN. Genitourinary TB and chlamydial urethritis are classic boards causes of sterile pyuria that get missed. Discriminator: in sterile pyuria, weigh AIN (new drug, eosinophils, WBC casts) against TB (risk factors, send AFB cultures) and STI (sexual history, NAAT) before settling on AIN.</div></div><div class="rt"><div class="rtl">8. Heme+ dipstick + few/no RBCs → Rhabdo/hemolysis</div><div class="rte">A heme-positive dipstick reflects peroxidase activity from heme moieties — RBCs, myoglobin, OR hemoglobin. When the dipstick is heme-positive but microscopy shows FEW/no RBCs, the cause is pigment: myoglobinuria (rhabdomyolysis — CK often &gt;5,000) or hemoglobinuria (intravascular hemolysis — low haptoglobin, high LDH, plasma pink in hemolysis but not rhabdo).</div><div class="rtt">⚠️ WRONG: treating heme-positive dipstick with no RBCs as glomerular hematuria. Heme+ without RBCs is pigment (myoglobin/hemoglobin), not RBC bleeding. Discriminator: check CK (rhabdo) and haptoglobin/LDH/plasma color (hemolysis); pigment nephropathy can also give a deceptively LOW FENa from early renal vasoconstriction.</div></div><div class="rt"><div class="rtl">9. Calcium oxalate crystals → Ethylene glycol</div><div class="rte">Calcium oxalate crystalluria (envelope-shaped dihydrate or needle-shaped monohydrate) in the right context signals ethylene glycol (antifreeze) poisoning: high-anion-gap metabolic acidosis PLUS an elevated osmolar gap, with AKI from oxalate crystal nephropathy. Treat with fomepizole (alcohol dehydrogenase inhibitor) ± hemodialysis; sodium bicarbonate for acidosis.</div><div class="rtt">⚠️ WRONG: chalking up oxalate crystals to dehydration or diet and missing the toxic alcohol. Calcium oxalate crystals + high anion-gap acidosis + osmolar gap = ethylene glycol toxicity (an emergency). Discriminator: methanol gives the same gaps but causes visual loss without prominent oxalate crystals — both need fomepizole ± dialysis.</div></div><div class="rt"><div class="rtl">10. Uric acid crystals → Tumor lysis</div><div class="rte">Uric acid crystals (rhomboid/needle, often after cytotoxic therapy of bulky/high-grade lymphomas/leukemias) reflect tumor lysis syndrome: hyperuricemia, hyperkalemia, hyperphosphatemia, hypocalcemia, and AKI from intratubular urate (and calcium-phosphate) precipitation. Prevent/treat with aggressive IV fluids + rasburicase (high risk) or allopurinol (lower risk); avoid urine alkalinization when phosphate is high.</div><div class="rtt">⚠️ WRONG: conflating uric acid AKI in TLS with chronic gouty/urate nephropathy. Acute uric acid crystal AKI = tumor lysis (prevent with hydration + rasburicase), a different entity from chronic gout nephropathy. Discriminator: a chemo/high-turnover-tumor setting with the TLS electrolyte panel points to TLS — start rasburicase, not just allopurinol, in high-risk patients.</div></div><div class="rt"><div class="rtl">11. Drug crystals → Acyclovir / indinavir</div><div class="rte">Poorly soluble drugs precipitate as intratubular crystals causing crystalline AKI: acyclovir (needle-shaped, with rapid IV bolus + volume depletion), indinavir/atazanavir (plate/rosette crystals), sulfadiazine, methotrexate, and triamterene. Prevention/treatment is aggressive hydration (and slow infusion for IV acyclovir; urine alkalinization + leucovorin ± glucarpidase for methotrexate).</div><div class="rtt">⚠️ WRONG: managing crystalline drug AKI like AIN with steroids. Crystal nephropathy (acyclovir/indinavir/sulfa/MTX) is an intratubular OBSTRUCTIVE injury treated with hydration and stopping/adjusting the drug — distinct from immune-mediated AIN. Discriminator: drug-specific crystals on microscopy + the offending agent + recovery with hydration confirm crystalline AKI rather than AIN.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nref_sglt2.html" title="Renal Reference — SGLT2 Inhibitor Renoprotection">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ktx_cmv.html" title="Kidney Transplant — CMV Diagnosis, Treatment &amp; Prophylaxis (CMV 2)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

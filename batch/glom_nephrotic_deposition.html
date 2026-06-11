@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Glomerular (Nephrotic) — Glomerular Deposition Diseases (Amyloid / MIDD)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Congo red apple-green</b> — Wrong answer: 'amyloid is Congo red negative / PAS-strongly-positive.' Discriminator — Congo red + apple-green birefringence under polarized light IS amyloid by definition; the PAS-positive nodular look belongs to diabetic glomerulosclerosis and LCDD, which are Congo NEGATIVE.</li><li><b>AL = primary amyloid</b> — Wrong answer: 'AL amyloid is made of serum amyloid A (SAA) from chronic inflammation.' Discriminator — that describes AA (secondary) amyloid. AL = monoclonal LIGHT chains (Light), tied to a plasma-cell clone; AA = SAA acute-phase protein, tied to chronic inflammation.</li><li><b>AL → CRAB myeloma</b> — Wrong answer: 'AL amyloid arises from chronic inflammatory conditions (RA, IBD).' Discriminator — those drive AA amyloid. AL is a clonal plasma-cell process; the CRAB features and a monoclonal light chain point you to AL, and treatment is anti-plasma-cell therapy, not anti-inflammatory.</li><li><b>AA = secondary amyloid</b> — Wrong answer: 'AA amyloid is composed of monoclonal light chains.' Discriminator — that is AL. AA = SAA (Serum Amyloid A → 'A for inflammation/Acute-phase'); driven by chronic inflammatory disease, and the cure is treating that disease, not chemotherapy for a clone.</li><li><b>Beta-pleated sheets / fibrillar</b> — Wrong answer: 'amyloid forms organized MICROTUBULES.' Discriminator — organized microtubules (30–50 nm) describe IMMUNOTACTOID glomerulopathy (Congo negative). Amyloid = randomly arranged, thin, Congo-positive FIBRILS in beta-pleated sheets.</li><li><b>Nephrotic + renal vein thrombosis</b> — Wrong answer: 'renal amyloid presents as isolated hematuria / a nephritic picture.' Discriminator — amyloid is a deposition disease causing the NEPHROTIC pattern (heavy proteinuria, bland sediment), not the nephritic pattern (RBC casts, hematuria, hypertension). Isolated hematuria points to IgA nephropathy or thin basement membrane disease instead.</li><li><b>Macroglossia</b> — Wrong answer: 'macroglossia points to AA (secondary) amyloid.' Discriminator — macroglossia, periorbital purpura, and carpal tunnel are AL (light-chain) features; AA is dominated by renal and GI involvement from chronic inflammation and lacks the tongue and skin signs.</li><li><b>Restrictive cardiomyopathy</b> — Wrong answer: 'amyloid causes a DILATED cardiomyopathy.' Discriminator — amyloid stiffens the myocardium → RESTRICTIVE physiology (small/normal cavity, diastolic failure). The low-voltage-ECG-with-thick-walls mismatch is the classic tell; dilated cardiomyopathy is the wrong pattern.</li><li><b>Tubular BM + Bowman's capsule</b> — Wrong answer: 'deposits are confined to the mesangium only.' Discriminator — mesangial-restricted deposits suggest immune-complex GN (e.g., early IgA or lupus class II). Amyloid/MIDD deposit broadly across glomerular AND tubular basement membranes and vessels.</li><li><b>LCDD — light chain deposition</b> — Wrong answer: 'LCDD light chains are mostly lambda (like AL amyloid).' Discriminator — AL amyloid = lambda; LCDD = KAPPA. Also LCDD is Congo NEGATIVE and forms granular (non-fibrillar) deposits, whereas AL is Congo POSITIVE fibrils — same plasma-cell origin, opposite light chain and opposite Congo stain.</li><li><b>Non-amyloid / Congo negative</b> — Wrong answer: 'LCDD/MIDD are Congo red positive like amyloid.' Discriminator — the whole point of the 'Congo customs gate' is that amyloid passes (positive, fibrillar, beta-pleated) while MIDD does NOT (negative, granular). Both come from monoclonal Ig, but only amyloid takes up Congo red.</li><li><b>MGRS</b> — Wrong answer: 'MGRS always means overt multiple myeloma and you treat only if myeloma criteria are met.' Discriminator — MGRS by definition does NOT meet myeloma criteria, yet still requires treatment because the kidney damage is driven by the clone. Calling it 'benign MGUS, observe only' would let renal failure progress — that's the trap.</li><li><b>Fibrillary GN</b> — Wrong answer: 'fibrillary GN is Congo red positive (since it has fibrils).' Discriminator — it has fibrils but is Congo NEGATIVE; the size (~12–22 nm, bigger than amyloid's 8–12 nm) plus DnaJB9 positivity separates it from amyloid. The 'fibrils but Congo-negative' combination is the classic exam catch.</li><li><b>Immunotactoid</b> — Wrong answer: 'immunotactoid GN shows small, randomly arranged fibrils like fibrillary GN.' Discriminator — immunotactoid = LARGE (30–50 nm), ORGANIZED, parallel microtubules and is monoclonal/lymphoma-associated; fibrillary GN = smaller (12–22 nm), RANDOM fibrils and usually polyclonal/idiopathic. Both are Congo negative, but the architecture and the CLL link define immunotactoid.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Congo red apple-green</div><div class="rte">The single most-tested fact: amyloid deposits stain with CONGO RED and show APPLE-GREEN BIREFRINGENCE under polarized light. Amyloid is also typically PAS-pale/weak (helping separate it from diabetic nodules and LCDD, which are PAS-positive). On EM, amyloid is randomly arranged, non-branching fibrils ~8–12 nm wide. Congo red positivity is the gate that splits the deposition diseases into amyloid (positive) vs everything else (negative).</div><div class="rtt">⚠️ Wrong answer: 'amyloid is Congo red negative / PAS-strongly-positive.' Discriminator — Congo red + apple-green birefringence under polarized light IS amyloid by definition; the PAS-positive nodular look belongs to diabetic glomerulosclerosis and LCDD, which are Congo NEGATIVE.</div></div><div class="rt"><div class="rtl">2. AL = primary amyloid</div><div class="rte">AL (primary) amyloidosis is built from monoclonal immunoglobulin LIGHT CHAINS — the variable region, and lambda (λ) is more common than kappa. It arises from a clonal plasma-cell dyscrasia (multiple myeloma, MGUS/smoldering myeloma). Workup: serum/urine immunofixation + serum free light-chain ratio (more sensitive than SPEP). It is the most common systemic amyloidosis in the developed world and the type that causes nephrotic syndrome plus cardiac, hepatic, and neurologic disease.</div><div class="rtt">⚠️ Wrong answer: 'AL amyloid is made of serum amyloid A (SAA) from chronic inflammation.' Discriminator — that describes AA (secondary) amyloid. AL = monoclonal LIGHT chains (Light), tied to a plasma-cell clone; AA = SAA acute-phase protein, tied to chronic inflammation.</div></div><div class="rt"><div class="rtl">3. AL → CRAB myeloma</div><div class="rte">AL is the bridge to plasma-cell disease — remember CRAB for myeloma: hyperCalcemia, Renal failure, Anemia, Bone lytic lesions. Even without overt myeloma, the underlying clone secretes the amyloidogenic light chain. Treatment targets the clone (e.g., bortezomib-based regimens, autologous stem-cell transplant in eligible patients) plus daratumumab.</div><div class="rtt">⚠️ Wrong answer: 'AL amyloid arises from chronic inflammatory conditions (RA, IBD).' Discriminator — those drive AA amyloid. AL is a clonal plasma-cell process; the CRAB features and a monoclonal light chain point you to AL, and treatment is anti-plasma-cell therapy, not anti-inflammatory.</div></div><div class="rt"><div class="rtl">4. AA = secondary amyloid</div><div class="rte">AA (secondary) amyloidosis is built from SERUM AMYLOID A (SAA), an acute-phase reactant made by the liver, deposited after sustained inflammation: rheumatoid arthritis, IBD, chronic infections (TB, osteomyelitis, bronchiectasis), and familial Mediterranean fever (FMF). It is the most common form worldwide where chronic infection/inflammation is prevalent. Treatment = control the underlying inflammation (e.g., colchicine for FMF; biologics like anti-IL-6/TNF for RA).</div><div class="rtt">⚠️ Wrong answer: 'AA amyloid is composed of monoclonal light chains.' Discriminator — that is AL. AA = SAA (Serum Amyloid A → 'A for inflammation/Acute-phase'); driven by chronic inflammatory disease, and the cure is treating that disease, not chemotherapy for a clone.</div></div><div class="rt"><div class="rtl">5. Beta-pleated sheets / fibrillar</div><div class="rte">All amyloid, regardless of precursor protein, shares a common architecture: misfolded protein in an antiparallel BETA-PLEATED SHEET configuration forming rigid, non-branching FIBRILS (~8–12 nm) that are randomly arranged on EM and Congo red positive. This shared conformation — not the precursor — is what defines 'amyloid.'</div><div class="rtt">⚠️ Wrong answer: 'amyloid forms organized MICROTUBULES.' Discriminator — organized microtubules (30–50 nm) describe IMMUNOTACTOID glomerulopathy (Congo negative). Amyloid = randomly arranged, thin, Congo-positive FIBRILS in beta-pleated sheets.</div></div><div class="rt"><div class="rtl">6. Nephrotic + renal vein thrombosis</div><div class="rte">Renal amyloidosis classically presents with heavy NEPHROTIC-RANGE proteinuria (often massive, even &gt;10 g/day) and a hypercoagulable, thrombosis-prone state from urinary loss of antithrombin III — hence renal vein thrombosis and other thromboembolism. Like membranous nephropathy, nephrotic-range amyloid is a top cause of renal vein thrombosis.</div><div class="rtt">⚠️ Wrong answer: 'renal amyloid presents as isolated hematuria / a nephritic picture.' Discriminator — amyloid is a deposition disease causing the NEPHROTIC pattern (heavy proteinuria, bland sediment), not the nephritic pattern (RBC casts, hematuria, hypertension). Isolated hematuria points to IgA nephropathy or thin basement membrane disease instead.</div></div><div class="rt"><div class="rtl">7. Macroglossia</div><div class="rte">Macroglossia (enlarged tongue with lateral scalloping/tooth indentations) is a SPECIFIC clue to AL amyloidosis. Other AL-typical signs: periorbital purpura ('raccoon eyes' after Valsalva), carpal tunnel syndrome, hepatomegaly, and easy bruising from factor X deficiency. Macroglossia essentially does not occur in AA amyloid.</div><div class="rtt">⚠️ Wrong answer: 'macroglossia points to AA (secondary) amyloid.' Discriminator — macroglossia, periorbital purpura, and carpal tunnel are AL (light-chain) features; AA is dominated by renal and GI involvement from chronic inflammation and lacks the tongue and skin signs.</div></div><div class="rt"><div class="rtl">8. Restrictive cardiomyopathy</div><div class="rte">Cardiac amyloid causes a RESTRICTIVE cardiomyopathy: thickened walls with preserved/small cavity, diastolic dysfunction, low-voltage ECG despite LVH on echo, a 'speckled/granular' myocardium, and elevated troponin/BNP. AL has aggressive cardiac involvement; ATTR (transthyretin) amyloid is the other big cardiac player in older patients. Beware: digoxin and calcium-channel blockers bind amyloid fibrils and can cause toxicity/hypotension.</div><div class="rtt">⚠️ Wrong answer: 'amyloid causes a DILATED cardiomyopathy.' Discriminator — amyloid stiffens the myocardium → RESTRICTIVE physiology (small/normal cavity, diastolic failure). The low-voltage-ECG-with-thick-walls mismatch is the classic tell; dilated cardiomyopathy is the wrong pattern.</div></div><div class="rt"><div class="rtl">9. Tubular BM + Bowman's capsule</div><div class="rte">Deposition diseases are not confined to glomeruli — amyloid and MIDD infiltrate the MESANGIUM, glomerular capillary walls, tubular basement membranes, Bowman's capsule, and vessel walls. This diffuse, multi-compartment deposition explains the combination of proteinuria, tubular dysfunction, and progressive renal failure.</div><div class="rtt">⚠️ Wrong answer: 'deposits are confined to the mesangium only.' Discriminator — mesangial-restricted deposits suggest immune-complex GN (e.g., early IgA or lupus class II). Amyloid/MIDD deposit broadly across glomerular AND tubular basement membranes and vessels.</div></div><div class="rt"><div class="rtl">10. LCDD — light chain deposition</div><div class="rte">Light chain deposition disease (LCDD), the prototypic MIDD, produces NODULAR glomerulosclerosis that mimics diabetic Kimmelstiel-Wilson nodules but the nodules are PAS-positive and CONGO RED NEGATIVE. The culprit light chain is most often KAPPA (κ) — the reverse of AL amyloid's lambda predominance. It stems from a plasma-cell clone and presents with proteinuria + renal failure.</div><div class="rtt">⚠️ Wrong answer: 'LCDD light chains are mostly lambda (like AL amyloid).' Discriminator — AL amyloid = lambda; LCDD = KAPPA. Also LCDD is Congo NEGATIVE and forms granular (non-fibrillar) deposits, whereas AL is Congo POSITIVE fibrils — same plasma-cell origin, opposite light chain and opposite Congo stain.</div></div><div class="rt"><div class="rtl">11. Non-amyloid / Congo negative</div><div class="rte">MIDD (monoclonal immunoglobulin deposition disease — LCDD, HCDD, LHCDD) deposits are GRANULAR/powdery and NON-FIBRILLAR on EM, and they are CONGO RED NEGATIVE. They produce nodular glomerulosclerosis and ribbon-like deposition along tubular and glomerular basement membranes. Treatment targets the underlying plasma-cell/B-cell clone.</div><div class="rtt">⚠️ Wrong answer: 'LCDD/MIDD are Congo red positive like amyloid.' Discriminator — the whole point of the 'Congo customs gate' is that amyloid passes (positive, fibrillar, beta-pleated) while MIDD does NOT (negative, granular). Both come from monoclonal Ig, but only amyloid takes up Congo red.</div></div><div class="rt"><div class="rtl">12. MGRS</div><div class="rte">Monoclonal gammopathy of renal significance (MGRS): a small, non-malignant B-cell/plasma-cell clone that does NOT meet criteria for myeloma or lymphoma but secretes a nephrotoxic monoclonal protein causing kidney disease (AL amyloid, LCDD/MIDD, C3 glomerulopathy with monoclonal Ig, etc.). The clone is 'benign' hematologically but 'malignant' for the kidney — so it warrants clone-directed therapy to preserve renal function.</div><div class="rtt">⚠️ Wrong answer: 'MGRS always means overt multiple myeloma and you treat only if myeloma criteria are met.' Discriminator — MGRS by definition does NOT meet myeloma criteria, yet still requires treatment because the kidney damage is driven by the clone. Calling it 'benign MGUS, observe only' would let renal failure progress — that's the trap.</div></div><div class="rt"><div class="rtl">13. Fibrillary GN</div><div class="rte">Fibrillary glomerulonephritis: randomly arranged fibrils larger than amyloid (~12–22 nm), IgG-dominant (often IgG4) and polyclonal, smudgy mesangial/capillary-wall deposits, and DnaJB9 immunostain positive (a sensitive/specific marker). Crucially it is CONGO RED NEGATIVE. Presents with proteinuria/nephrotic syndrome ± hematuria and progressive renal failure; can associate with malignancy, hepatitis C, or autoimmunity.</div><div class="rtt">⚠️ Wrong answer: 'fibrillary GN is Congo red positive (since it has fibrils).' Discriminator — it has fibrils but is Congo NEGATIVE; the size (~12–22 nm, bigger than amyloid's 8–12 nm) plus DnaJB9 positivity separates it from amyloid. The 'fibrils but Congo-negative' combination is the classic exam catch.</div></div><div class="rt"><div class="rtl">14. Immunotactoid</div><div class="rte">Immunotactoid glomerulopathy: ORGANIZED, hollow MICROTUBULES that are large (~30–50 nm) and arranged in parallel stacks, usually MONOCLONAL IgG, and Congo red NEGATIVE. Strongly associated with chronic lymphocytic leukemia (CLL) and other lymphoproliferative disorders / cryoglobulinemia, so finding it should prompt a hematologic malignancy hunt.</div><div class="rtt">⚠️ Wrong answer: 'immunotactoid GN shows small, randomly arranged fibrils like fibrillary GN.' Discriminator — immunotactoid = LARGE (30–50 nm), ORGANIZED, parallel microtubules and is monoclonal/lymphoma-associated; fibrillary GN = smaller (12–22 nm), RANDOM fibrils and usually polyclonal/idiopathic. Both are Congo negative, but the architecture and the CLL link define immunotactoid.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="glom_nephrotic_fsgs.html" title="Glomerular (Nephrotic) — Focal Segmental Glomerulosclerosis (FSGS)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="glom_nephrotic_hivan.html" title="Glomerular (Nephrotic) — HIV-Associated Nephropathy (HIVAN)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

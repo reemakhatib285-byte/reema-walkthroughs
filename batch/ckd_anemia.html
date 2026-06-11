@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CKD — Anemia, Bleeding/Clotting &amp; Systemic Complications</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Anemia ward — down EPO kidney</b> — A board stem shows a dialysis patient with Hgb 9, MCV 88, low retic — the wrong answer is to work up B12/folate or call it iron-deficiency microcytosis. CKD anemia is NORMOCYTIC from EPO deficiency. Discriminator: a normal/low MCV with low reticulocytes and otherwise unexplained anemia in a patient with low eGFR points to EPO deficiency, not a nutritional cause — though you still must EXCLUDE iron deficiency before blaming EPO.</li><li><b>Iron / functional iron deficiency</b> — Stem: dialysis patient, ferritin 300, TSAT 15%, not responding to ESA — the wrong move is to withhold iron because 'ferritin is normal.' Functional iron deficiency means iron is trapped despite adequate stores. Discriminator: a LOW TSAT (&lt;20–30%) with a normal-or-high ferritin = functional iron deficiency → give IV iron, do not just escalate ESA. Ferritin is also an acute-phase reactant and falsely elevated by inflammation.</li><li><b>Hepcidin / HIF-PHI mechanism</b> — Stem may ask the mechanism of an oral CKD-anemia agent that works without giving exogenous EPO — wrong answer is 'it is a synthetic erythropoietin analog.' HIF-PHIs are NOT ESAs; they stabilize HIF to raise endogenous EPO and suppress hepcidin. Discriminator: an ORAL agent for renal anemia = HIF-PHI; an injectable = epoetin/darbepoetin (ESA). HIF-PHIs carry the same thrombosis caution and should not be used to chase a normal Hgb.</li><li><b>Hb target 10–11.5</b> — Stem: a provider wants to push ESA to normalize Hgb to 13 to make the patient 'feel best' — wrong answer is to agree. Targeting normal/high Hgb with ESAs increases stroke, thrombosis, vascular access loss, and mortality (CHOIR, TREAT, Normal Hct). Discriminator: the correct ceiling is ~11.5 g/dL; the moment a stem mentions targeting 12–13+ with an ESA, that is the trap.</li><li><b>Anemia Rx — ESA / iron / HIF-PHI</b> — Stem: anemic dialysis patient with TSAT 14%/ferritin 90 is started straight on epoetin and fails to respond — wrong answer is to keep escalating the ESA dose. ESA without adequate iron fails (functional/absolute iron deficiency = ESA hyporesponsiveness). Discriminator: the next best step is IV iron, not more ESA. Other causes of ESA resistance to remember: ongoing inflammation/infection, hyperparathyroidism, aluminum, and underdialysis.</li><li><b>Uremic bleeding patient</b> — Stem: uremic patient with GI bleed, platelets 220k, normal PT/PTT — wrong answer is to transfuse platelets or call it thrombocytopenia. Uremic bleeding is QUALITATIVE platelet dysfunction; the count is normal and platelet transfusions don't fix it (transfused platelets become dysfunctional too). Discriminator: prolonged bleeding time with normal count/PT/PTT = uremic platelet dysfunction → treat with dialysis/DDAVP, not platelet units.</li><li><b>DDAVP / cryo / estrogens / TXA</b> — Stem: dialysis patient with refractory uremic mucosal bleeding asks for the DEFINITIVE fix — wrong answer is DDAVP alone. DDAVP is rapid but short-lived (tachyphylaxis); the definitive correction of uremic platelet dysfunction is intensified DIALYSIS (clearing the uremic toxins). Discriminator: 'fastest' = DDAVP; 'most definitive/long-term' = dialysis; 'durable bridge' = cryoprecipitate or conjugated estrogens.</li><li><b>Hypercoagulable / nephrotic</b> — Stem: CKD = bleeding risk, so the wrong instinct is to assume all renal patients only bleed. CKD is PARADOXICAL — uremia bleeds, but nephrotic syndrome CLOTS. Discriminator: heavy proteinuria + low albumin + acute flank pain/hematuria/AKI = renal vein thrombosis from antithrombin-III loss; the answer is anticoagulation, not a bleeding workup. Membranous nephropathy is the classic nephrotic cause linked to RVT.</li><li><b>Anticoagulation shelf</b> — Stem: ESRD patient on hemodialysis needs full therapeutic anticoagulation for a DVT — wrong answer is therapeutic LMWH (enoxaparin) at standard dose. LMWH is renally cleared and accumulates → bleeding when CrCl &lt;30. Discriminator: in advanced CKD/ESRD use UNFRACTIONATED heparin (non-renal clearance, easily reversed) or carefully dosed apixaban; avoid warfarin where calciphylaxis is a concern and avoid dabigatran. A modest creatinine context still demands eGFR-based DOAC dosing.</li><li><b>Neuromuscular ward / peripheral neuropathy</b> — Stem: advanced-CKD patient develops confusion, asterixis, and a seizure — wrong answer is to load antiepileptics and image the brain as the primary fix. Uremic encephalopathy/seizures is a recognized INDICATION FOR DIALYSIS (the AEIOU mnemonic: Acidosis, Electrolytes/hyperK, Intoxication, Overload, Uremic symptoms — pericarditis, encephalopathy, bleeding). Discriminator: encephalopathy/asterixis/seizure in uremia → start dialysis; symptoms reverse with clearance.</li><li><b>Restless legs / dialysis indication</b> — Stem: dialysis patient with classic RLS and ferritin 40 — wrong answer is to jump straight to a dopamine agonist. Discriminator: in CKD/RLS, CHECK AND REPLETE IRON FIRST (low ferritin is a reversible driver of RLS) before pharmacologic dopaminergic therapy; also review for offending drugs (antihistamines, antidopaminergic antiemetics).</li><li><b>Endocrine apothecary — drug dosing</b> — Stem: long-standing diabetic with worsening CKD now has recurrent hypoglycemia on a stable insulin/glyburide regimen — wrong answer is to add carbohydrate or call it 'good control.' Discriminator: reduced renal insulin/sulfonylurea clearance is the cause → DECREASE insulin and STOP glyburide (switch to glipizide). Failing to down-titrate as eGFR drops causes the hypoglycemia.</li><li><b>SGLT2 / GLP-1 dialysis notes</b> — Stem: proteinuric CKD patient at eGFR 28 — wrong answer is to STOP the SGLT2 inhibitor because 'it no longer lowers glucose at this GFR.' Discriminator: SGLT2i are continued for renal/CV protection well into advanced CKD (and benefit non-diabetics); their flagging glycemic effect at low eGFR is NOT a reason to discontinue. Also do not assume infertility in CKD women is permanent — gonadal dysfunction can improve after transplant.</li><li><b>Pruritus / NFD dermatology corner</b> — Stem: patient with eGFR 22 needs an MRI and the team plans gadolinium contrast — wrong answer is to proceed routinely. Discriminator: AVOID gadolinium (or use newer macrocyclic agents only with caution/lowest dose) when eGFR &lt;30 or on dialysis due to NSF risk; this parallels avoiding IODINATED contrast for contrast-associated AKI, but the GADOLINIUM danger is FIBROSIS (NSF), not AKI — don't confuse the two contrast hazards.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Anemia ward — down EPO kidney</div><div class="rte">The peritubular interstitial fibroblasts of the kidney sense hypoxia and make &gt;90% of the body's erythropoietin; as functioning renal mass is lost, EPO production falls and is the MAIN cause of CKD anemia. It is a normocytic, normochromic, hypoproliferative anemia (low reticulocyte count). It typically becomes clinically apparent at eGFR &lt;30 (CKD G3b–G4) and is near-universal by G5/dialysis. Mnemonic: failing kidney = 'unplugged generator' that stops making the EPO signal.</div><div class="rtt">⚠️ A board stem shows a dialysis patient with Hgb 9, MCV 88, low retic — the wrong answer is to work up B12/folate or call it iron-deficiency microcytosis. CKD anemia is NORMOCYTIC from EPO deficiency. Discriminator: a normal/low MCV with low reticulocytes and otherwise unexplained anemia in a patient with low eGFR points to EPO deficiency, not a nutritional cause — though you still must EXCLUDE iron deficiency before blaming EPO.</div></div><div class="rt"><div class="rtl">2. Iron / functional iron deficiency</div><div class="rte">Two iron problems coexist in CKD: ABSOLUTE iron deficiency (GI blood loss, dialysis circuit losses, poor intake) and FUNCTIONAL iron deficiency (adequate stores but hepcidin-mediated block of iron release from macrophages/enterocytes). Shortened RBC survival (~half-normal, uremic hemolysis) and blood loss compound it. Goals before/with ESA: keep ferritin &gt;100 (non-dialysis) or &gt;200 (dialysis) and transferrin saturation (TSAT) &gt;20–30%. Mnemonic: stores can look 'full' (high ferritin) yet the iron is locked away.</div><div class="rtt">⚠️ Stem: dialysis patient, ferritin 300, TSAT 15%, not responding to ESA — the wrong move is to withhold iron because 'ferritin is normal.' Functional iron deficiency means iron is trapped despite adequate stores. Discriminator: a LOW TSAT (&lt;20–30%) with a normal-or-high ferritin = functional iron deficiency → give IV iron, do not just escalate ESA. Ferritin is also an acute-phase reactant and falsely elevated by inflammation.</div></div><div class="rt"><div class="rtl">3. Hepcidin / HIF-PHI mechanism</div><div class="rte">Hepcidin (made by the liver, normally cleared by the kidney) accumulates in CKD and inflammation; it binds ferroportin, internalizing it so iron cannot leave macrophages or be absorbed from the gut — this is the molecular basis of functional iron deficiency. HIF-prolyl-hydroxylase inhibitors (roxadustat, daprodustat, vadadustat) stabilize hypoxia-inducible factor, which lowers hepcidin AND boosts endogenous EPO transcription, raising Hgb orally without injectable ESA. Mnemonic: HIF-PHI 'fakes hypoxia' so the kidney/liver act as if oxygen-starved.</div><div class="rtt">⚠️ Stem may ask the mechanism of an oral CKD-anemia agent that works without giving exogenous EPO — wrong answer is 'it is a synthetic erythropoietin analog.' HIF-PHIs are NOT ESAs; they stabilize HIF to raise endogenous EPO and suppress hepcidin. Discriminator: an ORAL agent for renal anemia = HIF-PHI; an injectable = epoetin/darbepoetin (ESA). HIF-PHIs carry the same thrombosis caution and should not be used to chase a normal Hgb.</div></div><div class="rt"><div class="rtl">4. Hb target 10–11.5</div><div class="rte">Treat to a Hgb of roughly 10–11.5 g/dL — enough to relieve symptoms and avoid transfusion, NOT a normal Hgb. KDIGO: start ESA when Hgb &lt;10 and avoid letting it rise above ~11.5. The landmark trials drive this: CHOIR (target 13.5 vs 11.3 → more death/CV events at the higher target), TREAT (darbepoetin to 13 in diabetic CKD → no CV benefit and DOUBLED stroke risk), and Normal Hematocrit Study (hematocrit 42 → more deaths/MI). Mnemonic: aim for the bullseye 'low normal,' not the red zone.</div><div class="rtt">⚠️ Stem: a provider wants to push ESA to normalize Hgb to 13 to make the patient 'feel best' — wrong answer is to agree. Targeting normal/high Hgb with ESAs increases stroke, thrombosis, vascular access loss, and mortality (CHOIR, TREAT, Normal Hct). Discriminator: the correct ceiling is ~11.5 g/dL; the moment a stem mentions targeting 12–13+ with an ESA, that is the trap.</div></div><div class="rt"><div class="rtl">5. Anemia Rx — ESA / iron / HIF-PHI</div><div class="rte">Sequence: (1) exclude/treat OTHER causes (iron, B12, folate, blood loss); (2) replete IRON FIRST to ferritin/TSAT goals (oral often fails — IV iron, e.g., iron sucrose or ferric carboxymaltose, preferred in dialysis); (3) then start an ESA — epoetin alfa ~50–100 units/kg SC/IV up to 3x/week, or darbepoetin alfa (longer half-life, dosed weekly–monthly), OR an oral HIF-PHI. Always confirm adequate iron BEFORE and DURING ESA therapy. Mnemonic: 'fuel before the engine' — iron before EPO.</div><div class="rtt">⚠️ Stem: anemic dialysis patient with TSAT 14%/ferritin 90 is started straight on epoetin and fails to respond — wrong answer is to keep escalating the ESA dose. ESA without adequate iron fails (functional/absolute iron deficiency = ESA hyporesponsiveness). Discriminator: the next best step is IV iron, not more ESA. Other causes of ESA resistance to remember: ongoing inflammation/infection, hyperparathyroidism, aluminum, and underdialysis.</div></div><div class="rt"><div class="rtl">6. Uremic bleeding patient</div><div class="rte">Uremic toxins impair platelet FUNCTION: defective platelet–vessel-wall adhesion and aggregation, partly via abnormal vWF/GPIb interaction, increased nitric oxide/prostacyclin, and anemia (RBCs normally push platelets toward the vessel wall). Result: mucocutaneous bleeding (GI, ecchymoses, oozing) with a PROLONGED bleeding time but NORMAL platelet count, PT, and PTT. Mnemonic: the platelets are present but 'drunk on urea.'</div><div class="rtt">⚠️ Stem: uremic patient with GI bleed, platelets 220k, normal PT/PTT — wrong answer is to transfuse platelets or call it thrombocytopenia. Uremic bleeding is QUALITATIVE platelet dysfunction; the count is normal and platelet transfusions don't fix it (transfused platelets become dysfunctional too). Discriminator: prolonged bleeding time with normal count/PT/PTT = uremic platelet dysfunction → treat with dialysis/DDAVP, not platelet units.</div></div><div class="rt"><div class="rtl">7. DDAVP / cryo / estrogens / TXA</div><div class="rte">Acute uremic bleeding ladder: DDAVP (desmopressin) 0.3 mcg/kg IV/SC is first-line — releases vWF/factor VIII from endothelium, works in ~1 hour but tachyphylaxis after 2–3 doses; cryoprecipitate gives vWF + factor VIII for a longer effect; conjugated estrogens (~0.6 mg/kg IV daily x5) give a slow but durable effect (days–weeks). Correcting anemia (raise Hct toward ~30%) and DIALYSIS are also therapeutic; TXA is an antifibrinolytic adjunct. Mnemonic: 'Dialysis Definitively Cures, DDAVP Does it Fast.'</div><div class="rtt">⚠️ Stem: dialysis patient with refractory uremic mucosal bleeding asks for the DEFINITIVE fix — wrong answer is DDAVP alone. DDAVP is rapid but short-lived (tachyphylaxis); the definitive correction of uremic platelet dysfunction is intensified DIALYSIS (clearing the uremic toxins). Discriminator: 'fastest' = DDAVP; 'most definitive/long-term' = dialysis; 'durable bridge' = cryoprecipitate or conjugated estrogens.</div></div><div class="rt"><div class="rtl">8. Hypercoagulable / nephrotic</div><div class="rte">Nephrotic-range proteinuria (&gt;3.5 g/day) creates a HYPERCOAGULABLE state: urinary loss of antithrombin III (plus protein S/plasminogen) and compensatory hepatic synthesis of procoagulants (fibrinogen, factors V/VIII). Highest risk with membranous nephropathy and albumin &lt;2.5–2.8 g/dL. Classic complication: renal vein thrombosis (flank pain, hematuria, sudden creatinine rise/LDH bump) and other VTE/PE. Mnemonic: you 'pee out the brakes' (antithrombin III) so clotting runs away.</div><div class="rtt">⚠️ Stem: CKD = bleeding risk, so the wrong instinct is to assume all renal patients only bleed. CKD is PARADOXICAL — uremia bleeds, but nephrotic syndrome CLOTS. Discriminator: heavy proteinuria + low albumin + acute flank pain/hematuria/AKI = renal vein thrombosis from antithrombin-III loss; the answer is anticoagulation, not a bleeding workup. Membranous nephropathy is the classic nephrotic cause linked to RVT.</div></div><div class="rt"><div class="rtl">9. Anticoagulation shelf</div><div class="rte">Anticoagulation in CKD is a tightrope (coexisting bleeding AND clotting risk). Warfarin promotes vascular/calciphylaxis calcification (inhibits matrix Gla protein) and is hard to dose; DOACs are renally cleared (dabigatran ~80% renal — avoid in advanced CKD; apixaban is the least renally dependent and generally preferred). LMWH accumulates with low eGFR (anti-Xa monitoring or dose reduction; avoid if CrCl &lt;30); unfractionated heparin (hepatic/reticuloendothelial clearance) is the safest IV choice in severe CKD/ESRD. Mnemonic: 'when kidneys fail, fall back to heparin.'</div><div class="rtt">⚠️ Stem: ESRD patient on hemodialysis needs full therapeutic anticoagulation for a DVT — wrong answer is therapeutic LMWH (enoxaparin) at standard dose. LMWH is renally cleared and accumulates → bleeding when CrCl &lt;30. Discriminator: in advanced CKD/ESRD use UNFRACTIONATED heparin (non-renal clearance, easily reversed) or carefully dosed apixaban; avoid warfarin where calciphylaxis is a concern and avoid dabigatran. A modest creatinine context still demands eGFR-based DOAC dosing.</div></div><div class="rt"><div class="rtl">10. Neuromuscular ward / peripheral neuropathy</div><div class="rte">Uremic neurotoxicity spans peripheral and central nervous systems: a distal, symmetric, sensorimotor polyneuropathy (length-dependent, legs first); autonomic dysfunction; and CENTRAL uremic encephalopathy with cognitive slowing, asterixis, myoclonus, and seizures. CNS findings generally emerge as eGFR falls (stage 3 onward, worst in G5). Mnemonic: 'flapping hands and twitchy legs' = the brain is marinating in urea.</div><div class="rtt">⚠️ Stem: advanced-CKD patient develops confusion, asterixis, and a seizure — wrong answer is to load antiepileptics and image the brain as the primary fix. Uremic encephalopathy/seizures is a recognized INDICATION FOR DIALYSIS (the AEIOU mnemonic: Acidosis, Electrolytes/hyperK, Intoxication, Overload, Uremic symptoms — pericarditis, encephalopathy, bleeding). Discriminator: encephalopathy/asterixis/seizure in uremia → start dialysis; symptoms reverse with clearance.</div></div><div class="rt"><div class="rtl">11. Restless legs / dialysis indication</div><div class="rte">Restless legs syndrome (uncomfortable urge to move legs, worse at rest/evening, RELIEVED by movement) is common in CKD and worsened by iron deficiency. Manage by correcting iron (ferritin goal often &gt;100), optimizing dialysis, and dopamine agonists (e.g., pramipexole) or gabapentinoids; severe refractory uremic neurologic disease supports dialysis initiation. Mnemonic: legs that 'must keep walking' at night.</div><div class="rtt">⚠️ Stem: dialysis patient with classic RLS and ferritin 40 — wrong answer is to jump straight to a dopamine agonist. Discriminator: in CKD/RLS, CHECK AND REPLETE IRON FIRST (low ferritin is a reversible driver of RLS) before pharmacologic dopaminergic therapy; also review for offending drugs (antihistamines, antidopaminergic antiemetics).</div></div><div class="rt"><div class="rtl">12. Endocrine apothecary — drug dosing</div><div class="rte">The kidney both clears and degrades insulin; as eGFR falls, insulin (and many sulfonylureas/their metabolites) accumulate, so insulin requirements DECREASE and hypoglycemia risk rises. Practical board points: reduce insulin doses as CKD advances; avoid glyburide (renally cleared active metabolite → hypoglycemia) and prefer glipizide or shorter agents; metformin contraindicated when eGFR &lt;30 (lactic acidosis risk). Mnemonic: failing kidneys 'hoard insulin' → less is needed.</div><div class="rtt">⚠️ Stem: long-standing diabetic with worsening CKD now has recurrent hypoglycemia on a stable insulin/glyburide regimen — wrong answer is to add carbohydrate or call it 'good control.' Discriminator: reduced renal insulin/sulfonylurea clearance is the cause → DECREASE insulin and STOP glyburide (switch to glipizide). Failing to down-titrate as eGFR drops causes the hypoglycemia.</div></div><div class="rt"><div class="rtl">13. SGLT2 / GLP-1 dialysis notes</div><div class="rte">SGLT2 inhibitors LOSE glucose-lowering efficacy at low eGFR (they need filtered glucose to block), but their RENAL and CV protection persists down to low thresholds (e.g., dapagliflozin/empagliflozin continued to ~eGFR 20–25, even in non-diabetic proteinuric CKD per DAPA-CKD/EMPA-KIDNEY) — they are continued for organ protection, not sugar. GLP-1 agonists aid weight/glycemia and have CV/renal benefit. CKD also causes hypothalamic-pituitary-gonadal dysfunction: women get menstrual irregularity/amenorrhea and reduced fertility; men get hypogonadism/ED. Mnemonic: SGLT2i = 'protect the organ even when it stops lowering sugar.'</div><div class="rtt">⚠️ Stem: proteinuric CKD patient at eGFR 28 — wrong answer is to STOP the SGLT2 inhibitor because 'it no longer lowers glucose at this GFR.' Discriminator: SGLT2i are continued for renal/CV protection well into advanced CKD (and benefit non-diabetics); their flagging glycemic effect at low eGFR is NOT a reason to discontinue. Also do not assume infertility in CKD women is permanent — gonadal dysfunction can improve after transplant.</div></div><div class="rt"><div class="rtl">14. Pruritus / NFD dermatology corner</div><div class="rte">Uremic (CKD-associated) pruritus is often intense and treatment-resistant; linked to uremic toxins, hyperphosphatemia, secondary hyperparathyroidism, and dysregulated opioid receptors — manage by optimizing dialysis/phosphate, emollients, gabapentinoids, UVB, and difelikefalin (kappa-opioid agonist). Skin also shows sallow yellow-brown urochrome pigmentation. Gadolinium-based MRI contrast in advanced CKD can trigger nephrogenic systemic fibrosis (NSF, formerly nephrogenic fibrosing dermopathy) — fibrosis of skin and organs. Mnemonic: 'gadolinium + dead kidneys = stiff fibrotic skin.'</div><div class="rtt">⚠️ Stem: patient with eGFR 22 needs an MRI and the team plans gadolinium contrast — wrong answer is to proceed routinely. Discriminator: AVOID gadolinium (or use newer macrocyclic agents only with caution/lowest dose) when eGFR &lt;30 or on dialysis due to NSF risk; this parallels avoiding IODINATED contrast for contrast-associated AKI, but the GADOLINIUM danger is FIBROSIS (NSF), not AKI — don't confuse the two contrast hazards.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="../acid_base/scene_F.html" title="Acid–Base F — Respiratory Acidosis &amp; Alkalosis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ckd_bone_mineral.html" title="CKD — Bone, Phosphate &amp; Calcium (CKD-MBD)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

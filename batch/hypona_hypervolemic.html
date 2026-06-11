@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyponatremia — Hypervolemic (Edematous States)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Flooded but underfilled</b> — WRONG: reasoning that an edematous, fluid-overloaded patient "has too much volume" for ADH to be active. The EFFECTIVE arterial volume is low despite total-body overload, which is exactly why ADH stays on — the discriminator is effective circulating volume, not total body water.</li><li><b>Split by UNa then restrict + loop</b> — WRONG: giving isotonic or hypertonic saline to "correct the sodium" in an edematous patient. It adds Na and water to an already overloaded body and worsens edema/congestion — the answer is fluid + salt restriction plus loop diuresis (vaptans in select cases).</li><li><b>TBW up, TBNa up</b> — WRONG: assuming low serum Na means low total-body Na. Here total-body Na is actually HIGH; the hyponatremia is purely dilutional from even greater water excess. Treating with salt loading is exactly backwards.</li><li><b>Effective arterial volume low</b> — WRONG: thinking the neurohormonal activation is inappropriate/idiopathic like SIADH. It is an APPROPRIATE response to perceived hypovolemia (low effective volume) — which is why the treatment targets the underlying low-output/underfilled state, not ADH alone.</li><li><b>CHF king</b> — WRONG: treating HF hyponatremia with saline or liberalized fluids. This worsens congestion. The Na improves as forward flow improves with diuresis and HF therapy; vaptans (tolvaptan) may be added for refractory symptomatic hyponatremia.</li><li><b>Cirrhosis castle</b> — WRONG: aggressive saline or rapid correction in cirrhotic hyponatremia. These patients tolerate overcorrection poorly and are at HIGH risk for osmotic demyelination — correct slowly (≤6–8 mEq/L/24h) and prioritize fluid restriction and treating the portal hypertension/ascites.</li><li><b>Nephrotic</b> — WRONG: attributing nephrotic edema solely to "too much salt intake" and missing the underfill/ADH mechanism. Management is fluid/salt restriction plus loop diuretics and treating the underlying glomerular disease — not saline repletion.</li><li><b>Renal failure tower</b> — WRONG: expecting a low urine Na in renal-failure hyponatremia. The damaged tubules leak Na, so Una is &gt;20–30 — the opposite of the avid Na retention seen in HF/cirrhosis/nephrotic. This urine-Na split is a classic exam discriminator.</li><li><b>Edematous gate UNa&lt;20</b> — WRONG: using a low urine Na (&lt;20) to call a patient hypovolemic when they are clinically edematous. Edematous (low-effective-volume) states ALSO retain Na avidly — combine urine Na with the volume exam (edema/ascites/JVD) to place the patient correctly.</li><li><b>Renal failure gate UNa&gt;30</b> — WRONG: interpreting a high urine Na as proof of SIADH or salt-wasting in an overloaded renal-failure patient. In renal failure the high Una reflects tubular inability to conserve, not appropriate water-handling — anchor on volume status and creatinine.</li><li><b>Kidney saving / cannot conserve</b> — WRONG: applying one urine-Na cutoff to all hypervolemic hyponatremia. The cutoff direction depends on whether tubules are intact (retain, Una&lt;20) or failing (leak, Una&gt;30) — you must know which mechanism you're in.</li><li><b>Fluid + salt restrict</b> — WRONG: restricting fluid but allowing a normal/high salt diet (or vice versa). Both must be limited — leaving salt unrestricted perpetuates edema, while ignoring water keeps Na low. The combination, not one alone, is correct.</li><li><b>Loop diuretic</b> — WRONG: using a THIAZIDE (or normal saline) in hypervolemic hyponatremia. Thiazides impair urinary dilution and can WORSEN hyponatremia, and saline adds to the overload — the answer is a LOOP diuretic plus fluid/salt restriction.</li><li><b>Wet king reminder</b> — WRONG: confusing a wet, edematous hyponatremic patient with SIADH and prescribing only fluid restriction without diuresis, or worse, giving saline. The edema ("wet king") signals hypervolemia — treat with fluid + salt restriction AND a loop diuretic, plus the underlying disease.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Flooded but underfilled</div><div class="rte">Edematous states (HF, cirrhosis, nephrotic) are total-body Na and water OVERLOADED yet have LOW effective arterial blood volume (the volume the baroreceptors sense). The kidney and carotid/aortic baroreceptors perceive underfilling, so RAAS and non-osmotic ADH stay ON, retaining free water and diluting serum Na. The result is dilutional hyponatremia in a clinically WET patient.</div><div class="rtt">⚠️ WRONG: reasoning that an edematous, fluid-overloaded patient "has too much volume" for ADH to be active. The EFFECTIVE arterial volume is low despite total-body overload, which is exactly why ADH stays on — the discriminator is effective circulating volume, not total body water.</div></div><div class="rt"><div class="rtl">2. Split by UNa then restrict + loop</div><div class="rte">Within hypervolemic hyponatremia, urine Na splits the causes: Una &lt;20 in HF/cirrhosis/nephrotic (intact tubules avidly retaining Na under RAAS/ADH) versus Una &gt;20–30 in acute/chronic renal failure (tubules cannot conserve Na). Core treatment for all: fluid AND salt restriction plus a LOOP diuretic, while treating the underlying disease.</div><div class="rtt">⚠️ WRONG: giving isotonic or hypertonic saline to "correct the sodium" in an edematous patient. It adds Na and water to an already overloaded body and worsens edema/congestion — the answer is fluid + salt restriction plus loop diuresis (vaptans in select cases).</div></div><div class="rt"><div class="rtl">3. TBW up, TBNa up</div><div class="rte">In hypervolemic hyponatremia BOTH total body water and total body sodium are increased, but WATER is gained proportionally more than Na — hence the dilutional fall in serum Na despite Na overload. Clinically this manifests as edema, ascites, pulmonary congestion, and weight gain.</div><div class="rtt">⚠️ WRONG: assuming low serum Na means low total-body Na. Here total-body Na is actually HIGH; the hyponatremia is purely dilutional from even greater water excess. Treating with salt loading is exactly backwards.</div></div><div class="rt"><div class="rtl">4. Effective arterial volume low</div><div class="rte">Low effective arterial blood volume — from poor forward cardiac output (HF), splanchnic arterial vasodilation (cirrhosis), or intravascular underfilling (nephrotic hypoalbuminemia) — is the shared trigger. Baroreceptors sense underfilling and activate RAAS, sympathetic tone, and non-osmotic ADH release, driving Na and water retention.</div><div class="rtt">⚠️ WRONG: thinking the neurohormonal activation is inappropriate/idiopathic like SIADH. It is an APPROPRIATE response to perceived hypovolemia (low effective volume) — which is why the treatment targets the underlying low-output/underfilled state, not ADH alone.</div></div><div class="rt"><div class="rtl">5. CHF king</div><div class="rte">Heart failure: reduced cardiac output lowers effective arterial volume, activating RAAS, sympathetics, and ADH → avid Na retention and free-water retention → dilutional hyponatremia. The degree of hyponatremia correlates with HF severity and is a marker of poor prognosis. Treat with fluid/salt restriction, loop diuretics, and guideline-directed HF therapy.</div><div class="rtt">⚠️ WRONG: treating HF hyponatremia with saline or liberalized fluids. This worsens congestion. The Na improves as forward flow improves with diuresis and HF therapy; vaptans (tolvaptan) may be added for refractory symptomatic hyponatremia.</div></div><div class="rt"><div class="rtl">6. Cirrhosis castle</div><div class="rte">Cirrhosis: portal hypertension drives splanchnic arterial vasodilation (NO-mediated), dropping effective arterial volume despite massive ascites. RAAS/ADH activation causes Na and water retention; hyponatremia is a marker of advanced disease and worse transplant outcomes. Treat with fluid/salt restriction; vaptans may help select cases.</div><div class="rtt">⚠️ WRONG: aggressive saline or rapid correction in cirrhotic hyponatremia. These patients tolerate overcorrection poorly and are at HIGH risk for osmotic demyelination — correct slowly (≤6–8 mEq/L/24h) and prioritize fluid restriction and treating the portal hypertension/ascites.</div></div><div class="rt"><div class="rtl">7. Nephrotic</div><div class="rte">Nephrotic syndrome: heavy proteinuria → hypoalbuminemia → reduced plasma oncotic pressure → intravascular fluid shifts to the interstitium → low effective arterial volume → ADH/RAAS activation with Na and water retention and dilutional hyponatremia. (Some nephrotic edema is also from primary renal Na retention.)</div><div class="rtt">⚠️ WRONG: attributing nephrotic edema solely to "too much salt intake" and missing the underfill/ADH mechanism. Management is fluid/salt restriction plus loop diuretics and treating the underlying glomerular disease — not saline repletion.</div></div><div class="rt"><div class="rtl">8. Renal failure tower</div><div class="rte">Renal failure causes hypervolemic hyponatremia because the failing kidney cannot excrete the ingested water/Na load. Unlike HF/cirrhosis/nephrotic, the tubules CANNOT conserve Na, so urine Na is HIGH (&gt;20–30). Management centers on water/salt restriction and, when needed, dialysis or diuretics if residual function exists.</div><div class="rtt">⚠️ WRONG: expecting a low urine Na in renal-failure hyponatremia. The damaged tubules leak Na, so Una is &gt;20–30 — the opposite of the avid Na retention seen in HF/cirrhosis/nephrotic. This urine-Na split is a classic exam discriminator.</div></div><div class="rt"><div class="rtl">9. Edematous gate UNa&lt;20</div><div class="rte">In HF, cirrhosis, and nephrotic syndrome the tubules are intact and respond to RAAS/ADH by avidly reabsorbing sodium, so urine Na is LOW (&lt;20 mEq/L). This is the same renal Na-conservation signature seen in true hypovolemia, reflecting the shared low effective arterial volume.</div><div class="rtt">⚠️ WRONG: using a low urine Na (&lt;20) to call a patient hypovolemic when they are clinically edematous. Edematous (low-effective-volume) states ALSO retain Na avidly — combine urine Na with the volume exam (edema/ascites/JVD) to place the patient correctly.</div></div><div class="rt"><div class="rtl">10. Renal failure gate UNa&gt;30</div><div class="rte">In acute or chronic renal failure the kidney loses its concentrating and Na-conserving ability, so urine Na is HIGH (&gt;20–30) even though the patient is volume-overloaded. This is how renal failure is separated from the avidly Na-retaining edematous states within the hypervolemic category.</div><div class="rtt">⚠️ WRONG: interpreting a high urine Na as proof of SIADH or salt-wasting in an overloaded renal-failure patient. In renal failure the high Una reflects tubular inability to conserve, not appropriate water-handling — anchor on volume status and creatinine.</div></div><div class="rt"><div class="rtl">11. Kidney saving / cannot conserve</div><div class="rte">Two opposite renal behaviors define the split: in HF/cirrhosis/nephrotic the healthy kidney HOARDS sodium (green kidney, Una &lt;20) under RAAS/ADH; in renal failure the diseased kidney CANNOT conserve sodium (red kidney, Una &gt;20–30). Same hypervolemic dilutional hyponatremia, different urine Na.</div><div class="rtt">⚠️ WRONG: applying one urine-Na cutoff to all hypervolemic hyponatremia. The cutoff direction depends on whether tubules are intact (retain, Una&lt;20) or failing (leak, Una&gt;30) — you must know which mechanism you're in.</div></div><div class="rt"><div class="rtl">12. Fluid + salt restrict</div><div class="rte">The mainstay across all hypervolemic hyponatremia is restricting BOTH free water and dietary sodium to reverse the dilutional overload. Fluid restriction addresses the water excess (and ADH-driven retention); salt restriction addresses the total-body Na excess and edema. This is combined with loop diuretics and treating the underlying disease.</div><div class="rtt">⚠️ WRONG: restricting fluid but allowing a normal/high salt diet (or vice versa). Both must be limited — leaving salt unrestricted perpetuates edema, while ignoring water keeps Na low. The combination, not one alone, is correct.</div></div><div class="rt"><div class="rtl">13. Loop diuretic</div><div class="rte">Loop diuretics (furosemide, etc.) are preferred in edematous hyponatremia: they excrete Na and produce relatively dilute urine, removing proportionally more free water and helping raise serum Na while decongesting. Combine with treating the underlying HF/cirrhosis/nephrotic. Vaptans (tolvaptan) are an option for refractory hypervolemic hyponatremia in HF/cirrhosis.</div><div class="rtt">⚠️ WRONG: using a THIAZIDE (or normal saline) in hypervolemic hyponatremia. Thiazides impair urinary dilution and can WORSEN hyponatremia, and saline adds to the overload — the answer is a LOOP diuretic plus fluid/salt restriction.</div></div><div class="rt"><div class="rtl">14. Wet king reminder</div><div class="rte">Hypervolemic hyponatremia is clinically WET — peripheral edema, ascites, pulmonary crackles, elevated JVD, and weight gain. This exam picture is the key anchor distinguishing it from euvolemic (normal exam, e.g., SIADH) and hypovolemic (dry, orthostatic) hyponatremia, and it drives the restrict-and-diurese strategy.</div><div class="rtt">⚠️ WRONG: confusing a wet, edematous hyponatremic patient with SIADH and prescribing only fluid restriction without diuresis, or worse, giving saline. The edema ("wet king") signals hypervolemia — treat with fluid + salt restriction AND a loop diuretic, plus the underlying disease.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hypona_euvolemic_siadh.html" title="Hyponatremia — Euvolemic &amp; SIADH (Rule Out Mimics)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hypona_hypovolemic.html" title="Hyponatremia — Hypovolemic (Renal vs Extrarenal, Urine Na)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

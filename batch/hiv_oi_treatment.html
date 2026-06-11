@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">HIV — OI Treatment Wards (PCP, Cryptococcus, MAC, PML)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>PCP ward / CXR</b> — WRONG: 'Normal chest X-ray rules out PCP.' A normal CXR does NOT exclude PCP — up to ~25% are normal early. The discriminator is an elevated A-a gradient/exercise desaturation and high LDH; if suspicion is high, get HRCT (shows ground-glass) and induced sputum/BAL rather than stopping the workup.</li><li><b>ABG / A-a gradient fork</b> — WRONG: 'Use pulse-ox saturation to decide on steroids.' The board answer requires an ABG-derived PaO2 and A-a gradient, not SpO2. A patient with a borderline saturation but PaO2 &lt;70 or A-a &gt;35 on ABG still meets criteria for steroids — failing to obtain the ABG misses the indication.</li><li><b>Mild PCP path</b> — WRONG: 'Give steroids to everyone with PCP to be safe.' Steroids are reserved for severe disease (PaO2 &lt;70 or A-a &gt;35); adding them to mild PCP exposes the patient to needless immunosuppression and worsens other untreated coinfections without benefit. Match the therapy to the ABG-defined severity.</li><li><b>Severe PCP + steroids</b> — WRONG: 'Start antibiotics first, then add steroids once the patient deteriorates.' Late steroids do not help — they must be given before or within 72h (ideally with the first antibiotic dose) because their benefit is preventing the early inflammatory worsening that occurs as organisms lyse. Delaying steroids until decompensation misses the window.</li><li><b>TMP-SMX is first-line</b> — WRONG: 'Any rash on TMP-SMX means stop the drug and switch.' Mild rashes or fever can often be treated through, and many patients tolerate continuation; reserve switching for true severe hypersensitivity (Stevens-Johnson, anaphylaxis), severe cytopenias, or hepatotoxicity. Check G6PD before using primaquine or dapsone-containing alternatives.</li><li><b>Cryptococcal meningitis</b> — WRONG: 'Absence of neck stiffness rules out cryptococcal meningitis.' In advanced HIV the inflammatory response is blunted, so classic meningeal signs are frequently absent — a subacute headache with fever at low CD4 warrants LP with CrAg and opening-pressure measurement regardless of exam. Relying on meningismus to exclude it misses cases.</li><li><b>India ink / CrAg + ICP</b> — WRONG: 'Treat elevated ICP in cryptococcal meningitis with mannitol/acetazolamide/steroids.' Pharmacologic measures and steroids do NOT help and steroids increase harm; the proven intervention is repeated therapeutic LPs to mechanically drain CSF. Failure to aggressively manage ICP is a leading cause of death even when antifungals are working.</li><li><b>3-phase tx ladder</b> — WRONG: 'Once the patient improves on induction, switch straight to maintenance-dose fluconazole.' You cannot skip the 8-week consolidation phase of higher-dose fluconazole (400–800 mg); jumping to maintenance dosing too early causes relapse. The phases and their durations are sequential and must each be completed.</li><li><b>Ampho B + flucytosine</b> — WRONG: 'Fluconazole monotherapy is adequate induction for cryptococcal meningitis.' Fluconazole alone is NOT sufficient induction — the standard is amphotericin B PLUS flucytosine. Fluconazole only enters during the consolidation phase. Choosing fluconazole induction is a classic wrong answer that increases mortality.</li><li><b>Fluconazole maintenance</b> — WRONG: 'Start ART immediately along with antifungals in cryptococcal meningitis.' Unlike most OIs, you DELAY ART by ~4–6 weeks here because early ART triggers IRIS that markedly increases mortality. Starting ART concurrently with antifungal induction is the trap — this is the major exception to 'treat all/start ART promptly.'</li><li><b>MAC ward</b> — WRONG: 'Fever, night sweats, and weight loss at low CD4 must be tuberculosis.' MAC and TB overlap clinically, but MAC is the very-late (CD4 &lt;50), blood-culture-positive, disseminated entity with high alk phos and hepatosplenomegaly; TB can occur at any CD4 and is more pulmonary. Mycobacterial blood cultures distinguish them — don't anchor on TB.</li><li><b>MAC treatment combo</b> — WRONG: 'Clarithromycin (or azithromycin) monotherapy is fine for MAC.' Macrolide monotherapy rapidly selects resistance — always pair the macrolide with ethambutol (±rifabutin). The discriminator is that combination therapy prevents macrolide resistance, which is what dooms single-agent treatment.</li><li><b>PML / JC virus</b> — WRONG: 'Ring-enhancing brain lesions with mass effect = PML.' Ring-enhancing, mass-effect lesions point to toxoplasmosis (multiple) or CNS lymphoma (often single, EBV+, thallium/PET avid) — NOT PML. PML lesions are non-enhancing, lack mass effect, and don't respond to steroids; confusing the enhancement pattern is the classic distinguishing trap.</li><li><b>PML dx &amp; treatment</b> — WRONG: 'Treat PML with cidofovir/cytarabine (or steroids).' No antiviral cures PML; the definitive intervention is ART to restore immunity. Steroids are only used to manage severe PML-IRIS, not as primary therapy. Choosing an antiviral over ART is the trap — and clinicians must counsel that early ART-driven IRIS may cause transient worsening.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. PCP ward / CXR</div><div class="rte">Pneumocystis jirovecii pneumonia (PCP/PJP) classically shows diffuse bilateral perihilar interstitial (ground-glass) infiltrates, but the CXR can be normal early in disease. It presents subacutely over days to weeks with dry cough, progressive exertional dyspnea, fever, and profound hypoxemia out of proportion to imaging. Risk rises sharply at CD4 &lt;200. LDH is often elevated and beta-D-glucan is a useful serum adjunct; definitive diagnosis is by induced sputum or BAL with silver/immunofluorescent stain showing cysts.</div><div class="rtt">⚠️ WRONG: 'Normal chest X-ray rules out PCP.' A normal CXR does NOT exclude PCP — up to ~25% are normal early. The discriminator is an elevated A-a gradient/exercise desaturation and high LDH; if suspicion is high, get HRCT (shows ground-glass) and induced sputum/BAL rather than stopping the workup.</div></div><div class="rt"><div class="rtl">2. ABG / A-a gradient fork</div><div class="rte">Severity in PCP is stratified by room-air ABG: calculate PaO2 and the alveolar-arterial (A-a) oxygen gradient to decide whether adjunctive corticosteroids are indicated. The two thresholds to memorize are PaO2 &lt;70 mmHg OR A-a gradient &gt;35 mmHg, which define severe disease. This single decision drives whether you add steroids before/with antibiotics.</div><div class="rtt">⚠️ WRONG: 'Use pulse-ox saturation to decide on steroids.' The board answer requires an ABG-derived PaO2 and A-a gradient, not SpO2. A patient with a borderline saturation but PaO2 &lt;70 or A-a &gt;35 on ABG still meets criteria for steroids — failing to obtain the ABG misses the indication.</div></div><div class="rt"><div class="rtl">3. Mild PCP path</div><div class="rte">Mild-to-moderate PCP (PaO2 &gt;70 mmHg AND A-a gradient &lt;35 mmHg): treat with TMP-SMX for 21 days, NO adjunctive steroids. Dose is TMP 15–20 mg/kg/day (of the TMP component) divided q6–8h, IV or oral depending on severity. After completing treatment, continue secondary prophylaxis (lower-dose TMP-SMX) until CD4 &gt;200 for ≥3 months on ART.</div><div class="rtt">⚠️ WRONG: 'Give steroids to everyone with PCP to be safe.' Steroids are reserved for severe disease (PaO2 &lt;70 or A-a &gt;35); adding them to mild PCP exposes the patient to needless immunosuppression and worsens other untreated coinfections without benefit. Match the therapy to the ABG-defined severity.</div></div><div class="rt"><div class="rtl">4. Severe PCP + steroids</div><div class="rte">Severe PCP (PaO2 &lt;70 mmHg OR A-a gradient &gt;35 mmHg): add corticosteroids, started BEFORE or WITH the first antibiotic dose to blunt the inflammatory burst from dying organisms. Standard regimen is prednisone 40 mg BID x5 days, then 40 mg daily x5 days, then 20 mg daily x11 days (taper over 21 days). Adjunctive steroids reduce mortality and respiratory failure in severe PCP.</div><div class="rtt">⚠️ WRONG: 'Start antibiotics first, then add steroids once the patient deteriorates.' Late steroids do not help — they must be given before or within 72h (ideally with the first antibiotic dose) because their benefit is preventing the early inflammatory worsening that occurs as organisms lyse. Delaying steroids until decompensation misses the window.</div></div><div class="rt"><div class="rtl">5. TMP-SMX is first-line</div><div class="rte">TMP-SMX (trimethoprim-sulfamethoxazole) is first-line for both PCP treatment (21 days) and prophylaxis (one DS or SS tablet daily). Common adverse effects include rash, fever, hyperkalemia, cytopenias, and a benign creatinine rise (trimethoprim blocks tubular creatinine secretion). True alternatives for sulfa allergy/intolerance: primaquine + clindamycin, atovaquone (mild disease), or IV pentamidine (severe).</div><div class="rtt">⚠️ WRONG: 'Any rash on TMP-SMX means stop the drug and switch.' Mild rashes or fever can often be treated through, and many patients tolerate continuation; reserve switching for true severe hypersensitivity (Stevens-Johnson, anaphylaxis), severe cytopenias, or hepatotoxicity. Check G6PD before using primaquine or dapsone-containing alternatives.</div></div><div class="rt"><div class="rtl">6. Cryptococcal meningitis</div><div class="rte">Cryptococcal meningitis (Cryptococcus neoformans) presents subacutely over days to weeks with headache, fever, malaise, and often subtle meningismus; it occurs typically at CD4 &lt;100. Photophobia and frank nuchal rigidity may be absent. The key complication driving morbidity/mortality is raised intracranial pressure. Diagnose with serum and CSF cryptococcal antigen (CrAg, highly sensitive/specific), India ink, and fungal culture.</div><div class="rtt">⚠️ WRONG: 'Absence of neck stiffness rules out cryptococcal meningitis.' In advanced HIV the inflammatory response is blunted, so classic meningeal signs are frequently absent — a subacute headache with fever at low CD4 warrants LP with CrAg and opening-pressure measurement regardless of exam. Relying on meningismus to exclude it misses cases.</div></div><div class="rt"><div class="rtl">7. India ink / CrAg + ICP</div><div class="rte">Diagnosis: CSF/serum cryptococcal antigen (CrAg) is the most sensitive test; India ink shows encapsulated yeast in CSF. CSF typically shows low cell count, low glucose, high protein. Measure opening pressure at every LP — pressures are often markedly elevated (&gt;25 cm H2O). Manage raised ICP with serial therapeutic lumbar punctures, draining CSF to reduce pressure (and a lumbar drain or shunt if refractory).</div><div class="rtt">⚠️ WRONG: 'Treat elevated ICP in cryptococcal meningitis with mannitol/acetazolamide/steroids.' Pharmacologic measures and steroids do NOT help and steroids increase harm; the proven intervention is repeated therapeutic LPs to mechanically drain CSF. Failure to aggressively manage ICP is a leading cause of death even when antifungals are working.</div></div><div class="rt"><div class="rtl">8. 3-phase tx ladder</div><div class="rte">Cryptococcal meningitis is treated in three sequential phases: INDUCTION (liposomal amphotericin B + flucytosine, ~2 weeks), CONSOLIDATION (fluconazole 400–800 mg/day, ~8 weeks), then MAINTENANCE/secondary prophylaxis (fluconazole 200 mg/day). Maintenance continues until CD4 &gt;100 for ≥3 months with suppressed viral load on ART. Each step has a defined drug and duration.</div><div class="rtt">⚠️ WRONG: 'Once the patient improves on induction, switch straight to maintenance-dose fluconazole.' You cannot skip the 8-week consolidation phase of higher-dose fluconazole (400–800 mg); jumping to maintenance dosing too early causes relapse. The phases and their durations are sequential and must each be completed.</div></div><div class="rt"><div class="rtl">9. Ampho B + flucytosine</div><div class="rte">INDUCTION therapy = liposomal amphotericin B (3–4 mg/kg/day; or deoxycholate 0.7–1 mg/kg/day) PLUS flucytosine (5-FC, 100 mg/kg/day divided q6h) for ~2 weeks. The combination clears CSF faster and lowers mortality versus either alone. Monitor renal function/electrolytes (ampho: K+, Mg2+ wasting) and flucytosine levels/CBC (marrow suppression).</div><div class="rtt">⚠️ WRONG: 'Fluconazole monotherapy is adequate induction for cryptococcal meningitis.' Fluconazole alone is NOT sufficient induction — the standard is amphotericin B PLUS flucytosine. Fluconazole only enters during the consolidation phase. Choosing fluconazole induction is a classic wrong answer that increases mortality.</div></div><div class="rt"><div class="rtl">10. Fluconazole maintenance</div><div class="rte">After ~2 weeks of induction (and documented clinical improvement/CSF sterilization), step down to fluconazole: 400–800 mg/day for ~8 weeks (consolidation), then 200 mg/day (maintenance/secondary prophylaxis). Continue maintenance until CD4 &gt;100 sustained for ≥3 months on suppressive ART. ART is typically delayed ~4–6 weeks after starting antifungals to reduce IRIS-related death.</div><div class="rtt">⚠️ WRONG: 'Start ART immediately along with antifungals in cryptococcal meningitis.' Unlike most OIs, you DELAY ART by ~4–6 weeks here because early ART triggers IRIS that markedly increases mortality. Starting ART concurrently with antifungal induction is the trap — this is the major exception to 'treat all/start ART promptly.'</div></div><div class="rt"><div class="rtl">11. MAC ward</div><div class="rte">Disseminated Mycobacterium avium complex (MAC) is a very late OI, typically at CD4 &lt;50 (often ~10). Presents with persistent fever, drenching night sweats, weight loss, fatigue, diarrhea, hepatosplenomegaly, and lymphadenopathy. Labs show anemia and elevated alkaline phosphatase; diagnosis is by mycobacterial blood cultures (or bone marrow/tissue culture).</div><div class="rtt">⚠️ WRONG: 'Fever, night sweats, and weight loss at low CD4 must be tuberculosis.' MAC and TB overlap clinically, but MAC is the very-late (CD4 &lt;50), blood-culture-positive, disseminated entity with high alk phos and hepatosplenomegaly; TB can occur at any CD4 and is more pulmonary. Mycobacterial blood cultures distinguish them — don't anchor on TB.</div></div><div class="rt"><div class="rtl">12. MAC treatment combo</div><div class="rte">Treat disseminated MAC with a MACROLIDE backbone (clarithromycin 500 mg BID or azithromycin 500–600 mg daily) PLUS ethambutol 15 mg/kg/day; add rifabutin as a third agent for severe disease, very low CD4, or high mycobacterial burden. Treat for ≥12 months and until immune reconstitution (CD4 &gt;100 for ≥6 months on ART). Watch ethambutol optic neuritis and rifabutin drug interactions/uveitis.</div><div class="rtt">⚠️ WRONG: 'Clarithromycin (or azithromycin) monotherapy is fine for MAC.' Macrolide monotherapy rapidly selects resistance — always pair the macrolide with ethambutol (±rifabutin). The discriminator is that combination therapy prevents macrolide resistance, which is what dooms single-agent treatment.</div></div><div class="rt"><div class="rtl">13. PML / JC virus</div><div class="rte">Progressive multifocal leukoencephalopathy (PML) is reactivation of JC polyomavirus in oligodendrocytes at low CD4 (&lt;200, often &lt;100). MRI shows multifocal, asymmetric, NON-enhancing white matter lesions with NO mass effect, typically subcortical/parieto-occipital. Clinically: subacute focal deficits — hemiparesis, visual field loss, cognitive/behavioral change, ataxia — without fever or headache.</div><div class="rtt">⚠️ WRONG: 'Ring-enhancing brain lesions with mass effect = PML.' Ring-enhancing, mass-effect lesions point to toxoplasmosis (multiple) or CNS lymphoma (often single, EBV+, thallium/PET avid) — NOT PML. PML lesions are non-enhancing, lack mass effect, and don't respond to steroids; confusing the enhancement pattern is the classic distinguishing trap.</div></div><div class="rt"><div class="rtl">14. PML dx &amp; treatment</div><div class="rte">Diagnose PML by detecting JC virus DNA on CSF PCR (high specificity) plus the characteristic MRI; brain biopsy is confirmatory if needed. There is NO specific antiviral for JC virus — the only effective treatment is immune reconstitution by starting/optimizing ART. Prognosis improves with ART, but IRIS can transiently worsen lesions and clinical status.</div><div class="rtt">⚠️ WRONG: 'Treat PML with cidofovir/cytarabine (or steroids).' No antiviral cures PML; the definitive intervention is ART to restore immunity. Steroids are only used to manage severe PML-IRIS, not as primary therapy. Choosing an antiviral over ART is the trap — and clinicians must counsel that early ART-driven IRIS may cause transient worsening.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hiv_prophylaxis_thresholds.html" title="HIV — OI Prophylaxis CD4 Thresholds &amp; ART Timing">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hiv_transmission_prevention.html" title="HIV — Transmission, U=U &amp; Prevention">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

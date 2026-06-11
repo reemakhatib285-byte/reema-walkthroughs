@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">AML — Adverse-Risk Genetics</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>ADVERSE banner</b> — Risk group is assigned by genetics, NOT by morphology or blast count; an adverse-risk patient with 25% blasts still needs allo-HCT planning even if they achieve CR.</li><li><b>FLT3-ITD</b> — In ELN 2022 the FLT3-ITD allelic ratio no longer changes the risk category by itself — FLT3-ITD now places the patient in the INTERMEDIATE group (high ratio is not automatically adverse); the classic teaching that high-ratio FLT3-ITD is adverse is the older ELN 2017 rule. Also, FLT3 is NOT favorable even when NPM1 is mutated.</li><li><b>R/R relapsed-refractory</b> — Gilteritinib covers both FLT3-ITD and FLT3-TKD point mutations; midostaurin also covers TKD, but quizartinib is ITD-selective and does not target TKD.</li><li><b>TP53 mutation</b> — TP53-mutated AML responds poorly to standard 7+3 and relapses early even after transplant; do not assume achieving CR equals cure here.</li><li><b>High VAF</b> — A low-VAF single TP53 mutation may represent clonal hematopoiesis rather than driving disease; the prognostic weight is greatest with multi-hit/high-VAF TP53.</li><li><b>-5 / -7 del</b> — -7 (monosomy 7) is adverse, but isolated trisomy 8 alone is intermediate, not adverse; do not lump all numerical abnormalities together.</li><li><b>KMT2A (MLL) 9;11</b> — t(9;11) is the LEAST aggressive KMT2A partner and is sometimes labeled intermediate, but ELN groups KMT2A rearrangements as adverse overall — and do not confuse the leukemogenic t(9;11) with benign findings.</li><li><b>ASXL1</b> — Any single secondary-type mutation (e.g. ASXL1) flags the AML as myelodysplasia-related and adverse, regardless of an otherwise normal karyotype.</li><li><b>RUNX1</b> — Mutated RUNX1 = adverse; the t(8;21) RUNX1::RUNX1T1 translocation = favorable core-binding-factor AML. Same gene name, opposite prognosis — a classic board trap.</li><li><b>Splice (SF3B1/SRSF2/U2AF1/ZRSR2)</b> — SF3B1 is classically the GOOD-prognosis mutation in MDS with ring sideroblasts, but in AML it falls into the adverse secondary-type group — context flips its meaning.</li><li><b>IDH</b> — IDH inhibitors can cause differentiation syndrome (like ATRA in APL), treated with steroids. IDH mutation is NOT adverse by itself — it is placed here as a targetable lesion, intermediate risk.</li><li><b>TKD ? panel</b> — FLT3-TKD is NOT prognostically equivalent to FLT3-ITD; quizartinib does not cover TKD mutations whereas gilteritinib and midostaurin do.</li><li><b>Adverse outcome clock</b> — Delaying donor identification in adverse-risk AML loses the narrow CR1 window for transplant — the chance of cure falls sharply once the disease relapses.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ADVERSE banner</div><div class="rte">Per ELN 2022 risk stratification, these genetic lesions define adverse-risk AML, which carries the worst overall survival (~10-20% at 5 years with chemo alone). Adverse risk is the prime indication for allogeneic HCT in first complete remission (CR1) in eligible patients, because chemotherapy alone rarely cures this group. Risk drives the entire post-remission strategy: favorable → chemo consolidation, intermediate/adverse → transplant.</div><div class="rtt">⚠️ Risk group is assigned by genetics, NOT by morphology or blast count; an adverse-risk patient with 25% blasts still needs allo-HCT planning even if they achieve CR.</div></div><div class="rt"><div class="rtl">2. FLT3-ITD</div><div class="rte">FLT3 internal tandem duplication (ITD) is a constitutively active receptor tyrosine kinase driving proliferation; it occurs in ~25-30% of AML and confers a high relapse rate. Add midostaurin to 7+3 induction and consolidation for newly diagnosed FLT3-mutated AML (RATIFY trial); quizartinib is also approved with chemo for FLT3-ITD. High allelic ratio (≥0.5) is more strongly adverse than low ratio.</div><div class="rtt">⚠️ In ELN 2022 the FLT3-ITD allelic ratio no longer changes the risk category by itself — FLT3-ITD now places the patient in the INTERMEDIATE group (high ratio is not automatically adverse); the classic teaching that high-ratio FLT3-ITD is adverse is the older ELN 2017 rule. Also, FLT3 is NOT favorable even when NPM1 is mutated.</div></div><div class="rt"><div class="rtl">3. R/R relapsed-refractory</div><div class="rte">In relapsed/refractory FLT3-mutated AML (ITD or TKD), gilteritinib monotherapy is the standard (ADMIRAL trial: superior survival vs salvage chemo). Distinguish from the upfront setting where midostaurin/quizartinib are given WITH chemo.</div><div class="rtt">⚠️ Gilteritinib covers both FLT3-ITD and FLT3-TKD point mutations; midostaurin also covers TKD, but quizartinib is ITD-selective and does not target TKD.</div></div><div class="rt"><div class="rtl">4. TP53 mutation</div><div class="rte">TP53 mutation is the single worst prognostic lesion in AML — median survival ~5-9 months, high chemoresistance, and frequent association with complex/monosomal karyotype and therapy-related/secondary AML. Even allo-HCT rarely overcomes it. Often treated with hypomethylating agent (azacitidine) ± venetoclax rather than intensive 7+3 because intensive chemo offers little benefit.</div><div class="rtt">⚠️ TP53-mutated AML responds poorly to standard 7+3 and relapses early even after transplant; do not assume achieving CR equals cure here.</div></div><div class="rt"><div class="rtl">5. High VAF</div><div class="rte">For TP53, a variant allele frequency (VAF) ≥10% and/or biallelic (multi-hit) involvement defines the adverse, chemoresistant phenotype. Multi-hit TP53 is now recognized as its own AML/MDS entity in WHO/ICC classifications.</div><div class="rtt">⚠️ A low-VAF single TP53 mutation may represent clonal hematopoiesis rather than driving disease; the prognostic weight is greatest with multi-hit/high-VAF TP53.</div></div><div class="rt"><div class="rtl">6. -5 / -7 del</div><div class="rte">Loss of chromosome 7 (-7), del(5q)/-5, abnl(17p), and complex karyotype (≥3 unrelated abnormalities) or monosomal karyotype are all ELN adverse. These are hallmarks of myelodysplasia-related and therapy-related AML.</div><div class="rtt">⚠️ -7 (monosomy 7) is adverse, but isolated trisomy 8 alone is intermediate, not adverse; do not lump all numerical abnormalities together.</div></div><div class="rt"><div class="rtl">7. KMT2A (MLL) 9;11</div><div class="rte">KMT2A (MLL, 11q23) rearrangements are adverse, classically t(9;11) MLLT3::KMT2A and other partner fusions; strongly linked to therapy-related AML after topoisomerase-II inhibitors (etoposide, anthracyclines).</div><div class="rtt">⚠️ t(9;11) is the LEAST aggressive KMT2A partner and is sometimes labeled intermediate, but ELN groups KMT2A rearrangements as adverse overall — and do not confuse the leukemogenic t(9;11) with benign findings.</div></div><div class="rt"><div class="rtl">8. ASXL1</div><div class="rte">ASXL1 is a secondary-type / myelodysplasia-related mutation; its presence defines adverse risk and suggests AML arising from antecedent MDS/MPN. Part of the secondary-type mutation signature (ASXL1, BCOR, EZH2, RUNX1, SF3B1, SRSF2, STAG2, U2AF1, ZRSR2).</div><div class="rtt">⚠️ Any single secondary-type mutation (e.g. ASXL1) flags the AML as myelodysplasia-related and adverse, regardless of an otherwise normal karyotype.</div></div><div class="rt"><div class="rtl">9. BCOR</div><div class="rte">BCOR is a secondary-type/myelodysplasia-related mutation conferring adverse risk, again pointing to a secondary or MDS-derived AML biology.</div></div><div class="rt"><div class="rtl">10. EZH2</div><div class="rte">EZH2 is a secondary-type adverse mutation (polycomb repressive complex 2 member), part of the myelodysplasia-related signature.</div></div><div class="rt"><div class="rtl">11. RUNX1</div><div class="rte">A somatic RUNX1 mutation (point mutation/indel) is adverse and is a secondary-type/myelodysplasia-related lesion. This is mechanistically and prognostically opposite to the favorable t(8;21) RUNX1::RUNX1T1 FUSION.</div><div class="rtt">⚠️ Mutated RUNX1 = adverse; the t(8;21) RUNX1::RUNX1T1 translocation = favorable core-binding-factor AML. Same gene name, opposite prognosis — a classic board trap.</div></div><div class="rt"><div class="rtl">12. Splice (SF3B1/SRSF2/U2AF1/ZRSR2)</div><div class="rte">Spliceosome mutations (SRSF2, U2AF1, ZRSR2; SF3B1 in this context) are myelodysplasia-related secondary-type mutations conferring adverse risk and indicating MDS-derived biology.</div><div class="rtt">⚠️ SF3B1 is classically the GOOD-prognosis mutation in MDS with ring sideroblasts, but in AML it falls into the adverse secondary-type group — context flips its meaning.</div></div><div class="rt"><div class="rtl">13. IDH</div><div class="rte">IDH1 and IDH2 mutations produce the oncometabolite 2-hydroxyglutarate, causing a hypermethylation/differentiation block. They are TARGETABLE: ivosidenib for IDH1, enasidenib (or ivosidenib) for IDH2; olutasidenib for IDH1. IDH mutation alone is intermediate risk, not adverse.</div><div class="rtt">⚠️ IDH inhibitors can cause differentiation syndrome (like ATRA in APL), treated with steroids. IDH mutation is NOT adverse by itself — it is placed here as a targetable lesion, intermediate risk.</div></div><div class="rt"><div class="rtl">14. TKD ? panel</div><div class="rte">FLT3-TKD (tyrosine kinase domain, D835) point mutations are distinct from FLT3-ITD; their prognostic impact is less clearly adverse and they do not by themselves confer the adverse risk that ITD does. They are still targetable by midostaurin and gilteritinib (but NOT quizartinib).</div><div class="rtt">⚠️ FLT3-TKD is NOT prognostically equivalent to FLT3-ITD; quizartinib does not cover TKD mutations whereas gilteritinib and midostaurin do.</div></div><div class="rt"><div class="rtl">15. Adverse outcome clock</div><div class="rte">Adverse-risk genetics drive short time-to-relapse and poor overall survival, which is why these patients are referred urgently for donor search and allo-HCT in CR1 rather than relying on chemotherapy consolidation alone.</div><div class="rtt">⚠️ Delaying donor identification in adverse-risk AML loses the narrow CR1 window for transplant — the chance of cure falls sharply once the disease relapses.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aml_apl.html" title="AML — APL (M3, t(15;17))">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aml_consolidation.html" title="AML — Consolidation &amp; Transplant">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

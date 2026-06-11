@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Parathyroid/Bone — Hypercalcemia of Malignancy (Marketplace)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Inpatient Ca cause</b> — WRONG: calling rapid, severe, symptomatic hypercalcemia 'primary hyperparathyroidism.' Primary hyperPTH is typically chronic, mild (Ca 10.5-11.5), asymptomatic, found incidentally — discriminator is the TEMPO and SEVERITY plus a suppressed PTH. A sick, dehydrated patient with Ca 14 and confusion is malignancy until proven otherwise.</li><li><b>PTH suppressed gauge</b> — WRONG: 'low PTH with high Ca means primary hyperparathyroidism.' By definition primary hyperPTH has an inappropriately HIGH or non-suppressed PTH. A suppressed PTH points you AWAY from the gland and toward malignancy/vitamin D — order PTHrP and 25/1,25-vitamin D next, not a parathyroid sestamibi scan.</li><li><b>HHM = PTHrP</b> — WRONG: relying on the standard intact-PTH assay to detect PTHrP. The routine PTH assay does NOT cross-react with PTHrP, so PTH reads LOW in HHM — you must order a SEPARATE PTHrP level. Also wrong to expect high 1,25-vitamin D in HHM (that's the granulomatous/lymphoma mechanism); HHM has low 1,25-D.</li><li><b>Osteolytic mets</b> — WRONG: attributing myeloma hypercalcemia to PTHrP. Myeloma works by LOCAL osteoclast activation (RANKL/cytokines), so PTHrP is normal/low — clues are anemia, renal failure, high total protein/globulin gap, rouleaux, M-spike on SPEP/UPEP. Also note bone scan can be FALSELY negative in myeloma (lytic, not blastic) — use skeletal survey/MRI.</li><li><b>1,25-D in lymphoma</b> — WRONG: treating the 1,25-D mechanism with the same algorithm as bone mets. This subtype is uniquely GLUCOCORTICOID-RESPONSIVE — prednisone shuts off macrophage 1-alpha-hydroxylase and Ca falls in days. Bisphosphonates work too but steroids are the targeted move. Do NOT expect a response to steroids in PTHrP (HHM) or osteolytic-met hypercalcemia.</li><li><b>Vitamins trap (causes)</b> — WRONG: anchoring on cancer the moment PTH comes back low. Many of these are reversible: stop the thiazide, stop vitamin D/A or calcium-carbonate antacids (milk-alkali), mobilize the patient, treat the thyrotoxicosis or Addison's. A careful med/supplement history can spare an unnecessary malignancy workup.</li><li><b>Saline first</b> — WRONG: reaching for a loop diuretic ('furosemide') as first-line to 'flush out calcium.' Routine loop diuretics are NOT recommended — they only help AFTER full volume repletion or in volume-overloaded/CHF/renal patients, and given to a dehydrated patient they worsen the picture. Also wrong to start with a bisphosphonate alone (too slow). SALINE first.</li><li><b>Calcitonin bridge</b> — WRONG: relying on calcitonin as the durable/definitive therapy. Because of tachyphylaxis it loses efficacy in 1-2 days — it must be paired with saline plus a bisphosphonate or denosumab for sustained control. Treat it as a short bridge, never monotherapy for ongoing hypercalcemia.</li><li><b>Bisphosphonate (durable)</b> — WRONG: expecting a bisphosphonate to fix acute hypercalcemic crisis on its own. Because onset is 2-4 days it CANNOT be the sole acute agent — combine with saline (immediate) and calcitonin (fast bridge). Also wrong to give full-dose zoledronate in significant renal failure: dose-reduce or switch to denosumab.</li><li><b>Denosumab</b> — WRONG: avoiding any antiresorptive because 'the kidneys are bad.' Denosumab is precisely the agent to use when GFR is too low for zoledronate or when bisphosphonates have failed. The flip side: it can cause profound, prolonged HYPOCALCEMIA — ensure vitamin D repletion and monitor Ca closely after dosing.</li><li><b>Glucocorticoids</b> — WRONG: giving steroids for PTHrP-mediated (HHM) or osteolytic-met hypercalcemia and expecting a response — they DON'T work for those. Glucocorticoids only target the 1,25-D/granulomatous pathway. Matching mechanism to therapy is the board point: high 1,25-D -&gt; steroids; bone mets/PTHrP -&gt; antiresorptives.</li><li><b>Dialysis</b> — WRONG: defaulting to dialysis for ordinary hypercalcemia. It is a last-resort/rescue for refractory, dangerous hypercalcemia or when fluids are contraindicated (CHF, olig-anuric renal failure). For most patients, saline + calcitonin + bisphosphonate/denosumab is sufficient.</li><li><b>High-turnover causes</b> — WRONG: missing the drug/endocrine cause. Always check TSH (thyrotoxicosis), review the med list for thiazides and vitamin A/retinoids, and ask about immobilization. These are reversible — stopping the thiazide or treating the hyperthyroidism corrects the Ca, sparing a malignancy hunt.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Inpatient Ca cause</div><div class="rte">Malignancy is the #1 cause of INPATIENT hypercalcemia (primary hyperPTH is #1 in outpatients/asymptomatic). It develops over days-to-weeks, so Ca is often very high (&gt;13-14 mg/dL) and patients are symptomatic — polyuria, dehydration, confusion, constipation ('stones, bones, groans, psychiatric overtones'). Up to ~20-30% of cancer patients develop it, and it portends poor prognosis. Mnemonic for symptom severity: Ca &gt;14 mg/dL or rapid rise = emergency.</div><div class="rtt">⚠️ WRONG: calling rapid, severe, symptomatic hypercalcemia 'primary hyperparathyroidism.' Primary hyperPTH is typically chronic, mild (Ca 10.5-11.5), asymptomatic, found incidentally — discriminator is the TEMPO and SEVERITY plus a suppressed PTH. A sick, dehydrated patient with Ca 14 and confusion is malignancy until proven otherwise.</div></div><div class="rt"><div class="rtl">2. PTH suppressed gauge</div><div class="rte">First branch point in any hypercalcemia workup is the intact PTH. PTH HIGH/inappropriately-normal = PTH-dependent (primary hyperPTH, tertiary hyperPTH, lithium, FHH). PTH LOW/suppressed (&lt;20 pg/mL) = PTH-independent: malignancy, vitamin D excess, granulomatous disease, thyrotoxicosis, immobilization, milk-alkali, vitamin A. In malignancy the high Ca feeds back on the normal parathyroids and shuts them off.</div><div class="rtt">⚠️ WRONG: 'low PTH with high Ca means primary hyperparathyroidism.' By definition primary hyperPTH has an inappropriately HIGH or non-suppressed PTH. A suppressed PTH points you AWAY from the gland and toward malignancy/vitamin D — order PTHrP and 25/1,25-vitamin D next, not a parathyroid sestamibi scan.</div></div><div class="rt"><div class="rtl">3. HHM = PTHrP</div><div class="rte">Humoral hypercalcemia of malignancy (HHM) is the MOST COMMON mechanism (~80%). Tumor secretes PTHrP, which binds the PTH1 receptor and mimics PTH: raises bone resorption and renal Ca reabsorption, and causes phosphaturia (low phosphate). Classic tumors: SQUAMOUS cell carcinoma (lung, head &amp; neck, esophagus, cervix), RENAL cell carcinoma, bladder, and some breast cancers. Labs: high Ca, low PO4, LOW intact PTH, elevated PTHrP, and characteristically LOW 1,25-OH-D (PTHrP does not stimulate 1-alpha-hydroxylase well).</div><div class="rtt">⚠️ WRONG: relying on the standard intact-PTH assay to detect PTHrP. The routine PTH assay does NOT cross-react with PTHrP, so PTH reads LOW in HHM — you must order a SEPARATE PTHrP level. Also wrong to expect high 1,25-vitamin D in HHM (that's the granulomatous/lymphoma mechanism); HHM has low 1,25-D.</div></div><div class="rt"><div class="rtl">4. Osteolytic mets</div><div class="rte">Local osteolytic hypercalcemia (~20%): tumor cells in bone secrete local cytokines (IL-1, IL-6, TNF, and RANKL) that activate osteoclasts and dissolve bone, dumping Ca into blood. Classic: breast cancer bone mets and MULTIPLE MYELOMA (myeloma cells make RANKL/MIP-1-alpha and suppress osteoblasts via DKK1 -&gt; pure lytic 'punched-out' lesions). Both PTH and PTHrP are low here; the driver is local marrow biology, not a circulating hormone.</div><div class="rtt">⚠️ WRONG: attributing myeloma hypercalcemia to PTHrP. Myeloma works by LOCAL osteoclast activation (RANKL/cytokines), so PTHrP is normal/low — clues are anemia, renal failure, high total protein/globulin gap, rouleaux, M-spike on SPEP/UPEP. Also note bone scan can be FALSELY negative in myeloma (lytic, not blastic) — use skeletal survey/MRI.</div></div><div class="rt"><div class="rtl">5. 1,25-D in lymphoma</div><div class="rte">Some lymphomas (especially Hodgkin and some non-Hodgkin) and granulomatous disease (sarcoidosis, TB, fungal) express extrarenal 1-alpha-hydroxylase (CYP27B1) in macrophages, converting 25-D to active 1,25-D unchecked by normal feedback. This raises gut Ca absorption -&gt; hypercalcemia. Labs: high Ca, HIGH 1,25-OH-D, LOW PTH, often high/normal phosphate. Sarcoid hint: high ACE, hypercalciuria even more than hypercalcemia, bilateral hilar adenopathy.</div><div class="rtt">⚠️ WRONG: treating the 1,25-D mechanism with the same algorithm as bone mets. This subtype is uniquely GLUCOCORTICOID-RESPONSIVE — prednisone shuts off macrophage 1-alpha-hydroxylase and Ca falls in days. Bisphosphonates work too but steroids are the targeted move. Do NOT expect a response to steroids in PTHrP (HHM) or osteolytic-met hypercalcemia.</div></div><div class="rt"><div class="rtl">6. Vitamins trap (causes)</div><div class="rte">Non-malignant PTH-independent (low-PTH) hypercalcemia mnemonic — 'VITAMINS TRAP': Vitamin D/A excess, Immobilization, Thyrotoxicosis, Addison's (adrenal insufficiency), Milk-alkali syndrome (high Ca intake + alkalosis + renal failure, classically calcium carbonate), Inflammatory/granulomatous (sarcoid, TB), Neoplasia, Sarcoid, and drugs like Thiazides. Milk-alkali is now the 3rd most common cause of hypercalcemia (calcium carbonate antacids/supplements).</div><div class="rtt">⚠️ WRONG: anchoring on cancer the moment PTH comes back low. Many of these are reversible: stop the thiazide, stop vitamin D/A or calcium-carbonate antacids (milk-alkali), mobilize the patient, treat the thyrotoxicosis or Addison's. A careful med/supplement history can spare an unnecessary malignancy workup.</div></div><div class="rt"><div class="rtl">7. Saline first</div><div class="rte">First-line acute therapy is aggressive IV isotonic SALINE (normal saline), typically 200-300 mL/hr to maintain urine output ~100-150 mL/hr. Hypercalcemia causes nephrogenic DI and osmotic diuresis -&gt; profound volume depletion; rehydration restores GFR and dramatically increases urinary Ca excretion (saline natriuresis drags Ca with Na). Saline lowers Ca by ~1-3 mg/dL.</div><div class="rtt">⚠️ WRONG: reaching for a loop diuretic ('furosemide') as first-line to 'flush out calcium.' Routine loop diuretics are NOT recommended — they only help AFTER full volume repletion or in volume-overloaded/CHF/renal patients, and given to a dehydrated patient they worsen the picture. Also wrong to start with a bisphosphonate alone (too slow). SALINE first.</div></div><div class="rt"><div class="rtl">8. Calcitonin bridge</div><div class="rte">Salmon calcitonin (4 units/kg SC/IM q12h) is the FASTEST agent — lowers Ca within 4-6 hours by inhibiting osteoclasts and increasing renal Ca excretion. But the effect is small (~1-2 mg/dL) and short-lived: TACHYPHYLAXIS develops within ~48 hours. It buys time as a BRIDGE while the IV bisphosphonate (slow onset) takes effect.</div><div class="rtt">⚠️ WRONG: relying on calcitonin as the durable/definitive therapy. Because of tachyphylaxis it loses efficacy in 1-2 days — it must be paired with saline plus a bisphosphonate or denosumab for sustained control. Treat it as a short bridge, never monotherapy for ongoing hypercalcemia.</div></div><div class="rt"><div class="rtl">9. Bisphosphonate (durable)</div><div class="rte">IV bisphosphonates are the DURABLE mainstay: ZOLEDRONIC ACID 4 mg IV over 15 min (preferred, more potent) or pamidronate 60-90 mg IV over 2-4 hr. They poison osteoclasts (inhibit farnesyl-pyrophosphate synthase in the mevalonate pathway). Onset is SLOW (2-4 days), nadir at ~4-7 days, but effect lasts 2-4 weeks. Adjust/avoid in renal impairment (GFR &lt; ~30-35), pre-hydrate, and watch for osteonecrosis of the jaw and acute-phase flu-like reaction.</div><div class="rtt">⚠️ WRONG: expecting a bisphosphonate to fix acute hypercalcemic crisis on its own. Because onset is 2-4 days it CANNOT be the sole acute agent — combine with saline (immediate) and calcitonin (fast bridge). Also wrong to give full-dose zoledronate in significant renal failure: dose-reduce or switch to denosumab.</div></div><div class="rt"><div class="rtl">10. Denosumab</div><div class="rte">Denosumab is a monoclonal anti-RANKL antibody that blocks osteoclast formation/activation. Dose for malignant hypercalcemia is 120 mg SC. Key advantages: NOT renally cleared (safe in renal failure where bisphosphonates are limited) and effective in BISPHOSPHONATE-REFRACTORY hypercalcemia. Watch for hypocalcemia (especially with low vitamin D) and ONJ.</div><div class="rtt">⚠️ WRONG: avoiding any antiresorptive because 'the kidneys are bad.' Denosumab is precisely the agent to use when GFR is too low for zoledronate or when bisphosphonates have failed. The flip side: it can cause profound, prolonged HYPOCALCEMIA — ensure vitamin D repletion and monitor Ca closely after dosing.</div></div><div class="rt"><div class="rtl">11. Glucocorticoids</div><div class="rte">Glucocorticoids (e.g., prednisone 20-40 mg/day or hydrocortisone) lower Ca specifically when the mechanism is excess 1,25-D: lymphoma, granulomatous disease (sarcoid, TB), and vitamin D intoxication. They inhibit macrophage 1-alpha-hydroxylase and decrease gut Ca absorption; onset 2-5 days.</div><div class="rtt">⚠️ WRONG: giving steroids for PTHrP-mediated (HHM) or osteolytic-met hypercalcemia and expecting a response — they DON'T work for those. Glucocorticoids only target the 1,25-D/granulomatous pathway. Matching mechanism to therapy is the board point: high 1,25-D -&gt; steroids; bone mets/PTHrP -&gt; antiresorptives.</div></div><div class="rt"><div class="rtl">12. Dialysis</div><div class="rte">Hemodialysis with a LOW-calcium (or calcium-free) dialysate is reserved for life-threatening hypercalcemia (Ca &gt;18 mg/dL, severe neuro/cardiac symptoms) OR when aggressive saline is unsafe — renal failure or heart failure where you cannot volume-load. It rapidly removes calcium directly from blood.</div><div class="rtt">⚠️ WRONG: defaulting to dialysis for ordinary hypercalcemia. It is a last-resort/rescue for refractory, dangerous hypercalcemia or when fluids are contraindicated (CHF, olig-anuric renal failure). For most patients, saline + calcitonin + bisphosphonate/denosumab is sufficient.</div></div><div class="rt"><div class="rtl">13. High-turnover causes</div><div class="rte">PTH-independent hypercalcemia from increased bone turnover or renal handling: THYROTOXICOSIS (thyroid hormone directly stimulates osteoclasts), IMMOBILIZATION (especially young patients with high baseline turnover, e.g., Paget's, or prolonged bed rest — bone resorption unopposed), THIAZIDES (decrease urinary Ca excretion at the DCT, unmask underlying hypercalcemia), and VITAMIN A intoxication (stimulates osteoclastic resorption).</div><div class="rtt">⚠️ WRONG: missing the drug/endocrine cause. Always check TSH (thyrotoxicosis), review the med list for thiazides and vitamin A/retinoids, and ask about immobilization. These are reversible — stopping the thiazide or treating the hyperthyroidism corrects the Ca, sparing a malignancy hunt.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pbone_chapter3.html" title="Parathyroid/Bone — Chapter 3: Vitamin D Synthesis Road (Skin, Liver, Kidney)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pbone_hypopth.html" title="Parathyroid/Bone — Hypoparathyroidism (Empty Throne Room)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

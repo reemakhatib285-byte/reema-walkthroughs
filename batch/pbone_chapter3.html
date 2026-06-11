@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Parathyroid/Bone — Chapter 3: Vitamin D Synthesis Road (Skin, Liver, Kidney)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Sufficiency = 25(OH)D &gt;20</b> — WRONG answer: 'order 1,25-dihydroxyvitamin D to assess deficiency.' The status test is 25(OH)D; 1,25-D has a short half-life and is often NORMAL or even HIGH in deficiency (because secondary hyperPTH drives 1-alpha-hydroxylase). Discriminator: 1,25-D is only ordered for specific puzzles — granulomatous disease, CYP24A1 defects, or hereditary rickets — not routine status.</li><li><b>Skin: 7-DHC -&gt; D3</b> — WRONG answer: 'sunbathing can cause vitamin D toxicity.' Excess UV converts pre-vitamin D3 into inactive products (lumisterol/tachysterol), so cutaneous synthesis is self-regulating — toxicity requires oral OVERSUPPLEMENTATION. Discriminator: vitamin D toxicity = ingested megadoses (or granulomatous extrarenal 1,25-D), never sun.</li><li><b>Sunblock / melanin reduce synthesis</b> — WRONG answer: attributing an elderly housebound patient's low Ca and bone pain to 'primary hyperparathyroidism.' The setup (reduced sun + poor intake) points to vitamin D deficiency -&gt; osteomalacia with SECONDARY hyperPTH (low/normal Ca, HIGH PTH, low phosphate, high ALP). Discriminator: primary hyperPTH has HIGH calcium; vitamin D deficiency has LOW/normal calcium with high PTH.</li><li><b>Diet: D2 plant / D3 animal</b> — WRONG answer: 'D2 (ergocalciferol) is the inactive plant form and cannot raise vitamin D levels.' Both D2 and D3 are pro-hormones that must be hydroxylated twice; both work, though D3 is modestly more potent. Discriminator: the truly 'inactive until hydroxylated' point applies to BOTH — neither is active until the liver and kidney steps occur.</li><li><b>Liver 25-hydroxylase (CYP2R1)</b> — WRONG answer: confusing the liver step with the activating step. The liver makes 25(OH)D (storage, the test); the KIDNEY makes 1,25-D (active, the regulated step). Discriminator: '25 = liver = the test'; '1,25 = kidney = the active hormone.' Don't blame liver disease for failure to ACTIVATE vitamin D — that's a kidney/CKD problem.</li><li><b>25(OH)D storage form</b> — WRONG answer: '1,25-D, being the active form, is the best marker of stores.' 1,25-D has a SHORT half-life and is tightly regulated, so it is a poor status marker and is often normal/high in deficiency. Discriminator: stable + long half-life + reflects stores = 25(OH)D.</li><li><b>Drugs lower 25(OH)D</b> — WRONG answer: 'a seizure patient with bone pain and low 25(OH)D has primary hyperparathyroidism.' Chronic phenytoin/phenobarbital induce vitamin D catabolism -&gt; deficiency/osteomalacia. Discriminator: drug-induced osteomalacia gives LOW Ca/normal-low with HIGH PTH and high ALP — not the HIGH calcium of primary hyperPTH.</li><li><b>Kidney 1-alpha-hydroxylase (CYP27B1)</b> — WRONG answer: 'CKD patients need plain cholecalciferol to fix their low calcium.' Plain D can't be activated without functional renal 1-alpha-hydroxylase — they need ACTIVE vitamin D (calcitriol/paricalcitol). Discriminator: the kidney = activation; renal failure = give the active form, not the precursor. Also note loss-of-function CYP27B1 = vitamin D-dependent rickets type 1 (low 1,25-D despite adequate 25-D).</li><li><b>PTH + low PO4 turn it ON</b> — WRONG answer: 'PTH suppresses vitamin D activation.' PTH STIMULATES 1-alpha-hydroxylase (turns it on); FGF23 is the suppressor. Discriminator: ON switches = PTH + low phosphate; OFF switches = FGF23 + high Ca/PO4 + 1,25-D itself (negative feedback).</li><li><b>FGF23 suppresses 1,25-D</b> — WRONG answer: 'tumor-induced osteomalacia is caused by hypercalcemia and high vitamin D.' It is driven by tumoral FGF23 overproduction -&gt; renal phosphate wasting, LOW phosphate, and LOW/inappropriately-normal 1,25-D. Discriminator: FGF23 excess = low phosphate + low 1,25-D (look for a small mesenchymal tumor); PTH excess = high Ca + low phosphate but HIGH 1,25-D.</li><li><b>24-hydroxylase inactivation</b> — WRONG answer: 'an infant with hypercalcemia, low PTH, and suppressed 24-hydroxylase activity just has too much dietary vitamin D.' Loss-of-function CYP24A1 mutations cause idiopathic INFANTILE HYPERCALCEMIA — the inactivating enzyme is broken, so vitamin D cannot be cleared. Discriminator: hypercalcemia + low PTH + low 24,25-D / high 25-D:24,25-D ratio = CYP24A1 defect.</li><li><b>Granulomatous extra 1,25-D</b> — WRONG answer: treating sarcoid hypercalcemia with vitamin D, or attributing it to primary hyperPTH. Granulomatous hypercalcemia has LOW PTH with HIGH 1,25-D and responds to GLUCOCORTICOIDS (also avoid sun/vitamin D). Discriminator: high 1,25-D + low PTH + suppressed = extrarenal granulomatous production; high PTH = primary hyperPTH.</li><li><b>Order 25(OH)D not 1,25-D</b> — WRONG answer: 'use 1,25-D to screen for deficiency.' This is the single most-tested vitamin D error — 1,25-D is short-lived, tightly regulated, and frequently normal/high in true deficiency. Discriminator: deficiency workup = 25(OH)D; the regulated active form is only diagnostically useful in the specific syndromes above.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Sufficiency = 25(OH)D &gt;20</div><div class="rte">Vitamin D status is judged by serum 25(OH)D (calcidiol), the storage form: &gt;20 ng/mL is generally sufficient for the general population (some societies use &gt;30 for at-risk patients), 12–20 is insufficient, and &lt;12 ng/mL is frank deficiency. RDA is 600 IU/day under age 70 and 800 IU/day over 70; toxicity is uncommon below chronic intakes around 40,000 IU/day. Deficiency causes osteomalacia in adults and rickets in children.</div><div class="rtt">⚠️ WRONG answer: 'order 1,25-dihydroxyvitamin D to assess deficiency.' The status test is 25(OH)D; 1,25-D has a short half-life and is often NORMAL or even HIGH in deficiency (because secondary hyperPTH drives 1-alpha-hydroxylase). Discriminator: 1,25-D is only ordered for specific puzzles — granulomatous disease, CYP24A1 defects, or hereditary rickets — not routine status.</div></div><div class="rt"><div class="rtl">2. Skin: 7-DHC -&gt; D3</div><div class="rte">In the skin, UV-B radiation (290–315 nm) converts 7-dehydrocholesterol to pre-vitamin D3, which thermally isomerizes to cholecalciferol (vitamin D3). This is the only step that does NOT require an enzyme — it is photochemical — and it is self-limiting (excess pre-D3 degrades to inert photoproducts, so sun exposure alone cannot cause toxicity). Cutaneous synthesis supplies the majority of vitamin D in most people.</div><div class="rtt">⚠️ WRONG answer: 'sunbathing can cause vitamin D toxicity.' Excess UV converts pre-vitamin D3 into inactive products (lumisterol/tachysterol), so cutaneous synthesis is self-regulating — toxicity requires oral OVERSUPPLEMENTATION. Discriminator: vitamin D toxicity = ingested megadoses (or granulomatous extrarenal 1,25-D), never sun.</div></div><div class="rt"><div class="rtl">3. Sunblock / melanin reduce synthesis</div><div class="rte">Anything that blocks UV-B reduces cutaneous D3 synthesis: sunscreen (SPF 30 cuts it ~95%), darker skin (melanin competes for UV-B), high latitude, winter season, indoor lifestyle/institutionalization, and aging skin (less 7-DHC). These factors explain who gets deficiency — the homebound elderly, veiled or dark-skinned individuals at northern latitudes, and exclusively breastfed infants without supplementation.</div><div class="rtt">⚠️ WRONG answer: attributing an elderly housebound patient's low Ca and bone pain to 'primary hyperparathyroidism.' The setup (reduced sun + poor intake) points to vitamin D deficiency -&gt; osteomalacia with SECONDARY hyperPTH (low/normal Ca, HIGH PTH, low phosphate, high ALP). Discriminator: primary hyperPTH has HIGH calcium; vitamin D deficiency has LOW/normal calcium with high PTH.</div></div><div class="rt"><div class="rtl">4. Diet: D2 plant / D3 animal</div><div class="rte">Dietary vitamin D comes in two forms: D2 (ergocalciferol) from plants/fungi/fortified foods, and D3 (cholecalciferol) from animal sources (oily fish, egg yolk) and skin synthesis. Both are biologically usable after the same liver and kidney hydroxylations; D3 raises and sustains serum 25(OH)D somewhat more efficiently than D2, which is why D3 is generally preferred for repletion.</div><div class="rtt">⚠️ WRONG answer: 'D2 (ergocalciferol) is the inactive plant form and cannot raise vitamin D levels.' Both D2 and D3 are pro-hormones that must be hydroxylated twice; both work, though D3 is modestly more potent. Discriminator: the truly 'inactive until hydroxylated' point applies to BOTH — neither is active until the liver and kidney steps occur.</div></div><div class="rt"><div class="rtl">5. Liver 25-hydroxylase (CYP2R1)</div><div class="rte">The LIVER performs the first hydroxylation via 25-hydroxylase (CYP2R1), converting D3/D2 to 25(OH)D (calcidiol). This step is only loosely regulated — it largely tracks substrate availability — which is exactly why 25(OH)D faithfully reflects total body vitamin D stores and is the test you order. Severe liver disease can lower 25(OH)D.</div><div class="rtt">⚠️ WRONG answer: confusing the liver step with the activating step. The liver makes 25(OH)D (storage, the test); the KIDNEY makes 1,25-D (active, the regulated step). Discriminator: '25 = liver = the test'; '1,25 = kidney = the active hormone.' Don't blame liver disease for failure to ACTIVATE vitamin D — that's a kidney/CKD problem.</div></div><div class="rt"><div class="rtl">6. 25(OH)D storage form</div><div class="rte">25(OH)D (calcidiol) is the major circulating/storage form with a long half-life of 2–3 weeks, which is what makes it a stable, reliable index of vitamin D status (unlike 1,25-D, whose half-life is only ~4–6 hours). It circulates bound to vitamin D-binding protein. Because of the long half-life, repletion is monitored after ~3 months.</div><div class="rtt">⚠️ WRONG answer: '1,25-D, being the active form, is the best marker of stores.' 1,25-D has a SHORT half-life and is tightly regulated, so it is a poor status marker and is often normal/high in deficiency. Discriminator: stable + long half-life + reflects stores = 25(OH)D.</div></div><div class="rt"><div class="rtl">7. Drugs lower 25(OH)D</div><div class="rte">Hepatic enzyme inducers accelerate vitamin D catabolism via CYP3A4/CYP24-type pathways, lowering 25(OH)D: classic offenders are rifampin, phenytoin, phenobarbital, carbamazepine, and isoniazid. This is why patients on chronic antiepileptics or anti-TB therapy are at risk for drug-induced osteomalacia and need vitamin D supplementation/monitoring.</div><div class="rtt">⚠️ WRONG answer: 'a seizure patient with bone pain and low 25(OH)D has primary hyperparathyroidism.' Chronic phenytoin/phenobarbital induce vitamin D catabolism -&gt; deficiency/osteomalacia. Discriminator: drug-induced osteomalacia gives LOW Ca/normal-low with HIGH PTH and high ALP — not the HIGH calcium of primary hyperPTH.</div></div><div class="rt"><div class="rtl">8. Kidney 1-alpha-hydroxylase (CYP27B1)</div><div class="rte">The KIDNEY proximal tubule performs the second, ACTIVATING hydroxylation via 1-alpha-hydroxylase (CYP27B1), converting 25(OH)D to 1,25(OH)2D (calcitriol) — the rate-limiting, tightly regulated step and the active hormone. It is induced by PTH and hypophosphatemia and suppressed by FGF23 and high Ca/PO4. In CKD this step fails, causing low 1,25-D, hypocalcemia, and secondary hyperparathyroidism (renal osteodystrophy).</div><div class="rtt">⚠️ WRONG answer: 'CKD patients need plain cholecalciferol to fix their low calcium.' Plain D can't be activated without functional renal 1-alpha-hydroxylase — they need ACTIVE vitamin D (calcitriol/paricalcitol). Discriminator: the kidney = activation; renal failure = give the active form, not the precursor. Also note loss-of-function CYP27B1 = vitamin D-dependent rickets type 1 (low 1,25-D despite adequate 25-D).</div></div><div class="rt"><div class="rtl">9. PTH + low PO4 turn it ON</div><div class="rte">Two signals INDUCE renal 1-alpha-hydroxylase to make more active 1,25-D: rising PTH and falling serum phosphate (hypophosphatemia). This closes the loop — PTH not only mobilizes Ca from bone and reabsorbs it in the distal tubule but also boosts 1,25-D to raise intestinal Ca absorption. Conversely, high Ca, high phosphate, and FGF23 turn the enzyme OFF.</div><div class="rtt">⚠️ WRONG answer: 'PTH suppresses vitamin D activation.' PTH STIMULATES 1-alpha-hydroxylase (turns it on); FGF23 is the suppressor. Discriminator: ON switches = PTH + low phosphate; OFF switches = FGF23 + high Ca/PO4 + 1,25-D itself (negative feedback).</div></div><div class="rt"><div class="rtl">10. FGF23 suppresses 1,25-D</div><div class="rte">FGF23 (a phosphatonin from osteocytes, acting via Klotho co-receptor) is the body's anti-phosphate, anti-vitamin-D hormone: it makes the kidney WASTE phosphate (down-regulates NaPi cotransporters), SUPPRESSES 1-alpha-hydroxylase (CYP27B1), and INDUCES 24-hydroxylase (CYP24A1) — lowering 1,25-D. It is central to CKD-MBD (rises early in CKD) and to phosphate-wasting rickets (X-linked hypophosphatemic rickets from PHEX mutation, and tumor-induced osteomalacia).</div><div class="rtt">⚠️ WRONG answer: 'tumor-induced osteomalacia is caused by hypercalcemia and high vitamin D.' It is driven by tumoral FGF23 overproduction -&gt; renal phosphate wasting, LOW phosphate, and LOW/inappropriately-normal 1,25-D. Discriminator: FGF23 excess = low phosphate + low 1,25-D (look for a small mesenchymal tumor); PTH excess = high Ca + low phosphate but HIGH 1,25-D.</div></div><div class="rt"><div class="rtl">11. 24-hydroxylase inactivation</div><div class="rte">24-hydroxylase (CYP24A1) is the OFF switch that degrades both 25-D and 1,25-D into inactive water-soluble metabolites (e.g., calcitroic acid). It is induced by 1,25-D itself (feedback) and by FGF23, protecting against vitamin D excess. This is the catabolic counterweight to 1-alpha-hydroxylase.</div><div class="rtt">⚠️ WRONG answer: 'an infant with hypercalcemia, low PTH, and suppressed 24-hydroxylase activity just has too much dietary vitamin D.' Loss-of-function CYP24A1 mutations cause idiopathic INFANTILE HYPERCALCEMIA — the inactivating enzyme is broken, so vitamin D cannot be cleared. Discriminator: hypercalcemia + low PTH + low 24,25-D / high 25-D:24,25-D ratio = CYP24A1 defect.</div></div><div class="rt"><div class="rtl">12. Granulomatous extra 1,25-D</div><div class="rte">Activated macrophages within granulomas express their own CYP27B1 (1-alpha-hydroxylase) that is NOT subject to normal feedback (no suppression by high Ca or low PTH), so they overproduce 1,25-D. Seen in sarcoidosis, tuberculosis, other granulomatous infections, and some lymphomas, this causes hypercalcemia/hypercalciuria with a SUPPRESSED PTH and elevated 1,25-D. It is glucocorticoid-responsive (steroids shut off macrophage 1-alpha-hydroxylase).</div><div class="rtt">⚠️ WRONG answer: treating sarcoid hypercalcemia with vitamin D, or attributing it to primary hyperPTH. Granulomatous hypercalcemia has LOW PTH with HIGH 1,25-D and responds to GLUCOCORTICOIDS (also avoid sun/vitamin D). Discriminator: high 1,25-D + low PTH + suppressed = extrarenal granulomatous production; high PTH = primary hyperPTH.</div></div><div class="rt"><div class="rtl">13. Order 25(OH)D not 1,25-D</div><div class="rte">Summary of the road: STATUS is measured by 25(OH)D (liver product, long half-life, reflects stores); ACTIVITY is set by the kidney 1-alpha-hydroxylase, turned ON by PTH and low phosphate and OFF by FGF23 and 24-hydroxylase. The active hormone 1,25-D drives intestinal Ca/PO4 absorption. Order 1,25-D only for specific scenarios (granulomatous disease, hereditary/phosphate-wasting rickets, CYP24A1 defects).</div><div class="rtt">⚠️ WRONG answer: 'use 1,25-D to screen for deficiency.' This is the single most-tested vitamin D error — 1,25-D is short-lived, tightly regulated, and frequently normal/high in true deficiency. Discriminator: deficiency workup = 25(OH)D; the regulated active form is only diagnostically useful in the specific syndromes above.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pbone_chapter2.html" title="Parathyroid/Bone — Chapter 2: Resorption, Turnover Markers &amp; Antiresorptives">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pbone_malignancy.html" title="Parathyroid/Bone — Hypercalcemia of Malignancy (Marketplace)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

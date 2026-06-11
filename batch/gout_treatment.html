@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Gout/CPPD — Acute Flare Treatment &amp; Urate-Lowering Therapy</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>NSAIDs</b> — WRONG answer: prescribing an NSAID to a flare patient with CKD, active peptic ulcer, heart failure, or on anticoagulation. NSAIDs cause AKI, GI bleeding, and fluid retention. Discriminator: in CKD/HF/PUD/anticoagulated patients, switch to oral or intra-articular glucocorticoids (or IL-1 inhibitor) — not NSAIDs or full-dose colchicine.</li><li><b>Colchicine 1.2/0.6</b> — WRONG answer: giving standard-dose colchicine with a strong CYP3A4 or P-glycoprotein inhibitor (clarithromycin, ketoconazole, cyclosporine, verapamil, diltiazem) or in significant renal/hepatic impairment. This causes life-threatening colchicine toxicity. Discriminator: clarithromycin + colchicine is a classic lethal combo — reduce/hold colchicine; azithromycin is safer.</li><li><b>Glucocorticoids</b> — WRONG answer: injecting a joint with steroid (or labeling it gout) before excluding infection. Discriminator: never give intra-articular glucocorticoid until septic arthritis is ruled out by aspiration (Gram stain/culture) — steroid into a septic joint is catastrophic.</li><li><b>Skull = colchicine toxicity</b> — WRONG answer: managing colchicine overdose with hemodialysis. Colchicine is highly tissue-bound with a large volume of distribution, so dialysis does NOT remove it. Discriminator: care is supportive (the colchicine-specific Fab antibody is not generally available); prevention via dose limits is key.</li><li><b>DO NOT MIX acute+chronic</b> — WRONG answer: discontinuing the patient's allopurinol because they presented with an acute flare. Discriminator: stopping established ULT causes urate to swing and aggravates the flare — continue it and add NSAID/colchicine/steroid for the acute attack.</li><li><b>HLA-B*5801</b> — WRONG answer: switching a B*5801-positive patient to a different antigout drug that is also a xanthine oxidase inhibitor and assuming it's risky too. Discriminator: febuxostat does NOT cross-react with HLA-B*5801 and needs no screening — it is the appropriate alternative when allopurinol is contraindicated by genotype.</li><li><b>Allopurinol knight</b> — WRONG answer: continuing full-dose allopurinol in a patient on azathioprine/6-mercaptopurine. Allopurinol blocks xanthine oxidase, which normally degrades these thiopurines, causing dangerous accumulation and profound myelosuppression. Discriminator: avoid the combo, or reduce thiopurine to ~25% with close CBC monitoring; consider switching the immunosuppressant.</li><li><b>Start low / titrate</b> — WRONG answer: stopping uptitration once the patient is asymptomatic even though urate is still &gt;6. Discriminator: gout is managed treat-to-target; sub-target urate leaves crystal load behind and recurrent flares — keep titrating to &lt;6 mg/dL regardless of symptom status.</li><li><b>Febuxostat king</b> — WRONG answer: choosing febuxostat first-line in a patient with established cardiovascular disease. The CARES trial led to an FDA boxed warning for increased cardiovascular and all-cause mortality vs allopurinol. Discriminator: prefer allopurinol first-line; reserve febuxostat for allopurinol-intolerant/contraindicated patients, and use caution in CVD.</li><li><b>Probenecid / kidney stone</b> — WRONG answer: starting probenecid in a patient with urate kidney stones, urate overproduction (24-hr urine urate &gt;800 mg), or CKD (GFR &lt;30–50). It dumps urate into urine and precipitates stones, and is ineffective in renal impairment. Discriminator: in stone-formers/overproducers use a xanthine oxidase inhibitor (allopurinol), not a uricosuric.</li><li><b>Flare prophylaxis</b> — WRONG answer: skipping prophylaxis because the patient feels well at ULT start. Discriminator: early flares are most common in the first months of ULT and are the leading cause of patients abandoning therapy — always co-prescribe prophylaxis when starting/up-titrating ULT.</li><li><b>ULT indications</b> — WRONG answer: starting lifelong ULT after a first, single, uncomplicated flare in an otherwise healthy patient. Discriminator: a one-off flare without tophi/stones/frequent recurrence does not by itself mandate ULT — and asymptomatic hyperuricemia is never an indication.</li><li><b>Rule out / 3-6 mo</b> — WRONG answer: abruptly stopping a needed thiazide solely to treat gout. Discriminator: substitute rather than simply discontinue (e.g., losartan has a mild uricosuric effect, fenofibrate also lowers urate) and weigh the original indication (HTN/edema) — don't compromise BP control for a modest urate effect.</li><li><b>Pegloticase cauldron</b> — WRONG answer: continuing pegloticase when pre-infusion serum urate rises back above 6 mg/dL, or giving it in G6PD deficiency. A rising urate signals anti-drug antibodies and predicts severe infusion/anaphylactic reactions. Discriminator: monitor pre-dose urate and STOP if it climbs; screen and avoid in G6PD deficiency (hemolysis/methemoglobinemia from H2O2).</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. NSAIDs</div><div class="rte">Acute flare first-line in patients without contraindications: full-dose NSAIDs (e.g., indomethacin 50 mg TID, naproxen 500 mg BID) continued until 1–2 days after symptoms resolve, typically 5–7 days. Earlier initiation (within 24h) means faster control. Any NSAID works — choose by tolerability, not potency.</div><div class="rtt">⚠️ WRONG answer: prescribing an NSAID to a flare patient with CKD, active peptic ulcer, heart failure, or on anticoagulation. NSAIDs cause AKI, GI bleeding, and fluid retention. Discriminator: in CKD/HF/PUD/anticoagulated patients, switch to oral or intra-articular glucocorticoids (or IL-1 inhibitor) — not NSAIDs or full-dose colchicine.</div></div><div class="rt"><div class="rtl">2. Colchicine 1.2/0.6</div><div class="rte">Colchicine inhibits microtubule polymerization, blocking neutrophil chemotaxis and NLRP3 inflammasome activation. Acute-flare dosing is LOW-DOSE: 1.2 mg at onset, then 0.6 mg one hour later (1.8 mg total day 1), far better tolerated than the old high-dose 'until diarrhea' regimen. Most effective when started within 24 hours of flare onset.</div><div class="rtt">⚠️ WRONG answer: giving standard-dose colchicine with a strong CYP3A4 or P-glycoprotein inhibitor (clarithromycin, ketoconazole, cyclosporine, verapamil, diltiazem) or in significant renal/hepatic impairment. This causes life-threatening colchicine toxicity. Discriminator: clarithromycin + colchicine is a classic lethal combo — reduce/hold colchicine; azithromycin is safer.</div></div><div class="rt"><div class="rtl">3. Glucocorticoids</div><div class="rte">Glucocorticoids are first-line when NSAIDs and colchicine are contraindicated. Options: oral prednisone ~0.5 mg/kg/day for 5–10 days with taper; intra-articular triamcinolone for mono/oligoarticular flares; IM/IV or ACTH if NPO. Equally effective to NSAIDs for acute gout. Preferred agent in CKD and in the elderly.</div><div class="rtt">⚠️ WRONG answer: injecting a joint with steroid (or labeling it gout) before excluding infection. Discriminator: never give intra-articular glucocorticoid until septic arthritis is ruled out by aspiration (Gram stain/culture) — steroid into a septic joint is catastrophic.</div></div><div class="rt"><div class="rtl">4. Skull = colchicine toxicity</div><div class="rte">Colchicine has a narrow therapeutic index. Toxicity progresses GI first (nausea, vomiting, profuse diarrhea), then multi-organ: bone marrow suppression (pancytopenia), neuromyopathy (proximal weakness, elevated CK), and in overdose multi-organ failure. Risk rises with renal/hepatic impairment and CYP3A4/P-gp inhibitors.</div><div class="rtt">⚠️ WRONG answer: managing colchicine overdose with hemodialysis. Colchicine is highly tissue-bound with a large volume of distribution, so dialysis does NOT remove it. Discriminator: care is supportive (the colchicine-specific Fab antibody is not generally available); prevention via dose limits is key.</div></div><div class="rt"><div class="rtl">5. DO NOT MIX acute+chronic</div><div class="rte">Do NOT START urate-lowering therapy during an acute flare — abrupt urate shifts mobilize crystals and prolong/worsen the attack. Conversely, if a patient is ALREADY on stable ULT, do NOT STOP it during a flare; treat the flare on top of it. Start ULT ~2 weeks after the flare settles (or, per newer ACR guidance, may start during a flare only if anti-inflammatory prophylaxis is co-administered).</div><div class="rtt">⚠️ WRONG answer: discontinuing the patient's allopurinol because they presented with an acute flare. Discriminator: stopping established ULT causes urate to swing and aggravates the flare — continue it and add NSAID/colchicine/steroid for the acute attack.</div></div><div class="rt"><div class="rtl">6. HLA-B*5801</div><div class="rte">HLA-B*5801 strongly predicts allopurinol hypersensitivity syndrome (SJS/TEN, DRESS). Screen BEFORE starting allopurinol in high-prevalence groups: Han Chinese, Thai, Korean (with CKD), and African ancestry. A positive test means use an alternative (febuxostat) instead.</div><div class="rtt">⚠️ WRONG answer: switching a B*5801-positive patient to a different antigout drug that is also a xanthine oxidase inhibitor and assuming it's risky too. Discriminator: febuxostat does NOT cross-react with HLA-B*5801 and needs no screening — it is the appropriate alternative when allopurinol is contraindicated by genotype.</div></div><div class="rt"><div class="rtl">7. Allopurinol knight</div><div class="rte">Allopurinol is a xanthine oxidase inhibitor and the FIRST-LINE urate-lowering agent (also cheap, once-daily, safe in stones/overproducers). Start LOW — 100 mg/day, or 50 mg/day in CKD — and titrate every 2–4 weeks to a serum urate &lt;6 mg/dL (max ~800 mg/day). Low-start reduces both early flares and hypersensitivity.</div><div class="rtt">⚠️ WRONG answer: continuing full-dose allopurinol in a patient on azathioprine/6-mercaptopurine. Allopurinol blocks xanthine oxidase, which normally degrades these thiopurines, causing dangerous accumulation and profound myelosuppression. Discriminator: avoid the combo, or reduce thiopurine to ~25% with close CBC monitoring; consider switching the immunosuppressant.</div></div><div class="rt"><div class="rtl">8. Start low / titrate</div><div class="rte">The mantra is 'start low, go slow, treat to target.' Dose by serum urate goal (&lt;6 mg/dL; &lt;5 for tophi) — NOT by symptom resolution. Recheck urate every 2–4 weeks during titration. Co-prescribe anti-inflammatory prophylaxis during the up-titration window.</div><div class="rtt">⚠️ WRONG answer: stopping uptitration once the patient is asymptomatic even though urate is still &gt;6. Discriminator: gout is managed treat-to-target; sub-target urate leaves crystal load behind and recurrent flares — keep titrating to &lt;6 mg/dL regardless of symptom status.</div></div><div class="rt"><div class="rtl">9. Febuxostat king</div><div class="rte">Febuxostat is a non-purine xanthine oxidase inhibitor used when allopurinol fails, is not tolerated, or is contraindicated (e.g., HLA-B*5801 positive). No HLA screening required and usable in mild–moderate CKD without major dose change.</div><div class="rtt">⚠️ WRONG answer: choosing febuxostat first-line in a patient with established cardiovascular disease. The CARES trial led to an FDA boxed warning for increased cardiovascular and all-cause mortality vs allopurinol. Discriminator: prefer allopurinol first-line; reserve febuxostat for allopurinol-intolerant/contraindicated patients, and use caution in CVD.</div></div><div class="rt"><div class="rtl">10. Probenecid / kidney stone</div><div class="rte">Probenecid is a uricosuric that blocks URAT1, increasing renal urate excretion. It is an add-on/alternative when xanthine oxidase inhibitors are insufficient or not tolerated, and works best in documented under-excretors with good renal function. Advise high fluid intake +/- urine alkalinization to reduce stone risk.</div><div class="rtt">⚠️ WRONG answer: starting probenecid in a patient with urate kidney stones, urate overproduction (24-hr urine urate &gt;800 mg), or CKD (GFR &lt;30–50). It dumps urate into urine and precipitates stones, and is ineffective in renal impairment. Discriminator: in stone-formers/overproducers use a xanthine oxidase inhibitor (allopurinol), not a uricosuric.</div></div><div class="rt"><div class="rtl">11. Flare prophylaxis</div><div class="rte">When initiating ANY urate-lowering therapy, give anti-inflammatory prophylaxis — low-dose colchicine 0.6 mg daily/BID (or low-dose NSAID, or low-dose prednisone if both contraindicated) — for at least 3–6 months to prevent the mobilization flares triggered by falling urate.</div><div class="rtt">⚠️ WRONG answer: skipping prophylaxis because the patient feels well at ULT start. Discriminator: early flares are most common in the first months of ULT and are the leading cause of patients abandoning therapy — always co-prescribe prophylaxis when starting/up-titrating ULT.</div></div><div class="rt"><div class="rtl">12. ULT indications</div><div class="rte">Indications to START urate-lowering therapy: ≥2 flares per year, any tophi, radiographic joint damage from gout, urate nephrolithiasis, or CKD stage ≥3 with gout. (Some guidelines also consider it after a single flare with very high urate or young age.)</div><div class="rtt">⚠️ WRONG answer: starting lifelong ULT after a first, single, uncomplicated flare in an otherwise healthy patient. Discriminator: a one-off flare without tophi/stones/frequent recurrence does not by itself mandate ULT — and asymptomatic hyperuricemia is never an indication.</div></div><div class="rt"><div class="rtl">13. Rule out / 3-6 mo</div><div class="rte">Optimize reversible/secondary contributors when starting ULT: stop or swap urate-raising drugs where possible (thiazide/loop diuretics → consider losartan or amlodipine which are mildly uricosuric/urate-neutral; low-fat dairy and weight loss help), and continue flare prophylaxis for 3–6 months. Always exclude septic arthritis before attributing a hot joint to gout.</div><div class="rtt">⚠️ WRONG answer: abruptly stopping a needed thiazide solely to treat gout. Discriminator: substitute rather than simply discontinue (e.g., losartan has a mild uricosuric effect, fenofibrate also lowers urate) and weigh the original indication (HTN/edema) — don't compromise BP control for a modest urate effect.</div></div><div class="rt"><div class="rtl">14. Pegloticase cauldron</div><div class="rte">Pegloticase is pegylated recombinant uricase given IV every 2 weeks for severe REFRACTORY tophaceous gout when oral ULT has failed; it rapidly dissolves tophi by converting urate to soluble allantoin.</div><div class="rtt">⚠️ WRONG answer: continuing pegloticase when pre-infusion serum urate rises back above 6 mg/dL, or giving it in G6PD deficiency. A rising urate signals anti-drug antibodies and predicts severe infusion/anaphylactic reactions. Discriminator: monitor pre-dose urate and STOP if it climbs; screen and avoid in G6PD deficiency (hemolysis/methemoglobinemia from H2O2).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="spa_treatment.html" title="Spondyloarthritis — Treatment">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="gout_cppd.html" title="Gout/CPPD — CPPD (Pseudogout), Calcium Apatite &amp; Oxalate Crystal Diseases">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

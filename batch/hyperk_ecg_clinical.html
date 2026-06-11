@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyperkalemia — clinical features &amp; ECG</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Cardiac emergency</b> — WRONG to wait for a confirmatory repeat K+ before acting when the ECG already shows peaked T waves or wider changes — and equally WRONG to be reassured by a NORMAL ECG in CKD/ESRD, where the myocardium is chronically adapted and the ECG can stay normal even at K+ &gt; 7. The discriminator: treat based on ECG plus clinical context, never on a single number in isolation.</li><li><b>Peaked T (5.5-6.5)</b> — WRONG to call any tall T wave hyperkalemia — hyperacute T waves of early STEMI are broad-based and asymmetric, whereas hyperkalemic T waves are narrow, symmetric, and tented. Discriminator: check the K+ and the base of the T wave; STEMI T waves come with reciprocal ST changes and a clinical ischemic story.</li><li><b>PR prolong / flat P (6.5-7.5)</b> — WRONG to interpret PR prolongation here as primary first-degree AV block needing only observation. Discriminator: in the setting of a high K+, conduction slowing is the metabolic emergency — fix the potassium, and stabilize with calcium; do not simply 'monitor the block.'</li><li><b>Wide QRS (7-8)</b> — WRONG to treat a wide-complex rhythm here as a primary bundle branch block or VT and reach for antiarrhythmics. Discriminator: absent P waves + widening QRS + known/likely hyperkalemia = give calcium first; lidocaine/amiodarone will not fix the membrane and can worsen the situation.</li><li><b>Sine wave (&gt;8)</b> — WRONG to prioritize insulin/dextrose or dialysis access before giving calcium when a sine wave is present. Discriminator: calcium is the only agent that acts in 1-3 min to stabilize the membrane; shift and removal therapies are too slow to prevent imminent arrest.</li><li><b>VF / asystole</b> — WRONG to run a standard ACLS arrest algorithm without empiric calcium when hyperkalemia is suspected (dialysis patient, crush injury, missed dialysis). Discriminator: in arrest, do not wait for a lab value — give IV calcium and treat the reversible cause concurrently with standard ACLS.</li><li><b>Resting membrane up</b> — WRONG to assume that a 'less negative' resting potential means the heart simply fires more easily and is therefore more robust. Discriminator: persistent partial depolarization holds Na+ channels in the inactivated state, so net conduction SLOWS — the dominant danger is failed conduction, not hyperexcitability.</li><li><b>Na channel inactivation</b> — WRONG to think calcium lowers serum K+ to fix conduction. Discriminator: calcium acts purely electrophysiologically — it shifts threshold to restore excitability/conduction within minutes, while serum K+ stays elevated until shift/removal therapy works.</li><li><b>IV calcium stabilizes</b> — WRONG ANSWER on boards: 'calcium gluconate lowers potassium.' Calcium does NOT lower K+ at all — it only stabilizes the myocardium (buys time). Discriminator: pair calcium (membrane protection) with insulin+glucose / albuterol (shift) and dialysis / kayexalate-patiromer / loop diuretics (removal) — these three roles are distinct and tested.</li><li><b>Onset 1-3 min</b> — WRONG to give calcium, see the ECG improve, and then stop active management. Discriminator: the short duration means K+ will re-injure the membrane once calcium wears off unless shift and removal are underway — calcium buys a 30-60 minute window, not a cure.</li><li><b>Pseudo-Brugada</b> — WRONG ANSWER: diagnosing true Brugada syndrome and referring for an ICD based on this ECG. Discriminator: true Brugada is a genetic SCN5A Na-channel disease that persists regardless of electrolytes; pseudo-Brugada normalizes once K+ is corrected — always check and treat the K+ first.</li><li><b>Ascending paralysis</b> — WRONG to anchor on Guillain-Barre for an ascending paralysis without checking the potassium. Discriminator: GBS shows areflexia with albuminocytologic dissociation on LP, while hyperkalemic paralysis has a high serum K+ that resolves with treatment — always send electrolytes in acute ascending weakness.</li><li><b>Familial HyperKPP</b> — WRONG to confuse this with HYPOkalemic periodic paralysis (CACNA1S/SCN4A), which is triggered by carbohydrate loads and insulin and is treated by giving potassium. Discriminator: in HyperKPP attacks K+ rises and carbohydrates help; in HypoKPP attacks K+ falls and carbohydrates trigger — the trigger and direction of K+ change distinguish them.</li><li><b>NAGMA backroom</b> — WRONG to assume metabolic acidosis with hyperkalemia is always a high-anion-gap process like DKA. Discriminator: hyperkalemia-associated Type 4 RTA is a NORMAL-anion-gap (hyperchloremic) acidosis from hypoaldosteronism — calculate the anion gap and check aldosterone status to separate it from gap acidoses.</li><li><b>Treat-now threshold</b> — WRONG to defer treatment until the patient becomes symptomatic or until a higher K+ returns. Discriminator: do not wait for symptoms — K+ &gt;= 6.5 OR any ECG change is the action line; symptoms (weakness, arrhythmia) are late and may be the arrest itself.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Cardiac emergency</div><div class="rte">Hyperkalemia is a cardiac emergency because elevated extracellular K+ destabilizes the cardiac resting membrane potential, risking lethal arrhythmia. The ECG — not the absolute number — drives urgency: any ECG change or K+ &gt;= 6.5 mandates immediate IV calcium. Disposition hinges on rate of rise and ECG, so get a STAT ECG and place the patient on a monitor first.</div><div class="rtt">⚠️ WRONG to wait for a confirmatory repeat K+ before acting when the ECG already shows peaked T waves or wider changes — and equally WRONG to be reassured by a NORMAL ECG in CKD/ESRD, where the myocardium is chronically adapted and the ECG can stay normal even at K+ &gt; 7. The discriminator: treat based on ECG plus clinical context, never on a single number in isolation.</div></div><div class="rt"><div class="rtl">2. Peaked T (5.5-6.5)</div><div class="rte">The earliest ECG change is tall, peaked/tented, narrow-based T waves, typically appearing at K+ 5.5-6.5 mM. They reflect accelerated repolarization from increased K+ conductance. This is the cue to start treatment even before higher-grade changes appear.</div><div class="rtt">⚠️ WRONG to call any tall T wave hyperkalemia — hyperacute T waves of early STEMI are broad-based and asymmetric, whereas hyperkalemic T waves are narrow, symmetric, and tented. Discriminator: check the K+ and the base of the T wave; STEMI T waves come with reciprocal ST changes and a clinical ischemic story.</div></div><div class="rt"><div class="rtl">3. PR prolong / flat P (6.5-7.5)</div><div class="rte">At K+ ~6.5-7.5 mM the PR interval prolongs and the P wave flattens as atrial myocardium and AV conduction slow. This marks progression from 'early' to 'moderate-severe' hyperkalemia and increased urgency. IV calcium is indicated at this stage.</div><div class="rtt">⚠️ WRONG to interpret PR prolongation here as primary first-degree AV block needing only observation. Discriminator: in the setting of a high K+, conduction slowing is the metabolic emergency — fix the potassium, and stabilize with calcium; do not simply 'monitor the block.'</div></div><div class="rt"><div class="rtl">4. Wide QRS (7-8)</div><div class="rte">At K+ ~7-8 mM the P wave disappears entirely (sinoventricular rhythm) and the QRS widens from progressive Na+ channel inactivation and slowed intraventricular conduction. A wide QRS in this setting is pre-arrhythmic — VF/asystole may be imminent. Give IV calcium immediately and prepare for repeat dosing.</div><div class="rtt">⚠️ WRONG to treat a wide-complex rhythm here as a primary bundle branch block or VT and reach for antiarrhythmics. Discriminator: absent P waves + widening QRS + known/likely hyperkalemia = give calcium first; lidocaine/amiodarone will not fix the membrane and can worsen the situation.</div></div><div class="rt"><div class="rtl">5. Sine wave (&gt;8)</div><div class="rte">At K+ &gt; 8 mM the widened QRS merges with the T wave into a sinusoidal 'sine wave' pattern — the pre-terminal rhythm. This demands IV calcium NOW (calcium gluconate 1-2 g, or chloride via central line) plus simultaneous K+-lowering therapy. Without immediate calcium, this degenerates to VF or asystole within minutes.</div><div class="rtt">⚠️ WRONG to prioritize insulin/dextrose or dialysis access before giving calcium when a sine wave is present. Discriminator: calcium is the only agent that acts in 1-3 min to stabilize the membrane; shift and removal therapies are too slow to prevent imminent arrest.</div></div><div class="rt"><div class="rtl">6. VF / asystole</div><div class="rte">The terminal rhythm of untreated hyperkalemia is ventricular fibrillation or asystole. In cardiac arrest with suspected/known hyperkalemia, give empiric IV calcium plus high-dose shift therapy during CPR. Hyperkalemia is one of the reversible 'H's of arrest and must be treated empirically.</div><div class="rtt">⚠️ WRONG to run a standard ACLS arrest algorithm without empiric calcium when hyperkalemia is suspected (dialysis patient, crush injury, missed dialysis). Discriminator: in arrest, do not wait for a lab value — give IV calcium and treat the reversible cause concurrently with standard ACLS.</div></div><div class="rt"><div class="rtl">7. Resting membrane up</div><div class="rte">High extracellular K+ reduces the K+ gradient across the membrane, raising (making less negative) the resting membrane potential toward threshold per the Nernst equation. Initially this makes cells MORE excitable, but sustained depolarization then inactivates voltage-gated Na+ channels. This biphasic effect explains both early excitability and later conduction failure.</div><div class="rtt">⚠️ WRONG to assume that a 'less negative' resting potential means the heart simply fires more easily and is therefore more robust. Discriminator: persistent partial depolarization holds Na+ channels in the inactivated state, so net conduction SLOWS — the dominant danger is failed conduction, not hyperexcitability.</div></div><div class="rt"><div class="rtl">8. Na channel inactivation</div><div class="rte">Sustained membrane depolarization locks voltage-gated Na+ channels in their inactivated state, reducing phase-0 upstroke velocity and slowing conduction. This is the mechanistic basis for PR prolongation, P-wave loss, and QRS widening. IV calcium works by raising the threshold potential, restoring the gap between resting and threshold and re-enabling Na+ channel availability.</div><div class="rtt">⚠️ WRONG to think calcium lowers serum K+ to fix conduction. Discriminator: calcium acts purely electrophysiologically — it shifts threshold to restore excitability/conduction within minutes, while serum K+ stays elevated until shift/removal therapy works.</div></div><div class="rt"><div class="rtl">9. IV calcium stabilizes</div><div class="rte">IV calcium is the first drug given in any hyperkalemic emergency: calcium gluconate 1-2 g (10 mL of 10%) IV, or calcium chloride via central access (3x the elemental calcium, more sclerosing). It antagonizes the membrane effects of K+ by raising threshold potential, restoring the resting-to-threshold gap. Onset is 1-3 minutes; redose if ECG changes persist after 5 minutes.</div><div class="rtt">⚠️ WRONG ANSWER on boards: 'calcium gluconate lowers potassium.' Calcium does NOT lower K+ at all — it only stabilizes the myocardium (buys time). Discriminator: pair calcium (membrane protection) with insulin+glucose / albuterol (shift) and dialysis / kayexalate-patiromer / loop diuretics (removal) — these three roles are distinct and tested.</div></div><div class="rt"><div class="rtl">10. Onset 1-3 min</div><div class="rte">Calcium's protective effect begins in 1-3 minutes and lasts only ~30-60 minutes, so it must be repeated if ECG changes recur and bridged with definitive K+-lowering therapy. Because it is transient, calcium alone never constitutes complete treatment. Always co-administer shift agents (insulin/glucose, albuterol) and arrange removal (dialysis, GI binders, diuresis).</div><div class="rtt">⚠️ WRONG to give calcium, see the ECG improve, and then stop active management. Discriminator: the short duration means K+ will re-injure the membrane once calcium wears off unless shift and removal are underway — calcium buys a 30-60 minute window, not a cure.</div></div><div class="rt"><div class="rtl">11. Pseudo-Brugada</div><div class="rte">Severe hyperkalemia can produce a coved ST-elevation pattern in V1-V2 that mimics Brugada — termed pseudo-Brugada or a Brugada phenocopy. Correcting the potassium fully resolves the ECG pattern. Recognizing this prevents misdiagnosis as the inherited channelopathy.</div><div class="rtt">⚠️ WRONG ANSWER: diagnosing true Brugada syndrome and referring for an ICD based on this ECG. Discriminator: true Brugada is a genetic SCN5A Na-channel disease that persists regardless of electrolytes; pseudo-Brugada normalizes once K+ is corrected — always check and treat the K+ first.</div></div><div class="rt"><div class="rtl">12. Ascending paralysis</div><div class="rte">Beyond the heart, hyperkalemia can cause secondary hyperkalemic paralysis: ascending muscle weakness from sustained depolarization blocking skeletal Na+ channels. It typically begins in the legs and ascends, sparing cranial nerves and sensation. Weakness can progress to flaccid paralysis and respiratory compromise.</div><div class="rtt">⚠️ WRONG to anchor on Guillain-Barre for an ascending paralysis without checking the potassium. Discriminator: GBS shows areflexia with albuminocytologic dissociation on LP, while hyperkalemic paralysis has a high serum K+ that resolves with treatment — always send electrolytes in acute ascending weakness.</div></div><div class="rt"><div class="rtl">13. Familial HyperKPP</div><div class="rte">Familial hyperkalemic periodic paralysis is an autosomal dominant SCN4A skeletal Na-channel mutation causing episodic weakness triggered by rest after exercise, potassium-rich meals, or cold. Attacks are short (minutes to hours) and may be aborted with carbohydrate/mild exercise. Serum K+ rises during attacks but may be only mildly elevated or normal.</div><div class="rtt">⚠️ WRONG to confuse this with HYPOkalemic periodic paralysis (CACNA1S/SCN4A), which is triggered by carbohydrate loads and insulin and is treated by giving potassium. Discriminator: in HyperKPP attacks K+ rises and carbohydrates help; in HypoKPP attacks K+ falls and carbohydrates trigger — the trigger and direction of K+ change distinguish them.</div></div><div class="rt"><div class="rtl">14. NAGMA backroom</div><div class="rte">Hyperkalemia and acidosis are linked: in the distal tubule, K+ secretion competes with H+ secretion, so high K+ impairs acid excretion and can produce a normal-anion-gap metabolic acidosis (classically Type 4 RTA). Hyperkalemia also suppresses renal ammoniagenesis, blunting acid excretion further. This bidirectional relationship is high-yield.</div><div class="rtt">⚠️ WRONG to assume metabolic acidosis with hyperkalemia is always a high-anion-gap process like DKA. Discriminator: hyperkalemia-associated Type 4 RTA is a NORMAL-anion-gap (hyperchloremic) acidosis from hypoaldosteronism — calculate the anion gap and check aldosterone status to separate it from gap acidoses.</div></div><div class="rt"><div class="rtl">15. Treat-now threshold</div><div class="rte">Definitive treat-now triggers: serum K+ &gt;= 6.5 mM OR ANY ECG change at any K+ level. Treatment proceeds in three parallel arms — stabilize (IV calcium), shift (insulin 10 units + 25 g dextrose, albuterol 10-20 mg neb), and remove (dialysis for refractory/ESRD, loop diuretics if making urine, GI binders patiromer/sodium zirconium). Mnemonic 'C BIG K Drop': Calcium, Bicarb (if acidotic), Insulin/Glucose, Kayexalate/binders, Diuretics/Dialysis.</div><div class="rtt">⚠️ WRONG to defer treatment until the patient becomes symptomatic or until a higher K+ returns. Discriminator: do not wait for symptoms — K+ &gt;= 6.5 OR any ECG change is the action line; symptoms (weakness, arrhythmia) are late and may be the arrest itself.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperk_rta4.html" title="Hyperkalemia — Type 4 RTA (hyporeninemic hypoaldosteronism)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperk_diagnosis.html" title="Hyperkalemia — diagnosis (staircase algorithm)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

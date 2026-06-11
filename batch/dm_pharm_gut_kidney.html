@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DM — Scene 2 — Diabetes Pharmacology: The Gut-Kidney Plumbing</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>GLP-1 / GIP incretin jar</b> — Wrong answer: 'GLP-1 agonists cause weight gain like sulfonylureas and insulin.' Discriminator — GLP-1 RAs/tirzepatide produce weight loss (a key class advantage); the weight-GAINING diabetes drugs are sulfonylureas, TZDs, and insulin.</li><li><b>DPP-4 inhibitor</b> — Wrong answer: 'add a DPP-4 inhibitor to a patient already on a GLP-1 receptor agonist.' Discriminator — both act on the incretin axis; combining a DPP-4 inhibitor with a GLP-1 RA is redundant (no added benefit) and not recommended. Choose one incretin-based agent.</li><li><b>GLP-1 angioedema</b> — Wrong answer: 'angioedema after starting therapy is just an injection-site reaction — continue the drug.' Discriminator — angioedema is a systemic hypersensitivity reaction that warrants stopping the agent, distinct from a benign local injection-site reaction.</li><li><b>GLP-1 GI / pancreatitis &amp; MTC</b> — Wrong answer: 'prescribe a GLP-1 agonist to an obese diabetic with a family history of medullary thyroid carcinoma.' Discriminator — personal or family MTC/MEN2 history is an absolute contraindication to GLP-1 RAs and tirzepatide (not to DPP-4 inhibitors); pick a different class.</li><li><b>Joints (DPP-4)</b> — Wrong answer: 'new severe polyarthralgia on a gliptin must be new inflammatory arthritis — work it up and continue the drug.' Discriminator — DPP-4 inhibitors are a recognized cause of severe arthralgia that resolves on discontinuation; stop the gliptin before an extensive rheumatologic workup.</li><li><b>Linagliptin safe in renal disease</b> — Wrong answer: 'use full-dose sitagliptin in a patient with eGFR 20 because all gliptins are renally safe.' Discriminator — only linagliptin needs no renal adjustment; the renally cleared gliptins require dose reduction in CKD to avoid accumulation.</li><li><b>Alpha-glucosidase inhibitor soldier</b> — Wrong answer: 'treat hypoglycemia in a patient on acarbose with table sugar (sucrose).' Discriminator — acarbose blocks sucrose hydrolysis, so sucrose won't raise glucose; use pure glucose (dextrose) tablets/gel instead.</li><li><b>SGLT2 inhibitor plumber</b> — Wrong answer: 'an SGLT2 inhibitor will cause hypoglycemia like a sulfonylurea.' Discriminator — SGLT2 inhibitors act independently of insulin secretion, so monotherapy rarely causes hypoglycemia; the secretagogues (sulfonylureas, meglitinides) and insulin are the hypoglycemia culprits.</li><li><b>SGLT2 heart failure / CKD benefit</b> — Wrong answer: 'pick a DPP-4 inhibitor (or sulfonylurea) for glycemic control in a diabetic with heart failure and CKD.' Discriminator — when HF or CKD is present, choose the agent with proven cardiorenal benefit (SGLT2 inhibitor); DPP-4 inhibitors lack renal/HF outcome benefit (and saxagliptin can worsen HF).</li><li><b>Euglycemic DKA</b> — Wrong answer: 'this acidotic SGLT2-inhibitor patient can't be in DKA because the glucose is only 180.' Discriminator — SGLT2-associated DKA is euglycemic; a near-normal glucose does NOT exclude DKA. Measure ketones and the anion gap.</li><li><b>Sick-day / hold rule</b> — Wrong answer: 'continue the SGLT2 inhibitor through the perioperative fasting period to keep glucose controlled.' Discriminator — perioperative fasting plus SGLT2 inhibition is a classic euglycemic-DKA trigger; the drug must be held before surgery, not continued.</li><li><b>Fournier gangrene / genital infection</b> — Wrong answer: 'severe perineal pain and erythema in an SGLT2-treated patient is just a routine yeast infection — give topical antifungal.' Discriminator — rapidly progressive perineal pain with systemic toxicity suggests Fournier gangrene, a surgical emergency requiring urgent debridement, not outpatient antifungal.</li><li><b>SGLT2 not in T1DM</b> — Wrong answer: 'add an SGLT2 inhibitor to a T1DM patient to reduce insulin needs and aid weight loss.' Discriminator — in T1DM the DKA risk from SGLT2 inhibition is unacceptably high; this is the wrong class for T1DM.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. GLP-1 / GIP incretin jar</div><div class="rte">GLP-1 receptor agonists (the '-tides': liraglutide, semaglutide, dulaglutide, exenatide) and the dual GIP/GLP-1 agonist tirzepatide augment glucose-dependent insulin secretion, suppress glucagon, slow gastric emptying, and increase satiety. The result is potent A1c lowering (~1-2%) with marked weight LOSS and low intrinsic hypoglycemia risk. GLP-1 RAs with CV-outcome data (semaglutide, dulaglutide, liraglutide) also reduce atherosclerotic MACE.</div><div class="rtt">⚠️ Wrong answer: 'GLP-1 agonists cause weight gain like sulfonylureas and insulin.' Discriminator — GLP-1 RAs/tirzepatide produce weight loss (a key class advantage); the weight-GAINING diabetes drugs are sulfonylureas, TZDs, and insulin.</div></div><div class="rt"><div class="rtl">2. DPP-4 inhibitor</div><div class="rte">DPP-4 inhibitors (the '-gliptins': sitagliptin, saxagliptin, linagliptin, alogliptin) block degradation of endogenous incretins (GLP-1/GIP), raising their levels. They are oral, weight-NEUTRAL, modest A1c-lowering (~0.5-0.8%), and carry low hypoglycemia risk. Saxagliptin/alogliptin are associated with increased heart-failure hospitalization, so prefer other gliptins in HF patients.</div><div class="rtt">⚠️ Wrong answer: 'add a DPP-4 inhibitor to a patient already on a GLP-1 receptor agonist.' Discriminator — both act on the incretin axis; combining a DPP-4 inhibitor with a GLP-1 RA is redundant (no added benefit) and not recommended. Choose one incretin-based agent.</div></div><div class="rt"><div class="rtl">3. GLP-1 angioedema</div><div class="rte">Incretin therapies can rarely cause hypersensitivity reactions including angioedema and anaphylaxis. Discontinue the drug if a serious hypersensitivity reaction occurs and treat supportively; do not rechallenge.</div><div class="rtt">⚠️ Wrong answer: 'angioedema after starting therapy is just an injection-site reaction — continue the drug.' Discriminator — angioedema is a systemic hypersensitivity reaction that warrants stopping the agent, distinct from a benign local injection-site reaction.</div></div><div class="rt"><div class="rtl">4. GLP-1 GI / pancreatitis &amp; MTC</div><div class="rte">The dominant GLP-1 RA side effects are GI (nausea, vomiting, diarrhea) from slowed gastric emptying — usually transient with slow titration. Class warnings: pancreatitis (stop for severe persistent abdominal pain) and a boxed contraindication with personal/family history of medullary thyroid carcinoma (MTC) or MEN2. Also avoid in established gastroparesis.</div><div class="rtt">⚠️ Wrong answer: 'prescribe a GLP-1 agonist to an obese diabetic with a family history of medullary thyroid carcinoma.' Discriminator — personal or family MTC/MEN2 history is an absolute contraindication to GLP-1 RAs and tirzepatide (not to DPP-4 inhibitors); pick a different class.</div></div><div class="rt"><div class="rtl">5. Joints (DPP-4)</div><div class="rte">DPP-4 inhibitors can cause severe, sometimes disabling arthralgias (a recognized class adverse effect) and, rarely, acute pancreatitis. If a patient develops severe joint pain after starting a gliptin, consider the drug as the cause and discontinue.</div><div class="rtt">⚠️ Wrong answer: 'new severe polyarthralgia on a gliptin must be new inflammatory arthritis — work it up and continue the drug.' Discriminator — DPP-4 inhibitors are a recognized cause of severe arthralgia that resolves on discontinuation; stop the gliptin before an extensive rheumatologic workup.</div></div><div class="rt"><div class="rtl">6. Linagliptin safe in renal disease</div><div class="rte">Linagliptin is primarily excreted via the bile/enterohepatic route, so it requires NO renal dose adjustment and is usable even in advanced CKD/ESRD. The other gliptins (sitagliptin, saxagliptin, alogliptin) are renally cleared and need dose reduction as eGFR falls.</div><div class="rtt">⚠️ Wrong answer: 'use full-dose sitagliptin in a patient with eGFR 20 because all gliptins are renally safe.' Discriminator — only linagliptin needs no renal adjustment; the renally cleared gliptins require dose reduction in CKD to avoid accumulation.</div></div><div class="rt"><div class="rtl">7. Alpha-glucosidase inhibitor soldier</div><div class="rte">Alpha-glucosidase inhibitors (acarbose, miglitol) block intestinal brush-border enzymes, slowing carbohydrate digestion and blunting POST-PRANDIAL glucose spikes. They are weight-neutral with modest efficacy; main side effects are flatulence, bloating, and diarrhea. Key point: treat any hypoglycemia (when combined with insulin/sulfonylurea) with oral GLUCOSE, not sucrose, because sucrose breakdown is blocked.</div><div class="rtt">⚠️ Wrong answer: 'treat hypoglycemia in a patient on acarbose with table sugar (sucrose).' Discriminator — acarbose blocks sucrose hydrolysis, so sucrose won't raise glucose; use pure glucose (dextrose) tablets/gel instead.</div></div><div class="rt"><div class="rtl">8. SGLT2 inhibitor plumber</div><div class="rte">SGLT2 inhibitors (the '-flozins': empagliflozin, dapagliflozin, canagliflozin, ertugliflozin) block the proximal-tubule SGLT2 cotransporter that reabsorbs ~90% of filtered glucose, causing glucosuria and natriuresis. This lowers glucose insulin-independently (low hypoglycemia risk), produces mild weight loss and BP reduction, and confers cardiorenal protection.</div><div class="rtt">⚠️ Wrong answer: 'an SGLT2 inhibitor will cause hypoglycemia like a sulfonylurea.' Discriminator — SGLT2 inhibitors act independently of insulin secretion, so monotherapy rarely causes hypoglycemia; the secretagogues (sulfonylureas, meglitinides) and insulin are the hypoglycemia culprits.</div></div><div class="rt"><div class="rtl">9. SGLT2 heart failure / CKD benefit</div><div class="rte">SGLT2 inhibitors reduce heart-failure hospitalizations (benefit in HFrEF AND HFpEF, even without diabetes) and slow CKD progression / reduce albuminuria and renal endpoints. They are the preferred add-on (alongside or after metformin) when HF or CKD coexists with T2DM. Cardiorenal benefit persists at lower eGFR even as glucose-lowering wanes.</div><div class="rtt">⚠️ Wrong answer: 'pick a DPP-4 inhibitor (or sulfonylurea) for glycemic control in a diabetic with heart failure and CKD.' Discriminator — when HF or CKD is present, choose the agent with proven cardiorenal benefit (SGLT2 inhibitor); DPP-4 inhibitors lack renal/HF outcome benefit (and saxagliptin can worsen HF).</div></div><div class="rt"><div class="rtl">10. Euglycemic DKA</div><div class="rte">SGLT2 inhibitors can precipitate euglycemic DKA — a high-anion-gap ketoacidosis with glucose that is only mildly elevated or near-normal (often &lt;200-250 mg/dL). Triggers include surgery, fasting, acute illness, low-carb/ketogenic diets, and alcohol. Check ketones/anion gap in any unwell SGLT2-treated patient regardless of glucose.</div><div class="rtt">⚠️ Wrong answer: 'this acidotic SGLT2-inhibitor patient can't be in DKA because the glucose is only 180.' Discriminator — SGLT2-associated DKA is euglycemic; a near-normal glucose does NOT exclude DKA. Measure ketones and the anion gap.</div></div><div class="rt"><div class="rtl">11. Sick-day / hold rule</div><div class="rte">To prevent euglycemic DKA, HOLD SGLT2 inhibitors during acute illness, prolonged fasting, and around surgery — guidance is to stop ~3-4 days before elective surgery (ertugliflozin ~4 days; longer-acting agents per protocol) and resume only when eating and clinically stable. This 'sick-day rule' also applies to severe dehydration or volume depletion.</div><div class="rtt">⚠️ Wrong answer: 'continue the SGLT2 inhibitor through the perioperative fasting period to keep glucose controlled.' Discriminator — perioperative fasting plus SGLT2 inhibition is a classic euglycemic-DKA trigger; the drug must be held before surgery, not continued.</div></div><div class="rt"><div class="rtl">12. Fournier gangrene / genital infection</div><div class="rte">Glucosuria from SGLT2 inhibitors fosters genital mycotic infections (vulvovaginal candidiasis, balanitis) and urinary tract infections, plus the rare but life-threatening Fournier gangrene (necrotizing fasciitis of the perineum). Counsel on genital hygiene; severe perineal pain/erythema/swelling with systemic illness is a surgical emergency.</div><div class="rtt">⚠️ Wrong answer: 'severe perineal pain and erythema in an SGLT2-treated patient is just a routine yeast infection — give topical antifungal.' Discriminator — rapidly progressive perineal pain with systemic toxicity suggests Fournier gangrene, a surgical emergency requiring urgent debridement, not outpatient antifungal.</div></div><div class="rt"><div class="rtl">13. SGLT2 not in T1DM</div><div class="rte">SGLT2 inhibitors are not recommended in type 1 diabetes because the insulinopenic state markedly raises the risk of (euglycemic) DKA. They are agents for T2DM (and have HF/CKD indications); in T1DM, basal-bolus insulin remains the foundation.</div><div class="rtt">⚠️ Wrong answer: 'add an SGLT2 inhibitor to a T1DM patient to reduce insulin needs and aid weight loss.' Discriminator — in T1DM the DKA risk from SGLT2 inhibition is unacceptably high; this is the wrong class for T1DM.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_t1_vs_t2.html" title="DM — Scene 2 — DM Pathophys &amp; Dx: T1DM Battle vs T2DM Factory">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_algorithm_escalation.html" title="DM — Scene 3 — T2DM Algorithms: The Escalation Staircase &amp; A1c Target Dial">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

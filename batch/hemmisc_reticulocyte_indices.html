@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Anemia Workup — Reticulocytes &amp; RBC Indices</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>EPO from kidney</b> — WRONG: 'Anemia of CKD is treated by giving iron alone because the marrow just lacks substrate.' The core defect in CKD anemia is inadequate renal EPO production (hypoproliferative, low retic). Discriminator: CKD anemia needs an erythropoiesis-stimulating agent (epoetin/darbepoetin) once iron stores are repleted (target ferritin/TSAT first); iron alone won't fix EPO deficiency.</li><li><b>HIF-1α O₂ sensor</b> — WRONG: 'Chuvash polycythemia and VHL-related erythrocytosis are caused by primary marrow JAK2 mutations.' These are EPO-axis (HIF/VHL) disorders causing inappropriately high EPO, not autonomous JAK2-driven marrow disease. Discriminator: HIF/VHL pathway lesions give HIGH EPO; PV gives LOW EPO with JAK2 mutation.</li><li><b>MCV 80-95</b> — WRONG: 'A normal MCV rules out a clinically important nutritional anemia.' A combined iron deficiency (micro) + B12/folate deficiency (macro) can produce a falsely NORMAL average MCV with a high RDW. Discriminator: a normal MCV with a wide RDW or a dimorphic smear should prompt looking for a mixed deficiency.</li><li><b>MCHC</b> — WRONG: 'A high MCHC always means hereditary spherocytosis.' A spuriously high MCHC also occurs with cold agglutinin disease, lipemia, or marked hyperglycemia (RBC clumping/measurement artifact). Discriminator: confirm spherocytes on smear and a positive osmotic fragility/EMA-binding test before attributing a high MCHC to HS.</li><li><b>Rule of 3</b> — WRONG: 'If the rule of three fails, just trust the Hgb and ignore it.' A broken rule of three usually flags an analytic interference (lipemia, cold agglutinins, severe leukocytosis, hyperglycemia) that distorts measured indices. Discriminator: investigate/repeat the sample (warm it for cold agglutinins, clear lipemia) rather than acting on the discordant value.</li><li><b>Reticulocyte count</b> — WRONG: 'In any anemia, start with iron studies and B12 before checking reticulocytes.' The reticulocyte count is the correct first branch point — it separates production failure from destruction/loss and prevents unnecessary testing. Discriminator: a high corrected retic/RPI redirects you to hemolysis/blood-loss workup, not iron/B12.</li><li><b>Raw % misleading</b> — WRONG: 'Retic of 4% means the marrow is responding well, so this anemia is hemolytic.' The raw percent is inflated by the low RBC denominator; once corrected for Hct (and shift), it may be inappropriately low. Discriminator: use the corrected retic count or reticulocyte production index, not the raw percentage.</li><li><b>Corrected retic</b> — WRONG: 'Once you correct the retic for Hct you never need the maturation correction.' In severe anemia early-release shift reticulocytes overstate effective production; the RPI maturation factor corrects this. Discriminator: in marked anemia, compute the RPI (divide by the shift factor) — RPI &lt;2 still means an inadequate marrow response.</li><li><b>Absolute count gold</b> — WRONG: 'A normal absolute reticulocyte count in a hemolyzing patient is reassuring.' In active hemolysis the marrow should ramp up to 4-6× baseline; a merely 'normal' absolute retic is inappropriately low and suggests a superimposed problem (e.g., parvovirus B19 aplastic crisis, coexisting iron/folate deficiency). Discriminator: judge the retic against the expected response, not the reference range.</li><li><b>Low retic = marrow</b> — WRONG: 'A low reticulocyte count with macrocytosis is most likely hemolysis.' Low retics indicate failed production, not destruction; macrocytosis with low retics points to B12/folate deficiency or MDS. Discriminator: hemolysis raises retics (RPI &gt;2) with high LDH/indirect bili and low haptoglobin — the opposite of this picture.</li><li><b>↑CO compensation</b> — WRONG: 'A young healthy patient can compensate for acute massive blood loss indefinitely with increased cardiac output.' The cardiac-output reserve is finite; ongoing loss leads to decompensation/shock, and in chronic anemia sustained high output can cause failure. Discriminator: tolerance depends on rate of loss and cardiac reserve, not Hgb number alone.</li><li><b>↑2,3-DPG</b> — WRONG: 'Increased 2,3-DPG shifts the oxygen curve LEFT to hold onto oxygen.' 2,3-DPG, along with acidosis, fever, and high CO2, shifts the curve RIGHT (decreased affinity, enhanced tissue unloading). Discriminator: LEFT shifts come from low 2,3-DPG, alkalosis, hypothermia, carboxyhemoglobin, fetal Hb — the opposite stimuli.</li><li><b>↑plasma volume</b> — WRONG: 'A falling Hct over weeks after a treated bleed always means rebleeding.' Plasma volume expansion dilutes the Hct (hemodilution) as part of normal compensation, lowering Hct without new blood loss. Discriminator: stable vitals, rising reticulocytes, and a hemodynamically quiet patient favor dilution over active rebleeding.</li><li><b>EPO → marrow</b> — WRONG: 'Giving exogenous EPO will correct any hypoproliferative anemia.' EPO is useless if the marrow lacks iron (functional iron deficiency), B12/folate, or is infiltrated/aplastic. Discriminator: replete iron stores (and B12/folate) and exclude marrow failure before or alongside ESA therapy — substrate plus signal are both required.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. EPO from kidney</div><div class="rte">Erythropoietin (EPO) is made by renal peritubular interstitial (fibroblast-like) cells in the cortex in response to tissue hypoxia; it binds the EPO receptor on erythroid progenitors to drive proliferation and survival. EPO is the rate-limiting signal for erythropoiesis. About 90% of the body's EPO is renal (the remainder hepatic), which is why advanced CKD blunts the EPO response.</div><div class="rtt">⚠️ WRONG: 'Anemia of CKD is treated by giving iron alone because the marrow just lacks substrate.' The core defect in CKD anemia is inadequate renal EPO production (hypoproliferative, low retic). Discriminator: CKD anemia needs an erythropoiesis-stimulating agent (epoetin/darbepoetin) once iron stores are repleted (target ferritin/TSAT first); iron alone won't fix EPO deficiency.</div></div><div class="rt"><div class="rtl">2. HIF-1α O₂ sensor</div><div class="rte">The oxygen sensor is HIF (hypoxia-inducible factor). In normoxia, prolyl hydroxylases (PHD) hydroxylate HIF-1α/2α, allowing VHL-mediated ubiquitination and degradation. In hypoxia, PHDs are inactive, HIF stabilizes and transcribes EPO. This is the target of HIF-PH inhibitors (e.g., roxadustat) for CKD anemia, and VHL loss explains EPO-secreting hemangioblastoma/RCC.</div><div class="rtt">⚠️ WRONG: 'Chuvash polycythemia and VHL-related erythrocytosis are caused by primary marrow JAK2 mutations.' These are EPO-axis (HIF/VHL) disorders causing inappropriately high EPO, not autonomous JAK2-driven marrow disease. Discriminator: HIF/VHL pathway lesions give HIGH EPO; PV gives LOW EPO with JAK2 mutation.</div></div><div class="rt"><div class="rtl">3. MCV 80-95</div><div class="rte">Mean corpuscular volume MCV = (Hct ÷ RBC count) × 10, normal ~80-100 fL (board shorthand 80-95). It is the primary morphologic axis: microcytic &lt;80 (iron deficiency, thalassemia, anemia of chronic disease, sideroblastic), normocytic 80-100 (acute blood loss, hemolysis, early/mixed), macrocytic &gt;100 (B12/folate, alcohol/liver, hypothyroid, MDS, drugs).</div><div class="rtt">⚠️ WRONG: 'A normal MCV rules out a clinically important nutritional anemia.' A combined iron deficiency (micro) + B12/folate deficiency (macro) can produce a falsely NORMAL average MCV with a high RDW. Discriminator: a normal MCV with a wide RDW or a dimorphic smear should prompt looking for a mixed deficiency.</div></div><div class="rt"><div class="rtl">4. MCHC</div><div class="rte">Mean corpuscular hemoglobin concentration MCHC = Hgb ÷ Hct (g/dL of Hb per dL of cells), normal ~32-36. HIGH MCHC (hyperchromic) is classic for hereditary spherocytosis (and a clue/artifact in cold agglutinins or autoagglutination). LOW MCHC (hypochromia) is seen in iron deficiency and thalassemia. It is one of the few indices that can be truly elevated.</div><div class="rtt">⚠️ WRONG: 'A high MCHC always means hereditary spherocytosis.' A spuriously high MCHC also occurs with cold agglutinin disease, lipemia, or marked hyperglycemia (RBC clumping/measurement artifact). Discriminator: confirm spherocytes on smear and a positive osmotic fragility/EMA-binding test before attributing a high MCHC to HS.</div></div><div class="rt"><div class="rtl">5. Rule of 3</div><div class="rte">The 'rule of three': Hct (%) ≈ 3 × Hgb (g/dL), and Hgb ≈ 3 × RBC count (millions). It is a quick internal consistency check on the CBC. A mismatch suggests a lab artifact or abnormal RBCs (e.g., spuriously high MCHC from lipemia/cold agglutinins, hyperglycemia-induced cell swelling, or paraprotein interference).</div><div class="rtt">⚠️ WRONG: 'If the rule of three fails, just trust the Hgb and ignore it.' A broken rule of three usually flags an analytic interference (lipemia, cold agglutinins, severe leukocytosis, hyperglycemia) that distorts measured indices. Discriminator: investigate/repeat the sample (warm it for cold agglutinins, clear lipemia) rather than acting on the discordant value.</div></div><div class="rt"><div class="rtl">6. Reticulocyte count</div><div class="rte">The reticulocyte response is the single most useful early test in anemia because it tells you whether the marrow is responding. It splits all anemia into hyperproliferative (appropriate marrow response — hemolysis or acute blood loss) versus hypoproliferative (inadequate response — nutritional, marrow, or EPO problem), guiding the entire downstream workup before any smear or iron studies.</div><div class="rtt">⚠️ WRONG: 'In any anemia, start with iron studies and B12 before checking reticulocytes.' The reticulocyte count is the correct first branch point — it separates production failure from destruction/loss and prevents unnecessary testing. Discriminator: a high corrected retic/RPI redirects you to hemolysis/blood-loss workup, not iron/B12.</div></div><div class="rt"><div class="rtl">7. Raw % misleading</div><div class="rte">The raw reticulocyte percentage is a fraction of total RBCs, so when the RBC count falls (anemia), the SAME number of retics looks like a higher percentage — an artifactual elevation. You must correct for the degree of anemia. This is why a '2% retic' in a severely anemic patient may actually represent an inadequate marrow response.</div><div class="rtt">⚠️ WRONG: 'Retic of 4% means the marrow is responding well, so this anemia is hemolytic.' The raw percent is inflated by the low RBC denominator; once corrected for Hct (and shift), it may be inappropriately low. Discriminator: use the corrected retic count or reticulocyte production index, not the raw percentage.</div></div><div class="rt"><div class="rtl">8. Corrected retic</div><div class="rte">Corrected reticulocyte count = retic% × (patient Hct ÷ 45). When EPO is high, immature retics ('shift cells') are released early and live longer in blood, so the Reticulocyte Production Index (RPI) further divides by a maturation factor (~1 at Hct 45 up to ~2.5 at Hct ~15). RPI &gt;2-3 = adequate marrow response (hemolysis/blood loss); RPI &lt;2 = hypoproliferative.</div><div class="rtt">⚠️ WRONG: 'Once you correct the retic for Hct you never need the maturation correction.' In severe anemia early-release shift reticulocytes overstate effective production; the RPI maturation factor corrects this. Discriminator: in marked anemia, compute the RPI (divide by the shift factor) — RPI &lt;2 still means an inadequate marrow response.</div></div><div class="rt"><div class="rtl">9. Absolute count gold</div><div class="rte">Absolute reticulocyte count = retic% × RBC count (normal ~25,000-75,000/µL, or expressed as ~0.025-0.075 ×10^6). Because it uses the actual RBC number rather than a percentage, it is the most reliable single measure of marrow output and is not distorted by the anemia denominator. A high absolute retic confirms an effective erythropoietic response.</div><div class="rtt">⚠️ WRONG: 'A normal absolute reticulocyte count in a hemolyzing patient is reassuring.' In active hemolysis the marrow should ramp up to 4-6× baseline; a merely 'normal' absolute retic is inappropriately low and suggests a superimposed problem (e.g., parvovirus B19 aplastic crisis, coexisting iron/folate deficiency). Discriminator: judge the retic against the expected response, not the reference range.</div></div><div class="rt"><div class="rtl">10. Low retic = marrow</div><div class="rte">A low/inadequate reticulocyte response (RPI &lt;2, low absolute count) = hypoproliferative anemia: a production problem from missing substrate (iron, B12, folate), missing signal (low EPO in CKD), or marrow failure/infiltration (aplastic anemia, MDS, leukemia, fibrosis, parvovirus B19). Next steps are iron studies, B12/folate, renal function, and—if unexplained—bone marrow biopsy.</div><div class="rtt">⚠️ WRONG: 'A low reticulocyte count with macrocytosis is most likely hemolysis.' Low retics indicate failed production, not destruction; macrocytosis with low retics points to B12/folate deficiency or MDS. Discriminator: hemolysis raises retics (RPI &gt;2) with high LDH/indirect bili and low haptoglobin — the opposite of this picture.</div></div><div class="rt"><div class="rtl">11. ↑CO compensation</div><div class="rte">The first physiologic compensation for anemia is increased cardiac output (tachycardia, increased stroke volume) to maintain O2 delivery, occurring within seconds-minutes. Reserve is limited—at very low Hgb (≈&lt;7) or in patients with coronary disease this high-output state can precipitate demand ischemia and high-output heart failure.</div><div class="rtt">⚠️ WRONG: 'A young healthy patient can compensate for acute massive blood loss indefinitely with increased cardiac output.' The cardiac-output reserve is finite; ongoing loss leads to decompensation/shock, and in chronic anemia sustained high output can cause failure. Discriminator: tolerance depends on rate of loss and cardiac reserve, not Hgb number alone.</div></div><div class="rt"><div class="rtl">12. ↑2,3-DPG</div><div class="rte">Over hours-to-days, erythrocyte 2,3-bisphosphoglycerate (2,3-DPG/2,3-BPG) rises, binding deoxyhemoglobin and shifting the oxygen-hemoglobin dissociation curve to the RIGHT. This lowers Hgb's O2 affinity (raises P50) so more O2 is unloaded to hypoxic tissues at the same PO2 — a key adaptive compensation in chronic anemia.</div><div class="rtt">⚠️ WRONG: 'Increased 2,3-DPG shifts the oxygen curve LEFT to hold onto oxygen.' 2,3-DPG, along with acidosis, fever, and high CO2, shifts the curve RIGHT (decreased affinity, enhanced tissue unloading). Discriminator: LEFT shifts come from low 2,3-DPG, alkalosis, hypothermia, carboxyhemoglobin, fetal Hb — the opposite stimuli.</div></div><div class="rt"><div class="rtl">13. ↑plasma volume</div><div class="rte">Over weeks, the body expands plasma volume to restore circulating volume after red cell loss. This dilutes the remaining RBCs (lowering measured Hgb/Hct without further true red cell loss) and, in patients with cardiac/renal impairment, can precipitate volume overload, edema, and heart failure. It also explains why Hct underestimates red cell mass in chronic states.</div><div class="rtt">⚠️ WRONG: 'A falling Hct over weeks after a treated bleed always means rebleeding.' Plasma volume expansion dilutes the Hct (hemodilution) as part of normal compensation, lowering Hct without new blood loss. Discriminator: stable vitals, rising reticulocytes, and a hemodynamically quiet patient favor dilution over active rebleeding.</div></div><div class="rt"><div class="rtl">14. EPO → marrow</div><div class="rte">EPO drives erythroid colony-forming units to proliferate and mature (proerythroblast → reticulocyte), but the marrow can only respond if it has substrate. Effective erythropoiesis therefore requires adequate iron, B12, and folate; the normal marrow can ramp output up to ~6-8× baseline when fully stimulated and supplied. Lack of substrate produces ineffective erythropoiesis despite high EPO.</div><div class="rtt">⚠️ WRONG: 'Giving exogenous EPO will correct any hypoproliferative anemia.' EPO is useless if the marrow lacks iron (functional iron deficiency), B12/folate, or is infiltrated/aplastic. Discriminator: replete iron stores (and B12/folate) and exclude marrow failure before or alongside ESA therapy — substrate plus signal are both required.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hemmisc_cbc_platforms.html" title="Anemia &amp; CBC Interpretation — MCV Platforms">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hemmisc_anemia_mcv_approach.html" title="Anemia — MCV Classification &amp; Master Algorithm">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

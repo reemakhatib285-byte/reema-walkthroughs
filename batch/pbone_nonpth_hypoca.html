@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Parathyroid/Bone — Non-Parathyroid Hypocalcemia (Deficient Village &amp; ICU)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Secondary hyperPTH = milder</b> — WRONG: seeing low Ca + high PTH and diagnosing 'hyperparathyroidism.' That combination is APPROPRIATE secondary hyperPTH responding to hypocalcemia, not a primary gland problem — work up the cause of low Ca (check 25-OH-D, creatinine, magnesium, phosphate). Primary hyperPTH would show high Ca with high PTH, the opposite calcium.</li><li><b>Vit D deficiency -&gt; osteomalacia</b> — WRONG: diagnosing vitamin D deficiency with a 1,25-OH-D (calcitriol) level. 1,25-D can be NORMAL or even HIGH in deficiency because secondary hyperPTH upregulates renal 1-alpha-hydroxylase. Always order 25(OH)D (the storage form) to diagnose deficiency. Also expect HIGH ALP and HIGH PTH — a normal PTH would be inappropriate.</li><li><b>Malabsorption causes</b> — WRONG: treating a malabsorptive patient with standard ORAL vitamin D/calcium and expecting normalization. They malabsorb the replacement too — use higher doses, sometimes parenteral vitamin D, and co-replete magnesium. Also wrong to forget post-bariatric patients need lifelong Ca + vit D (and B12/iron) surveillance.</li><li><b>Drugs lowering vit D</b> — WRONG: overlooking the medication list as the driver of low Ca/low vitamin D and bone loss. A patient on chronic phenytoin or long-term glucocorticoids needs proactive vitamin D + calcium repletion and bone-density monitoring; the fix is often dose adjustment plus supplementation rather than a hunt for occult malabsorption.</li><li><b>CKD: high FGF23, low 1,25-D</b> — WRONG: giving plain ergocalciferol/cholecalciferol alone for CKD hypocalcemia. The failing kidney cannot activate it (1-alpha-hydroxylase is suppressed) — you must give ACTIVE vitamin D (calcitriol or paricalcitol) PLUS phosphate binders to control phosphate first. Giving Ca/calcitriol without addressing high phosphate risks vascular/metastatic calcification.</li><li><b>Phosphate binders + calcitriol</b> — WRONG: using cinacalcet in a hypocalcemic CKD patient without correcting Ca first. Cinacalcet LOWERS Ca (it activates CaSR -&gt; suppresses PTH) and can precipitate symptomatic hypocalcemia — it is for high-PTH states with adequate/high Ca, not for fixing low Ca. Also avoid calcium-based binders if the patient is hypercalcemic or has vascular calcification.</li><li><b>Acute pancreatitis</b> — WRONG: ignoring hypocalcemia as incidental in pancreatitis. Hypocalcemia (Ca &lt;8 mg/dL or ionized fall) is a marker of SEVERE disease and is a Ranson criterion (Ca &lt;8 at 48 h) — it signals poor prognosis. Don't dismiss it; recognize it as a severity flag and check ionized Ca and magnesium.</li><li><b>Rhabdo / tumor lysis</b> — WRONG: aggressively giving IV calcium to correct the lab hypocalcemia in tumor lysis/rhabdo. Unless the patient is SYMPTOMATIC (tetany, seizures, arrhythmia), withhold calcium — adding Ca to a high-phosphate milieu drives METASTATIC calcium-phosphate deposition (worsens kidney injury, soft-tissue calcification). Lower the phosphate first; treat the underlying process.</li><li><b>Citrate / blood products</b> — WRONG: trusting TOTAL calcium during massive transfusion or citrate CRRT. Citrate binds the IONIZED (physiologically active) fraction, so total Ca can be misleadingly normal while ionized Ca is dangerously low — always monitor IONIZED Ca and give calcium gluconate/chloride to keep it in range.</li><li><b>Hungry bone (post-PTHx)</b> — WRONG: expecting transient, easily-corrected hypocalcemia after parathyroid surgery. Hungry bone causes SEVERE, sustained hypocalcemia (low Ca, low PO4, low Mg) needing aggressive IV/oral calcium PLUS calcitriol PLUS magnesium repletion over days. Distinguish it from surgical HYPOPARATHYROIDISM (low PTH) — hungry bone has low PO4 whereas hypoPTH has HIGH phosphate.</li><li><b>Hypomagnesemia triangle</b> — WRONG: pouring in more calcium when hypocalcemia 'won't correct' despite repletion. If Ca is refractory, CHECK AND REPLETE MAGNESIUM FIRST — until Mg is restored, PTH cannot be secreted or act, so Ca will not rise no matter how much you give. Refractory hypocalcemia = think magnesium.</li><li><b>IV calcium gluconate (acute)</b> — WRONG: giving IV calcium without simultaneously checking/correcting MAGNESIUM and being cautious of the patient's DIGOXIN status — rapid IV calcium can precipitate fatal digoxin toxicity ('stone heart'). And in hyperphosphatemic states (tumor lysis/rhabdo) reserve IV Ca for symptomatic patients only, to avoid metastatic calcification.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Secondary hyperPTH = milder</div><div class="rte">In NON-parathyroid hypocalcemia the glands are intact, so a falling Ca drives a compensatory rise in PTH (secondary hyperparathyroidism). This high PTH mobilizes Ca from bone, blunting the serum Ca drop — so hypocalcemia is usually milder/more chronic than in true hypoparathyroidism, but at the cost of skeletal demineralization (osteomalacia, renal osteodystrophy). The labs that separate the two camps: hypocalcemia with HIGH PTH = secondary (vit D deficiency, CKD); hypocalcemia with LOW/inappropriate PTH = hypoparathyroidism.</div><div class="rtt">⚠️ WRONG: seeing low Ca + high PTH and diagnosing 'hyperparathyroidism.' That combination is APPROPRIATE secondary hyperPTH responding to hypocalcemia, not a primary gland problem — work up the cause of low Ca (check 25-OH-D, creatinine, magnesium, phosphate). Primary hyperPTH would show high Ca with high PTH, the opposite calcium.</div></div><div class="rt"><div class="rtl">2. Vit D deficiency -&gt; osteomalacia</div><div class="rte">Low 25(OH)D (sun deprivation, poor intake, malabsorption) -&gt; reduced gut Ca AND phosphate absorption -&gt; hypocalcemia -&gt; secondary hyperPTH. The classic biochemical signature: LOW or low-normal Ca, LOW phosphate (PTH-driven phosphaturia), HIGH PTH, HIGH alkaline phosphatase, and LOW 25(OH)D (&lt;20 ng/mL deficient). Chronically this causes osteomalacia in adults (Looser's zones/pseudofractures, bone pain, proximal myopathy) and rickets in children. Treat with cholecalciferol/ergocalciferol (e.g., 50,000 IU weekly x6-8 wk, then maintenance).</div><div class="rtt">⚠️ WRONG: diagnosing vitamin D deficiency with a 1,25-OH-D (calcitriol) level. 1,25-D can be NORMAL or even HIGH in deficiency because secondary hyperPTH upregulates renal 1-alpha-hydroxylase. Always order 25(OH)D (the storage form) to diagnose deficiency. Also expect HIGH ALP and HIGH PTH — a normal PTH would be inappropriate.</div></div><div class="rt"><div class="rtl">3. Malabsorption causes</div><div class="rte">Fat malabsorption impairs absorption of fat-soluble vitamin D and binds luminal calcium to unabsorbed fatty acids. Causes: CELIAC disease, CROHN's/IBD, chronic pancreatitis, short-bowel, and BARIATRIC surgery (especially Roux-en-Y gastric bypass, which bypasses the duodenum/proximal jejunum where Ca and vitamin D are absorbed). Result: combined vitamin D + calcium deficiency, hypocalcemia, secondary hyperPTH, osteomalacia, and often low magnesium too.</div><div class="rtt">⚠️ WRONG: treating a malabsorptive patient with standard ORAL vitamin D/calcium and expecting normalization. They malabsorb the replacement too — use higher doses, sometimes parenteral vitamin D, and co-replete magnesium. Also wrong to forget post-bariatric patients need lifelong Ca + vit D (and B12/iron) surveillance.</div></div><div class="rt"><div class="rtl">4. Drugs lowering vit D</div><div class="rte">Enzyme-inducing drugs accelerate vitamin D catabolism via hepatic CYP3A4/CYP24A1 induction, lowering 25(OH)D and active 1,25-D: classically PHENYTOIN, phenobarbital, carbamazepine (anticonvulsants), RIFAMPIN, and glucocorticoids (which also reduce gut Ca absorption and increase renal Ca loss). Over time this produces drug-induced osteomalacia/osteoporosis.</div><div class="rtt">⚠️ WRONG: overlooking the medication list as the driver of low Ca/low vitamin D and bone loss. A patient on chronic phenytoin or long-term glucocorticoids needs proactive vitamin D + calcium repletion and bone-density monitoring; the fix is often dose adjustment plus supplementation rather than a hunt for occult malabsorption.</div></div><div class="rt"><div class="rtl">5. CKD: high FGF23, low 1,25-D</div><div class="rte">CKD-Mineral Bone Disorder: failing kidneys retain PHOSPHATE -&gt; FGF23 rises (early marker) -&gt; FGF23 suppresses renal 1-alpha-hydroxylase (CYP27B1) -&gt; LOW 1,25-D -&gt; reduced gut Ca absorption -&gt; HYPOCALCEMIA. Hyperphosphatemia also directly binds Ca. The result is high phosphate, low/low-normal Ca, low 1,25-D, and progressively HIGH PTH (secondary hyperPTH). If parathyroids become autonomous over years -&gt; tertiary hyperPTH (high PTH AND high Ca).</div><div class="rtt">⚠️ WRONG: giving plain ergocalciferol/cholecalciferol alone for CKD hypocalcemia. The failing kidney cannot activate it (1-alpha-hydroxylase is suppressed) — you must give ACTIVE vitamin D (calcitriol or paricalcitol) PLUS phosphate binders to control phosphate first. Giving Ca/calcitriol without addressing high phosphate risks vascular/metastatic calcification.</div></div><div class="rt"><div class="rtl">6. Phosphate binders + calcitriol</div><div class="rte">CKD-MBD management triad: (1) control phosphate with binders taken WITH meals — non-calcium binders (SEVELAMER, lanthanum) preferred, or calcium acetate/carbonate if Ca is low; (2) replace ACTIVE vitamin D (calcitriol/paricalcitol) to restore gut Ca absorption and suppress PTH; (3) CINACALCET (a calcimimetic that sensitizes the CaSR) to lower PTH without raising Ca/phosphate, useful in secondary hyperPTH on dialysis.</div><div class="rtt">⚠️ WRONG: using cinacalcet in a hypocalcemic CKD patient without correcting Ca first. Cinacalcet LOWERS Ca (it activates CaSR -&gt; suppresses PTH) and can precipitate symptomatic hypocalcemia — it is for high-PTH states with adequate/high Ca, not for fixing low Ca. Also avoid calcium-based binders if the patient is hypercalcemic or has vascular calcification.</div></div><div class="rt"><div class="rtl">7. Acute pancreatitis</div><div class="rte">In acute pancreatitis, released pancreatic lipase liberates free fatty acids from peripancreatic and mesenteric fat; these FFAs chelate calcium (SAPONIFICATION) and deposit it as insoluble calcium soaps -&gt; hypocalcemia. Glucagon-stimulated calcitonin and hypomagnesemia may also contribute. The degree of hypocalcemia tracks with severity.</div><div class="rtt">⚠️ WRONG: ignoring hypocalcemia as incidental in pancreatitis. Hypocalcemia (Ca &lt;8 mg/dL or ionized fall) is a marker of SEVERE disease and is a Ranson criterion (Ca &lt;8 at 48 h) — it signals poor prognosis. Don't dismiss it; recognize it as a severity flag and check ionized Ca and magnesium.</div></div><div class="rt"><div class="rtl">8. Rhabdo / tumor lysis</div><div class="rte">Massive cell breakdown — RHABDOMYOLYSIS (crush/trauma) and TUMOR LYSIS SYNDROME (post-chemo of bulky/leukemia-lymphoma) — dumps intracellular phosphate into blood. The resulting hyperphosphatemia drives calcium-phosphate precipitation into tissues -&gt; HYPOCALCEMIA (also hyperkalemia, hyperuricemia, high LDH, AKI). In rhabdo, Ca that precipitated in damaged muscle may be released LATER as a rebound hypercalcemia during recovery.</div><div class="rtt">⚠️ WRONG: aggressively giving IV calcium to correct the lab hypocalcemia in tumor lysis/rhabdo. Unless the patient is SYMPTOMATIC (tetany, seizures, arrhythmia), withhold calcium — adding Ca to a high-phosphate milieu drives METASTATIC calcium-phosphate deposition (worsens kidney injury, soft-tissue calcification). Lower the phosphate first; treat the underlying process.</div></div><div class="rt"><div class="rtl">9. Citrate / blood products</div><div class="rte">Stored blood products (PRBCs, FFP, platelets) and continuous renal replacement therapy use CITRATE as anticoagulant. Citrate chelates ionized calcium; with massive transfusion or impaired hepatic citrate metabolism (liver disease, hypothermia, shock), ionized Ca falls -&gt; hypocalcemia (and can cause QT prolongation, hypotension). Total Ca may look normal because the chelated Ca is still 'counted.'</div><div class="rtt">⚠️ WRONG: trusting TOTAL calcium during massive transfusion or citrate CRRT. Citrate binds the IONIZED (physiologically active) fraction, so total Ca can be misleadingly normal while ionized Ca is dangerously low — always monitor IONIZED Ca and give calcium gluconate/chloride to keep it in range.</div></div><div class="rt"><div class="rtl">10. Hungry bone (post-PTHx)</div><div class="rte">Hungry bone syndrome occurs after PARATHYROIDECTOMY (or thyroidectomy, or correction of severe hyperthyroidism) when chronically high PTH is abruptly removed: the previously resorbing skeleton avidly re-mineralizes, rapidly pulling Ca, PHOSPHATE, and MAGNESIUM out of the blood -&gt; profound, prolonged hypocalcemia (can last days to weeks). Risk highest with high preop PTH/ALP and large bone disease.</div><div class="rtt">⚠️ WRONG: expecting transient, easily-corrected hypocalcemia after parathyroid surgery. Hungry bone causes SEVERE, sustained hypocalcemia (low Ca, low PO4, low Mg) needing aggressive IV/oral calcium PLUS calcitriol PLUS magnesium repletion over days. Distinguish it from surgical HYPOPARATHYROIDISM (low PTH) — hungry bone has low PO4 whereas hypoPTH has HIGH phosphate.</div></div><div class="rt"><div class="rtl">11. Hypomagnesemia triangle</div><div class="rte">Severe hypomagnesemia (Mg &lt;1 mg/dL) causes hypocalcemia by a DOUBLE hit: it impairs PTH SECRETION and also induces end-organ PTH RESISTANCE -&gt; functional hypoparathyroidism with an inappropriately low/normal PTH despite low Ca. Causes of low Mg: alcoholism, diarrhea/malabsorption, loop diuretics, PPIs, aminoglycosides, cisplatin, Gitelman. The three often fall together (Mg, Ca, PO4), so check all three.</div><div class="rtt">⚠️ WRONG: pouring in more calcium when hypocalcemia 'won't correct' despite repletion. If Ca is refractory, CHECK AND REPLETE MAGNESIUM FIRST — until Mg is restored, PTH cannot be secreted or act, so Ca will not rise no matter how much you give. Refractory hypocalcemia = think magnesium.</div></div><div class="rt"><div class="rtl">12. IV calcium gluconate (acute)</div><div class="rte">Acute SYMPTOMATIC hypocalcemia (tetany, Chvostek/Trousseau signs, laryngospasm, seizures, QT prolongation/arrhythmia) is treated with IV CALCIUM GLUCONATE 1-2 g in D5W over 5-10 min, then a continuous infusion, with cardiac/telemetry monitoring. Calcium gluconate is preferred peripherally (calcium chloride is more concentrated/irritating, reserved for central lines/codes). Transition to oral calcium + calcitriol once stable.</div><div class="rtt">⚠️ WRONG: giving IV calcium without simultaneously checking/correcting MAGNESIUM and being cautious of the patient's DIGOXIN status — rapid IV calcium can precipitate fatal digoxin toxicity ('stone heart'). And in hyperphosphatemic states (tumor lysis/rhabdo) reserve IV Ca for symptomatic patients only, to avoid metastatic calcification.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pbone_hypopth.html" title="Parathyroid/Bone — Hypoparathyroidism (Empty Throne Room)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pbone_hyperpth.html" title="Parathyroid/Bone — Primary Hyperparathyroidism (Throne Room)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

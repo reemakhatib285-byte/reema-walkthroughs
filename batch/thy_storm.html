@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Thyroid — Thyroid Storm &amp; Amiodarone (AIT)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>9</em></summary><ol class="traps"><li><b>High mortality</b> — Waiting for confirmatory labs or a 'higher' free T4 than ordinary hyperthyroidism — storm is defined by organ dysfunction/decompensation, not by hormone level; treat empirically.</li><li><b>1. Beta-blocker first</b> — Withholding the beta-blocker out of fear of heart failure when the failure is rate-related — use short-acting IV esmolol so it can be titrated/stopped rather than giving nothing.</li><li><b>2. Thionamide (PTU)</b> — Giving iodine before the thionamide — iodine would then be used as substrate for new hormone synthesis (Jod-Basedow), worsening the storm.</li><li><b>3. Iodine — WAIT ≥1 hour</b> — Giving iodine first or simultaneously — without prior synthesis blockade it fuels new hormone production and accelerates the storm.</li><li><b>Storm triggers</b> — Giving RAI to an untreated/poorly controlled hyperthyroid patient — the radiation-induced thyroiditis dumps stored hormone and can precipitate storm; render euthyroid first.</li><li><b>Amiodarone = 37% iodine</b> — Assuming stopping amiodarone fixes amiodarone-induced thyrotoxicosis quickly — its enormous iodine pool and ultra-long half-life mean the thyroid effect lingers for months.</li><li><b>AIT Type 1</b> — Treating Type 1 AIT with steroids alone — Type 1 is a synthesis problem requiring thionamides (± perchlorate); steroids are the answer for Type 2.</li><li><b>AIT Type 2</b> — Giving thionamides as primary therapy for Type 2 — there is no excess synthesis to block; the treatment is glucocorticoids.</li><li><b>Doppler distinguishes AIT</b> — Relying on RAIU to differentiate AIT — uptake is low in both types because of the iodine load; Doppler vascularity is the discriminator.</li></ol></details><details class="panel"><summary>📖 Read-through — all 16 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. High mortality</div><div class="rte">Thyroid storm is decompensated, life-threatening thyrotoxicosis with mortality ~10–30% (image: 4–17%) — an ICU emergency. It is a CLINICAL diagnosis (do not wait for labs, which look like ordinary hyperthyroidism); the Burch-Wartofsky Point Scale grades likelihood using fever, CNS dysfunction (agitation→coma), GI/hepatic features (nausea, jaundice), tachycardia/AF, and CHF (score ≥45 = highly suggestive).</div><div class="rtt">⚠️ Waiting for confirmatory labs or a 'higher' free T4 than ordinary hyperthyroidism — storm is defined by organ dysfunction/decompensation, not by hormone level; treat empirically.</div></div><div class="rt"><div class="rtl">2. AFib / tachycardia</div><div class="rte">Marked sinus tachycardia (often &gt;140) and atrial fibrillation with rapid ventricular response are cardinal features and a major driver of mortality, fueling high-output failure. Rate control with a beta-blocker is the first treatment step; thyrotoxic AF is also a stroke risk requiring anticoagulation consideration.</div></div><div class="rt"><div class="rtl">3. Hepatic dysfunction</div><div class="rte">Hepatic dysfunction (jaundice, transaminitis) is part of the Burch-Wartofsky picture and reflects hepatic congestion from heart failure plus the hypermetabolic state. Jaundice is a poor prognostic sign. It also complicates drug choice — PTU itself carries hepatotoxicity risk.</div></div><div class="rt"><div class="rtl">4. 1. Beta-blocker first</div><div class="rte">Step 1: a beta-blocker — propranolol (60–80 mg PO q4–6h or IV) is preferred because at high doses it also blocks peripheral T4→T3 conversion in addition to controlling adrenergic symptoms (tachycardia, tremor, anxiety, fever). Use cautiously/with esmolol in decompensated CHF.</div><div class="rtt">⚠️ Withholding the beta-blocker out of fear of heart failure when the failure is rate-related — use short-acting IV esmolol so it can be titrated/stopped rather than giving nothing.</div></div><div class="rt"><div class="rtl">5. 2. Thionamide (PTU)</div><div class="rte">Step 2: a thionamide to block new hormone synthesis. PTU is preferred IN STORM (500–1000 mg load then 250 mg q4h) because it additionally inhibits peripheral T4→T3 conversion for faster effect. Methimazole is otherwise the everyday agent (longer half-life, less hepatotoxic) but lacks the conversion-blocking advantage acutely. The thionamide MUST be given before iodine.</div><div class="rtt">⚠️ Giving iodine before the thionamide — iodine would then be used as substrate for new hormone synthesis (Jod-Basedow), worsening the storm.</div></div><div class="rt"><div class="rtl">6. 3. Iodine — WAIT ≥1 hour</div><div class="rte">Step 3: iodine (SSKI/Lugol's) but only ≥1 hour AFTER the thionamide. Once synthesis is blocked, the iodine load exploits the Wolff-Chaikoff effect to rapidly shut down hormone RELEASE. Given before the thionamide, the same iodine becomes raw material for new hormone (Jod-Basedow). Sequence: block synthesis → wait ≥1h → block release.</div><div class="rtt">⚠️ Giving iodine first or simultaneously — without prior synthesis blockade it fuels new hormone production and accelerates the storm.</div></div><div class="rt"><div class="rtl">7. SSKI Wolff-Chaikoff</div><div class="rte">Saturated solution of potassium iodide (SSKI, ~5 drops q6–8h) or Lugol's transiently inhibits both organification and hormone release (acute Wolff-Chaikoff effect). The effect is temporary (escape after ~1–2 weeks), so it is a bridge to definitive therapy. In iodine-allergic patients, lithium can substitute to block hormone release.</div></div><div class="rt"><div class="rtl">8. 4. Esmolol / control</div><div class="rte">IV esmolol is the preferred beta-blocker when tight titratability is needed — its ultra-short half-life lets you control rate in a patient with borderline cardiac function and stop instantly if heart failure worsens. It is the safer adrenergic-control option in thyrotoxic decompensated CHF.</div></div><div class="rt"><div class="rtl">9. 5. Hydrocortisone (steroids)</div><div class="rte">Glucocorticoids (hydrocortisone 100 mg IV q8h, or dexamethasone) serve two roles: they inhibit peripheral T4→T3 conversion and treat the relative adrenal insufficiency that accompanies the hypermetabolic stress of storm. They also help in autoimmune Graves'. Part of the standard 4-drug bundle: BB → thionamide → iodine → steroid.</div></div><div class="rt"><div class="rtl">10. Cholestyramine adjunct</div><div class="rte">Cholestyramine is an adjunct that binds thyroid hormone in the gut to interrupt enterohepatic recirculation and enhance fecal clearance, lowering circulating hormone faster in severe/refractory storm. Plasmapheresis is the last-resort option for refractory cases.</div></div><div class="rt"><div class="rtl">11. Storm triggers</div><div class="rte">Storm is usually precipitated by an acute stressor in a hyperthyroid patient: infection/sepsis (most common), surgery (esp. thyroid surgery in an inadequately prepared patient), trauma, DKA, parturition, iodinated contrast, and radioactive iodine given to an UNTREATED hyperthyroid patient (RAI causes a transient hormone release). Pretreat with thionamides ± beta-blocker before surgery/RAI.</div><div class="rtt">⚠️ Giving RAI to an untreated/poorly controlled hyperthyroid patient — the radiation-induced thyroiditis dumps stored hormone and can precipitate storm; render euthyroid first.</div></div><div class="rt"><div class="rtl">12. Amiodarone = 37% iodine</div><div class="rte">Amiodarone is ~37% iodine by weight (one tablet delivers ~50–100× the daily iodine requirement) and is highly lipophilic with a half-life of weeks to months, so thyroid effects persist long after stopping. It causes both hypo- and hyperthyroidism, and via CYP/transporter inhibition raises warfarin (↑INR — reduce dose) and digoxin levels. Check baseline TFTs before starting and monitor periodically.</div><div class="rtt">⚠️ Assuming stopping amiodarone fixes amiodarone-induced thyrotoxicosis quickly — its enormous iodine pool and ultra-long half-life mean the thyroid effect lingers for months.</div></div><div class="rt"><div class="rtl">13. AIT Type 1</div><div class="rte">Amiodarone-Induced Thyrotoxicosis Type 1 is iodine-induced EXCESS SYNTHESIS (Jod-Basedow) in an abnormal gland with pre-existing pathology (nodular goiter or latent Graves'). Color Doppler shows increased vascularity; RAIU is low-to-normal. Treat with high-dose thionamides (methimazole) ± potassium perchlorate to block iodine uptake.</div><div class="rtt">⚠️ Treating Type 1 AIT with steroids alone — Type 1 is a synthesis problem requiring thionamides (± perchlorate); steroids are the answer for Type 2.</div></div><div class="rt"><div class="rtl">14. AIT Type 2</div><div class="rte">AIT Type 2 is a DESTRUCTIVE thyroiditis (drug-induced) in a previously NORMAL gland that releases preformed hormone, with low/absent Doppler flow and very low RAIU. Treat with GLUCOCORTICOIDS (prednisone), and it is often self-limited and may be followed by transient hypothyroidism — like other destructive thyroiditides.</div><div class="rtt">⚠️ Giving thionamides as primary therapy for Type 2 — there is no excess synthesis to block; the treatment is glucocorticoids.</div></div><div class="rt"><div class="rtl">15. Doppler distinguishes AIT</div><div class="rte">Color-flow Doppler ultrasound is the key bedside test to separate the two: INCREASED vascularity = Type 1 (hyperfunctioning gland), absent/decreased vascularity = Type 2 (destruction). RAIU is usually low in both (because of iodine saturation), so Doppler — plus gland morphology and IL-6 — guides therapy.</div><div class="rtt">⚠️ Relying on RAIU to differentiate AIT — uptake is low in both types because of the iodine load; Doppler vascularity is the discriminator.</div></div><div class="rt"><div class="rtl">16. Mixed AIT → both</div><div class="rte">Mixed/indeterminate AIT has features of both mechanisms and is treated with combined thionamide PLUS glucocorticoid therapy. Whether to continue or stop amiodarone is individualized with cardiology — the drug's long half-life means stopping gives little short-term benefit, and definitive treatment (thyroidectomy) may be needed for refractory cases.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="thy_cancer.html" title="Thyroid — Thyroid Cancers &amp; Management">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="thy_uptake.html" title="Thyroid — Uptake &amp; Thyrotoxicosis Workup">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

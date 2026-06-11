@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Kidney Transplant — Contraindications &amp; Who Gets Transplanted</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Active = block rule</b> — WRONG answer: listing a chronic but well-controlled condition (stable CAD, treated/cured cancer, suppressed HIV) as an absolute contraindication. Control, not mere presence of a disease, is what matters. Discriminator: 'active/uncontrolled' = block; 'chronic/controlled' = acceptable candidate.</li><li><b>Active infection</b> — WRONG answer: classifying active infection as a permanent disqualifier. It is a temporary/relative contraindication — treat the infection, then list the patient. Discriminator: active infection delays transplant; it does not permanently exclude.</li><li><b>Active malignancy</b> — WRONG answer: equating any cancer history with permanent ineligibility. ACTIVE cancer blocks; a remote, treated, cured cancer does not (after the appropriate disease-free interval). Discriminator: active malignancy = block now; treated/remote malignancy = candidate after waiting period.</li><li><b>Recent cancer → wait</b> — WRONG answer: calling a remote, treated, cured cancer an absolute contraindication. After the type/stage-specific disease-free interval, prior cancer is NOT an absolute contraindication. Discriminator: recent/active cancer = block; remote treated cured cancer past its waiting period = eligible.</li><li><b>Most ESKD pts benefit</b> — WRONG answer: assuming dialysis is equivalent or preferable for the average ESKD patient. Transplant generally yields superior survival; the bar is to find a reason NOT to transplant, not the reverse. Discriminator: most ESKD patients benefit; the exam tests the short list of true contraindications.</li><li><b>Antibody sentinel / crossmatch</b> — WRONG answer: skipping crossmatch because ABO blood types match. ABO compatibility does not exclude preformed HLA donor-specific antibodies — a crossmatch is still required. Discriminator: ABO match ≠ HLA/crossmatch compatibility; both are assessed.</li><li><b>Positive cytotoxic crossmatch</b> — WRONG answer: interpreting a positive cytotoxic crossmatch as a contraindication to transplantation altogether. It contraindicates only that specific donor; the recipient remains a candidate for a compatible donor (or desensitization/paired exchange). Discriminator: positive crossmatch = absolute no-go for THAT donor → hyperacute rejection; the patient can still be transplanted with another donor.</li><li><b>ABO mismatch / DSA</b> — WRONG answer: treating ABO incompatibility or DSA as an absolute, unalterable contraindication. These can often be managed with desensitization or paired exchange. Discriminator: ABO incompatibility/DSA = relative (modifiable) risk; positive cytotoxic crossmatch = absolute donor-specific contraindication.</li><li><b>HIV controlled = admit</b> — WRONG answer: excluding a patient from transplant solely because they are HIV-positive. Virologically suppressed HIV is acceptable. Discriminator: HIV alone no longer bars transplant if suppressed/undetectable with preserved CD4 and no active OI.</li><li><b>HCV controlled = admit</b> — WRONG answer: declining transplant or refusing an HCV+ donor organ purely on HCV status in the DAA era. DAAs make HCV curable and HCV+ organs usable. Discriminator: HCV alone is not a contraindication; only decompensated liver disease changes the plan (toward liver-kidney transplant).</li><li><b>Paired / desensitize</b> — WRONG answer: telling an incompatible pair that transplant is impossible. Paired exchange and desensitization frequently overcome incompatibility. Discriminator: incompatibility (ABO/DSA) → offer paired exchange or desensitization, not outright refusal.</li><li><b>6-month sober mark</b> — WRONG answer: declaring a patient with a past, now-controlled substance use disorder permanently ineligible. ACTIVE abuse and ongoing nonadherence block transplant, but with sustained sobriety and adherence the patient becomes a candidate. Discriminator: active substance abuse/nonadherence = current block; sustained abstinence + adherence = eligible.</li><li><b>Functional status</b> — WRONG answer: disqualifying a candidate for having chronic comorbidities that are well controlled. The blocker is ACTIVE, uncontrolled, life-limiting disease — not stable chronic conditions. Discriminator: 'severe uncontrolled comorbidity / short life expectancy' = block; 'controlled chronic disease' = acceptable.</li><li><b>Boards decision band</b> — WRONG answer: picking a chronic controlled condition as 'the' absolute contraindication. The classic absolute (donor-specific) contraindication is a positive cytotoxic crossmatch (hyperacute rejection risk). Discriminator: among the options, the positive crossmatch / hyperacute-rejection donor is the absolute no-go; everything 'controlled chronic' is allowed.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Active = block rule</div><div class="rte">The unifying principle: ACTIVE, uncontrolled problems (active infection, active/untreated malignancy, untreated/uncontrolled severe disease, active substance abuse) block transplant; CONTROLLED chronic disease does NOT. The reasoning is that lifelong immunosuppression will worsen any active infection or cancer, so candidates must be optimized and 'quiet' first. Mnemonic: 'Activity, not the diagnosis, is the contraindication.'</div><div class="rtt">⚠️ WRONG answer: listing a chronic but well-controlled condition (stable CAD, treated/cured cancer, suppressed HIV) as an absolute contraindication. Control, not mere presence of a disease, is what matters. Discriminator: 'active/uncontrolled' = block; 'chronic/controlled' = acceptable candidate.</div></div><div class="rt"><div class="rtl">2. Active infection</div><div class="rte">Active, untreated systemic infection is an absolute contraindication to transplantation UNTIL it is treated and resolved — immunosuppression would let it disseminate and kill the patient. This includes active TB, untreated bacteremia/sepsis, and uncontrolled viral infection. It is a TEMPORARY barrier: once the infection is fully treated, the patient becomes eligible again.</div><div class="rtt">⚠️ WRONG answer: classifying active infection as a permanent disqualifier. It is a temporary/relative contraindication — treat the infection, then list the patient. Discriminator: active infection delays transplant; it does not permanently exclude.</div></div><div class="rt"><div class="rtl">3. Active malignancy</div><div class="rte">Active or untreated malignancy is a contraindication because immunosuppression accelerates tumor growth and metastasis. Most candidates require a cancer-free interval after curative treatment before listing. Certain low-risk cancers (e.g. many non-melanoma skin cancers, small incidentally found renal cell carcinomas, in-situ lesions) need little or no waiting, whereas aggressive cancers require longer documented remission.</div><div class="rtt">⚠️ WRONG answer: equating any cancer history with permanent ineligibility. ACTIVE cancer blocks; a remote, treated, cured cancer does not (after the appropriate disease-free interval). Discriminator: active malignancy = block now; treated/remote malignancy = candidate after waiting period.</div></div><div class="rt"><div class="rtl">4. Recent cancer → wait</div><div class="rte">Treated cancer requires a disease-free WAITING PERIOD before listing, with the length set by tumor type and stage (commonly ~2–5 years; some low-risk/in-situ cancers need little to none, some need longer). The wait ensures the cancer is truly cured before immunosuppression is started, since recurrence under immunosuppression is often fatal. So the question to ask is not 'did they ever have cancer?' but 'how long ago, what type, what stage, and is it cured?'</div><div class="rtt">⚠️ WRONG answer: calling a remote, treated, cured cancer an absolute contraindication. After the type/stage-specific disease-free interval, prior cancer is NOT an absolute contraindication. Discriminator: recent/active cancer = block; remote treated cured cancer past its waiting period = eligible.</div></div><div class="rt"><div class="rtl">5. Most ESKD pts benefit</div><div class="rte">Kidney transplantation is the PREFERRED renal-replacement therapy for most patients with end-stage kidney disease — it confers better survival and quality of life than long-term dialysis, and preemptive transplant (before starting dialysis) gives the best outcomes. True contraindications are few but high-yield. Therefore the default is that an ESKD patient should be evaluated for transplant unless a specific blocker exists.</div><div class="rtt">⚠️ WRONG answer: assuming dialysis is equivalent or preferable for the average ESKD patient. Transplant generally yields superior survival; the bar is to find a reason NOT to transplant, not the reverse. Discriminator: most ESKD patients benefit; the exam tests the short list of true contraindications.</div></div><div class="rt"><div class="rtl">6. Antibody sentinel / crossmatch</div><div class="rte">Pre-transplant immunologic work-up screens the recipient for PREFORMED donor-specific antibodies (DSA) — via panel-reactive antibody (PRA) testing for sensitization and a donor-specific crossmatch. Sensitization arises from prior transplants, transfusions, and pregnancies. The crossmatch determines compatibility with a SPECIFIC donor; the goal is to avoid pairing a recipient with a donor against whom they have preformed antibodies.</div><div class="rtt">⚠️ WRONG answer: skipping crossmatch because ABO blood types match. ABO compatibility does not exclude preformed HLA donor-specific antibodies — a crossmatch is still required. Discriminator: ABO match ≠ HLA/crossmatch compatibility; both are assessed.</div></div><div class="rt"><div class="rtl">7. Positive cytotoxic crossmatch</div><div class="rte">A POSITIVE cytotoxic (complement-dependent cytotoxicity) crossmatch means the recipient has preformed antibodies against that donor's HLA → transplanting would cause HYPERACUTE REJECTION (minutes-to-hours graft thrombosis from antibody-mediated complement activation, the graft turns mottled/blue on the table). This is the ONLY absolute donor-specific no-go: it bars THAT donor, not transplantation in general — the patient can still receive a different compatible kidney.</div><div class="rtt">⚠️ WRONG answer: interpreting a positive cytotoxic crossmatch as a contraindication to transplantation altogether. It contraindicates only that specific donor; the recipient remains a candidate for a compatible donor (or desensitization/paired exchange). Discriminator: positive crossmatch = absolute no-go for THAT donor → hyperacute rejection; the patient can still be transplanted with another donor.</div></div><div class="rt"><div class="rtl">8. ABO mismatch / DSA</div><div class="rte">ABO incompatibility and donor-specific antibodies (DSA) raise immunologic risk but are increasingly surmountable with desensitization protocols (plasmapheresis, IVIG, rituximab) or by entering a paired kidney exchange to find a compatible donor. They are relative — not absolute — barriers, in contrast to a positive cytotoxic crossmatch causing hyperacute rejection.</div><div class="rtt">⚠️ WRONG answer: treating ABO incompatibility or DSA as an absolute, unalterable contraindication. These can often be managed with desensitization or paired exchange. Discriminator: ABO incompatibility/DSA = relative (modifiable) risk; positive cytotoxic crossmatch = absolute donor-specific contraindication.</div></div><div class="rt"><div class="rtl">9. HIV controlled = admit</div><div class="rte">Well-controlled HIV (suppressed/undetectable viral load on ART, adequate CD4 count, no active opportunistic infection) is NO LONGER a contraindication to kidney transplantation, and HIV+ to HIV+ donor transplantation is now performed. The candidate must be virologically suppressed and adherent, with attention to ART–immunosuppressant drug interactions (protease inhibitors are strong CYP3A inhibitors that spike CNI levels).</div><div class="rtt">⚠️ WRONG answer: excluding a patient from transplant solely because they are HIV-positive. Virologically suppressed HIV is acceptable. Discriminator: HIV alone no longer bars transplant if suppressed/undetectable with preserved CD4 and no active OI.</div></div><div class="rt"><div class="rtl">10. HCV controlled = admit</div><div class="rte">Hepatitis C is no longer a barrier: direct-acting antivirals (DAAs) cure HCV with high efficacy, so treated/controlled HCV recipients are eligible, and HCV-positive donor organs can now be transplanted into recipients (with DAA treatment), expanding the donor pool. Evaluate liver fibrosis/cirrhosis, since decompensated cirrhosis would instead prompt consideration of combined liver-kidney transplant.</div><div class="rtt">⚠️ WRONG answer: declining transplant or refusing an HCV+ donor organ purely on HCV status in the DAA era. DAAs make HCV curable and HCV+ organs usable. Discriminator: HCV alone is not a contraindication; only decompensated liver disease changes the plan (toward liver-kidney transplant).</div></div><div class="rt"><div class="rtl">11. Paired / desensitize</div><div class="rte">Immunologically or ABO-incompatible donor–recipient pairs have two main routes to transplant: (1) PAIRED kidney exchange (swap donors among incompatible pairs in a registry to find compatibility), and (2) DESENSITIZATION (plasmapheresis + IVIG ± rituximab to remove/neutralize antibodies before transplant). These strategies turn many 'incompatible' pairs into successful transplants and are why incompatibility is rarely an absolute barrier.</div><div class="rtt">⚠️ WRONG answer: telling an incompatible pair that transplant is impossible. Paired exchange and desensitization frequently overcome incompatibility. Discriminator: incompatibility (ABO/DSA) → offer paired exchange or desensitization, not outright refusal.</div></div><div class="rt"><div class="rtl">12. 6-month sober mark</div><div class="rte">Psychosocial readiness is required before listing: documented abstinence from active substance/alcohol abuse (a period of sobriety, commonly cited around 6 months, with engagement in treatment), demonstrated adherence (because lifelong immunosuppression and follow-up are non-negotiable), and adequate social support. ACTIVE substance abuse and demonstrated nonadherence are contraindications because they predict graft loss; they are modifiable over time.</div><div class="rtt">⚠️ WRONG answer: declaring a patient with a past, now-controlled substance use disorder permanently ineligible. ACTIVE abuse and ongoing nonadherence block transplant, but with sustained sobriety and adherence the patient becomes a candidate. Discriminator: active substance abuse/nonadherence = current block; sustained abstinence + adherence = eligible.</div></div><div class="rt"><div class="rtl">13. Functional status</div><div class="rte">Candidates need adequate functional status and a reasonable life expectancy to survive surgery and benefit from the graft over years; severe, uncontrollable comorbidity that limits survival or precludes safe surgery (e.g. severe irreversible cardiopulmonary disease, limited life expectancy) is a contraindication. Crucially, CONTROLLED chronic disease (stable CAD, well-managed diabetes) is fine — it is uncontrolled/end-stage non-renal disease that blocks.</div><div class="rtt">⚠️ WRONG answer: disqualifying a candidate for having chronic comorbidities that are well controlled. The blocker is ACTIVE, uncontrolled, life-limiting disease — not stable chronic conditions. Discriminator: 'severe uncontrolled comorbidity / short life expectancy' = block; 'controlled chronic disease' = acceptable.</div></div><div class="rt"><div class="rtl">14. Boards decision band</div><div class="rte">One-line summary: ACTIVE problems block (active infection — temporary until treated; active/recent malignancy — wait for the type/stage-specific disease-free interval; active substance abuse/nonadherence — needs sobriety + adherence; severe uncontrolled comorbidity), while CONTROLLED chronic disease (suppressed HIV, treated HCV, stable CAD/DM) is acceptable. The single absolute, donor-specific no-go is a POSITIVE cytotoxic crossmatch → hyperacute rejection (bars that donor only); ABO/DSA incompatibility is relative and manageable with paired exchange/desensitization.</div><div class="rtt">⚠️ WRONG answer: picking a chronic controlled condition as 'the' absolute contraindication. The classic absolute (donor-specific) contraindication is a positive cytotoxic crossmatch (hyperacute rejection risk). Discriminator: among the options, the positive crossmatch / hyperacute-rejection donor is the absolute no-go; everything 'controlled chronic' is allowed.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ktx_complications.html" title="Kidney Transplant — Chronic Complications (Long Watch)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ktx_cni.html" title="Kidney Transplant — Drug Toxicities, Nephrotoxicity &amp; CYP3A (Management 2)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

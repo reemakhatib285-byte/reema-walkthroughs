@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DILI — Acetaminophen Nomogram, NAPQI &amp; NAC Protocol</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Rumack-Matthew nomogram chart</b> — WRONG to apply the nomogram to staggered/chronic ingestion, an unknown ingestion time, or an extended-release product. It is validated ONLY for a single acute ingestion with a known time, sampled 4–24 h out; outside that window you treat empirically based on dose history (&gt;150 mg/kg) and labs, not the graph.</li><li><b>&gt;150 mcg/mL at 4H line</b> — WRONG to withhold NAC for a 'below 150' level when the ingestion time is uncertain or the patient already has elevated transaminases — the reassuring threshold only holds for a single acute ingestion with a reliably known time. The discriminator is a confirmed single timed ingestion; otherwise treat.</li><li><b>&gt;300 / &gt;100 / &gt;150 zones</b> — WRONG to compare a level to the single '150' number regardless of when it was drawn — a level of 100 is reassuring at 4 h but ABOVE the treatment line at 8 h. The discriminator is always interpreting the concentration against its hours-post-ingestion coordinate, not a fixed cutoff.</li><li><b>4H DRAW star</b> — WRONG to draw at presentation and act on a pre-4-hour value — it underestimates the peak and can falsely reassure. The discriminator: levels are only nomogram-valid from 4 h onward; when presentation is late, treat first and confirm with the level.</li><li><b>NAPQI monster</b> — WRONG to think the parent acetaminophen molecule is hepatotoxic — toxicity is entirely due to the NAPQI metabolite once glutathione is exhausted. The discriminator is that anything increasing NAPQI (CYP2E1 induction) or decreasing glutathione (fasting, alcoholism, malnutrition) raises toxicity at lower APAP doses.</li><li><b>CYP2E1 furnace</b> — WRONG to conflate acute and chronic alcohol effects: CHRONIC alcohol induces CYP2E1 and increases APAP toxicity, whereas an ACUTE alcohol co-ingestion can competitively reduce NAPQI formation. The discriminator is chronicity — the malnourished chronic alcoholic, not the acutely intoxicated patient, is the high-risk host.</li><li><b>APAP-protein adducts</b> — WRONG to exclude APAP toxicity solely because the serum acetaminophen level is now undetectable in a late presenter — the parent drug clears but adduct-mediated injury persists, and adduct biomarkers can still implicate APAP. The discriminator is that a negative late APAP level does not rule out APAP-induced liver failure.</li><li><b>Hepatocyte (zone 3)</b> — WRONG to assume zone 3 necrosis is pathognomonic for acetaminophen — ischemic ('shock') hepatitis also injures zone 3 and produces transaminases in the thousands. The discriminator is the clinical context: ingestion history and APAP level/adducts for APAP, versus a hypotensive event with high LDH and rapid rise-and-fall for ischemia.</li><li><b>Goat running</b> — WRONG to classify APAP as an idiosyncratic hepatotoxin — it is the model of intrinsic, dose-dependent toxicity with a predictable latency and a defined toxic threshold. The discriminator is dose-dependence: idiosyncratic DILI (INH, augmentin) occurs unpredictably and is not dose-related.</li><li><b>3 g/day max / 325 mg tablet</b> — WRONG to apply the 4 g/day ceiling to a cirrhotic or chronic alcoholic — their glutathione reserve and CYP2E1 status lower the safe dose to ~2–3 g/day. The discriminator is the host; hidden APAP in combination products is the other common route to exceeding the ceiling.</li><li><b>&gt;3.5 mmol/L lab + transplant</b> — WRONG to wait for transaminases to keep rising before considering transplant in fulminant APAP failure — the prognostic markers are synthetic/metabolic (pH, lactate, INR, creatinine, encephalopathy grade), not the transaminase level. The discriminator is the King's College criteria, which capture liver function and end-organ failure rather than enzyme leak.</li><li><b>Step 1: lavage + charcoal</b> — WRONG to give activated charcoal to a vomiting or obtunded patient without airway protection — aspiration risk outweighs benefit, and charcoal is ineffective once absorption is complete (hours out). The discriminator is timing and a protected airway; charcoal does not replace NAC and is not useful late.</li><li><b>Step 2: NAC load 140 mg/kg</b> — WRONG to delay NAC pending the nomogram level in a high-risk or late presenter — start it empirically and stop later if the level falls below the treatment line. Anaphylactoid reactions to IV NAC are infusion-rate related and managed by slowing/pausing the infusion, not by switching away from NAC.</li><li><b>Step 3: 70 mg/kg Q4H x15-20</b> — WRONG to stop NAC at the fixed dose count if INR/transaminases are still climbing or APAP remains detectable — extend therapy until liver tests improve and APAP clears. The discriminator is the trajectory of synthetic function and transaminases, not completing a set number of doses.</li><li><b>Step 4: AKI self-limited</b> — WRONG to assume a rising creatinine in APAP overdose always means the liver injury is fatal — APAP-associated ATN is typically reversible with supportive care, though creatinine is also one of the King's College transplant criteria. The discriminator is context: isolated recoverable ATN versus creatinine elevation as part of the multi-organ King's criteria.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Rumack-Matthew nomogram chart</div><div class="rte">The Rumack-Matthew nomogram plots serum acetaminophen concentration (y-axis) against hours post-ingestion (x-axis) to predict hepatotoxicity and decide on NAC. The treatment ('150 line') starts at 150 mcg/mL at 4 hours and declines over time; a level on or above the line means probable toxicity and mandates NAC. The line is read only between 4 and 24 hours.</div><div class="rtt">⚠️ WRONG to apply the nomogram to staggered/chronic ingestion, an unknown ingestion time, or an extended-release product. It is validated ONLY for a single acute ingestion with a known time, sampled 4–24 h out; outside that window you treat empirically based on dose history (&gt;150 mg/kg) and labs, not the graph.</div></div><div class="rt"><div class="rtl">2. &gt;150 mcg/mL at 4H line</div><div class="rte">A 4-hour serum APAP above ~150 mcg/mL sits on/above the treatment line and indicates probable toxicity → start NAC. A 4-hour level below 150 (and falling appropriately on the line) is reassuring for a single timed ingestion. The original 'possible toxicity' line at 200 mcg/mL was lowered to 150 to add a safety margin.</div><div class="rtt">⚠️ WRONG to withhold NAC for a 'below 150' level when the ingestion time is uncertain or the patient already has elevated transaminases — the reassuring threshold only holds for a single acute ingestion with a reliably known time. The discriminator is a confirmed single timed ingestion; otherwise treat.</div></div><div class="rt"><div class="rtl">3. &gt;300 / &gt;100 / &gt;150 zones</div><div class="rte">The level decays with time, so the same risk maps to different numbers at different hours: roughly &gt;150 at 4 h, ~75 at 8 h, ~37 at 12 h all lie on the treatment line. A 4-hour level &gt;300 mcg/mL predicts severe hepatotoxicity and high risk of ALF. Because the value falls over time, the time of the draw is as important as the number.</div><div class="rtt">⚠️ WRONG to compare a level to the single '150' number regardless of when it was drawn — a level of 100 is reassuring at 4 h but ABOVE the treatment line at 8 h. The discriminator is always interpreting the concentration against its hours-post-ingestion coordinate, not a fixed cutoff.</div></div><div class="rt"><div class="rtl">4. 4H DRAW star</div><div class="rte">Draw the first usable level at 4 hours post-ingestion, once absorption is complete; earlier levels are uninterpretable on the nomogram. If the patient presents &gt;8 h after a significant ingestion, start NAC empirically while awaiting the level rather than delaying the antidote.</div><div class="rtt">⚠️ WRONG to draw at presentation and act on a pre-4-hour value — it underestimates the peak and can falsely reassure. The discriminator: levels are only nomogram-valid from 4 h onward; when presentation is late, treat first and confirm with the level.</div></div><div class="rt"><div class="rtl">5. NAPQI monster</div><div class="rte">NAPQI (N-acetyl-p-benzoquinone imine) is the toxic reactive intermediate of APAP metabolism. Normally a small fraction of APAP is oxidized by CYP2E1 to NAPQI, which is immediately neutralized by hepatic glutathione. In overdose (or low-glutathione states) NAPQI overwhelms glutathione, binds hepatocyte proteins as covalent adducts, and causes centrilobular (zone 3) necrosis.</div><div class="rtt">⚠️ WRONG to think the parent acetaminophen molecule is hepatotoxic — toxicity is entirely due to the NAPQI metabolite once glutathione is exhausted. The discriminator is that anything increasing NAPQI (CYP2E1 induction) or decreasing glutathione (fasting, alcoholism, malnutrition) raises toxicity at lower APAP doses.</div></div><div class="rt"><div class="rtl">6. CYP2E1 furnace</div><div class="rte">CYP2E1 is the cytochrome that converts a small fraction of acetaminophen into NAPQI. Chronic alcohol, fasting/starvation, and isoniazid INDUCE CYP2E1, shunting more APAP toward NAPQI and lowering the toxic threshold. Acute alcohol intoxication can transiently compete for and inhibit CYP2E1, which is a different scenario from chronic use.</div><div class="rtt">⚠️ WRONG to conflate acute and chronic alcohol effects: CHRONIC alcohol induces CYP2E1 and increases APAP toxicity, whereas an ACUTE alcohol co-ingestion can competitively reduce NAPQI formation. The discriminator is chronicity — the malnourished chronic alcoholic, not the acutely intoxicated patient, is the high-risk host.</div></div><div class="rt"><div class="rtl">7. APAP-protein adducts</div><div class="rte">NAPQI forms covalent bonds with hepatocyte proteins, creating APAP-protein (cysteine) adducts that disrupt mitochondrial function and trigger cell death. Serum APAP-protein adducts are a specific biomarker that can confirm acetaminophen as the cause of liver injury even when the ingestion history is unclear or the level has already cleared.</div><div class="rtt">⚠️ WRONG to exclude APAP toxicity solely because the serum acetaminophen level is now undetectable in a late presenter — the parent drug clears but adduct-mediated injury persists, and adduct biomarkers can still implicate APAP. The discriminator is that a negative late APAP level does not rule out APAP-induced liver failure.</div></div><div class="rt"><div class="rtl">8. Hepatocyte (zone 3)</div><div class="rte">APAP injury is classically centrilobular (zone 3, pericentral) necrosis because that zone has the highest CYP2E1 concentration and the lowest oxygen tension. The same zone 3 pattern is seen in ischemic hepatitis, which is why both cause very high transaminases — but APAP is identified by ingestion history, level/adducts, and response to NAC.</div><div class="rtt">⚠️ WRONG to assume zone 3 necrosis is pathognomonic for acetaminophen — ischemic ('shock') hepatitis also injures zone 3 and produces transaminases in the thousands. The discriminator is the clinical context: ingestion history and APAP level/adducts for APAP, versus a hypotensive event with high LDH and rapid rise-and-fall for ischemia.</div></div><div class="rt"><div class="rtl">9. Goat running</div><div class="rte">The Sketchy goat is the recurring visual anchor for the DILI/hepatotoxin theme. Acetaminophen is the prototypic INTRINSIC (predictable, dose-dependent) hepatotoxin, contrasting with idiosyncratic DILI (e.g., isoniazid, amoxicillin-clavulanate) that is unpredictable and host-dependent.</div><div class="rtt">⚠️ WRONG to classify APAP as an idiosyncratic hepatotoxin — it is the model of intrinsic, dose-dependent toxicity with a predictable latency and a defined toxic threshold. The discriminator is dose-dependence: idiosyncratic DILI (INH, augmentin) occurs unpredictably and is not dose-related.</div></div><div class="rt"><div class="rtl">10. 3 g/day max / 325 mg tablet</div><div class="rte">Therapeutic ceiling is up to ~4 g/day in healthy adults (often reduced to 2–3 g/day in liver disease, elderly, or alcohol use); a common immediate-release tablet contains 325 mg. The single-acute toxic threshold in healthy adults is &gt;150 mg/kg or &gt;7.5–10 g. Acetaminophen remains the preferred analgesic/antipyretic in CKD and pregnancy at appropriate doses.</div><div class="rtt">⚠️ WRONG to apply the 4 g/day ceiling to a cirrhotic or chronic alcoholic — their glutathione reserve and CYP2E1 status lower the safe dose to ~2–3 g/day. The discriminator is the host; hidden APAP in combination products is the other common route to exceeding the ceiling.</div></div><div class="rt"><div class="rtl">11. &gt;3.5 mmol/L lab + transplant</div><div class="rte">Markers of severe outcome signal possible need for liver transplant: arterial lactate &gt;3.5 mmol/L (after fluid resuscitation), arterial pH &lt;7.3, or the King's College triad of INR &gt;6.5 + creatinine &gt;3.4 mg/dL + grade III/IV encephalopathy. These trigger urgent transplant-center referral while NAC continues.</div><div class="rtt">⚠️ WRONG to wait for transaminases to keep rising before considering transplant in fulminant APAP failure — the prognostic markers are synthetic/metabolic (pH, lactate, INR, creatinine, encephalopathy grade), not the transaminase level. The discriminator is the King's College criteria, which capture liver function and end-organ failure rather than enzyme leak.</div></div><div class="rt"><div class="rtl">12. Step 1: lavage + charcoal</div><div class="rte">Activated charcoal adsorbs unabsorbed acetaminophen in the gut and is most useful within ~1–2 hours of ingestion (best &lt;30–60 min), especially for large or co-ingestant overdoses. It is given to alert patients with a protected airway; gastric lavage is rarely used today.</div><div class="rtt">⚠️ WRONG to give activated charcoal to a vomiting or obtunded patient without airway protection — aspiration risk outweighs benefit, and charcoal is ineffective once absorption is complete (hours out). The discriminator is timing and a protected airway; charcoal does not replace NAC and is not useful late.</div></div><div class="rt"><div class="rtl">13. Step 2: NAC load 140 mg/kg</div><div class="rte">N-acetylcysteine is the antidote: it replenishes hepatic glutathione, directly scavenges NAPQI, and acts as an antioxidant and improves microcirculation. Oral loading dose is 140 mg/kg; the common IV protocol gives a loading bag (150 mg/kg) over ~1 hour. Start within 8 hours for maximal benefit, but never withhold it for late presentation.</div><div class="rtt">⚠️ WRONG to delay NAC pending the nomogram level in a high-risk or late presenter — start it empirically and stop later if the level falls below the treatment line. Anaphylactoid reactions to IV NAC are infusion-rate related and managed by slowing/pausing the infusion, not by switching away from NAC.</div></div><div class="rt"><div class="rtl">14. Step 3: 70 mg/kg Q4H x15-20</div><div class="rte">Oral NAC maintenance is 70 mg/kg every 4 hours for ~17 doses after the load; IV regimens deliver weight-based maintenance over ~21 hours. Continue NAC beyond the standard course if the patient still has rising INR/transaminases or a detectable APAP level — treat to biochemical and clinical recovery.</div><div class="rtt">⚠️ WRONG to stop NAC at the fixed dose count if INR/transaminases are still climbing or APAP remains detectable — extend therapy until liver tests improve and APAP clears. The discriminator is the trajectory of synthetic function and transaminases, not completing a set number of doses.</div></div><div class="rt"><div class="rtl">15. Step 4: AKI self-limited</div><div class="rte">Acetaminophen overdose can cause acute kidney injury via acute tubular necrosis (NAPQI is also generated renally) and via hepatorenal physiology in severe cases. In survivors the renal injury is usually self-limited and recovers with supportive care; dialysis is reserved for refractory metabolic derangements.</div><div class="rtt">⚠️ WRONG to assume a rising creatinine in APAP overdose always means the liver injury is fatal — APAP-associated ATN is typically reversible with supportive care, though creatinine is also one of the King's College transplant criteria. The discriminator is context: isolated recoverable ATN versus creatinine elevation as part of the multi-organ King's criteria.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dili_acetaminophen.html" title="DILI — Acetaminophen (APAP) Toxicity">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dili_offenders.html" title="DILI — Classic Offenders (Drug Hall)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypokalemia — treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Treat patient AND cause</b> — WRONG: "Just give IV potassium fast to a stable patient with K 3.0." Stable, asymptomatic, able-to-swallow patients get ORAL KCl — IV is reserved for severe (&lt;2.5), symptomatic, arrhythmia, or NPO patients. The discriminator is symptoms/severity and PO access, not the absolute number alone.</li><li><b>Stable or severe fork</b> — WRONG: choosing the route purely off the lab value. A patient with K 2.3 who is asymptomatic, eating, and hemodynamically stable can often start oral repletion; conversely a patient at 3.0 on digoxin with PVCs needs IV. Severity + symptoms + PO access determine the branch, not the number in isolation.</li><li><b>Oral KCl first line</b> — WRONG: "Use potassium bicarbonate/citrate for the vomiting patient with metabolic alkalosis." In chloride-depletion alkalosis (vomiting, NG suction, diuretics) you want KCl, which replaces both K and Cl. Reserve K-citrate/bicarbonate for hypokalemia WITH a metabolic acidosis (e.g., RTA, diarrhea).</li><li><b>IV KCl + rates</b> — WRONG: running 40 mEq/h peripherally to "fix it fast," or giving an IV K "bolus." Exceeding safe rates risks fatal hyperkalemia and cardiac arrest; high peripheral concentration causes phlebitis. There is no such thing as an IV potassium push — it is always a controlled infusion with monitoring.</li><li><b>Telemetry if severe</b> — WRONG: skipping telemetry in a digoxin patient because the K is "only mildly low." Hypokalemia markedly potentiates digoxin binding to the Na/K-ATPase and precipitates life-threatening arrhythmias even at modest K reductions — these patients must be monitored and aggressively repleted.</li><li><b>Mg key station</b> — WRONG: ordering only a potassium level and ignoring magnesium. Common causes (loop/thiazide diuretics, diarrhea, alcoholism, PPIs, cisplatin) deplete BOTH ions, and you will chase your tail repleting K while Mg-driven renal K wasting continues.</li><li><b>K won't correct — replace Mg first</b> — WRONG: "K isn't rising despite 200 mEq — give even more potassium." The board answer in a diuretic/alcoholic patient whose K won't budge is to CHECK AND REPLACE MAGNESIUM. Escalating K alone fails and risks rebound hyperkalemia once Mg is finally corrected.</li><li><b>Dextrose trap</b> — WRONG: choosing "KCl in D5W" for an acutely symptomatic hypokalemic patient. The insulin surge from dextrose shifts K into cells and acutely worsens the hypokalemia — the correct diluent is saline. (Note: this is the opposite scenario from treating hyperkalemia, where insulin+dextrose is therapeutic.)</li><li><b>Rebound hyperK risk</b> — WRONG: treating periodic-paralysis hypokalemia like a true deficit with large K loads. Once the trigger resolves the intracellular K re-emerges and the patient overshoots into hyperkalemia — give modest K and treat the underlying shift instead.</li><li><b>TPP treatment</b> — WRONG: "Load the TPP patient with high-dose IV potassium." Because the K is shifted (not lost), high doses cause rebound hyperkalemia when the attack breaks. Propranolol plus low-dose K plus treating the thyroid is the answer.</li><li><b>Cause-specific: vomiting</b> — WRONG: giving potassium without volume/chloride repletion in the vomiting patient. Until you restore Cl and volume, secondary hyperaldosteronism keeps wasting K — saline + KCl together, not KCl alone.</li><li><b>Cause-specific: diuretic</b> — WRONG: endlessly repleting oral K in a patient on a high-dose loop diuretic without addressing the drug. The durable fix is dose reduction and/or a K-sparing diuretic, plus correcting Mg — otherwise the wasting continues.</li><li><b>Liddle vs primary aldo tx</b> — WRONG: giving spironolactone for Liddle syndrome. Liddle is a channel defect with LOW aldosterone, so an aldosterone antagonist won't work — the answer is amiloride/triamterene (block ENaC directly). Spironolactone is correct only when aldosterone is the problem (primary hyperaldo).</li><li><b>Severe deficit magnitude</b> — WRONG: stopping repletion the instant serum K crosses into the normal range in a truly depleted patient. The intracellular compartment is still empty; under-replacement leads to recurrent hypokalemia. (The exception: shift states, where the deficit is apparent, not real.)</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Treat patient AND cause</div><div class="rte">Four pillars of repletion: (1) oral KCl is first line, (2) IV only if severe/symptomatic or NPO, (3) ALWAYS check and replace Mg, (4) never dilute K in dextrose alone. Treat the underlying cause (vomiting, diuretic, hyperaldo) — repletion alone fails if losses continue. As a rule of thumb each 10 mEq of K raises serum K by ~0.1 mEq/L, but the total-body deficit is far larger than the serum number implies.</div><div class="rtt">⚠️ WRONG: "Just give IV potassium fast to a stable patient with K 3.0." Stable, asymptomatic, able-to-swallow patients get ORAL KCl — IV is reserved for severe (&lt;2.5), symptomatic, arrhythmia, or NPO patients. The discriminator is symptoms/severity and PO access, not the absolute number alone.</div></div><div class="rt"><div class="rtl">2. Stable or severe fork</div><div class="rte">The treatment route forks on severity and PO access. Stable + able to take PO → oral KCl (left branch). Severe (K &lt;2.5), symptomatic (weakness, ileus, arrhythmia, ECG changes), or unable to swallow → IV KCl (right branch). Both arms still require Mg checking and cause-directed therapy.</div><div class="rtt">⚠️ WRONG: choosing the route purely off the lab value. A patient with K 2.3 who is asymptomatic, eating, and hemodynamically stable can often start oral repletion; conversely a patient at 3.0 on digoxin with PVCs needs IV. Severity + symptoms + PO access determine the branch, not the number in isolation.</div></div><div class="rt"><div class="rtl">3. Oral KCl first line</div><div class="rte">Oral KCl is preferred for mild-to-moderate hypokalemia (K roughly 2.5–3.5, no severe symptoms). It is safe, cannot cause an iatrogenic bolus, and the gut self-limits absorption. Typical dosing is 20–40 mEq per dose, repeated; potassium chloride is the salt of choice in most cases (corrects the common coexisting metabolic alkalosis/chloride loss).</div><div class="rtt">⚠️ WRONG: "Use potassium bicarbonate/citrate for the vomiting patient with metabolic alkalosis." In chloride-depletion alkalosis (vomiting, NG suction, diuretics) you want KCl, which replaces both K and Cl. Reserve K-citrate/bicarbonate for hypokalemia WITH a metabolic acidosis (e.g., RTA, diarrhea).</div></div><div class="rt"><div class="rtl">4. IV KCl + rates</div><div class="rte">IV KCl rate limits: peripheral line up to ~10 mEq/h (higher concentrations cause phlebitis/pain); central line up to ~10–20 mEq/h with continuous cardiac monitoring. Maximum concentration is roughly 10 mEq/100 mL peripherally, up to 20–40 mEq/100 mL centrally. Use saline as the diluent, never dextrose.</div><div class="rtt">⚠️ WRONG: running 40 mEq/h peripherally to "fix it fast," or giving an IV K "bolus." Exceeding safe rates risks fatal hyperkalemia and cardiac arrest; high peripheral concentration causes phlebitis. There is no such thing as an IV potassium push — it is always a controlled infusion with monitoring.</div></div><div class="rt"><div class="rtl">5. Telemetry if severe</div><div class="rte">Severe hypokalemia, symptomatic patients, ongoing IV repletion, or any patient on digoxin warrants continuous ECG/telemetry. Hypokalemia prolongs repolarization: ECG shows flattened T waves, U waves, ST depression, and QT/QU prolongation, predisposing to torsades and (with digoxin) to digoxin toxicity arrhythmias.</div><div class="rtt">⚠️ WRONG: skipping telemetry in a digoxin patient because the K is "only mildly low." Hypokalemia markedly potentiates digoxin binding to the Na/K-ATPase and precipitates life-threatening arrhythmias even at modest K reductions — these patients must be monitored and aggressively repleted.</div></div><div class="rt"><div class="rtl">6. Mg key station</div><div class="rte">Intracellular magnesium normally plugs the ROMK channel in the distal nephron, limiting K secretion. When Mg is depleted, ROMK is disinhibited (left open) and the kidney wastes K continuously. This is why Mg status must be checked and corrected in every hypokalemic patient — it is the rate-limiting step in refractory cases.</div><div class="rtt">⚠️ WRONG: ordering only a potassium level and ignoring magnesium. Common causes (loop/thiazide diuretics, diarrhea, alcoholism, PPIs, cisplatin) deplete BOTH ions, and you will chase your tail repleting K while Mg-driven renal K wasting continues.</div></div><div class="rt"><div class="rtl">7. K won't correct — replace Mg first</div><div class="rte">Refractory hypokalemia is hypomagnesemia until proven otherwise. With low Mg, ROMK stays open and renal K loss persists despite aggressive repletion. Correct Mg FIRST (e.g., IV magnesium sulfate 1–2 g) and the K will then respond; in coexisting deficiency repletion of both is given in parallel.</div><div class="rtt">⚠️ WRONG: "K isn't rising despite 200 mEq — give even more potassium." The board answer in a diuretic/alcoholic patient whose K won't budge is to CHECK AND REPLACE MAGNESIUM. Escalating K alone fails and risks rebound hyperkalemia once Mg is finally corrected.</div></div><div class="rt"><div class="rtl">8. Dextrose trap</div><div class="rte">Never use dextrose-containing fluid as the K diluent: glucose triggers endogenous insulin release, which drives K intracellularly and can transiently DROP serum K further before repletion catches up. Mix KCl in normal saline (or half-normal saline) instead.</div><div class="rtt">⚠️ WRONG: choosing "KCl in D5W" for an acutely symptomatic hypokalemic patient. The insulin surge from dextrose shifts K into cells and acutely worsens the hypokalemia — the correct diluent is saline. (Note: this is the opposite scenario from treating hyperkalemia, where insulin+dextrose is therapeutic.)</div></div><div class="rt"><div class="rtl">9. Rebound hyperK risk</div><div class="rte">In pure transcellular SHIFT states — thyrotoxic/hypokalemic periodic paralysis, beta-agonist excess, DKA before fluids/insulin equilibrate — total body K is normal and the K is merely hiding inside cells. Give SMALL, cautious doses: when the shift reverses, the K floods back out and aggressive repletion causes dangerous rebound hyperkalemia.</div><div class="rtt">⚠️ WRONG: treating periodic-paralysis hypokalemia like a true deficit with large K loads. Once the trigger resolves the intracellular K re-emerges and the patient overshoots into hyperkalemia — give modest K and treat the underlying shift instead.</div></div><div class="rt"><div class="rtl">10. TPP treatment</div><div class="rte">Thyrotoxic periodic paralysis (classically a young Asian male with acute proximal weakness and hyperthyroidism) is a shift phenomenon. Give non-selective beta-blockade — propranolol — to block the beta-adrenergic Na/K-ATPase-driven K shift, give only modest K, and definitively treat the hyperthyroidism. Avoid large K doses (rebound hyperK).</div><div class="rtt">⚠️ WRONG: "Load the TPP patient with high-dose IV potassium." Because the K is shifted (not lost), high doses cause rebound hyperkalemia when the attack breaks. Propranolol plus low-dose K plus treating the thyroid is the answer.</div></div><div class="rt"><div class="rtl">11. Cause-specific: vomiting</div><div class="rte">Vomiting/NG suction causes a chloride-responsive metabolic alkalosis with volume depletion and secondary hyperaldosteronism driving renal K loss. Treat with normal saline (restores volume and chloride, switches off aldosterone) PLUS KCl. Urine chloride is low (&lt;20), confirming saline-responsiveness.</div><div class="rtt">⚠️ WRONG: giving potassium without volume/chloride repletion in the vomiting patient. Until you restore Cl and volume, secondary hyperaldosteronism keeps wasting K — saline + KCl together, not KCl alone.</div></div><div class="rt"><div class="rtl">12. Cause-specific: diuretic</div><div class="rte">Loop and thiazide diuretics cause renal K (and Mg) wasting. Manage by repleting KCl (and Mg), reducing the diuretic dose if possible, and adding a K-sparing agent (amiloride, triamterene, or spironolactone) to offset ongoing loss. Always check Mg, which is commonly co-depleted.</div><div class="rtt">⚠️ WRONG: endlessly repleting oral K in a patient on a high-dose loop diuretic without addressing the drug. The durable fix is dose reduction and/or a K-sparing diuretic, plus correcting Mg — otherwise the wasting continues.</div></div><div class="rt"><div class="rtl">13. Liddle vs primary aldo tx</div><div class="rte">Liddle syndrome is a gain-of-function ENaC mutation (constitutively open sodium channel) causing HTN + hypokalemia + metabolic alkalosis with LOW aldosterone and LOW renin — treat with an ENaC blocker (amiloride or triamterene). Primary hyperaldosteronism (Conn) has HIGH aldosterone/low renin — treat with adrenalectomy (adenoma) or a mineralocorticoid-receptor antagonist (spironolactone/eplerenone) for bilateral hyperplasia.</div><div class="rtt">⚠️ WRONG: giving spironolactone for Liddle syndrome. Liddle is a channel defect with LOW aldosterone, so an aldosterone antagonist won't work — the answer is amiloride/triamterene (block ENaC directly). Spironolactone is correct only when aldosterone is the problem (primary hyperaldo).</div></div><div class="rt"><div class="rtl">14. Severe deficit magnitude</div><div class="rte">Serum K vastly underestimates total-body deficit because ~98% of body K is intracellular. As a guide, every ~0.3 mEq/L fall in serum K reflects roughly a 100 mEq total-body deficit, so a K of 3.0 may represent a 200–400 mEq shortfall. Repletion therefore takes more than the bare number suggests — except in pure shift states, where total body K is normal.</div><div class="rtt">⚠️ WRONG: stopping repletion the instant serum K crosses into the normal range in a truly depleted patient. The intracellular compartment is still empty; under-replacement leads to recurrent hypokalemia. (The exception: shift states, where the deficit is apparent, not real.)</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hypok_renal_loss.html" title="Hypokalemia — renal K loss">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperk_rta4.html" title="Hyperkalemia — Type 4 RTA (hyporeninemic hypoaldosteronism)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Kidney Transplant — Chronic Complications (Long Watch)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>After year 1, CV kills</b> — WRONG answer: naming chronic rejection or infection as the top late killer of transplant recipients. Beyond year 1 with a working graft, the leading cause of death is cardiovascular disease. Discriminator: 'cause of death late post-transplant' = CV disease; 'cause of graft LOSS late' = chronic allograft dysfunction.</li><li><b>CV disease tower</b> — WRONG answer: withholding a statin in a transplant recipient because they 'already take many drugs.' These patients are high CV risk and benefit from statins (watch the CNI–statin CYP3A interaction → use lower statin doses, avoid high-dose simvastatin). Discriminator: treat transplant patients as a high CV-risk group, with attention to statin–CNI interaction.</li><li><b>Post-transplant HTN → CCB</b> — WRONG answer: reflexively choosing an ACEi/ARB as first-line for early post-transplant HTN. ACEi/ARB can acutely drop graft GFR (and unmask renal-artery stenosis) and cause hyperkalemia/anemia; CCBs are a safer initial choice. Discriminator: early post-transplant HTN → CCB preferred; an ACEi/ARB causing a Cr spike → suspect graft RAS.</li><li><b>Transplant renal artery stenosis</b> — WRONG answer: ignoring TRAS in a patient with refractory HTN + flash pulmonary edema and just escalating antihypertensives. The unifying lesion is graft renal-artery stenosis. Discriminator: refractory HTN + flash pulmonary edema + Cr rise after ACEi/ARB, 3–24 months out → transplant RAS, image the graft artery.</li><li><b>ACE/ARB worsens RAS</b> — WRONG answer: interpreting a sharp creatinine rise after starting an ACEi/ARB as rejection or CNI toxicity. An abrupt Cr jump right after ACEi/ARB initiation is the classic clue to renal-artery stenosis. Discriminator: Cr spike temporally tied to ACEi/ARB start = suspect RAS, not rejection.</li><li><b>Skin cancer = #1 malignancy</b> — WRONG answer: assuming BCC is the most common skin cancer in transplant recipients (as in the general population). In transplant patients the SCC:BCC ratio is inverted — SCC predominates. Discriminator: 'most common malignancy post-transplant' = skin cancer, and 'most common skin cancer post-transplant' = SCC (not BCC).</li><li><b>Recurrent skin Ca → sirolimus</b> — WRONG answer: managing recurrent post-transplant skin cancer only with excision while leaving a high-intensity CNI regimen unchanged. Converting to an mTOR inhibitor and reducing net immunosuppression lowers recurrence. Discriminator: recurrent skin cancer → consider CNI-to-sirolimus switch, not surgery alone.</li><li><b>PTLD / EBV lymph node forest</b> — WRONG answer: jumping straight to multi-agent chemotherapy for PTLD without first reducing immunosuppression. The initial therapeutic step is reduction of immunosuppression (± rituximab); chemo is for failure/aggressive disease. Discriminator: EBV + new lymphadenopathy in a transplant patient → PTLD → reduce immunosuppression first; EBV D+/R- is highest risk.</li><li><b>BK virus castle</b> — WRONG answer: treating a BK-nephropathy creatinine rise as acute rejection by INCREASING immunosuppression. That accelerates BK replication and graft loss — the opposite of what's needed. Discriminator: rising Cr + BK viremia/decoy cells/SV40+ biopsy → BK nephropathy → REDUCE immunosuppression (don't pulse steroids).</li><li><b>BK → back off immunosuppression</b> — WRONG answer: giving an antiviral (cidofovir/ganciclovir) or escalating immunosuppression for BK nephropathy. Neither is correct — BK has no proven antiviral and escalation worsens it. Discriminator: BK nephropathy → reduce immunosuppression (contrast with CMV, which gets ganciclovir/valganciclovir).</li><li><b>Severe HTN 3-24mo → RAS</b> — WRONG answer: chalking up refractory HTN in the 3–24-month window to essential hypertension or medication nonadherence without imaging the graft vessel. The high-yield diagnosis is TRAS. Discriminator: timing (3–24 mo) + refractory HTN + flash pulmonary edema = transplant renal-artery stenosis.</li><li><b>Chronic allograft dysfunction</b> — WRONG answer: attributing late graft decline to a single cause without biopsy. Chronic graft dysfunction is multifactorial and biopsy directs management. Discriminator: recurrence of native disease — classically FSGS (early heavy proteinuria), also IgA nephropathy, MPGN, anti-GBM, diabetic nephropathy — can recur and destroy the new graft.</li><li><b>PJP prophylaxis sentry</b> — WRONG answer: stopping PJP prophylaxis at hospital discharge or substituting an antiviral for it. PJP needs sustained TMP-SMX for months; antivirals don't cover Pneumocystis. Discriminator: TMP-SMX = PJP prophylaxis of choice (broad bonus coverage), continued 6–12 months minimum.</li><li><b>Anemia corner</b> — WRONG answer: assuming post-transplant anemia is always CKD-related EPO deficiency. Drug-induced marrow suppression and parvovirus B19 (PRCA) are key reversible causes. Discriminator: review myelosuppressive transplant meds and consider parvovirus B19 before defaulting to an ESA for transplant anemia.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. After year 1, CV kills</div><div class="rte">After the first post-transplant year, in a patient with a functioning graft, CARDIOVASCULAR DISEASE is the leading cause of death (the graft outlives the patient's heart). Early on (&lt;1 yr) infection and surgical/technical/rejection events dominate; later, accelerated atherosclerosis driven by pre-existing CKD plus immunosuppression-worsened HTN, diabetes, and dyslipidemia takes over. Hence aggressive cardiovascular risk-factor management is a core long-term priority. Mnemonic timeline: early = infection/technical, late = the heart.</div><div class="rtt">⚠️ WRONG answer: naming chronic rejection or infection as the top late killer of transplant recipients. Beyond year 1 with a working graft, the leading cause of death is cardiovascular disease. Discriminator: 'cause of death late post-transplant' = CV disease; 'cause of graft LOSS late' = chronic allograft dysfunction.</div></div><div class="rt"><div class="rtl">2. CV disease tower</div><div class="rte">Immunosuppression amplifies every classic CV risk factor: steroids and tacrolimus → diabetes/NODAT and HTN; CNIs → HTN and dyslipidemia; mTOR inhibitors (sirolimus/everolimus) → marked hyperlipidemia. Layered on residual CKD, this produces accelerated atherosclerosis. Management mirrors high-risk primary prevention: statin therapy, tight BP and glycemic control, smoking cessation, and minimizing the offending immunosuppressant doses where possible.</div><div class="rtt">⚠️ WRONG answer: withholding a statin in a transplant recipient because they 'already take many drugs.' These patients are high CV risk and benefit from statins (watch the CNI–statin CYP3A interaction → use lower statin doses, avoid high-dose simvastatin). Discriminator: treat transplant patients as a high CV-risk group, with attention to statin–CNI interaction.</div></div><div class="rt"><div class="rtl">3. Post-transplant HTN → CCB</div><div class="rte">Post-transplant hypertension is very common and largely CNI-driven (afferent arteriolar vasoconstriction, sodium retention). Dihydropyridine calcium channel blockers (amlodipine, nifedipine) are frequently first-line because they counteract the CNI's afferent vasoconstriction and lack the GFR-dropping risk that ACEi/ARB carry early on or in graft renal-artery stenosis. (Non-DHP CCBs diltiazem/verapamil also raise CNI levels via CYP3A — useful sometimes, but watch the trough.)</div><div class="rtt">⚠️ WRONG answer: reflexively choosing an ACEi/ARB as first-line for early post-transplant HTN. ACEi/ARB can acutely drop graft GFR (and unmask renal-artery stenosis) and cause hyperkalemia/anemia; CCBs are a safer initial choice. Discriminator: early post-transplant HTN → CCB preferred; an ACEi/ARB causing a Cr spike → suspect graft RAS.</div></div><div class="rt"><div class="rtl">4. Transplant renal artery stenosis</div><div class="rte">Transplant renal-artery stenosis (TRAS) is the most common vascular complication, typically appearing 3–24 months post-transplant at the surgical anastomosis. Triad: severe/refractory hypertension, otherwise-unexplained rising creatinine, and recurrent flash pulmonary edema. A bruit over the graft may be heard. Screen with Doppler ultrasound; confirm with MRA/CTA/angiography. Treat with angioplasty ± stent.</div><div class="rtt">⚠️ WRONG answer: ignoring TRAS in a patient with refractory HTN + flash pulmonary edema and just escalating antihypertensives. The unifying lesion is graft renal-artery stenosis. Discriminator: refractory HTN + flash pulmonary edema + Cr rise after ACEi/ARB, 3–24 months out → transplant RAS, image the graft artery.</div></div><div class="rt"><div class="rtl">5. ACE/ARB worsens RAS</div><div class="rte">In renal-artery stenosis, glomerular filtration depends on angiotensin-II-mediated EFFERENT arteriolar constriction. ACEi/ARB remove that efferent tone, drop intraglomerular pressure, and cause an acute GFR fall — a creatinine spike that unmasks the stenosis. In a single functioning transplant kidney this is functionally bilateral RAS physiology, so the Cr rise can be dramatic.</div><div class="rtt">⚠️ WRONG answer: interpreting a sharp creatinine rise after starting an ACEi/ARB as rejection or CNI toxicity. An abrupt Cr jump right after ACEi/ARB initiation is the classic clue to renal-artery stenosis. Discriminator: Cr spike temporally tied to ACEi/ARB start = suspect RAS, not rejection.</div></div><div class="rt"><div class="rtl">6. Skin cancer = #1 malignancy</div><div class="rte">Skin cancer is the MOST COMMON malignancy after solid-organ transplant, driven by chronic immunosuppression plus UV exposure and oncogenic viruses (HPV). Notably, squamous cell carcinoma (SCC) outnumbers basal cell carcinoma (BCC) in transplant patients — the REVERSE of the general population — and SCCs are more aggressive. Prevention: rigorous sun protection, dermatologic surveillance, and reducing immunosuppression intensity.</div><div class="rtt">⚠️ WRONG answer: assuming BCC is the most common skin cancer in transplant recipients (as in the general population). In transplant patients the SCC:BCC ratio is inverted — SCC predominates. Discriminator: 'most common malignancy post-transplant' = skin cancer, and 'most common skin cancer post-transplant' = SCC (not BCC).</div></div><div class="rt"><div class="rtl">7. Recurrent skin Ca → sirolimus</div><div class="rte">For recurrent/multiple non-melanoma skin cancers, switching from a CNI to an mTOR inhibitor (sirolimus/everolimus) reduces new skin-cancer development because mTOR inhibitors have intrinsic antineoplastic/antiangiogenic activity in addition to immunosuppression. This is the 'two-birds' move: maintain immunosuppression while lowering oncogenic drive. Combine with reduced overall immunosuppression and aggressive dermatologic care.</div><div class="rtt">⚠️ WRONG answer: managing recurrent post-transplant skin cancer only with excision while leaving a high-intensity CNI regimen unchanged. Converting to an mTOR inhibitor and reducing net immunosuppression lowers recurrence. Discriminator: recurrent skin cancer → consider CNI-to-sirolimus switch, not surgery alone.</div></div><div class="rt"><div class="rtl">8. PTLD / EBV lymph node forest</div><div class="rte">Post-transplant lymphoproliferative disorder (PTLD) is an EBV-driven proliferation of B cells (ranging from polyclonal hyperplasia to monoclonal B-cell lymphoma) arising under immunosuppression. Highest risk is the EBV D+/R- recipient (seronegative recipient who acquires primary EBV) and heavy/lymphocyte-depleting immunosuppression. Presents with lymphadenopathy, B symptoms, or extranodal/graft masses. First step in management is REDUCING immunosuppression; add rituximab (anti-CD20) for CD20+ disease, and chemotherapy for aggressive/refractory lymphoma.</div><div class="rtt">⚠️ WRONG answer: jumping straight to multi-agent chemotherapy for PTLD without first reducing immunosuppression. The initial therapeutic step is reduction of immunosuppression (± rituximab); chemo is for failure/aggressive disease. Discriminator: EBV + new lymphadenopathy in a transplant patient → PTLD → reduce immunosuppression first; EBV D+/R- is highest risk.</div></div><div class="rt"><div class="rtl">9. BK virus castle</div><div class="rte">BK polyomavirus reactivates under immunosuppression and causes BK nephropathy: a rising creatinine with tubulointerstitial inflammation that mimics rejection. Screening is by serial plasma BK PCR (viremia precedes nephropathy); urine cytology may show 'decoy cells' (infected tubular cells with intranuclear inclusions). Biopsy shows tubular cytopathic changes with SV40-positive nuclei. Because it mimics rejection, distinguishing BK nephropathy from acute rejection (which require opposite treatments) is high-yield.</div><div class="rtt">⚠️ WRONG answer: treating a BK-nephropathy creatinine rise as acute rejection by INCREASING immunosuppression. That accelerates BK replication and graft loss — the opposite of what's needed. Discriminator: rising Cr + BK viremia/decoy cells/SV40+ biopsy → BK nephropathy → REDUCE immunosuppression (don't pulse steroids).</div></div><div class="rt"><div class="rtl">10. BK → back off immunosuppression</div><div class="rte">The treatment of BK virus nephropathy is REDUCTION of immunosuppression to let cellular immunity clear the virus — there is no reliably effective antiviral. (Cidofovir, leflunomide, and IVIG are sometimes tried but lack strong evidence and are not the boards answer.) The therapeutic balance is reducing immunosuppression enough to control BK without tipping into rejection, guided by serial BK PCR.</div><div class="rtt">⚠️ WRONG answer: giving an antiviral (cidofovir/ganciclovir) or escalating immunosuppression for BK nephropathy. Neither is correct — BK has no proven antiviral and escalation worsens it. Discriminator: BK nephropathy → reduce immunosuppression (contrast with CMV, which gets ganciclovir/valganciclovir).</div></div><div class="rt"><div class="rtl">11. Severe HTN 3-24mo → RAS</div><div class="rte">A board-pattern timing clue: severe or refractory hypertension developing 3–24 months post-transplant should trigger evaluation for transplant renal-artery stenosis, especially with rising creatinine, flash pulmonary edema, a graft bruit, or a Cr spike after ACEi/ARB. Confirm with Doppler ultrasound then MRA/CTA/angiography; treat with angioplasty ± stenting.</div><div class="rtt">⚠️ WRONG answer: chalking up refractory HTN in the 3–24-month window to essential hypertension or medication nonadherence without imaging the graft vessel. The high-yield diagnosis is TRAS. Discriminator: timing (3–24 mo) + refractory HTN + flash pulmonary edema = transplant renal-artery stenosis.</div></div><div class="rt"><div class="rtl">12. Chronic allograft dysfunction</div><div class="rte">Chronic allograft dysfunction (slowly rising Cr/proteinuria with graft fibrosis) is MULTIFACTORIAL: chronic antibody-mediated rejection (donor-specific antibodies, transplant glomerulopathy), chronic CNI nephrotoxicity, recurrent or de-novo glomerulonephritis, interstitial fibrosis/tubular atrophy (IF/TA), BK nephropathy, and uncontrolled HTN. Allograft biopsy is the key step to identify the dominant, potentially treatable cause and is the leading cause of late graft LOSS (vs CV disease being the leading cause of patient death).</div><div class="rtt">⚠️ WRONG answer: attributing late graft decline to a single cause without biopsy. Chronic graft dysfunction is multifactorial and biopsy directs management. Discriminator: recurrence of native disease — classically FSGS (early heavy proteinuria), also IgA nephropathy, MPGN, anti-GBM, diabetic nephropathy — can recur and destroy the new graft.</div></div><div class="rt"><div class="rtl">13. PJP prophylaxis sentry</div><div class="rte">Pneumocystis jirovecii pneumonia (PJP) prophylaxis with TMP-SMX is given for ~6–12 months post-transplant (often lifelong if immunosuppression is heavy or after rejection treatment). TMP-SMX is the agent of choice and conveniently also covers Toxoplasma, Nocardia, Listeria, and many urinary pathogens. Alternatives for sulfa allergy/intolerance: atovaquone, dapsone (check G6PD), or inhaled pentamidine. Watch for TMP-SMX-related hyperkalemia and a benign creatinine rise (tubular secretion blockade).</div><div class="rtt">⚠️ WRONG answer: stopping PJP prophylaxis at hospital discharge or substituting an antiviral for it. PJP needs sustained TMP-SMX for months; antivirals don't cover Pneumocystis. Discriminator: TMP-SMX = PJP prophylaxis of choice (broad bonus coverage), continued 6–12 months minimum.</div></div><div class="rt"><div class="rtl">14. Anemia corner</div><div class="rte">Post-transplant anemia is common and multifactorial: marrow-suppressive drugs (mycophenolate, azathioprine, valganciclovir, TMP-SMX, sirolimus), residual CKD with low erythropoietin, iron deficiency, ACEi/ARB use, and viral causes (CMV, parvovirus B19 → pure red cell aplasia). Work-up parallels CKD anemia (iron studies, drug review, infection screen); correct iron, adjust myelosuppressive drugs, and use an ESA if EPO-deficient.</div><div class="rtt">⚠️ WRONG answer: assuming post-transplant anemia is always CKD-related EPO deficiency. Drug-induced marrow suppression and parvovirus B19 (PRCA) are key reversible causes. Discriminator: review myelosuppressive transplant meds and consider parvovirus B19 before defaulting to an ESA for transplant anemia.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ktx_infection_timeline.html" title="Kidney Transplant — CMV Risk, Timing &amp; Clinical Spectrum (CMV 1)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ktx_contraindications.html" title="Kidney Transplant — Contraindications &amp; Who Gets Transplanted">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

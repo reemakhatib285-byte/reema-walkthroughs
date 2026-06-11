@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — ICD (Anti-Death Device)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>ICD blocks VT/VF, not pump failure</b> — WRONG answer: 'an ICD will improve this patient's dyspnea and functional class.' Discriminator: ICDs reduce arrhythmic mortality only; symptom/EF improvement comes from GDMT (ARNI, β-blocker, MRA, SGLT2i) and CRT. If the stem asks what improves symptoms in HFrEF, never pick the ICD.</li><li><b>Secondary prevention — easy</b> — WRONG answer: 'wait 3 months on GDMT and reassess EF before implanting' in a survived-VF patient. Discriminator: the GDMT-optimization and EF-threshold rules apply only to PRIMARY prevention; a documented prior VT/VF arrest mandates a secondary-prevention ICD now.</li><li><b>Rule out reversible cause</b> — WRONG answer: 'implant an ICD' for VF occurring during an acute STEMI. Discriminator: VT/VF within the first 48 h of an MI is from acute ischemia (a reversible cause) and does NOT by itself qualify for an ICD; revascularize and reassess later.</li><li><b>Primary prevention — timing rules</b> — WRONG answer: 'implant primary-prevention ICD based on a single low EF at presentation.' Discriminator: primary-prevention indication requires EF reassessment AFTER an adequate course of GDMT (≥3 months) and after the etiology-specific MI/revascularization waiting period — not the index EF.</li><li><b>&gt;40 days post-MI</b> — WRONG answer: 'implant an ICD now to protect this low-EF patient through the high-risk early post-MI period.' Discriminator: early post-MI ICD (DINAMIT/IRIS) gives no mortality benefit; the correct answer is to optimize GDMT, treat ischemia, and reassess EF at ≥40 days (or ≥90 days post-revascularization).</li><li><b>Reassess EF first</b> — WRONG answer: 'the EF at the time of MI is what determines ICD eligibility.' Discriminator: eligibility is based on the EF measured on optimal medical therapy after the waiting period, not the acute/index EF, precisely because recovery is common.</li><li><b>Chronic ischemic HFrEF</b> — WRONG answer: 'NYHA IV chronic ischemic patient should get a standard primary-prevention ICD.' Discriminator: the chronic-ischemic indication covers NYHA I–III (per MADIT-II/SCD-HeFT); ambulatory NYHA IV is generally excluded unless the patient is a CRT-D, transplant, or LVAD candidate.</li><li><b>Nonischemic CM nuance</b> — WRONG answer: 'ICD primary prevention benefits NICM patients as strongly as ischemic patients.' Discriminator: DANISH showed the mortality benefit in NICM is uncertain overall and concentrated in younger patients; don't equate NICM with ischemic CM for ICD benefit.</li><li><b>&gt;3 mo on GDMT (NICM)</b> — WRONG answer: 'newly diagnosed NICM with EF 25% — implant an ICD today.' Discriminator: a freshly diagnosed cardiomyopathy needs ≥3 months of optimized GDMT and EF reassessment first; the correct next step is to titrate medical therapy, not implant immediately.</li><li><b>ICD does NOT improve symptoms</b> — WRONG answer: 'add an ICD to improve quality of life in a symptomatic HFrEF patient.' Discriminator: QOL and symptom benefit come from GDMT and CRT; an ICD is neutral-to-negative for QOL and is chosen only for sudden-death prevention.</li><li><b>NYHA IV refractory — no ICD</b> — WRONG answer: 'every end-stage / NYHA IV heart failure patient should receive an ICD.' Discriminator: in refractory NYHA IV without a transplant/LVAD/CRT plan, an ICD offers no survival benefit because non-sudden death predominates — focus on advanced therapies or palliative care instead.</li><li><b>SCD ~50% of HF deaths</b> — WRONG answer: 'sudden cardiac death is most likely in the sickest NYHA IV patients, so they benefit most from ICDs.' Discriminator: the PROPORTION of deaths that are sudden is highest in less-symptomatic patients; NYHA IV patients die mostly of pump failure, so they benefit least from an ICD.</li><li><b>CRT-D if both indicated</b> — WRONG answer: 'place a plain ICD' in a NYHA III, EF 28%, sinus-rhythm patient with LBBB and QRS 160 ms. Discriminator: this patient meets CRT criteria too, so the correct device is CRT-D; a defibrillator alone misses the symptom/remodeling benefit of resynchronization.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ICD blocks VT/VF, not pump failure</div><div class="rte">The ICD is purely an 'anti-death' device: it senses sustained VT/VF and delivers anti-tachycardia pacing or a defibrillating shock to abort sudden cardiac death. It does NOT improve symptoms, exercise capacity, ejection fraction, or reverse remodeling — that is the job of GDMT and CRT. Mechanistically it converts a potentially-arrhythmic death into a non-sudden (pump-failure) death down the line, so it only helps patients whose competing risk of dying from pump failure is not already dominant. Mnemonic: ICD = 'shock box,' not a 'feel-better box.'</div><div class="rtt">⚠️ WRONG answer: 'an ICD will improve this patient's dyspnea and functional class.' Discriminator: ICDs reduce arrhythmic mortality only; symptom/EF improvement comes from GDMT (ARNI, β-blocker, MRA, SGLT2i) and CRT. If the stem asks what improves symptoms in HFrEF, never pick the ICD.</div></div><div class="rt"><div class="rtl">2. Secondary prevention — easy</div><div class="rte">Secondary prevention is the slam-dunk indication: a patient who has ALREADY survived a cardiac arrest from VT/VF, or who has hemodynamically significant sustained VT (with or without structural heart disease), gets an ICD regardless of EF. No GDMT waiting period and no EF threshold is required because the event itself defines the risk. This is the one setting where EF can be normal and an ICD is still indicated.</div><div class="rtt">⚠️ WRONG answer: 'wait 3 months on GDMT and reassess EF before implanting' in a survived-VF patient. Discriminator: the GDMT-optimization and EF-threshold rules apply only to PRIMARY prevention; a documented prior VT/VF arrest mandates a secondary-prevention ICD now.</div></div><div class="rt"><div class="rtl">3. Rule out reversible cause</div><div class="rte">Before any ICD, exclude a fully REVERSIBLE trigger of the arrhythmia: acute ischemia/MI within 48 hours, electrolyte derangement (hypokalemia, hypomagnesemia), drug toxicity (QT-prolonging agents, digoxin), or a transient metabolic insult. If the cause is reversible and correctable, fix it instead — an ICD is not indicated because the arrhythmia is not expected to recur once the trigger is gone. Mnemonic on the wall: the 'RIP' caution list = Reversible, Immediately post-MI, POOR prognosis, Terminal, Improving EF, Myocarditis, early GDMT, Secondary-fixed.</div><div class="rtt">⚠️ WRONG answer: 'implant an ICD' for VF occurring during an acute STEMI. Discriminator: VT/VF within the first 48 h of an MI is from acute ischemia (a reversible cause) and does NOT by itself qualify for an ICD; revascularize and reassess later.</div></div><div class="rt"><div class="rtl">4. Primary prevention — timing rules</div><div class="rte">Primary prevention targets patients who have NOT yet had a sustained arrhythmia but are at high risk because of severe LV dysfunction. The core threshold is LVEF ≤35% on optimal GDMT (NYHA class II–III), or LVEF ≤30% with NYHA class I; CRT-D is used when CRT criteria are also met. The timing rules (waiting periods by etiology) exist because EF often recovers with GDMT or revascularization, which would make the device unnecessary.</div><div class="rtt">⚠️ WRONG answer: 'implant primary-prevention ICD based on a single low EF at presentation.' Discriminator: primary-prevention indication requires EF reassessment AFTER an adequate course of GDMT (≥3 months) and after the etiology-specific MI/revascularization waiting period — not the index EF.</div></div><div class="rt"><div class="rtl">5. &gt;40 days post-MI</div><div class="rte">For ischemic cardiomyopathy you must wait ≥40 days after an MI (and ≥90 days after revascularization, CABG or PCI) before a primary-prevention ICD. The DINAMIT and IRIS trials showed NO survival benefit — and a shift toward non-arrhythmic death — when ICDs were implanted in the early post-MI window. The hourglass marks this mandatory delay.</div><div class="rtt">⚠️ WRONG answer: 'implant an ICD now to protect this low-EF patient through the high-risk early post-MI period.' Discriminator: early post-MI ICD (DINAMIT/IRIS) gives no mortality benefit; the correct answer is to optimize GDMT, treat ischemia, and reassess EF at ≥40 days (or ≥90 days post-revascularization).</div></div><div class="rt"><div class="rtl">6. Reassess EF first</div><div class="rte">The whole point of the waiting period is that EF frequently RECOVERS on GDMT and after revascularization — a stunned/hibernating myocardium can regain function. Reassess LVEF with repeat echo at the end of the waiting window; if EF has climbed above the threshold (&gt;35%), the ICD is no longer indicated. Implanting before reassessment exposes the patient to device risks (infection, lead complications, inappropriate shocks) with no benefit.</div><div class="rtt">⚠️ WRONG answer: 'the EF at the time of MI is what determines ICD eligibility.' Discriminator: eligibility is based on the EF measured on optimal medical therapy after the waiting period, not the acute/index EF, precisely because recovery is common.</div></div><div class="rt"><div class="rtl">7. Chronic ischemic HFrEF</div><div class="rte">For chronic (stable, remote-MI) ischemic cardiomyopathy the evidence is strongest: MADIT-II supports an ICD at LVEF ≤30% (even NYHA I), and SCD-HeFT supports LVEF ≤35% with NYHA class II–III. These patients have a fixed scar substrate that sustains re-entrant VT, so the device provides a clear, durable mortality benefit — unlike the early post-MI or NICM settings.</div><div class="rtt">⚠️ WRONG answer: 'NYHA IV chronic ischemic patient should get a standard primary-prevention ICD.' Discriminator: the chronic-ischemic indication covers NYHA I–III (per MADIT-II/SCD-HeFT); ambulatory NYHA IV is generally excluded unless the patient is a CRT-D, transplant, or LVAD candidate.</div></div><div class="rt"><div class="rtl">8. Nonischemic CM nuance</div><div class="rte">In nonischemic dilated cardiomyopathy (NICM) the benefit is LESS robust. The DANISH trial found no significant all-cause mortality reduction from primary-prevention ICDs in NICM, though a prespecified subgroup of younger patients (roughly &lt;60–68 years) did benefit, likely because they have fewer competing non-sudden causes of death. Require ≥3 months of optimal GDMT and individualize the decision; many NICM patients on modern GDMT recover EF.</div><div class="rtt">⚠️ WRONG answer: 'ICD primary prevention benefits NICM patients as strongly as ischemic patients.' Discriminator: DANISH showed the mortality benefit in NICM is uncertain overall and concentrated in younger patients; don't equate NICM with ischemic CM for ICD benefit.</div></div><div class="rt"><div class="rtl">9. &gt;3 mo on GDMT (NICM)</div><div class="rte">For nonischemic (and newly-diagnosed) cardiomyopathy, give ≥3 months of optimal four-pillar GDMT (ARNI/ACEi, evidence-based β-blocker, MRA, SGLT2i) before reassessing EF and deciding on a primary-prevention ICD. Many patients reclassify out of the ≤35% threshold once therapy is titrated. Premature implantation is the classic exam error — 'don't implant too early.'</div><div class="rtt">⚠️ WRONG answer: 'newly diagnosed NICM with EF 25% — implant an ICD today.' Discriminator: a freshly diagnosed cardiomyopathy needs ≥3 months of optimized GDMT and EF reassessment first; the correct next step is to titrate medical therapy, not implant immediately.</div></div><div class="rt"><div class="rtl">10. ICD does NOT improve symptoms</div><div class="rte">Reinforcing the central concept: an ICD does not improve symptoms, quality of life, or remodeling, and can even worsen QOL through inappropriate shocks and device-related anxiety. Its only proven benefit is reducing arrhythmic (sudden) death. Pair it with CRT (→ CRT-D) when symptomatic improvement and resynchronization are also desired.</div><div class="rtt">⚠️ WRONG answer: 'add an ICD to improve quality of life in a symptomatic HFrEF patient.' Discriminator: QOL and symptom benefit come from GDMT and CRT; an ICD is neutral-to-negative for QOL and is chosen only for sudden-death prevention.</div></div><div class="rt"><div class="rtl">11. NYHA IV refractory — no ICD</div><div class="rte">Avoid a stand-alone ICD in refractory, ambulatory NYHA IV / Stage D heart failure unless the patient is a candidate for transplant, LVAD, or CRT-D. In end-stage disease the competing risk of pump-failure death dominates, so preventing arrhythmic death merely converts the mode of dying without extending meaningful survival. Expected survival &lt;1 year (non-bridge) is a contraindication.</div><div class="rtt">⚠️ WRONG answer: 'every end-stage / NYHA IV heart failure patient should receive an ICD.' Discriminator: in refractory NYHA IV without a transplant/LVAD/CRT plan, an ICD offers no survival benefit because non-sudden death predominates — focus on advanced therapies or palliative care instead.</div></div><div class="rt"><div class="rtl">12. SCD ~50% of HF deaths</div><div class="rte">Sudden cardiac death — usually from VT/VF — accounts for roughly half of all heart-failure deaths, and SCD is proportionally MORE common in milder HF (NYHA II) while pump-failure death dominates in advanced HF (NYHA IV). This inverse relationship is the rationale for offering ICDs earlier in the disease and explains why advanced-HF patients derive less ICD benefit.</div><div class="rtt">⚠️ WRONG answer: 'sudden cardiac death is most likely in the sickest NYHA IV patients, so they benefit most from ICDs.' Discriminator: the PROPORTION of deaths that are sudden is highest in less-symptomatic patients; NYHA IV patients die mostly of pump failure, so they benefit least from an ICD.</div></div><div class="rt"><div class="rtl">13. CRT-D if both indicated</div><div class="rte">When a patient meets BOTH ICD criteria and CRT criteria (LVEF ≤35%, sinus rhythm, NYHA II–IV on GDMT, with LBBB and QRS ≥150 ms giving the strongest benefit), implant a combined CRT-D rather than two separate devices. CRT resynchronizes the ventricles to improve symptoms, EF, and remodeling, while the defibrillator component covers sudden death — addressing both pump failure and arrhythmic risk in one device.</div><div class="rtt">⚠️ WRONG answer: 'place a plain ICD' in a NYHA III, EF 28%, sinus-rhythm patient with LBBB and QRS 160 ms. Discriminator: this patient meets CRT criteria too, so the correct device is CRT-D; a defibrillator alone misses the symptom/remodeling benefit of resynchronization.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_drugs.html" title="Heart Failure — HFrEF drugs (TABLE 265-2)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_pathophys.html" title="Heart Failure — Pathophysiology correlation of general therapeutic HF">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

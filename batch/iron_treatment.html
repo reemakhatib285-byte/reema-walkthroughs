@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Iron / Microcytic — iron deficiency treatment (oral, IV, monitoring)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>FeSO4 — first-line oral</b> — WRONG: starting an expensive ferric salt or IV iron first-line for simple, uncomplicated IDA. Ferrous sulfate is the proven, low-cost standard; reserve newer ferric formulations and IV iron for intolerance, malabsorption, or failure of oral therapy.</li><li><b>Take before meals</b> — WRONG: routinely advising patients to take iron WITH meals or antacids to reduce nausea. Food and acid-suppressants markedly cut absorption; if GI upset is limiting, lower the dose or switch to alternate-day dosing rather than pairing it with food/PPIs that defeat the therapy.</li><li><b>Alternate-day dosing</b> — WRONG: thinking three-times-daily dosing absorbs more iron and works faster. The dose-induced hepcidin spike means TID is NOT superior — alternate-day/once-daily dosing actually absorbs more per milligram given and is better tolerated. More frequent ≠ more absorbed.</li><li><b>Lower-elemental salts</b> — WRONG: comparing tablets by total milligrams rather than ELEMENTAL iron. A 325 mg fumarate tablet (~106 mg elemental) is not equivalent to a 325 mg sulfate tablet (~65 mg elemental) — always dose by elemental iron, or you may under- or over-treat.</li><li><b>3 months to refill stores</b> — WRONG: stopping iron as soon as the hemoglobin normalizes. Hb corrects before stores refill; discontinuing then leaves ferritin low and guarantees recurrence. Treat to a target ferritin, not just a normal Hb.</li><li><b>Hepcidin/DMT1 absorption block</b> — WRONG: assuming absorption is simply proportional to how often you dose. The hepcidin feedback caps short-interval absorption, so doubling frequency does not double uptake — it can lower fractional absorption and add side effects.</li><li><b>Unabsorbed iron / GI side effects</b> — WRONG: mistaking benign iron-induced black stool for melena (GI bleeding). Iron causes greenish-black, NON-tarry, guaiac-negative stool; true melena from upper GI bleed is sticky, tarry, and occult-blood positive. Don't trigger an unnecessary bleed workup — but also don't ignore real melena attributing it to iron.</li><li><b>IV iron indications checklist</b> — WRONG: defaulting to IV iron for simple uncomplicated IDA with a working gut. Oral iron is first-line; IV is costlier and carries infusion-reaction risk. Reserve IV for the specific indications above — choosing IV when oral would work is a board pitfall.</li><li><b>IV safety / anaphylaxis</b> — WRONG: avoiding IV iron entirely out of fear of anaphylaxis, or routinely giving a test dose for modern agents. Serious reactions are rare with current preparations; the test-dose requirement applied to old high-molecular-weight dextran, not to ferric carboxymaltose/iron sucrose.</li><li><b>FCM — largest single dose</b> — WRONG: forgetting hypophosphatemia as the characteristic FCM adverse effect. Repeated or high-dose FCM can cause symptomatic hypophosphatemia (bone pain, osteomalacia, weakness) — monitor phosphate, especially with recurrent infusions, rather than attributing symptoms elsewhere.</li><li><b>1-2 rule reticulocyte response</b> — WRONG: declaring oral iron a failure after only a few days because Hb hasn't moved. Hb rises slowly (~1 g/dL per 2–3 weeks); the first thing to check is the reticulocyte response at ~1 week. Re-evaluating Hb too early causes premature, unnecessary switches to IV iron.</li><li><b>No-response detective board</b> — WRONG: assuming nonresponse automatically means the patient needs IV iron. First confirm adherence, exclude ongoing bleeding and malabsorption (check anti-tTG for celiac), and re-verify the diagnosis — switching a misdiagnosed thalassemia or ACD patient to IV iron just adds iron they don't need.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. FeSO4 — first-line oral</div><div class="rte">Ferrous SULFATE is first-line oral therapy: a 325 mg tablet provides ~65 mg ELEMENTAL iron (ferrous sulfate is ~20% elemental). It is the cheapest, most studied option; total daily target is ~100–200 mg elemental iron, increasingly given as a single daily or alternate-day dose.</div><div class="rtt">⚠️ WRONG: starting an expensive ferric salt or IV iron first-line for simple, uncomplicated IDA. Ferrous sulfate is the proven, low-cost standard; reserve newer ferric formulations and IV iron for intolerance, malabsorption, or failure of oral therapy.</div></div><div class="rt"><div class="rtl">2. Take before meals</div><div class="rte">Take oral iron on an EMPTY stomach (1 hr before or 2 hr after meals), ideally with vitamin C / orange juice to enhance Fe3+→Fe2+ reduction and absorption. Separate it from calcium/dairy, antacids, PPIs, and tea/coffee, which all impair uptake.</div><div class="rtt">⚠️ WRONG: routinely advising patients to take iron WITH meals or antacids to reduce nausea. Food and acid-suppressants markedly cut absorption; if GI upset is limiting, lower the dose or switch to alternate-day dosing rather than pairing it with food/PPIs that defeat the therapy.</div></div><div class="rt"><div class="rtl">3. Alternate-day dosing</div><div class="rte">Newer evidence: ONCE-daily or ALTERNATE-day dosing achieves greater fractional absorption than divided multiple-daily doses, because each dose triggers a transient hepcidin rise that blunts absorption of subsequent doses for ~24 hr. Spacing doses also reduces GI side effects and improves adherence.</div><div class="rtt">⚠️ WRONG: thinking three-times-daily dosing absorbs more iron and works faster. The dose-induced hepcidin spike means TID is NOT superior — alternate-day/once-daily dosing actually absorbs more per milligram given and is better tolerated. More frequent ≠ more absorbed.</div></div><div class="rt"><div class="rtl">4. Lower-elemental salts</div><div class="rte">Alternative oral salts differ in elemental content and tolerability: ferrous GLUCONATE (~27–36 mg elemental/tab, ~12%), ferrous FUMARATE (~33% elemental, ~106 mg/325 mg tab), plus sucrosomial iron, ferric maltol, and ferric citrate (also lowers phosphate in CKD). Lower elemental dose can mean fewer GI symptoms.</div><div class="rtt">⚠️ WRONG: comparing tablets by total milligrams rather than ELEMENTAL iron. A 325 mg fumarate tablet (~106 mg elemental) is not equivalent to a 325 mg sulfate tablet (~65 mg elemental) — always dose by elemental iron, or you may under- or over-treat.</div></div><div class="rt"><div class="rtl">5. 3 months to refill stores</div><div class="rte">Continue oral iron for AT LEAST 3 months AFTER the hemoglobin normalizes to rebuild ferritin/storage iron — total course is often 4–6 months. Stopping when Hb corrects leaves stores empty and the anemia relapses. Recheck ferritin/CBC to confirm repletion.</div><div class="rtt">⚠️ WRONG: stopping iron as soon as the hemoglobin normalizes. Hb corrects before stores refill; discontinuing then leaves ferritin low and guarantees recurrence. Treat to a target ferritin, not just a normal Hb.</div></div><div class="rt"><div class="rtl">6. Hepcidin/DMT1 absorption block</div><div class="rte">Each oral iron dose transiently raises serum hepcidin, which degrades enterocyte ferroportin and blunts absorption of the next dose for roughly 24 hours. This pharmacology is exactly why ALTERNATE-day/once-daily dosing maximizes net absorption per dose taken.</div><div class="rtt">⚠️ WRONG: assuming absorption is simply proportional to how often you dose. The hepcidin feedback caps short-interval absorption, so doubling frequency does not double uptake — it can lower fractional absorption and add side effects.</div></div><div class="rt"><div class="rtl">7. Unabsorbed iron / GI side effects</div><div class="rte">Unabsorbed luminal iron causes the classic GI side effects — constipation, nausea, epigastric pain, metallic taste, and harmless dark/black stools — which are the leading reason for nonadherence. Manage by dose reduction, alternate-day dosing, or switching salts; add a stool softener for constipation.</div><div class="rtt">⚠️ WRONG: mistaking benign iron-induced black stool for melena (GI bleeding). Iron causes greenish-black, NON-tarry, guaiac-negative stool; true melena from upper GI bleed is sticky, tarry, and occult-blood positive. Don't trigger an unnecessary bleed workup — but also don't ignore real melena attributing it to iron.</div></div><div class="rt"><div class="rtl">8. IV iron indications checklist</div><div class="rte">Use IV iron when: oral iron fails or isn't tolerated; MALABSORPTION (celiac, gastric bypass, IBD); ongoing/severe blood loss outpacing oral repletion; chronic kidney disease (especially on dialysis/ESAs); heart failure (functional iron deficiency); 2nd/3rd-trimester pregnancy; and pre-operative correction when surgery is imminent.</div><div class="rtt">⚠️ WRONG: defaulting to IV iron for simple uncomplicated IDA with a working gut. Oral iron is first-line; IV is costlier and carries infusion-reaction risk. Reserve IV for the specific indications above — choosing IV when oral would work is a board pitfall.</div></div><div class="rt"><div class="rtl">9. IV safety / anaphylaxis</div><div class="rte">Modern IV iron formulations (ferric carboxymaltose, iron sucrose, ferric derisomaltose, ferumoxytol) are SAFE with low reaction rates; have anaphylaxis precautions available. The dangerous high-molecular-weight iron DEXTRAN (which required a test dose) is largely obsolete. Mild self-limited 'Fishbane' flushing reactions don't require stopping permanently.</div><div class="rtt">⚠️ WRONG: avoiding IV iron entirely out of fear of anaphylaxis, or routinely giving a test dose for modern agents. Serious reactions are rare with current preparations; the test-dose requirement applied to old high-molecular-weight dextran, not to ferric carboxymaltose/iron sucrose.</div></div><div class="rt"><div class="rtl">10. FCM — largest single dose</div><div class="rte">Ferric carboxymaltose (FCM) and ferric derisomaltose allow large single-visit doses (up to ~1000+ mg), correcting deficits in 1–2 visits. A notable FCM side effect is transient, usually asymptomatic HYPOPHOSPHATEMIA (from increased FGF23); check phosphate with repeated dosing.</div><div class="rtt">⚠️ WRONG: forgetting hypophosphatemia as the characteristic FCM adverse effect. Repeated or high-dose FCM can cause symptomatic hypophosphatemia (bone pain, osteomalacia, weakness) — monitor phosphate, especially with recurrent infusions, rather than attributing symptoms elsewhere.</div></div><div class="rt"><div class="rtl">11. 1-2 rule reticulocyte response</div><div class="rte">Monitoring of effective iron therapy: RETICULOCYTOSIS appears at ~5–7 days (~1 week), and HEMOGLOBIN rises ~1 g/dL every 2–3 weeks, with full correction over ~6–8 weeks. A reticulocyte bump confirms the marrow is responding and the patient is adherent.</div><div class="rtt">⚠️ WRONG: declaring oral iron a failure after only a few days because Hb hasn't moved. Hb rises slowly (~1 g/dL per 2–3 weeks); the first thing to check is the reticulocyte response at ~1 week. Re-evaluating Hb too early causes premature, unnecessary switches to IV iron.</div></div><div class="rt"><div class="rtl">12. No-response detective board</div><div class="rte">When iron therapy fails, work the differential: (1) NONADHERENCE (most common — GI side effects), (2) ongoing blood loss exceeding intake, (3) MALABSORPTION (undiagnosed celiac, gastric bypass, PPI, H. pylori), and (4) WRONG DIAGNOSIS (thalassemia, ACD, sideroblastic — these don't respond to iron).</div><div class="rtt">⚠️ WRONG: assuming nonresponse automatically means the patient needs IV iron. First confirm adherence, exclude ongoing bleeding and malabsorption (check anti-tTG for celiac), and re-verify the diagnosis — switching a misdiagnosed thalassemia or ACD patient to IV iron just adds iron they don't need.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="iron_deficiency.html" title="Iron / Microcytic — iron deficiency causes (Suffering Village)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="iron_metabolism_hepcidin.html" title="Iron / Microcytic — iron metabolism &amp; hepcidin control">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

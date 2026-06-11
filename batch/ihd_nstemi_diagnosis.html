@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD / ACS — NSTE-ACS Diagnosis, Killip &amp; Drug Cautions</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Killip classification</b> — WRONG answer: choosing GRACE or TIMI score as the bedside tool to grade pump failure. Discriminator — Killip is a clinical exam-based HF severity scale specific to ACS; GRACE/TIMI are composite risk calculators (age, vitals, troponin, ECG) for ischemic risk and timing of angiography. Killip class IV (shock) is itself a 'very-high-risk' feature mandating &lt;2h invasive regardless of the GRACE number.</li><li><b>Killip I — give beta-blocker</b> — WRONG answer: giving early IV beta-blockade routinely to everyone. Discriminator — the COMMIT trial showed routine early IV metoprolol increased cardiogenic shock; IV beta-blockers are reserved for persistent hypertension/tachyarrhythmia WITHOUT HF or low-output signs. Even in Killip I, screen for the contraindications (HR &lt;50, SBP &lt;90, PR &gt;0.24, advanced AV block, reactive airway) before dosing.</li><li><b>Killip II — caution (S3, rales)</b> — WRONG answer: loading a full-dose beta-blocker immediately because 'beta-blockers are good for heart failure.' Discriminator — beta-blockers improve CHRONIC compensated HFrEF mortality, but in ACUTE decompensation they can tip the patient into low output. Timing matters: chronic HFrEF benefit ≠ acute Killip II benefit.</li><li><b>Killip III/IV — NO beta-blocker</b> — WRONG answer: 'beta-blocker to reduce ischemia and slow the heart' in a Killip IV shocked patient. Discriminator — the failing, shock-state heart depends on sympathetic tone; blocking it removes the only thing sustaining output. Defer beta-blockade entirely until the patient is fully compensated, then reintroduce at low dose.</li><li><b>Beta-blocker contraindications</b> — WRONG answer: withholding a beta-blocker in a stable COPD patient. Discriminator — COPD and well-controlled asthma are NOT absolute contraindications; cardioselective β1 agents (metoprolol, bisoprolol) are tolerated and reduce mortality. Only severe active bronchospasm truly contraindicates. The hard 'no' list is shock, brady, high-grade block, hypotension.</li><li><b>Bradycardia / HR threshold</b> — WRONG answer: reflexively withholding the beta-blocker whenever HR sits in the high 50s–60. Discriminator — HR 60 with stable rhythm is acceptable and even target; the contraindication is HR &lt;50 or symptomatic bradycardia. The scene's HR-60 star explicitly marks the safe threshold versus the &lt;50 metronome that is too slow.</li><li><b>ILD = restrictive, not obstructive</b> — WRONG answer: 'patient has lung disease, so avoid the beta-blocker.' Discriminator — the relevant question is obstructive vs restrictive. ILD/pulmonary fibrosis (restrictive) = safe; severe active asthma (obstructive, reactive) = caution. Boards bait you with the word 'lung disease' to make you over-generalize.</li><li><b>AV block / PR prolongation</b> — WRONG answer: adding verapamil/diltiazem 'for rate control' in a patient with Mobitz II or complete heart block. Discriminator — non-DHP CCBs are just as dangerous as beta-blockers at the AV node; the safe move is a temporary pacemaker first. Also avoid stacking two AV-nodal blockers (beta-blocker + non-DHP CCB) even with normal conduction — synergistic bradycardia/block.</li><li><b>Hypotension SBP &lt;90</b> — WRONG answer: giving sublingual nitroglycerin for chest pain in a patient with SBP 85. Discriminator — nitrates require SBP ≥90–100; in hypotension they cause syncope/collapse, and in an RV infarct they are catastrophic. Treat ongoing ischemic pain with morphine/oxygen as needed and fix the hemodynamics first.</li><li><b>RV infarct → preload dependent</b> — WRONG answer: giving nitrates or diuretics to an inferior-MI patient who becomes hypotensive. Discriminator — that hypotension is preload failure from RV involvement, not volume overload; nitrates/diuretics drop preload further and cause profound shock. The hypotension-after-nitro response is itself a classic clue to underlying RV infarct.</li><li><b>Severe AS — fixed obstruction</b> — WRONG answer: nitroglycerin for the exertional chest pain of an undiagnosed severe-AS patient. Discriminator — AS angina mimics CAD angina, but a vasodilator across a fixed obstruction causes catastrophic hypotension/syncope. Severe AS (also HOCM and RV infarct) are the classic 'preload/afterload-sensitive, no-nitrate' lesions.</li><li><b>Nitrate + PDE5 inhibitor washout</b> — WRONG answer: 'he took the ED pill three days ago, so nitrates are safe.' Discriminator — for tadalafil the window is 48h, so 3 days is clear, but a patient who took it ~36h ago is STILL within the tadalafil window despite &gt;24h elapsing. Always pin down the exact drug and exact timing, not just 'a couple days.'</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Killip classification</div><div class="rte">The Killip class grades acute heart-failure severity at presentation in ACS and is a powerful independent mortality predictor: Class I = no signs of HF (~5% mortality); Class II = rales over &lt;50% of lung fields, S3 gallop, or elevated JVP (~15–20%); Class III = frank pulmonary edema with rales &gt;50% (~30–40%); Class IV = cardiogenic shock with SBP &lt;90 and hypoperfusion (~60–80%). Mnemonic: 'I'm Sick, Soggy, Shocked' for classes I→IV. Each ascending class roughly doubles short-term mortality and shifts management toward urgent invasive strategy and hemodynamic support.</div><div class="rtt">⚠️ WRONG answer: choosing GRACE or TIMI score as the bedside tool to grade pump failure. Discriminator — Killip is a clinical exam-based HF severity scale specific to ACS; GRACE/TIMI are composite risk calculators (age, vitals, troponin, ECG) for ischemic risk and timing of angiography. Killip class IV (shock) is itself a 'very-high-risk' feature mandating &lt;2h invasive regardless of the GRACE number.</div></div><div class="rt"><div class="rtl">2. Killip I — give beta-blocker</div><div class="rte">In Killip I (no clinical HF, hemodynamically stable, no contraindication) an ORAL beta-blocker should be started within the first 24h of NSTE-ACS — e.g. metoprolol tartrate 25–50 mg q6–12h or carvedilol 6.25 mg BID, titrated to HR 50–60. Beta-blockade lowers myocardial O2 demand by reducing HR, contractility, and wall stress, shrinks infarct size, and cuts reinfarction and ventricular arrhythmia. Start ORAL, not IV, unless ongoing ischemia/hypertension with no HF.</div><div class="rtt">⚠️ WRONG answer: giving early IV beta-blockade routinely to everyone. Discriminator — the COMMIT trial showed routine early IV metoprolol increased cardiogenic shock; IV beta-blockers are reserved for persistent hypertension/tachyarrhythmia WITHOUT HF or low-output signs. Even in Killip I, screen for the contraindications (HR &lt;50, SBP &lt;90, PR &gt;0.24, advanced AV block, reactive airway) before dosing.</div></div><div class="rt"><div class="rtl">3. Killip II — caution (S3, rales)</div><div class="rte">Killip II = early/mild HF (S3 gallop, bibasilar rales &lt;50% of fields, raised JVP). Beta-blockers may still be used but only LOW-dose, oral, slowly titrated, and after the patient is no longer volume-overloaded/decompensating — because acutely they blunt the compensatory tachycardia and inotropy keeping cardiac output up. Stabilize congestion first (diuresis), then introduce a beta-blocker once euvolemic.</div><div class="rtt">⚠️ WRONG answer: loading a full-dose beta-blocker immediately because 'beta-blockers are good for heart failure.' Discriminator — beta-blockers improve CHRONIC compensated HFrEF mortality, but in ACUTE decompensation they can tip the patient into low output. Timing matters: chronic HFrEF benefit ≠ acute Killip II benefit.</div></div><div class="rt"><div class="rtl">4. Killip III/IV — NO beta-blocker</div><div class="rte">Killip III (acute pulmonary edema) and Killip IV (cardiogenic shock) are absolute contraindications to beta-blockade in the acute phase — negative inotropy/chronotropy abolishes the catecholamine drive maintaining perfusion and can precipitate fatal hemodynamic collapse. Manage instead with reperfusion/revascularization, diuretics and vasodilators for edema (if BP allows), and inotropes/vasopressors or mechanical support (IABP, Impella) for shock.</div><div class="rtt">⚠️ WRONG answer: 'beta-blocker to reduce ischemia and slow the heart' in a Killip IV shocked patient. Discriminator — the failing, shock-state heart depends on sympathetic tone; blocking it removes the only thing sustaining output. Defer beta-blockade entirely until the patient is fully compensated, then reintroduce at low dose.</div></div><div class="rt"><div class="rtl">5. Beta-blocker contraindications</div><div class="rte">Core beta-blocker contraindications in ACS: cardiogenic shock or low-output state, decompensated HF (Killip III/IV), bradycardia HR &lt;50–60, high-grade AV block (2nd/3rd degree or PR &gt;0.24 without pacer), SBP &lt;90/hypotension, and active reactive bronchospasm (severe asthma). Cocaine-associated chest pain is a classic relative contraindication (unopposed alpha → coronary vasoconstriction).</div><div class="rtt">⚠️ WRONG answer: withholding a beta-blocker in a stable COPD patient. Discriminator — COPD and well-controlled asthma are NOT absolute contraindications; cardioselective β1 agents (metoprolol, bisoprolol) are tolerated and reduce mortality. Only severe active bronchospasm truly contraindicates. The hard 'no' list is shock, brady, high-grade block, hypotension.</div></div><div class="rt"><div class="rtl">6. Bradycardia / HR threshold</div><div class="rte">A resting HR &lt;50–60 bpm is a contraindication to starting or up-titrating any AV-nodal blocker (beta-blocker, non-dihydropyridine CCB, ivabradine, digoxin) because further rate suppression risks symptomatic bradycardia or asystole. In ACS the target with beta-blockade is HR 50–60 at rest; if the patient is already there or below from disease or other drugs, hold the agent.</div><div class="rtt">⚠️ WRONG answer: reflexively withholding the beta-blocker whenever HR sits in the high 50s–60. Discriminator — HR 60 with stable rhythm is acceptable and even target; the contraindication is HR &lt;50 or symptomatic bradycardia. The scene's HR-60 star explicitly marks the safe threshold versus the &lt;50 metronome that is too slow.</div></div><div class="rt"><div class="rtl">7. ILD = restrictive, not obstructive</div><div class="rte">Interstitial lung disease produces a RESTRICTIVE pattern (↓FVC, ↓TLC, normal/high FEV1/FVC ratio) with NO bronchospastic reactive airway component — so it does NOT contraindicate beta-blockers. The bronchospasm caution applies only to OBSTRUCTIVE reactive airway disease (severe asthma) where β2 blockade triggers bronchoconstriction. Restrictive physiology has no β2-mediated airway tone to worsen.</div><div class="rtt">⚠️ WRONG answer: 'patient has lung disease, so avoid the beta-blocker.' Discriminator — the relevant question is obstructive vs restrictive. ILD/pulmonary fibrosis (restrictive) = safe; severe active asthma (obstructive, reactive) = caution. Boards bait you with the word 'lung disease' to make you over-generalize.</div></div><div class="rt"><div class="rtl">8. AV block / PR prolongation</div><div class="rte">PR interval &gt;0.24s (1st-degree, relative caution) and especially Mobitz II, 2nd-degree advanced, or 3rd-degree (complete) AV block are contraindications to AV-nodal blocking drugs — beta-blockers and non-DHP CCBs (verapamil, diltiazem) further depress conduction. In high-grade block without a functioning pacemaker, these agents can produce complete heart block, asystole, or escape-rhythm failure.</div><div class="rtt">⚠️ WRONG answer: adding verapamil/diltiazem 'for rate control' in a patient with Mobitz II or complete heart block. Discriminator — non-DHP CCBs are just as dangerous as beta-blockers at the AV node; the safe move is a temporary pacemaker first. Also avoid stacking two AV-nodal blockers (beta-blocker + non-DHP CCB) even with normal conduction — synergistic bradycardia/block.</div></div><div class="rt"><div class="rtl">9. Hypotension SBP &lt;90</div><div class="rte">SBP &lt;90 mmHg contraindicates negative-inotropic and vasodilator therapy in ACS — beta-blockers (drop output), nitrates (drop preload/afterload), and ACE inhibitors (drop afterload) can all worsen end-organ hypoperfusion. In the hypotensive ACS patient, identify the cause (RV infarct → fluids; LV pump failure/shock → inotropes ± mechanical support; arrhythmia → correct rhythm) rather than giving BP-lowering agents.</div><div class="rtt">⚠️ WRONG answer: giving sublingual nitroglycerin for chest pain in a patient with SBP 85. Discriminator — nitrates require SBP ≥90–100; in hypotension they cause syncope/collapse, and in an RV infarct they are catastrophic. Treat ongoing ischemic pain with morphine/oxygen as needed and fix the hemodynamics first.</div></div><div class="rt"><div class="rtl">10. RV infarct → preload dependent</div><div class="rte">Right-ventricular infarction (usually proximal RCA, accompanying inferior STEMI) makes cardiac output critically PRELOAD-dependent — the stiff, failing RV needs high filling pressures to push blood across to the LV. Clues: inferior MI + hypotension + clear lungs + elevated JVP (Kussmaul sign); confirm with ST elevation in right-sided lead V4R. Treatment = IV fluid bolus to augment preload, avoid all preload reducers, and consider inotropes (dobutamine) if fluids fail.</div><div class="rtt">⚠️ WRONG answer: giving nitrates or diuretics to an inferior-MI patient who becomes hypotensive. Discriminator — that hypotension is preload failure from RV involvement, not volume overload; nitrates/diuretics drop preload further and cause profound shock. The hypotension-after-nitro response is itself a classic clue to underlying RV infarct.</div></div><div class="rt"><div class="rtl">11. Severe AS — fixed obstruction</div><div class="rte">In severe aortic stenosis the valve is a FIXED obstruction — the LV cannot raise stroke volume to compensate for a drop in systemic vascular resistance. Nitrates and other vasodilators lower preload/afterload, and because output is fixed, mean arterial pressure falls steeply → syncope, hypotension, and coronary hypoperfusion of an already hypertrophied LV. The hallmark exam is a crescendo-decrescendo systolic murmur radiating to carotids with a slow-rising pulse (pulsus parvus et tardus).</div><div class="rtt">⚠️ WRONG answer: nitroglycerin for the exertional chest pain of an undiagnosed severe-AS patient. Discriminator — AS angina mimics CAD angina, but a vasodilator across a fixed obstruction causes catastrophic hypotension/syncope. Severe AS (also HOCM and RV infarct) are the classic 'preload/afterload-sensitive, no-nitrate' lesions.</div></div><div class="rt"><div class="rtl">12. Nitrate + PDE5 inhibitor washout</div><div class="rte">Nitrates donate NO → ↑cGMP → vasodilation; PDE5 inhibitors block cGMP breakdown → markedly amplified, prolonged ↑cGMP when combined → severe refractory hypotension. Absolute contraindication within the washout window: sildenafil and vardenafil need ≥24h, tadalafil (long-acting) needs ≥48h. If nitrate-induced hypotension occurs, treat with IV fluids and an alpha-agonist (phenylephrine); the offending agent is NOT reversible by stopping the nitrate alone.</div><div class="rtt">⚠️ WRONG answer: 'he took the ED pill three days ago, so nitrates are safe.' Discriminator — for tadalafil the window is 48h, so 3 days is clear, but a patient who took it ~36h ago is STILL within the tadalafil window despite &gt;24h elapsing. Always pin down the exact drug and exact timing, not just 'a couple days.'</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_icd_primary.html" title="Heart Failure — Table 265-3: ICD Primary Prevention Principles">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_nstemi_management.html" title="IHD / ACS — NSTE-ACS Management: Antiplatelet, Anticoagulation &amp; Vasospasm">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">COPD — Armory (GOLD ABE Treatment Ladder, Alpha-1 &amp; Complications)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Tiotropium donkey (LAMA, first-line)</b> — Maintenance bronchodilators relieve symptoms and reduce exacerbations but do NOT reverse fixed airflow obstruction or reduce mortality. Only smoking cessation and long-term oxygen (in hypoxemia) have proven mortality benefit.</li><li><b>No evidence dust mask</b> — Choosing mucolytics or a 'dust mask' as a core COPD therapy is the wrong board answer.</li><li><b>Group A — bronchodilator alone</b> — Initial inhaler choice is by ABE group (symptoms + exacerbations), not by GOLD 1-4 FEV1 grade.</li><li><b>Group B — LAMA+LABA</b> — Do NOT add an inhaled corticosteroid first in Group B — dual LABA+LAMA bronchodilation is preferred; ICS is reserved for exacerbators/high eosinophils.</li><li><b>Group E — LAMA+LABA, add ICS if eos &gt;=300</b> — Add ICS based on high eosinophils and exacerbation history — NOT as routine therapy and never as monotherapy. ICS increases PNEUMONIA risk, so it is targeted, not universal.</li><li><b>ICS never alone</b> — ICS monotherapy is NEVER appropriate in COPD. Also weigh the pneumonia risk of ICS against exacerbation reduction.</li><li><b>Eosinophil counting station</b> — Low eosinophils (&lt;100) predict POOR ICS benefit and favor de-escalation — do not add ICS reflexively in low-eosinophil patients.</li><li><b>Beta-blocker contraindication crossed</b> — ICS are less effective in current smokers; the highest-yield intervention is smoking cessation, not escalating inhalers. (Note: cardioselective beta-blockers are NOT contraindicated in COPD when otherwise indicated.)</li><li><b>Panlobular emphysema lungs (lower lobe)</b> — Lower-lobe panacinar emphysema in a young/non-smoking patient = alpha-1, NOT typical smoking COPD (which is upper-lobe centriacinar/centrilobular). Failing to check an AAT level in early-onset emphysema is the miss.</li><li><b>Liver knight (alpha-1 liver disease)</b> — Suspect alpha-1 when emphysema coexists with unexplained liver disease in a young patient. The liver damage is from protein ACCUMULATION (gain of toxicity), distinct from the lung's loss-of-function mechanism.</li><li><b>Cor pulmonale / clubbing think cancer</b> — Clubbing in a COPD patient is a RED FLAG for lung cancer (or bronchiectasis/ILD) — do not attribute it to COPD; image the chest.</li><li><b>Roflumilast PDE4 inhibitor</b> — Roflumilast is reserved for the chronic-bronchitis/exacerbator phenotype, not all COPD. Key side effects: weight loss, nausea/diarrhea, and psychiatric effects (mood changes) — avoid in underweight or depressed patients.</li><li><b>Azithromycin triple therapy syringe</b> — Add-on chronic azithromycin is for REFRACTORY exacerbators, not routine maintenance. Watch for QT prolongation, hearing loss, and macrolide resistance; screen for/exclude active NTM infection first.</li><li><b>Lung volume reduction surgery (LVRS)</b> — LVRS helps upper-lobe disease with poor exercise tolerance. It is HARMFUL (increased mortality) in patients with FEV1 &lt;20% plus either homogeneous emphysema or very low DLCO — these are contraindications, not candidates.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Tiotropium donkey (LAMA, first-line)</div><div class="rte">Tiotropium is a long-acting muscarinic antagonist (LAMA) and a foundational COPD maintenance therapy: it blocks M3 receptors → bronchodilation, reduces exacerbations and symptoms, and improves quality of life. LAMA/LABA long-acting bronchodilators are the backbone of treatment across groups.</div><div class="rtt">⚠️ Maintenance bronchodilators relieve symptoms and reduce exacerbations but do NOT reverse fixed airflow obstruction or reduce mortality. Only smoking cessation and long-term oxygen (in hypoxemia) have proven mortality benefit.</div></div><div class="rt"><div class="rtl">2. No evidence dust mask</div><div class="rte">Generic mucolytics and dust masks are not proven disease-modifying therapy in COPD and are common distractor 'wrong answers.' Effective interventions are smoking cessation, vaccination, bronchodilators, pulmonary rehab, and LTOT when indicated.</div><div class="rtt">⚠️ Choosing mucolytics or a 'dust mask' as a core COPD therapy is the wrong board answer.</div></div><div class="rt"><div class="rtl">3. Group A — bronchodilator alone</div><div class="rte">GOLD Group A (low symptoms: mMRC 0-1 / CAT &lt;10, AND 0-1 moderate exacerbations with no hospitalization) starts with a SINGLE long-acting bronchodilator (LAMA or LABA). The ABE grouping — driven by symptom burden and exacerbation history — selects initial inhaler therapy, not the spirometric grade.</div><div class="rtt">⚠️ Initial inhaler choice is by ABE group (symptoms + exacerbations), not by GOLD 1-4 FEV1 grade.</div></div><div class="rt"><div class="rtl">4. Group B — LAMA+LABA</div><div class="rte">GOLD Group B (more symptoms: mMRC &gt;=2 / CAT &gt;=10, but still low exacerbation risk) is treated with DUAL bronchodilation: LABA + LAMA combination, which outperforms monotherapy on dyspnea and lung function.</div><div class="rtt">⚠️ Do NOT add an inhaled corticosteroid first in Group B — dual LABA+LAMA bronchodilation is preferred; ICS is reserved for exacerbators/high eosinophils.</div></div><div class="rt"><div class="rtl">5. Group E — LAMA+LABA, add ICS if eos &gt;=300</div><div class="rte">GOLD Group E (frequent/severe Exacerbations: &gt;=2 moderate or &gt;=1 hospitalization in a year) starts with LABA + LAMA; ADD an inhaled corticosteroid (triple therapy) when blood eosinophils are &gt;= 300 cells/μL. ICS strongly favored if eos &gt;=300 or concomitant asthma.</div><div class="rtt">⚠️ Add ICS based on high eosinophils and exacerbation history — NOT as routine therapy and never as monotherapy. ICS increases PNEUMONIA risk, so it is targeted, not universal.</div></div><div class="rt"><div class="rtl">6. ICS never alone</div><div class="rte">Inhaled corticosteroids in COPD are ALWAYS paired with a long-acting bronchodilator (LABA+ICS or triple LABA+LAMA+ICS) — never used as monotherapy, unlike in asthma. The benefit of ICS is reducing exacerbations in the right phenotype.</div><div class="rtt">⚠️ ICS monotherapy is NEVER appropriate in COPD. Also weigh the pneumonia risk of ICS against exacerbation reduction.</div></div><div class="rt"><div class="rtl">7. Eosinophil counting station</div><div class="rte">Blood eosinophil count is a biomarker guiding ICS use: benefit is greatest at &gt;= 300 cells/μL, intermediate 100-300, and little benefit &lt;100 cells/μL. It helps predict who will respond to inhaled steroids and who is at higher pneumonia risk for marginal gain.</div><div class="rtt">⚠️ Low eosinophils (&lt;100) predict POOR ICS benefit and favor de-escalation — do not add ICS reflexively in low-eosinophil patients.</div></div><div class="rt"><div class="rtl">8. Beta-blocker contraindication crossed</div><div class="rte">Active smoking blunts the anti-inflammatory response to inhaled corticosteroids. Smoking cessation is THE key disease-modifying step — it slows the accelerated FEV1 decline and is one of only two interventions (with LTOT in hypoxemia) shown to reduce mortality.</div><div class="rtt">⚠️ ICS are less effective in current smokers; the highest-yield intervention is smoking cessation, not escalating inhalers. (Note: cardioselective beta-blockers are NOT contraindicated in COPD when otherwise indicated.)</div></div><div class="rt"><div class="rtl">9. Panlobular emphysema lungs (lower lobe)</div><div class="rte">Alpha-1 antitrypsin (AAT) deficiency causes PANACINAR (panlobular), LOWER-lobe predominant emphysema, classically in YOUNG (&lt;45) non-smokers or those with disproportionate disease. AAT normally inhibits neutrophil elastase; its deficiency lets elastase destroy alveolar walls. Screen with a serum AAT level.</div><div class="rtt">⚠️ Lower-lobe panacinar emphysema in a young/non-smoking patient = alpha-1, NOT typical smoking COPD (which is upper-lobe centriacinar/centrilobular). Failing to check an AAT level in early-onset emphysema is the miss.</div></div><div class="rt"><div class="rtl">10. Liver knight (alpha-1 liver disease)</div><div class="rte">Alpha-1 antitrypsin deficiency also causes LIVER disease — misfolded mutant Z protein accumulates in hepatocytes (PAS-positive, diastase-resistant globules) causing neonatal cholestasis, cirrhosis, and hepatocellular carcinoma. Lung disease comes from too little circulating AAT; liver disease from accumulation of the abnormal protein.</div><div class="rtt">⚠️ Suspect alpha-1 when emphysema coexists with unexplained liver disease in a young patient. The liver damage is from protein ACCUMULATION (gain of toxicity), distinct from the lung's loss-of-function mechanism.</div></div><div class="rt"><div class="rtl">11. Cor pulmonale / clubbing think cancer</div><div class="rte">Severe hypoxemic COPD (FEV1 &lt;25%, chronic low PaO2) drives pulmonary hypertension and cor pulmonale (right heart failure). Digital CLUBBING is NOT a feature of COPD itself and should prompt a search for another cause.</div><div class="rtt">⚠️ Clubbing in a COPD patient is a RED FLAG for lung cancer (or bronchiectasis/ILD) — do not attribute it to COPD; image the chest.</div></div><div class="rt"><div class="rtl">12. Roflumilast PDE4 inhibitor</div><div class="rte">Roflumilast is an oral PDE4 inhibitor that reduces exacerbations in the CHRONIC BRONCHITIS phenotype with FEV1 &lt; 50% and frequent exacerbations despite inhaled therapy. It raises intracellular cAMP, reducing airway inflammation.</div><div class="rtt">⚠️ Roflumilast is reserved for the chronic-bronchitis/exacerbator phenotype, not all COPD. Key side effects: weight loss, nausea/diarrhea, and psychiatric effects (mood changes) — avoid in underweight or depressed patients.</div></div><div class="rt"><div class="rtl">13. Azithromycin triple therapy syringe</div><div class="rte">Chronic low-dose azithromycin (immunomodulatory/anti-inflammatory plus antimicrobial effect) reduces exacerbation frequency in patients STILL exacerbating on maximal inhaled (triple) therapy, especially former smokers.</div><div class="rtt">⚠️ Add-on chronic azithromycin is for REFRACTORY exacerbators, not routine maintenance. Watch for QT prolongation, hearing loss, and macrolide resistance; screen for/exclude active NTM infection first.</div></div><div class="rt"><div class="rtl">14. Lung volume reduction surgery (LVRS)</div><div class="rte">Lung volume reduction surgery removes the most destroyed (hyperinflated) tissue to improve elastic recoil and diaphragm mechanics. Best candidates have UPPER-lobe predominant emphysema AND low baseline exercise capacity — this subgroup gets a survival and functional benefit.</div><div class="rtt">⚠️ LVRS helps upper-lobe disease with poor exercise tolerance. It is HARMFUL (increased mortality) in patients with FEV1 &lt;20% plus either homogeneous emphysema or very low DLCO — these are contraindications, not candidates.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="copd_2.html" title="COPD — Air Traffic Control Tower (Diagnosis, Gas Exchange &amp; GOLD Staging)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="../copd1.html" title="COPD — Oxygen, NIPPV &amp; Exacerbations">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

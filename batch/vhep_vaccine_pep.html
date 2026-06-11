@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Viral Hepatitis — Vaccines &amp; Post-Exposure Prophylaxis</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Active vaccines shelf</b> — Vaccine = slow but long-lasting; it is for pre-exposure protection and longer-term immunity, but its onset is too slow to be sole protection right after a high-risk exposure (then add passive Ig).</li><li><b>HAV vaccine (Havrix/Vaqta)</b> — For a healthy exposed adult ≤40, HAV VACCINE (not immunoglobulin) is the preferred PEP — choosing Ig for a healthy young exposed adult is the trap. Ig is reserved for the very young, &gt;40, immunocompromised, or chronic liver disease.</li><li><b>HBV vaccine (Engerix/Recombivax)</b> — Vaccine yields ISOLATED anti-HBs — anti-HBc stays negative. So a person with anti-HBs+ but anti-HBc-negative is vaccinated, not recovered from natural infection. Non-responders (anti-HBs &lt;10) get a repeat series.</li><li><b>Heplisav-B 2-dose</b> — Don't assume every HBV vaccine is 3 doses — Heplisav-B is a 2-dose adult schedule. Matching the right number of doses to the product is the detail being tested.</li><li><b>HCV — no vaccine</b> — Classic trap: 'give HCV immunoglobulin (or vaccine) after a needlestick' is WRONG — neither exists. The correct post-needlestick HCV approach is baseline and follow-up HCV RNA/antibody testing, then treat if it converts.</li><li><b>HDV covered by HBV vaccine</b> — Don't look for a dedicated 'delta vaccine' — preventing HBV (via HBV vaccine) prevents HDV. However, the HBV vaccine cannot protect an already chronic HBsAg+ carrier from HDV SUPERinfection (they're already HBsAg+).</li><li><b>HBIG + vaccine = PEP</b> — High-risk HBV exposure in a nonimmune person needs BOTH passive (HBIG now) and active (vaccine for memory) — giving only one is the trap. If the exposed person is already vaccinated and anti-HBs ≥10, no PEP is needed.</li><li><b>Passive immunoglobulin shelf</b> — Ig = fast but short, with no lasting immunity — it cannot replace vaccination for durable protection. Relying on Ig alone after a high-risk exposure leaves the patient unprotected once the antibody wanes.</li><li><b>HBIG — preformed anti-HBs</b> — HBIG alone is INCOMPLETE — it must be paired with the vaccine for durable protection, because its preformed antibody fades. Giving HBIG without starting the vaccine series is the wrong answer.</li><li><b>HAV immunoglobulin</b> — Use HAV Ig (not vaccine) for infants &lt;12mo, adults &gt;40, immunocompromised, and chronic liver disease; for healthy people 12mo-40yr the VACCINE is preferred. Mixing up which group gets Ig vs vaccine is the trap (and for &gt;40 or high-risk, both may be given).</li><li><b>HEV vaccine limited</b> — For US/Israeli boards: assume NO routinely available HEV vaccine. Counsel pregnant travelers to endemic areas on water/food precautions rather than offering a vaccine.</li><li><b>Boards rule — risk combo</b> — The combination (active + passive) is the correct answer for high-risk HBV exposures and for HAV PEP in vulnerable groups — defaulting to only vaccine or only Ig in a high-risk nonimmune exposure is the trap.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Active vaccines shelf</div><div class="rte">Active immunization (vaccine) presents inactivated antigen so the host mounts its own antibody and memory response: SLOW onset (weeks, requires multiple doses) but DURABLE, long-lasting protection with immunologic memory. Both HAV and HBV vaccines are inactivated/recombinant (not live), so they are safe in pregnancy and immunocompromise.</div><div class="rtt">⚠️ Vaccine = slow but long-lasting; it is for pre-exposure protection and longer-term immunity, but its onset is too slow to be sole protection right after a high-risk exposure (then add passive Ig).</div></div><div class="rt"><div class="rtl">2. HAV vaccine (Havrix/Vaqta)</div><div class="rte">HAV vaccine (Havrix, Vaqta) is an inactivated 2-dose series (0 and 6-12 months). It is the PREFERRED post-exposure prophylaxis for healthy people aged 12 months-40 years after HAV exposure, given within 2 weeks, and is routine for travelers and chronic liver disease.</div><div class="rtt">⚠️ For a healthy exposed adult ≤40, HAV VACCINE (not immunoglobulin) is the preferred PEP — choosing Ig for a healthy young exposed adult is the trap. Ig is reserved for the very young, &gt;40, immunocompromised, or chronic liver disease.</div></div><div class="rt"><div class="rtl">3. HBV vaccine (Engerix/Recombivax)</div><div class="rte">HBV vaccine (Engerix-B, Recombivax HB) is recombinant HBsAg given as a 3-dose series (0, 1, 6 months). It produces protective anti-HBs ONLY (titer ≥10 mIU/mL) and never anti-HBc, since it contains no core antigen. Universally recommended for all infants and unvaccinated adults.</div><div class="rtt">⚠️ Vaccine yields ISOLATED anti-HBs — anti-HBc stays negative. So a person with anti-HBs+ but anti-HBc-negative is vaccinated, not recovered from natural infection. Non-responders (anti-HBs &lt;10) get a repeat series.</div></div><div class="rt"><div class="rtl">4. Heplisav-B 2-dose</div><div class="rte">Heplisav-B is a CpG-adjuvanted recombinant HBV vaccine requiring only 2 doses one month apart (vs 3 for Engerix/Recombivax), with higher seroprotection rates — a useful option for adults, including some prior non-responders.</div><div class="rtt">⚠️ Don't assume every HBV vaccine is 3 doses — Heplisav-B is a 2-dose adult schedule. Matching the right number of doses to the product is the detail being tested.</div></div><div class="rt"><div class="rtl">5. HCV — no vaccine</div><div class="rte">There is NO vaccine and NO effective immunoglobulin for HCV (its high genetic variability has thwarted vaccine development). Prevention relies on harm reduction and universal screening; post-exposure management is RNA monitoring and early DAA treatment if infection is confirmed.</div><div class="rtt">⚠️ Classic trap: 'give HCV immunoglobulin (or vaccine) after a needlestick' is WRONG — neither exists. The correct post-needlestick HCV approach is baseline and follow-up HCV RNA/antibody testing, then treat if it converts.</div></div><div class="rt"><div class="rtl">6. HDV covered by HBV vaccine</div><div class="rte">There is no separate HDV vaccine, but HBV vaccination also prevents HDV, because HDV is a defective virus that needs HBsAg to infect — no HBV means no HDV.</div><div class="rtt">⚠️ Don't look for a dedicated 'delta vaccine' — preventing HBV (via HBV vaccine) prevents HDV. However, the HBV vaccine cannot protect an already chronic HBsAg+ carrier from HDV SUPERinfection (they're already HBsAg+).</div></div><div class="rt"><div class="rtl">7. HBIG + vaccine = PEP</div><div class="rte">HBV PEP for a nonimmune exposed person (needlestick from HBsAg+ source, sexual contact, or neonate of HBsAg+ mother) = HBIG (immediate passive antibody) PLUS the HBV vaccine series (active, durable) given together at different sites, ideally within 24 hours (within 12 hours for newborns).</div><div class="rtt">⚠️ High-risk HBV exposure in a nonimmune person needs BOTH passive (HBIG now) and active (vaccine for memory) — giving only one is the trap. If the exposed person is already vaccinated and anti-HBs ≥10, no PEP is needed.</div></div><div class="rt"><div class="rtl">8. Passive immunoglobulin shelf</div><div class="rte">Passive immunization delivers PREFORMED antibody: IMMEDIATE protection but SHORT-lived (weeks-months) and conferring NO immunologic memory. Used to bridge the gap until active vaccine-induced immunity develops, or in people who can't mount a vaccine response.</div><div class="rtt">⚠️ Ig = fast but short, with no lasting immunity — it cannot replace vaccination for durable protection. Relying on Ig alone after a high-risk exposure leaves the patient unprotected once the antibody wanes.</div></div><div class="rt"><div class="rtl">9. HBIG — preformed anti-HBs</div><div class="rte">HBIG provides immediate, high-titer preformed anti-HBs. Key indications: neonate born to an HBsAg+ mother (HBIG + vaccine within 12 hours of birth) and nonimmune persons after percutaneous/sexual HBV exposure (HBIG + vaccine).</div><div class="rtt">⚠️ HBIG alone is INCOMPLETE — it must be paired with the vaccine for durable protection, because its preformed antibody fades. Giving HBIG without starting the vaccine series is the wrong answer.</div></div><div class="rt"><div class="rtl">10. HAV immunoglobulin</div><div class="rte">HAV immunoglobulin provides immediate passive protection and is the PREFERRED HAV post-exposure prophylaxis for those who shouldn't rely on vaccine: infants &lt;12 months, adults &gt;40 years (where vaccine response is slower/weaker), the immunocompromised, and those with chronic liver disease. Give within 2 weeks of exposure.</div><div class="rtt">⚠️ Use HAV Ig (not vaccine) for infants &lt;12mo, adults &gt;40, immunocompromised, and chronic liver disease; for healthy people 12mo-40yr the VACCINE is preferred. Mixing up which group gets Ig vs vaccine is the trap (and for &gt;40 or high-risk, both may be given).</div></div><div class="rt"><div class="rtl">11. HEV vaccine limited</div><div class="rte">An HEV vaccine (Hecolin) exists but is licensed/available only in some countries (e.g., China) and is not part of routine US/standard prophylaxis. Prevention elsewhere relies on safe water and avoiding undercooked pork/game.</div><div class="rtt">⚠️ For US/Israeli boards: assume NO routinely available HEV vaccine. Counsel pregnant travelers to endemic areas on water/food precautions rather than offering a vaccine.</div></div><div class="rt"><div class="rtl">12. Boards rule — risk combo</div><div class="rte">Master decision rule: VACCINE for lasting protection (slow onset, durable, memory), IMMUNOGLOBULIN for immediate cover (fast onset, short, no memory), and HIGH-RISK exposure gets BOTH together (passive now + active for the future).</div><div class="rtt">⚠️ The combination (active + passive) is the correct answer for high-risk HBV exposures and for HAV PEP in vulnerable groups — defaulting to only vaccine or only Ig in a high-risk nonimmune exposure is the trap.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="vhep_types.html" title="Viral Hepatitis — The 5 Types (A,B,C,D,E)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="gastro_chronhep_aih.html" title="Chronic Hepatitis — Autoimmune Hepatitis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

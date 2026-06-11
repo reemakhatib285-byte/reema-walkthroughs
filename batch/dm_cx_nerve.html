@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DM — Scene 3 — Diabetic Complications: The Nerve Cellar</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Duration + A1c banner</b> — In T2DM, intensive glucose control has only a MODEST effect on preventing neuropathy compared to T1DM — the trap is assuming aggressive A1c lowering will reverse established neuropathy; once present, treatment is symptomatic, and over-aggressive control risks hypoglycemia.</li><li><b>Diabetic amyotrophy ghost</b> — Amyotrophy is PROXIMAL and predominantly MOTOR — the trap is confusing it with the distal symmetric SENSORY polyneuropathy (DSPN). Proximal asymmetric weakness with wasting is amyotrophy, not stocking-glove DSPN, and is not a reason to escalate to insulin urgently.</li><li><b>Sensation thief / stocking</b> — An ASYMMETRIC or focal sensory deficit is NOT typical DSPN — the trap is labeling a unilateral foot drop or single-nerve deficit as diabetic polyneuropathy; that pattern suggests mononeuropathy, radiculopathy, or compression instead.</li><li><b>Worse at night / numbness-tingling-burning</b> — Numbness with painlessness is dangerous, not reassuring — the trap is assuming a patient with no foot pain is low-risk; LOSS of protective sensation is precisely what predicts ulceration and amputation.</li><li><b>DSPN label on bed</b> — Don't reflexively attribute every diabetic's neuropathy to diabetes — the trap is missing a coexisting B12 deficiency (especially in metformin users, which lowers B12). Check B12, TSH, and other reversible causes before declaring it purely diabetic.</li><li><b>LOPS / 10g monofilament / vibration</b> — A single normal test does not exclude LOPS — the trap is relying on the monofilament alone; combine it with vibration/pinprick/ankle reflex. Also, the goal of the foot exam is risk stratification for ULCERS, not diagnosing the neuropathy subtype.</li><li><b>CV autonomic (resting tachy / silent MI)</b> — A diabetic with new dyspnea, nausea, or fatigue but NO chest pain can be having a silent MI — the trap is ruling out ACS because there's no typical anginal pain; autonomic neuropathy blunts the pain signal, so get an ECG/troponin.</li><li><b>Orthostatic / midodrine</b> — Watch for SUPINE HYPERTENSION when treating orthostasis — the trap is dosing midodrine/fludrocortisone at bedtime; give midodrine during the day and avoid late doses to prevent dangerous supine BP spikes.</li><li><b>GI: gastroparesis</b> — GLP-1 receptor agonists SLOW gastric emptying and worsen gastroparesis — the trap is choosing/continuing a GLP-1 RA in a diabetic with gastroparesis; pramlintide (also slows emptying) is similarly contraindicated. Also limit metoclopramide duration (tardive dyskinesia).</li><li><b>GU: neurogenic bladder</b> — Overflow incontinence from a hypotonic neurogenic bladder is NOT treated with anticholinergics (oxybutynin) — the trap is treating it like urge incontinence; anticholinergics worsen retention. Confirm with post-void residual; treat by emptying the bladder, not relaxing it further.</li><li><b>ED / PDE-5</b> — PDE-5 inhibitors are absolutely CONTRAINDICATED with nitrates (and caution with alpha-blockers) — the trap is prescribing sildenafil to a diabetic with CAD who is on nitrates, risking life-threatening hypotension.</li><li><b>Sudomotor (anhidrosis/hyperhidrosis)</b> — Dry, cracked feet here are an AUTONOMIC sign, not just poor hygiene — the trap is overlooking anhidrosis as a contributor to skin breakdown and ulcer risk; emollients and foot care matter.</li><li><b>Pupil spared (CN III)</b> — A pupil-INVOLVING (blown, fixed, dilated) CN III palsy is a compressive lesion — a posterior communicating artery ANEURYSM until proven otherwise — and a neurosurgical emergency needing urgent CTA/MRA. The trap is attributing a dilated, unreactive pupil to diabetes; diabetic CN III palsy spares the pupil.</li><li><b>Screen sign</b> — Mirroring the nephropathy/retinopathy rule: T2DM is screened at the time of DIAGNOSIS (not 5 years later) — the trap is applying the T1DM '5-year' delay to a T2DM patient, missing existing neuropathy present from undiagnosed disease.</li><li><b>Treatment bottles (no opioids)</b> — OPIOIDS (including tramadol/tapentadol) are NOT first-line for diabetic neuropathic pain — the trap is selecting an opioid for refractory burning feet; they carry dependence/overdose risk with limited long-term benefit. Optimize gabapentinoids/SNRIs/TCAs first.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Duration + A1c banner</div><div class="rte">Like all microvascular complications, neuropathy risk climbs with diabetes DURATION and chronic hyperglycemia (A1c). Tight glycemic control clearly prevents/slows neuropathy in T1DM (DCCT); the effect is more modest in T2DM. Neuropathy is the most common chronic complication of diabetes and underlies most diabetic foot ulcers and non-traumatic amputations.</div><div class="rtt">⚠️ In T2DM, intensive glucose control has only a MODEST effect on preventing neuropathy compared to T1DM — the trap is assuming aggressive A1c lowering will reverse established neuropathy; once present, treatment is symptomatic, and over-aggressive control risks hypoglycemia.</div></div><div class="rt"><div class="rtl">2. Diabetic amyotrophy ghost</div><div class="rte">Diabetic amyotrophy (lumbosacral radiculoplexus neuropathy / Bruns-Garland syndrome) presents as ACUTE, often asymmetric PROXIMAL thigh/hip pain followed by quadriceps WEAKNESS and wasting, frequently with weight loss. It is immune/microvasculitic, usually MONOPHASIC and self-limited over 6-12 months with supportive care and PT.</div><div class="rtt">⚠️ Amyotrophy is PROXIMAL and predominantly MOTOR — the trap is confusing it with the distal symmetric SENSORY polyneuropathy (DSPN). Proximal asymmetric weakness with wasting is amyotrophy, not stocking-glove DSPN, and is not a reason to escalate to insulin urgently.</div></div><div class="rt"><div class="rtl">3. Sensation thief / stocking</div><div class="rte">The core of distal symmetric polyneuropathy (DSPN) is length-dependent loss of sensation in a STOCKING-GLOVE distribution — feet first (longest axons), then hands once leg involvement reaches the knees. Small fibers (pain/temperature) and large fibers (vibration/proprioception) are both affected.</div><div class="rtt">⚠️ An ASYMMETRIC or focal sensory deficit is NOT typical DSPN — the trap is labeling a unilateral foot drop or single-nerve deficit as diabetic polyneuropathy; that pattern suggests mononeuropathy, radiculopathy, or compression instead.</div></div><div class="rt"><div class="rtl">4. Worse at night / numbness-tingling-burning</div><div class="rte">Painful DSPN: symmetric distal NUMBNESS, TINGLING/paresthesias, and BURNING/lancinating pain, classically WORSE AT NIGHT. Positive (painful) and negative (numb) symptoms coexist. Loss of pain sensation is what makes feet vulnerable to unnoticed ulcers.</div><div class="rtt">⚠️ Numbness with painlessness is dangerous, not reassuring — the trap is assuming a patient with no foot pain is low-risk; LOSS of protective sensation is precisely what predicts ulceration and amputation.</div></div><div class="rt"><div class="rtl">5. DSPN label on bed</div><div class="rte">Distal symmetric polyneuropathy is the MOST COMMON form of diabetic neuropathy (~75% of cases). It is a clinical diagnosis; nerve conduction studies are reserved for atypical features. Always exclude other reversible causes of polyneuropathy (B12 deficiency, hypothyroidism, alcohol, uremia, monoclonal gammopathy).</div><div class="rtt">⚠️ Don't reflexively attribute every diabetic's neuropathy to diabetes — the trap is missing a coexisting B12 deficiency (especially in metformin users, which lowers B12). Check B12, TSH, and other reversible causes before declaring it purely diabetic.</div></div><div class="rt"><div class="rtl">6. LOPS / 10g monofilament / vibration</div><div class="rte">Screen for LOSS OF PROTECTIVE SENSATION (LOPS) with the 10-gram Semmes-Weinstein MONOFILAMENT plus one of: 128 Hz tuning fork (vibration), pinprick, ankle reflexes, or temperature. LOPS predicts ulcer and amputation risk; positive screen → annual comprehensive foot exam and protective footwear.</div><div class="rtt">⚠️ A single normal test does not exclude LOPS — the trap is relying on the monofilament alone; combine it with vibration/pinprick/ankle reflex. Also, the goal of the foot exam is risk stratification for ULCERS, not diagnosing the neuropathy subtype.</div></div><div class="rt"><div class="rtl">7. CV autonomic (resting tachy / silent MI)</div><div class="rte">Cardiovascular autonomic neuropathy (CAN): RESTING TACHYCARDIA (early vagal loss), loss of heart-rate variability, exercise intolerance, and SILENT (painless) myocardial ischemia — raising risk of unrecognized MI, perioperative instability, and SUDDEN cardiac DEATH.</div><div class="rtt">⚠️ A diabetic with new dyspnea, nausea, or fatigue but NO chest pain can be having a silent MI — the trap is ruling out ACS because there's no typical anginal pain; autonomic neuropathy blunts the pain signal, so get an ECG/troponin.</div></div><div class="rt"><div class="rtl">8. Orthostatic / midodrine</div><div class="rte">Autonomic neuropathy causes ORTHOSTATIC HYPOTENSION (drop without compensatory tachycardia). Treat non-pharmacologically first (rise slowly, fluids/salt, compression stockings), then MIDODRINE (alpha-1 agonist) or fludrocortisone; droxidopa is another option.</div><div class="rtt">⚠️ Watch for SUPINE HYPERTENSION when treating orthostasis — the trap is dosing midodrine/fludrocortisone at bedtime; give midodrine during the day and avoid late doses to prevent dangerous supine BP spikes.</div></div><div class="rt"><div class="rtl">9. GI: gastroparesis</div><div class="rte">Gastroparesis = delayed gastric emptying → early satiety, bloating, nausea, vomiting, and erratic glucose (mismatched insulin/food). Diagnose with a 4-hour gastric emptying scintigraphy after excluding obstruction. Manage with small, frequent, low-fat/low-fiber meals and prokinetics (metoclopramide short-term; erythromycin).</div><div class="rtt">⚠️ GLP-1 receptor agonists SLOW gastric emptying and worsen gastroparesis — the trap is choosing/continuing a GLP-1 RA in a diabetic with gastroparesis; pramlintide (also slows emptying) is similarly contraindicated. Also limit metoclopramide duration (tardive dyskinesia).</div></div><div class="rt"><div class="rtl">10. GU: neurogenic bladder</div><div class="rte">Diabetic autonomic (neurogenic) bladder: impaired sensation of fullness → large bladder capacity, incomplete emptying, high post-void residual, and OVERFLOW incontinence with UTIs. Manage with timed/scheduled voiding, double voiding, and clean intermittent catheterization for high residuals.</div><div class="rtt">⚠️ Overflow incontinence from a hypotonic neurogenic bladder is NOT treated with anticholinergics (oxybutynin) — the trap is treating it like urge incontinence; anticholinergics worsen retention. Confirm with post-void residual; treat by emptying the bladder, not relaxing it further.</div></div><div class="rt"><div class="rtl">11. ED / PDE-5</div><div class="rte">Erectile dysfunction is an early, common autonomic/vascular manifestation in diabetic men. First-line therapy is a PDE-5 inhibitor (sildenafil, tadalafil); second-line includes intracavernosal injections or vacuum devices.</div><div class="rtt">⚠️ PDE-5 inhibitors are absolutely CONTRAINDICATED with nitrates (and caution with alpha-blockers) — the trap is prescribing sildenafil to a diabetic with CAD who is on nitrates, risking life-threatening hypotension.</div></div><div class="rt"><div class="rtl">12. Sudomotor (anhidrosis/hyperhidrosis)</div><div class="rte">Sudomotor (sweat) dysfunction: distal/LOWER-body ANHIDROSIS (dry, cracked, fissured feet that predispose to ulcers/infection) with compensatory UPPER-body HYPERHIDROSIS. Gustatory sweating (facial sweating with eating) is another autonomic clue.</div><div class="rtt">⚠️ Dry, cracked feet here are an AUTONOMIC sign, not just poor hygiene — the trap is overlooking anhidrosis as a contributor to skin breakdown and ulcer risk; emollients and foot care matter.</div></div><div class="rt"><div class="rtl">13. Pupil spared (CN III)</div><div class="rte">Diabetic third-nerve (CN III) palsy is classically PUPIL-SPARING: down-and-out eye, ptosis, and diplopia but a REACTIVE pupil. Reason: ischemic microvascular infarction damages the central somatic motor fibers while sparing the peripheral parasympathetic (pupillomotor) fibers that run on the nerve's surface. Usually resolves over weeks-months.</div><div class="rtt">⚠️ A pupil-INVOLVING (blown, fixed, dilated) CN III palsy is a compressive lesion — a posterior communicating artery ANEURYSM until proven otherwise — and a neurosurgical emergency needing urgent CTA/MRA. The trap is attributing a dilated, unreactive pupil to diabetes; diabetic CN III palsy spares the pupil.</div></div><div class="rt"><div class="rtl">14. Screen sign</div><div class="rte">Screen for distal symmetric polyneuropathy starting at 5 years after T1DM diagnosis and AT DIAGNOSIS for T2DM (silent prior years), then ANNUALLY thereafter. Also assess for autonomic neuropathy symptoms. Use history plus 10 g monofilament and one additional modality.</div><div class="rtt">⚠️ Mirroring the nephropathy/retinopathy rule: T2DM is screened at the time of DIAGNOSIS (not 5 years later) — the trap is applying the T1DM '5-year' delay to a T2DM patient, missing existing neuropathy present from undiagnosed disease.</div></div><div class="rt"><div class="rtl">15. Treatment bottles (no opioids)</div><div class="rte">First-line for painful DSPN: pregabalin (75-150 mg BID, FDA-approved), duloxetine (60 mg/day, SNRI, FDA-approved), gabapentin (titrate to 1800-3600 mg/day), and TCAs (amitriptyline — caution: anticholinergic, orthostasis, arrhythmia). Add daily foot self-inspection and well-fitted footwear to prevent ulcers.</div><div class="rtt">⚠️ OPIOIDS (including tramadol/tapentadol) are NOT first-line for diabetic neuropathic pain — the trap is selecting an opioid for refractory burning feet; they carry dependence/overdose risk with limited long-term benefit. Optimize gabapentinoids/SNRIs/TCAs first.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_cx_kidney.html" title="DM — Scene 2 v2 — Diabetic Complications: The Kidney Wing &amp; Albumin River (REBUILD)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_cx_foot.html" title="DM — Scene 4A — Diabetic Complications: The Foot Gates &amp; Infection Moat (REBUILD - SPLIT)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

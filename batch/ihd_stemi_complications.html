@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD / STEMI — mechanical complications, RV &amp; pericarditis</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Bimodal 24h / 3–5 days timing</b> — Board says: 'Mechanical complications occur only weeks after the MI.' WRONG — that timing fits Dressler syndrome and LV aneurysm, not rupture. Discriminator: a NEW murmur or sudden hemodynamic collapse 3–5 days post-MI is a mechanical rupture, not a late autoimmune phenomenon.</li><li><b>VSR cabinet</b> — Board says: 'VSR causes no murmur, so it can be excluded by a clear exam.' WRONG. Discriminator: VSR characteristically produces a NEW loud holosystolic murmur with a thrill — its absence makes free wall rupture (no murmur, tamponade) more likely instead.</li><li><b>VSR step-up RA→RV</b> — Board says: 'VSR shows an oxygen step-DOWN from RA to RV.' WRONG. Discriminator: a left-to-right shunt adds oxygenated blood to the RV, so saturation STEPS UP (RA→RV). A step-down would imply a right-to-left shunt — not the VSR physiology.</li><li><b>Free wall rupture pericardium</b> — Board says: 'Free wall rupture presents with a loud new murmur.' WRONG — that's VSR or papillary muscle rupture. Discriminator: free wall rupture has NO murmur; it presents with sudden hypotension, JVD, muffled sounds (Beck's triad), and PEA arrest from tamponade.</li><li><b>Beck's triad / tamponade</b> — Board says: 'Free wall rupture presents with an RA→RV oxygen step-up.' WRONG — that is VSR. Discriminator: free wall rupture bleeds into the pericardium (tamponade physiology, Beck's triad), creating no intracardiac shunt, so there is NO O2 step-up.</li><li><b>Papillary muscle rupture</b> — Board says: 'Papillary muscle rupture causes a septal shunt with an O2 step-up.' WRONG — that's VSR. Discriminator: papillary muscle rupture causes acute MR (giant PCWP v-wave, pulmonary edema), NOT an intracardiac shunt — there is no oxygen step-up.</li><li><b>Acute MR / PCWP v-wave</b> — Board says: 'Acute MR shows an RA→RV oxygen step-up on cath.' WRONG — that defines VSR. Discriminator: acute MR's signature is a giant PCWP v-wave with normal RA/RV saturations; a step-up means VSR, not MR.</li><li><b>Killip classification ladder</b> — Board says: 'The Killip class reflects infarct SIZE measured by biomarkers.' WRONG. Discriminator: Killip is a CLINICAL bedside grade of heart-failure/perfusion status, not a measure of infarct size or troponin level (though it correlates with prognosis).</li><li><b>RV infarction — no rales</b> — Board says: 'RV infarct causes pulmonary edema with diffuse rales.' WRONG — left-sided failure causes rales. Discriminator: RV infarction gives hypotension + JVD with CLEAR lungs; finding clear lungs in a hypotensive inferior-MI patient points to RV infarct, not LV failure.</li><li><b>RV infarct — no nitrates</b> — Board says: 'Treat the hypotension of an RV infarct with nitroglycerin.' WRONG and dangerous. Discriminator: nitrates drop preload and will crash an RV-infarct patient; the correct answer is IV fluids first (and avoid nitrates/morphine/diuretics).</li><li><b>Pericarditis corner</b> — Board says: 'Pericarditis after an MI is always immediate (within hours).' WRONG. Discriminator: there are TWO peaks — early peri-infarction pericarditis (days) and Dressler syndrome (2–10 weeks, autoimmune). A pericardial friction rub appearing weeks later is Dressler, not the early form.</li><li><b>ASA umpire, NO steroids/NSAIDs</b> — Board says: 'Give corticosteroids (or indomethacin) for post-MI pericarditis.' WRONG. Discriminator: steroids and non-ASA NSAIDs impair myocardial healing and increase rupture risk early post-MI — the correct treatment is aspirin (± colchicine).</li><li><b>LV aneurysm comparison</b> — Board says: 'A true LV aneurysm ruptures more often than a pseudoaneurysm.' WRONG. Discriminator: the PSEUDOaneurysm (narrow neck, only pericardium containing the rupture) has the HIGH rupture risk and needs urgent surgery; a true aneurysm rarely ruptures.</li><li><b>AIVR exhibit</b> — Board says: 'AIVR after reperfusion requires urgent antiarrhythmic suppression with lidocaine/amiodarone.' WRONG. Discriminator: AIVR is benign and self-resolving — the correct answer is observation ('don't treat'); antiarrhythmics can abolish a needed escape rhythm and cause asystole.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Bimodal 24h / 3–5 days timing</div><div class="rte">Mechanical (rupture) complications of STEMI have a bimodal incidence: an early peak within 24h (before much remodeling) and a second peak at days 3–5, when neutrophil-mediated removal of necrotic myocytes leaves the wall maximally softened and friable. Reperfusion (PCI/thrombolysis) reduces overall rupture rates but thrombolytics given late can paradoxically increase early rupture. The three rupture syndromes — VSR, free wall rupture, papillary muscle rupture — all cluster in this window. Mnemonic: 'rupture when the wall is mush: days 3–5.'</div><div class="rtt">⚠️ Board says: 'Mechanical complications occur only weeks after the MI.' WRONG — that timing fits Dressler syndrome and LV aneurysm, not rupture. Discriminator: a NEW murmur or sudden hemodynamic collapse 3–5 days post-MI is a mechanical rupture, not a late autoimmune phenomenon.</div></div><div class="rt"><div class="rtl">2. VSR cabinet</div><div class="rte">Ventricular septal rupture (VSR/VSD) creates a left-to-right shunt and presents as a NEW harsh holosystolic murmur at the left lower sternal border, often with a palpable thrill, plus acute biventricular failure and cardiogenic shock. It complicates anterior (apical septum, LAD) and inferior (basal septum, RCA) MIs; the latter carries worse prognosis. Diagnose with echo + oxygen step-up on right-heart cath. Definitive treatment is surgical repair (often after stabilization with IABP, vasodilators, inotropes). Mnemonic: 'septal rupture = shunt + thrill.'</div><div class="rtt">⚠️ Board says: 'VSR causes no murmur, so it can be excluded by a clear exam.' WRONG. Discriminator: VSR characteristically produces a NEW loud holosystolic murmur with a thrill — its absence makes free wall rupture (no murmur, tamponade) more likely instead.</div></div><div class="rt"><div class="rtl">3. VSR step-up RA→RV</div><div class="rte">The hallmark cath finding of VSR is an oxygen saturation STEP-UP from the right atrium to the right ventricle: oxygenated LV blood crosses the septal defect into the RV, raising RV/PA O2 saturation above RA. A step-up of ≥7% (e.g., RA 65% → RV 80%) confirms a left-to-right shunt at the ventricular level. This distinguishes VSR from acute MR (giant PCWP v-wave, no step-up). Mnemonic: 'shunt in the septum → O2 steps up.'</div><div class="rtt">⚠️ Board says: 'VSR shows an oxygen step-DOWN from RA to RV.' WRONG. Discriminator: a left-to-right shunt adds oxygenated blood to the RV, so saturation STEPS UP (RA→RV). A step-down would imply a right-to-left shunt — not the VSR physiology.</div></div><div class="rt"><div class="rtl">4. Free wall rupture pericardium</div><div class="rte">Free wall rupture tears the LV myocardium into the pericardial space, causing acute hemopericardium → cardiac tamponade → pulseless electrical activity (PEA) and sudden death, typically days 3–5. Risk factors: first MI, anterior location, older age, female sex, late or no reperfusion, hypertension. A contained rupture forms a pseudoaneurysm. Emergent pericardiocentesis buys time; definitive treatment is immediate surgery. Mnemonic: 'free wall = free bleeding into the pericardium.'</div><div class="rtt">⚠️ Board says: 'Free wall rupture presents with a loud new murmur.' WRONG — that's VSR or papillary muscle rupture. Discriminator: free wall rupture has NO murmur; it presents with sudden hypotension, JVD, muffled sounds (Beck's triad), and PEA arrest from tamponade.</div></div><div class="rt"><div class="rtl">5. Beck's triad / tamponade</div><div class="rte">Tamponade from free wall rupture produces Beck's triad: hypotension, jugular venous distension, and muffled (distant) heart sounds, plus pulsus paradoxus and often a rapid progression to PEA. There is NO oxygen step-up (no shunt) and NO holosystolic murmur. Bedside echo shows pericardial effusion with RV diastolic collapse. Mnemonic: 'Beck's three Ds: Down BP, Distended neck veins, Distant heart sounds.'</div><div class="rtt">⚠️ Board says: 'Free wall rupture presents with an RA→RV oxygen step-up.' WRONG — that is VSR. Discriminator: free wall rupture bleeds into the pericardium (tamponade physiology, Beck's triad), creating no intracardiac shunt, so there is NO O2 step-up.</div></div><div class="rt"><div class="rtl">6. Papillary muscle rupture</div><div class="rte">Papillary muscle rupture causes acute SEVERE mitral regurgitation with flash pulmonary edema and cardiogenic shock, typically days 3–5. The POSTEROMEDIAL papillary muscle is most often involved because it has a single (RCA-dependent) blood supply, so inferior MIs are the classic setup. The murmur may be soft or absent because the regurgitant volume equalizes LA/LV pressure quickly. Treat with afterload reduction (nitroprusside), IABP, and urgent surgical repair/replacement. Mnemonic: 'posteromedial papillary has a poor single supply → inferior MI rupture.'</div><div class="rtt">⚠️ Board says: 'Papillary muscle rupture causes a septal shunt with an O2 step-up.' WRONG — that's VSR. Discriminator: papillary muscle rupture causes acute MR (giant PCWP v-wave, pulmonary edema), NOT an intracardiac shunt — there is no oxygen step-up.</div></div><div class="rt"><div class="rtl">7. Acute MR / PCWP v-wave</div><div class="rte">Acute MR from papillary muscle rupture produces a giant 'v wave' on the pulmonary capillary wedge pressure (PCWP) tracing, because the non-compliant left atrium receives a sudden large regurgitant volume in systole. There is NO oxygen step-up (the regurgitation is into the LA, not a left-to-right ventricular shunt). Echo (often TEE) confirms a flail leaflet. Mnemonic: 'acute MR → giant v-wave, no step-up.'</div><div class="rtt">⚠️ Board says: 'Acute MR shows an RA→RV oxygen step-up on cath.' WRONG — that defines VSR. Discriminator: acute MR's signature is a giant PCWP v-wave with normal RA/RV saturations; a step-up means VSR, not MR.</div></div><div class="rt"><div class="rtl">8. Killip classification ladder</div><div class="rte">The Killip classification grades acute heart-failure severity in STEMI and predicts mortality: Class I = no failure (no rales, no S3); Class II = rales &lt;50% lung fields and/or S3; Class III = frank pulmonary edema (rales &gt;50%); Class IV = cardiogenic shock (SBP &lt;90, hypoperfusion), with ~80–95% historical mortality (lower with modern revascularization). Higher class = worse prognosis. Mnemonic: 'Killip climbs with congestion: I clear, IV shock.'</div><div class="rtt">⚠️ Board says: 'The Killip class reflects infarct SIZE measured by biomarkers.' WRONG. Discriminator: Killip is a CLINICAL bedside grade of heart-failure/perfusion status, not a measure of infarct size or troponin level (though it correlates with prognosis).</div></div><div class="rt"><div class="rtl">9. RV infarction — no rales</div><div class="rte">RV infarction accompanies ~30–50% of inferior (RCA) MIs and presents with the triad of hypotension, elevated JVP (Kussmaul sign), and CLEAR lung fields (no rales) — because the failing RV cannot deliver enough preload to the left heart, so the lungs stay dry. Diagnose with right-sided leads (ST elevation in V4R). Mnemonic: 'RV infarct = high neck veins, clear lungs, low pressure.'</div><div class="rtt">⚠️ Board says: 'RV infarct causes pulmonary edema with diffuse rales.' WRONG — left-sided failure causes rales. Discriminator: RV infarction gives hypotension + JVD with CLEAR lungs; finding clear lungs in a hypotensive inferior-MI patient points to RV infarct, not LV failure.</div></div><div class="rt"><div class="rtl">10. RV infarct — no nitrates</div><div class="rte">The RV-infarcted ventricle is exquisitely PRELOAD-dependent, so treatment is IV fluid loading (normal saline boluses) to maintain RV filling, plus inotropes (dobutamine) if still hypotensive. AVOID preload-reducing drugs — nitrates, morphine, and diuretics — which can cause profound hypotension. Mnemonic: 'RV infarct: fill the tank, never drop the preload (no nitrates).'</div><div class="rtt">⚠️ Board says: 'Treat the hypotension of an RV infarct with nitroglycerin.' WRONG and dangerous. Discriminator: nitrates drop preload and will crash an RV-infarct patient; the correct answer is IV fluids first (and avoid nitrates/morphine/diuretics).</div></div><div class="rt"><div class="rtl">11. Pericarditis corner</div><div class="rte">Post-MI pericarditis comes in two forms separated by timing: (1) early peri-infarction pericarditis (peri-infarction/'pericarditis epistenocardica'), 1–4 days post-MI from local inflammation over a transmural infarct, with pleuritic chest pain and a friction rub; and (2) Dressler syndrome, an autoimmune pericarditis 2–10 weeks later with fever, pleuropericarditis, elevated ESR, and effusion. Mnemonic: 'early = neighbor inflammation (days); Dressler = delayed immune (weeks).'</div><div class="rtt">⚠️ Board says: 'Pericarditis after an MI is always immediate (within hours).' WRONG. Discriminator: there are TWO peaks — early peri-infarction pericarditis (days) and Dressler syndrome (2–10 weeks, autoimmune). A pericardial friction rub appearing weeks later is Dressler, not the early form.</div></div><div class="rt"><div class="rtl">12. ASA umpire, NO steroids/NSAIDs</div><div class="rte">Treat post-MI pericarditis with high-dose ASPIRIN (e.g., 650 mg q6–8h), often with colchicine. AVOID corticosteroids and non-aspirin NSAIDs (indomethacin, ibuprofen) in the early post-MI period because they impair infarct healing/scar formation and raise the risk of free wall rupture and ventricular remodeling. Aspirin is preferred because the patient already needs it for secondary prevention. Mnemonic: 'after MI, aspirin (± colchicine) — steroids and NSAIDs spoil the scar.'</div><div class="rtt">⚠️ Board says: 'Give corticosteroids (or indomethacin) for post-MI pericarditis.' WRONG. Discriminator: steroids and non-ASA NSAIDs impair myocardial healing and increase rupture risk early post-MI — the correct treatment is aspirin (± colchicine).</div></div><div class="rt"><div class="rtl">13. LV aneurysm comparison</div><div class="rte">Distinguish a TRUE LV aneurysm from a PSEUDOaneurysm. True aneurysm: a wide-mouthed, smooth bulge of all myocardial layers (scarred but intact wall), forms weeks after MI, low rupture risk; complications are HF, persistent ST elevation on ECG, mural thrombus, and refractory VT. Pseudoaneurysm: a contained free wall rupture walled off by pericardium/thrombus, with a NARROW neck and HIGH rupture risk → surgical emergency. Mnemonic: 'true = wide &amp; tame; pseudo = narrow neck &amp; nasty.'</div><div class="rtt">⚠️ Board says: 'A true LV aneurysm ruptures more often than a pseudoaneurysm.' WRONG. Discriminator: the PSEUDOaneurysm (narrow neck, only pericardium containing the rupture) has the HIGH rupture risk and needs urgent surgery; a true aneurysm rarely ruptures.</div></div><div class="rt"><div class="rtl">14. AIVR exhibit</div><div class="rte">Accelerated idioventricular rhythm (AIVR) is a wide-complex ventricular rhythm at a rate of ~40–100/min (slow VT-like) that is a classic, BENIGN marker of successful REPERFUSION after thrombolysis or PCI. It is hemodynamically stable and self-limited; suppressing it (e.g., with lidocaine) is harmful because it may be the patient's only escape rhythm. Mnemonic: 'AIVR = reperfusion's calling card — leave it alone.'</div><div class="rtt">⚠️ Board says: 'AIVR after reperfusion requires urgent antiarrhythmic suppression with lidocaine/amiodarone.' WRONG. Discriminator: AIVR is benign and self-resolving — the correct answer is observation ('don't treat'); antiarrhythmics can abolish a needed escape rhythm and cause asystole.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_stemi_conduction.html" title="IHD / STEMI — conduction blocks &amp; QRS width">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_stemi_postmi.html" title="IHD / STEMI — post-MI care &amp; secondary prevention">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

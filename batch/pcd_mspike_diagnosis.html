@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Plasma Cell — M-Spike &amp; Quality Control Lab (SPEP/UPEP/FLC)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Normal SPEP</b> — WRONG answer: calling any visible gamma activity abnormal. The discriminator is shape — a normal/reactive gamma region is broad and low (many clones); only a narrow, tall, discrete peak (monoclonal spike) suggests a plasma cell dyscrasia.</li><li><b>Polyclonal gammopathy</b> — WRONG answer: working up a broad polyclonal hump as possible myeloma. The discriminator is that polyclonal = reactive and benign — only a NARROW monoclonal spike (single clone) raises concern for a monoclonal gammopathy/myeloma; a broad rise points to infection/inflammation/liver disease instead.</li><li><b>Monoclonal M-spike</b> — WRONG answer: equating any M-spike with multiple myeloma. The discriminator is that the spike itself only proves monoclonality — MGUS (&lt;3 g/dL, &lt;10% plasma cells, no CRAB) is far more common; staging requires marrow %, end-organ assessment (CRAB), and SLiM biomarkers.</li><li><b>One clone with a megaphone</b> — WRONG answer: expecting a normal total protein to exclude a clone. The discriminator is that the clone may be small or light-chain-only — total protein can be normal while a discrete monoclonal band/abnormal FLC ratio is present; you must look at SPEP pattern + immunofixation + FLC, not just total protein.</li><li><b>M-spike thresholds</b> — WRONG answer: using a small M-spike size to reassure that there is no significant disease. The discriminator is that even low-level or undetectable spikes occur in light-chain/nonsecretory myeloma — quantify the spike but always pair SPEP with serum FLC and clinical/marrow assessment.</li><li><b>24-hour UPEP urine jug</b> — WRONG answer: ordering a random/spot urine protein or relying on dipstick to detect Bence-Jones protein. The discriminator is that you need a 24-HOUR UPEP with immunofixation — a spot urine and especially the dipstick (which reads albumin only) will miss monoclonal free light chains.</li><li><b>Immunofixation station</b> — WRONG answer: using SPEP alone to diagnose and characterize the M-protein. The discriminator is that SPEP only quantifies a suspicious peak — immunofixation is required to CONFIRM monoclonality and assign the heavy/light chain isotype, and can detect bands too small for SPEP.</li><li><b>Free light chain (FLC) assay</b> — WRONG answer: excluding a plasma cell disorder because SPEP/UPEP are negative. The discriminator is that light-chain-only / nonsecretory myeloma produces no intact-Ig spike — order serum FLC; an abnormal ratio (or ≥100) reveals (and can even define) the disease.</li><li><b>Conditions producing M-protein</b> — WRONG answer: diagnosing multiple myeloma from the presence of an M-protein alone. The discriminator is the broad differential — an IgM spike especially points toward Waldenström/lymphoma rather than myeloma, and many M-proteins are benign MGUS; correlate isotype, marrow, and end-organ findings.</li><li><b>Tumor burden gauge</b> — WRONG answer: staging myeloma severity by M-spike height. The discriminator is that prognostic staging (R-ISS) relies on beta-2-microglobulin, albumin, LDH, and cytogenetics — the M-protein tracks burden and response but is not the staging system.</li><li><b>Therapy monitor gauge</b> — WRONG answer: monitoring a light-chain or nonsecretory myeloma patient with SPEP because that's standard. The discriminator is matching the assay to the secreted protein — follow serum FLC (and 24-h urine) in light-chain/nonsecretory disease, since SPEP won't reflect their response.</li><li><b>Screening tool gauge</b> — WRONG answer: adding SPEP to a routine health check or working up every incidental MGUS aggressively. The discriminator is the low yield/high false-alarm rate of asymptomatic screening — reserve SPEP for patients with features suggesting a plasma cell disorder.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Normal SPEP</div><div class="rte">Normal serum protein electrophoresis separates proteins by charge/size into albumin → α1 → α2 → β → γ; the gamma region (where immunoglobulins live) is a low, broad, polyclonal smear with NO discrete peak. The tall left peak is albumin. Pattern recognition: normal = smooth rolling hills, no church spire.</div><div class="rtt">⚠️ WRONG answer: calling any visible gamma activity abnormal. The discriminator is shape — a normal/reactive gamma region is broad and low (many clones); only a narrow, tall, discrete peak (monoclonal spike) suggests a plasma cell dyscrasia.</div></div><div class="rt"><div class="rtl">2. Polyclonal gammopathy</div><div class="rte">A polyclonal gammopathy is a broad-based, rounded rise across the entire gamma region produced by MANY different B-cell clones — a reactive, benign response. Causes include chronic infection, chronic inflammation, autoimmune disease, and chronic liver disease (often with beta-gamma bridging in cirrhosis). Mnemonic: 'the crowd' = many voices, no single megaphone.</div><div class="rtt">⚠️ WRONG answer: working up a broad polyclonal hump as possible myeloma. The discriminator is that polyclonal = reactive and benign — only a NARROW monoclonal spike (single clone) raises concern for a monoclonal gammopathy/myeloma; a broad rise points to infection/inflammation/liver disease instead.</div></div><div class="rt"><div class="rtl">3. Monoclonal M-spike</div><div class="rte">An M-spike is a single, sharp, narrow 'church-spire' peak in the gamma (occasionally beta) region from ONE clone making one identical immunoglobulin (the M-protein/paraprotein). It is the electrophoretic hallmark of monoclonal gammopathy — MGUS, smoldering, or multiple myeloma. SPEP quantifies the height of this spike to track disease.</div><div class="rtt">⚠️ WRONG answer: equating any M-spike with multiple myeloma. The discriminator is that the spike itself only proves monoclonality — MGUS (&lt;3 g/dL, &lt;10% plasma cells, no CRAB) is far more common; staging requires marrow %, end-organ assessment (CRAB), and SLiM biomarkers.</div></div><div class="rt"><div class="rtl">4. One clone with a megaphone</div><div class="rte">The spike represents a single malignant/clonal plasma cell line overproducing one identical immunoglobulin with one heavy chain and one light chain — hence 'monoclonal.' This is why immunofixation can pin down a single isotype (e.g., IgG-kappa). Mnemonic: one clone, one megaphone, one note shouted loudly.</div><div class="rtt">⚠️ WRONG answer: expecting a normal total protein to exclude a clone. The discriminator is that the clone may be small or light-chain-only — total protein can be normal while a discrete monoclonal band/abnormal FLC ratio is present; you must look at SPEP pattern + immunofixation + FLC, not just total protein.</div></div><div class="rt"><div class="rtl">5. M-spike thresholds</div><div class="rte">SPEP can resolve a monoclonal band once it reaches roughly ≥0.5 g/dL (≥5 g/L), corresponding to a sizable clone (on the order of ~10^9 cells). M-protein concentration is a surrogate for tumor burden; ~3 g/dL serum (or ≥10% marrow plasma cells) marks the smoldering/myeloma threshold. Numbers anchor: detection ~0.5 g/dL, smoldering ~3 g/dL.</div><div class="rtt">⚠️ WRONG answer: using a small M-spike size to reassure that there is no significant disease. The discriminator is that even low-level or undetectable spikes occur in light-chain/nonsecretory myeloma — quantify the spike but always pair SPEP with serum FLC and clinical/marrow assessment.</div></div><div class="rt"><div class="rtl">6. 24-hour UPEP urine jug</div><div class="rte">Urine protein electrophoresis on a 24-hour collection detects monoclonal free light chains filtered into urine — Bence-Jones protein. A urinary M-protein ≥500 mg/24h is a quantitative marker used in staging (it can substitute for the M-protein criterion in smoldering myeloma). Mnemonic: the jug catches the light chains the kidney lets through.</div><div class="rtt">⚠️ WRONG answer: ordering a random/spot urine protein or relying on dipstick to detect Bence-Jones protein. The discriminator is that you need a 24-HOUR UPEP with immunofixation — a spot urine and especially the dipstick (which reads albumin only) will miss monoclonal free light chains.</div></div><div class="rt"><div class="rtl">7. Immunofixation station</div><div class="rte">Immunofixation electrophoresis (IFE) is the confirmatory test: it overlays antisera to identify the exact heavy chain (IgG/IgA/IgM) and light chain (kappa/lambda) of the monoclonal protein, and is more sensitive than SPEP for small bands. SPEP/UPEP quantify; IFE confirms and TYPES. Mnemonic: 'fix the type' = immunofixation names the clone (e.g., IgG-κ).</div><div class="rtt">⚠️ WRONG answer: using SPEP alone to diagnose and characterize the M-protein. The discriminator is that SPEP only quantifies a suspicious peak — immunofixation is required to CONFIRM monoclonality and assign the heavy/light chain isotype, and can detect bands too small for SPEP.</div></div><div class="rt"><div class="rtl">8. Free light chain (FLC) assay</div><div class="rte">The serum free light chain assay measures unbound kappa and lambda and their ratio (normal ~0.26–1.65); an abnormal ratio indicates a clonal light-chain excess. It detects light-chain-only and nonsecretory disease that SPEP/UPEP miss, and an involved:uninvolved FLC ratio ≥100 is a SLiM myeloma-defining biomarker. Mnemonic: the scale tips κ vs λ — imbalance = clone.</div><div class="rtt">⚠️ WRONG answer: excluding a plasma cell disorder because SPEP/UPEP are negative. The discriminator is that light-chain-only / nonsecretory myeloma produces no intact-Ig spike — order serum FLC; an abnormal ratio (or ≥100) reveals (and can even define) the disease.</div></div><div class="rt"><div class="rtl">9. Conditions producing M-protein</div><div class="rte">M-proteins are not specific to myeloma: they appear in plasma cell disorders (MGUS, myeloma, Waldenström, amyloidosis), other lymphoid malignancies (CLL, lymphoma), chronic infections, and autoimmune/non-neoplastic states. The detected isotype hints at the source — IgM → Waldenström/lymphoma; IgG/IgA → MGUS/myeloma. Context plus isotype directs the workup.</div><div class="rtt">⚠️ WRONG answer: diagnosing multiple myeloma from the presence of an M-protein alone. The discriminator is the broad differential — an IgM spike especially points toward Waldenström/lymphoma rather than myeloma, and many M-proteins are benign MGUS; correlate isotype, marrow, and end-organ findings.</div></div><div class="rt"><div class="rtl">10. Tumor burden gauge</div><div class="rte">M-protein concentration correlates with plasma cell tumor burden and feeds prognostic staging — though modern myeloma staging (R-ISS) actually uses beta-2-microglobulin, albumin, LDH, and high-risk cytogenetics rather than the spike size itself. Higher M-protein generally signals greater disease bulk. Mnemonic: bigger spike, bigger clone.</div><div class="rtt">⚠️ WRONG answer: staging myeloma severity by M-spike height. The discriminator is that prognostic staging (R-ISS) relies on beta-2-microglobulin, albumin, LDH, and cytogenetics — the M-protein tracks burden and response but is not the staging system.</div></div><div class="rt"><div class="rtl">11. Therapy monitor gauge</div><div class="rte">Serial M-protein measurement (SPEP/UPEP/FLC) is the principal tool to monitor treatment response and detect relapse; response is defined by percent reduction in the monoclonal protein (and FLC for light-chain disease). Always follow the SAME marker the patient secretes. Mnemonic: track the same spike you started with.</div><div class="rtt">⚠️ WRONG answer: monitoring a light-chain or nonsecretory myeloma patient with SPEP because that's standard. The discriminator is matching the assay to the secreted protein — follow serum FLC (and 24-h urine) in light-chain/nonsecretory disease, since SPEP won't reflect their response.</div></div><div class="rt"><div class="rtl">12. Screening tool gauge</div><div class="rte">SPEP is a diagnostic test for SYMPTOMATIC/suspected patients, not a population screening test — MGUS is common (~3% over 50) and overwhelmingly benign, so screening asymptomatic people causes overdiagnosis and anxiety. Order SPEP/UPEP/FLC when clinical features suggest a dyscrasia (unexplained anemia, renal failure, hypercalcemia, lytic lesions, neuropathy). Mnemonic: test the symptomatic, not the population.</div><div class="rtt">⚠️ WRONG answer: adding SPEP to a routine health check or working up every incidental MGUS aggressively. The discriminator is the low yield/high false-alarm rate of asymptomatic screening — reserve SPEP for patients with features suggesting a plasma cell disorder.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcd_heavy_chain.html" title="Plasma Cell — Heavy Chain Diseases (Gamma/Alpha/Mu)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcd_mgus_spectrum.html" title="Plasma Cell — MGUS to Smoldering to Myeloma Spectrum">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

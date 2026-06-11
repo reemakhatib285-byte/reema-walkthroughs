@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">HIV — AIDS-Defining Conditions &amp; Staging Verdict</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>16</em></summary><ol class="traps"><li><b>Judge: staging verdict</b> — Wrong answer: 'a patient needs BOTH CD4 &lt;200 AND an AIDS-defining illness to be diagnosed with AIDS.' Discriminator: the two gates are independent; meeting EITHER one alone establishes AIDS. Requiring both is the classic distractor.</li><li><b>Gate 1: CD4 &lt;200</b> — Wrong answer: 'an asymptomatic patient with CD4 150 is just HIV-positive, not AIDS.' Discriminator: CD4 &lt;200 is an AIDS-defining criterion on its own — symptoms are irrelevant. This patient has AIDS (CDC Stage 3) and needs PCP prophylaxis plus ART.</li><li><b>Gate 2: AIDS illness</b> — Wrong answer: 'this patient has PCP but a CD4 of 320, so it can't be AIDS.' Discriminator: an AIDS-defining illness diagnoses AIDS regardless of CD4 count. A normal CD4 does NOT exclude AIDS if a qualifying OI is present.</li><li><b>PCP / PJP</b> — Wrong answer: 'start TMP-SMX alone for severe PCP with PaO2 60.' Discriminator: in hypoxemic PCP (PaO2 &lt;70 or A-a gradient ≥35) you MUST add corticosteroids before/with antibiotics to prevent treatment-related respiratory worsening — omitting steroids is the trap.</li><li><b>Toxoplasma</b> — Wrong answer: 'a single ring-enhancing brain lesion with positive Toxo IgG must be toxoplasmosis.' Discriminator: toxo classically gives MULTIPLE lesions; a SOLITARY lesion (especially if it fails empiric therapy or EBV PCR is positive in CSF) favors primary CNS lymphoma — biopsy if no response to anti-toxo treatment.</li><li><b>Cryptococcus</b> — Wrong answer: 'treat cryptococcal meningitis with high-pressure headaches using a shunt/acetazolamide first.' Discriminator: elevated ICP in crypto meningitis is managed with repeated therapeutic lumbar punctures (drain CSF), not acetazolamide/mannitol; failure to control ICP is a leading cause of death.</li><li><b>CMV retinitis</b> — Wrong answer: 'an HIV patient with floaters and CD4 90 most likely has CMV retinitis.' Discriminator: CMV retinitis classically occurs at CD4 &lt;50, not 90. Also note painless visual change with pizza-pie hemorrhages — painful red eye points elsewhere (e.g., VZV/HSV retinitis or other uveitis).</li><li><b>Kaposi sarcoma</b> — Wrong answer: 'Kaposi sarcoma is caused by HHV-6 / EBV.' Discriminator: Kaposi is HHV-8 (KSHV). EBV is linked to the lymphomas and oral hairy leukoplakia; HHV-6 is roseola. Mixing up the herpesvirus is a frequent distractor.</li><li><b>Lymphomas (NHL/CNS)</b> — Wrong answer: 'Hodgkin lymphoma is AIDS-defining because HIV increases its risk.' Discriminator: although HIV raises Hodgkin incidence, Hodgkin lymphoma is NOT AIDS-defining. Only certain aggressive B-cell NHLs (Burkitt, DLBCL/immunoblastic, primary CNS lymphoma) qualify.</li><li><b>Invasive cervical CA</b> — Wrong answer: 'high-grade cervical dysplasia (CIN 2/3) in an HIV patient is AIDS-defining.' Discriminator: only INVASIVE cervical carcinoma is AIDS-defining; cervical intraepithelial neoplasia/dysplasia is not. The same 'invasive vs in-situ' logic distinguishes the answer.</li><li><b>MAC</b> — Wrong answer: 'every patient with CD4 &lt;50 needs azithromycin MAC prophylaxis.' Discriminator: with modern early ART, routine primary MAC prophylaxis is no longer recommended for those starting effective ART; the older 'prophylaxis at CD4 &lt;50' teaching has been revised. ART is the priority.</li><li><b>Esophageal candidiasis</b> — Wrong answer: 'oral thrush (oropharyngeal candidiasis) is AIDS-defining.' Discriminator: oral candidiasis alone is NOT AIDS-defining — it must extend to the ESOPHAGUS or lower respiratory tract (trachea/bronchi/lungs) to qualify. Oral thrush is, however, a marker that CD4 is likely &lt;200.</li><li><b>NOT AIDS-defining</b> — Wrong answer: 'multiple myeloma / anal cancer in an HIV patient = AIDS-defining.' Discriminator: these are increased-incidence but NON-AIDS-defining cancers. The frequent exam trap pair is Hodgkin lymphoma and multiple myeloma — both are NOT AIDS-defining despite higher incidence.</li><li><b>Localized zoster</b> — Wrong answer: 'any herpes zoster in an HIV patient is AIDS-defining.' Discriminator: localized single-dermatome zoster is NOT AIDS-defining; only disseminated/multidermatomal involvement is concerning, and zoster generally is not on the core AIDS-defining illness list the way wasting syndrome (with weight loss) is.</li><li><b>OI prophylaxis thresholds</b> — Wrong answer: 'continue PCP prophylaxis indefinitely regardless of CD4 recovery.' Discriminator: primary PCP prophylaxis is stopped once ART sustains CD4 &gt;200 for ≥3 months — lifelong prophylaxis is unnecessary and the threshold-based stop is the tested point.</li><li><b>Start ART in everyone</b> — Wrong answer: 'defer ART until CD4 falls below 350/500.' Discriminator: that is OUTDATED. Modern guidelines start ART for everyone with HIV immediately at diagnosis irrespective of CD4. The only nuance is timing in certain CNS OIs (e.g., cryptococcal meningitis), where ART may be briefly delayed to avoid IRIS.</li></ol></details><details class="panel"><summary>📖 Read-through — all 16 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Judge: staging verdict</div><div class="rte">AIDS = CDC Stage 3, diagnosed when EITHER Gate 1 (CD4 &lt;200 cells/µL or CD4% &lt;14) OR Gate 2 (a documented AIDS-defining opportunistic illness) is met — either one alone is sufficient in a person with confirmed HIV ≥6 years old. Once a patient meets a Stage 3 criterion they remain classified as AIDS even if CD4 later rises on ART (the staging is not reversed).</div><div class="rtt">⚠️ Wrong answer: 'a patient needs BOTH CD4 &lt;200 AND an AIDS-defining illness to be diagnosed with AIDS.' Discriminator: the two gates are independent; meeting EITHER one alone establishes AIDS. Requiring both is the classic distractor.</div></div><div class="rt"><div class="rtl">2. Gate 1: CD4 &lt;200</div><div class="rte">A CD4 count &lt;200 cells/µL (or CD4 percentage &lt;14%) defines AIDS regardless of how well the patient feels. This threshold also triggers Pneumocystis (PCP) prophylaxis with TMP-SMX. The CD4 count gauges current immunodeficiency and dictates which opportunistic infections are likely and which prophylaxis to start.</div><div class="rtt">⚠️ Wrong answer: 'an asymptomatic patient with CD4 150 is just HIV-positive, not AIDS.' Discriminator: CD4 &lt;200 is an AIDS-defining criterion on its own — symptoms are irrelevant. This patient has AIDS (CDC Stage 3) and needs PCP prophylaxis plus ART.</div></div><div class="rt"><div class="rtl">3. Gate 2: AIDS illness</div><div class="rte">Any qualifying AIDS-defining opportunistic illness establishes AIDS even if the CD4 count is normal/high. Some illnesses (e.g., esophageal candidiasis, PCP, Kaposi sarcoma) can occasionally occur at higher CD4 counts and still count. The diagnosis is clinical/illness-based, independent of the number.</div><div class="rtt">⚠️ Wrong answer: 'this patient has PCP but a CD4 of 320, so it can't be AIDS.' Discriminator: an AIDS-defining illness diagnoses AIDS regardless of CD4 count. A normal CD4 does NOT exclude AIDS if a qualifying OI is present.</div></div><div class="rt"><div class="rtl">4. PCP / PJP</div><div class="rte">Pneumocystis jirovecii pneumonia (PCP/PJP): the prototypical AIDS-defining illness at CD4 &lt;200. Presents with subacute dyspnea, dry cough, hypoxia with bilateral interstitial/ground-glass infiltrates and elevated LDH. Treat with TMP-SMX (21 days); ADD adjunctive corticosteroids if PaO2 &lt;70 mmHg or A-a gradient ≥35. Prophylaxis (TMP-SMX) starts at CD4 &lt;200.</div><div class="rtt">⚠️ Wrong answer: 'start TMP-SMX alone for severe PCP with PaO2 60.' Discriminator: in hypoxemic PCP (PaO2 &lt;70 or A-a gradient ≥35) you MUST add corticosteroids before/with antibiotics to prevent treatment-related respiratory worsening — omitting steroids is the trap.</div></div><div class="rt"><div class="rtl">5. Toxoplasma</div><div class="rte">CNS toxoplasmosis (CD4 &lt;100): MULTIPLE ring-enhancing lesions on contrast MRI (basal ganglia/gray-white junction), positive Toxoplasma IgG, mass effect. Treat empirically with sulfadiazine + pyrimethamine + leucovorin; clinical/radiographic improvement in ~2 weeks confirms it. TMP-SMX prophylaxis (the PCP regimen) also covers toxo at CD4 &lt;100.</div><div class="rtt">⚠️ Wrong answer: 'a single ring-enhancing brain lesion with positive Toxo IgG must be toxoplasmosis.' Discriminator: toxo classically gives MULTIPLE lesions; a SOLITARY lesion (especially if it fails empiric therapy or EBV PCR is positive in CSF) favors primary CNS lymphoma — biopsy if no response to anti-toxo treatment.</div></div><div class="rt"><div class="rtl">6. Cryptococcus</div><div class="rte">Cryptococcal disease, especially extrapulmonary cryptococcal meningitis (CD4 &lt;100, often &lt;50): subacute headache, fever, raised intracranial pressure. Diagnose with serum/CSF cryptococcal antigen (CrAg) and India ink. Treat with induction liposomal amphotericin B + flucytosine, then fluconazole. MANAGE ICP with serial therapeutic LPs.</div><div class="rtt">⚠️ Wrong answer: 'treat cryptococcal meningitis with high-pressure headaches using a shunt/acetazolamide first.' Discriminator: elevated ICP in crypto meningitis is managed with repeated therapeutic lumbar punctures (drain CSF), not acetazolamide/mannitol; failure to control ICP is a leading cause of death.</div></div><div class="rt"><div class="rtl">7. CMV retinitis</div><div class="rte">CMV end-organ disease (CD4 &lt;50): retinitis is most common — painless vision loss/floaters with 'pizza-pie' hemorrhages and fluffy yellow-white perivascular exudates on fundoscopy. Also causes colitis and esophagitis. Treat with ganciclovir/valganciclovir (or foscarnet). ART-driven immune recovery can trigger immune-recovery uveitis (an IRIS phenomenon).</div><div class="rtt">⚠️ Wrong answer: 'an HIV patient with floaters and CD4 90 most likely has CMV retinitis.' Discriminator: CMV retinitis classically occurs at CD4 &lt;50, not 90. Also note painless visual change with pizza-pie hemorrhages — painful red eye points elsewhere (e.g., VZV/HSV retinitis or other uveitis).</div></div><div class="rt"><div class="rtl">8. Kaposi sarcoma</div><div class="rte">Kaposi sarcoma is caused by HHV-8 (human herpesvirus 8) and is AIDS-defining: violaceous/purple non-blanching plaques and nodules on skin, oral mucosa (palate), GI tract, and lungs. Histology shows spindle cells and slit-like vascular spaces. Cornerstone treatment is ART (immune restoration); add systemic chemotherapy (liposomal doxorubicin) for visceral/extensive disease.</div><div class="rtt">⚠️ Wrong answer: 'Kaposi sarcoma is caused by HHV-6 / EBV.' Discriminator: Kaposi is HHV-8 (KSHV). EBV is linked to the lymphomas and oral hairy leukoplakia; HHV-6 is roseola. Mixing up the herpesvirus is a frequent distractor.</div></div><div class="rt"><div class="rtl">9. Lymphomas (NHL/CNS)</div><div class="rte">AIDS-defining lymphomas are aggressive B-cell non-Hodgkin lymphomas: Burkitt, diffuse large B-cell/immunoblastic, and primary CNS lymphoma (nearly 100% EBV-driven, typically CD4 &lt;50, often a SOLITARY weakly/homogeneously enhancing periventricular lesion). EBV PCR in CSF and thallium-SPECT/PET help distinguish CNS lymphoma from toxoplasmosis.</div><div class="rtt">⚠️ Wrong answer: 'Hodgkin lymphoma is AIDS-defining because HIV increases its risk.' Discriminator: although HIV raises Hodgkin incidence, Hodgkin lymphoma is NOT AIDS-defining. Only certain aggressive B-cell NHLs (Burkitt, DLBCL/immunoblastic, primary CNS lymphoma) qualify.</div></div><div class="rt"><div class="rtl">10. Invasive cervical CA</div><div class="rte">Invasive cervical carcinoma (HPV-driven) is AIDS-defining. HIV-positive women have accelerated HPV-related disease and need more frequent cervical cancer screening. Pre-invasive lesions (dysplasia/CIN) are common but do NOT meet the AIDS-defining bar — only INVASIVE cancer counts.</div><div class="rtt">⚠️ Wrong answer: 'high-grade cervical dysplasia (CIN 2/3) in an HIV patient is AIDS-defining.' Discriminator: only INVASIVE cervical carcinoma is AIDS-defining; cervical intraepithelial neoplasia/dysplasia is not. The same 'invasive vs in-situ' logic distinguishes the answer.</div></div><div class="rt"><div class="rtl">11. MAC</div><div class="rte">Disseminated Mycobacterium avium complex (CD4 &lt;50): fevers, night sweats, weight loss, diarrhea, hepatosplenomegaly, cytopenias, markedly elevated alkaline phosphatase; diagnosed by blood/marrow culture. Treat with a macrolide (azithromycin/clarithromycin) + ethambutol ± rifabutin. Current guidance: routine primary MAC prophylaxis is largely deferred if ART is started promptly.</div><div class="rtt">⚠️ Wrong answer: 'every patient with CD4 &lt;50 needs azithromycin MAC prophylaxis.' Discriminator: with modern early ART, routine primary MAC prophylaxis is no longer recommended for those starting effective ART; the older 'prophylaxis at CD4 &lt;50' teaching has been revised. ART is the priority.</div></div><div class="rt"><div class="rtl">12. Esophageal candidiasis</div><div class="rte">Esophageal (or tracheal/bronchial/pulmonary) candidiasis is AIDS-defining and typically presents with odynophagia/dysphagia at CD4 &lt;200. Diagnosis is usually clinical (HIV + esophageal symptoms + oral thrush) with empiric systemic fluconazole; endoscopy is reserved for non-responders to exclude CMV/HSV esophagitis.</div><div class="rtt">⚠️ Wrong answer: 'oral thrush (oropharyngeal candidiasis) is AIDS-defining.' Discriminator: oral candidiasis alone is NOT AIDS-defining — it must extend to the ESOPHAGUS or lower respiratory tract (trachea/bronchi/lungs) to qualify. Oral thrush is, however, a marker that CD4 is likely &lt;200.</div></div><div class="rt"><div class="rtl">13. NOT AIDS-defining</div><div class="rte">HIV increases the incidence of many non-AIDS malignancies that are NOT AIDS-defining: Hodgkin lymphoma, lung/liver/anal cancer, melanoma, multiple myeloma, and leukemia. These reflect chronic immune activation and shared risk factors (smoking, HPV, viral hepatitis) but do not meet CDC Stage 3 criteria.</div><div class="rtt">⚠️ Wrong answer: 'multiple myeloma / anal cancer in an HIV patient = AIDS-defining.' Discriminator: these are increased-incidence but NON-AIDS-defining cancers. The frequent exam trap pair is Hodgkin lymphoma and multiple myeloma — both are NOT AIDS-defining despite higher incidence.</div></div><div class="rt"><div class="rtl">14. Localized zoster</div><div class="rte">Single-dermatome herpes zoster, generalized wasting without an opportunistic cause, and general decline are not by themselves AIDS-defining. However, multidermatomal/disseminated zoster or recurrent episodes signal advancing immunodeficiency, and HIV-related WASTING syndrome (involuntary &gt;10% weight loss plus chronic diarrhea/fever) IS a defined AIDS condition.</div><div class="rtt">⚠️ Wrong answer: 'any herpes zoster in an HIV patient is AIDS-defining.' Discriminator: localized single-dermatome zoster is NOT AIDS-defining; only disseminated/multidermatomal involvement is concerning, and zoster generally is not on the core AIDS-defining illness list the way wasting syndrome (with weight loss) is.</div></div><div class="rt"><div class="rtl">15. OI prophylaxis thresholds</div><div class="rte">CD4-based prophylaxis ladder: at CD4 &lt;200 start TMP-SMX for PCP; at CD4 &lt;100 (with positive Toxo IgG) TMP-SMX also covers toxoplasmosis (one pill covers both); CMV (&lt;50) and MAC (&lt;50) prophylaxis are now generally deferred in favor of prompt ART. Prophylaxis can be discontinued once ART raises CD4 above the threshold for a sustained period (e.g., PCP prophylaxis stop at CD4 &gt;200 for 3 months).</div><div class="rtt">⚠️ Wrong answer: 'continue PCP prophylaxis indefinitely regardless of CD4 recovery.' Discriminator: primary PCP prophylaxis is stopped once ART sustains CD4 &gt;200 for ≥3 months — lifelong prophylaxis is unnecessary and the threshold-based stop is the tested point.</div></div><div class="rt"><div class="rtl">16. Start ART in everyone</div><div class="rte">Current standard: start ART in ALL people with HIV as soon as possible after diagnosis, regardless of CD4 count or viral load — this replaced the old 'wait for CD4 &lt;350/&lt;500' teaching. Early ART improves survival, reduces non-AIDS complications, and achieves U=U (undetectable = untransmittable: a sustained undetectable viral load means HIV is not sexually transmitted).</div><div class="rtt">⚠️ Wrong answer: 'defer ART until CD4 falls below 350/500.' Discriminator: that is OUTDATED. Modern guidelines start ART for everyone with HIV immediately at diagnosis irrespective of CD4. The only nuance is timing in certain CNS OIs (e.g., cryptococcal meningitis), where ART may be briefly delayed to avoid IRIS.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="fibro_fibromyalgia.html" title="Fibromyalgia — The Pain Amplifier Control Room">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hiv_acute_natural_history.html" title="HIV — Acute Retroviral Syndrome, Diagnosis &amp; Viral Set Point">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

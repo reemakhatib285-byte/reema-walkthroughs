@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DM — Scene 3 — T2DM Algorithms: The Escalation Staircase &amp; A1c Target Dial</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Step 1 Lifestyle</b> — WRONG: 'Start metformin alone and skip lifestyle counseling once a drug is on board.' Lifestyle modification is foundational and continues lifelong alongside every pharmacologic step. Discriminator: drugs are added TO lifestyle, never instead of it.</li><li><b>Step 2 Metformin</b> — WRONG: 'A patient with new T2DM and A1c 7.4% should start a sulfonylurea because it lowers glucose fastest.' Metformin is first-line for nearly everyone; sulfonylureas cause hypoglycemia and weight gain and are not preferred initial therapy. Discriminator: default monotherapy = metformin unless contraindicated.</li><li><b>Step 3 Dual therapy</b> — WRONG: 'A T2DM patient with HFrEF at A1c 6.8% on metformin needs no additional drug because they are at goal.' An SGLT2i is indicated for the heart-failure benefit independent of glycemic control. Discriminator: pick the second agent by ASCVD/HF/CKD comorbidity, not by whether A1c is already &lt;7%.</li><li><b>Step 4 Triple therapy</b> — WRONG: 'Add a sulfonylurea as the third agent to a patient already on a GLP-1 RA without adjusting it.' Stacking insulin-secretagogues raises hypoglycemia risk; doses must be reduced and weight-neutral/cardioprotective agents are preferred. Discriminator: build triple therapy around complementary, low-hypoglycemia agents.</li><li><b>Step 5 Injectable</b> — WRONG: 'Any T2DM patient needing an injectable should start basal insulin first.' Non-catabolic patients should generally get a GLP-1 RA before insulin. Discriminator: insulin-first is reserved for catabolic presentations (see next), otherwise GLP-1 RA is preferred.</li><li><b>Insulin if catabolic</b> — WRONG: 'A newly diagnosed lean patient with A1c 11%, ketonuria, and weight loss should start metformin and recheck in 3 months.' Catabolic/symptomatic hyperglycemia requires INSULIN now (and consider T1DM/LADA workup). Discriminator: ketosis + weight loss + very high A1c = insulin first, not a slow oral titration.</li><li><b>Forbidden combo: no GLP-1 + DPP-4</b> — WRONG: 'Add sitagliptin (DPP-4i) to a patient already on semaglutide (GLP-1 RA) for extra incretin effect.' These share the incretin pathway and should not be combined. Discriminator: GLP-1 RA + DPP-4i = redundant; pick one incretin-based agent.</li><li><b>Preferred combos w/ SGLT2 &amp; GLP-1</b> — WRONG: 'SGLT2i and GLP-1 RA cannot be used together because both are newer agents.' They act by distinct mechanisms (glycosuria vs incretin) and are commonly combined for additive cardiorenal benefit. Discriminator: the only forbidden incretin overlap is GLP-1 RA + DPP-4i, not SGLT2i + GLP-1 RA.</li><li><b>A1c target 7% default dial</b> — WRONG: 'Aim for A1c &lt;7% in every diabetic regardless of age or frailty.' The &lt;7% default must be loosened for frail/elderly or tightened for low-risk young patients. Discriminator: &lt;7% is the DEFAULT, not a universal target.</li><li><b>Tighter 6.5% (young/short DM)</b> — WRONG: 'Push a frail 82-year-old on a sulfonylurea to A1c &lt;6.5% for maximal protection.' Tight targets are for low-risk YOUNG patients; in the elderly this causes dangerous hypoglycemia with little benefit. Discriminator: &lt;6.5% requires low hypoglycemia risk and long life expectancy.</li><li><b>Looser 7.5-8.5% (frail/elderly)</b> — WRONG: 'A nursing-home patient with dementia and hypoglycemia unawareness needs intensification to reach A1c 7%.' Such patients warrant a relaxed target (~8-8.5%) to prevent hypoglycemia. Discriminator: frailty/limited life expectancy/hypo unawareness -&gt; loosen, do not intensify.</li><li><b>CGM time-in-range</b> — WRONG: 'A1c is always the most reliable marker, so CGM time-in-range is unnecessary.' A1c is misleading with anemia, hemoglobinopathies, CKD, recent transfusion, or pregnancy, where CGM/time-in-range is superior. Discriminator: use CGM metrics when A1c is unreliable or for granular hypoglycemia data.</li><li><b>Pregnancy uses insulin</b> — WRONG: 'Continue the patient's metformin/empagliflozin regimen unchanged when she becomes pregnant.' SGLT2i (and GLP-1 RA, statins) must be stopped; insulin is the standard. Discriminator: pregnancy = insulin-based therapy with tighter targets, not oral/incretin agents as first choice.</li><li><b>Special-population stand</b> — WRONG: 'Glyburide is a safe, cheap first-line agent for an 80-year-old with mild CKD.' Glyburide accumulates in renal impairment and causes severe, prolonged hypoglycemia in the elderly. Discriminator: in elderly/CKD prefer agents with low hypoglycemia risk (metformin, SGLT2i, GLP-1 RA, DPP-4i); avoid glyburide.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Step 1 Lifestyle</div><div class="rte">Step 1 for ALL patients: medical nutrition therapy, &gt;=150 min/week moderate aerobic exercise, and 5-7% body-weight loss. Lifestyle continues at every subsequent step, not just at diagnosis. Even modest weight loss improves insulin sensitivity and can lower A1c by ~1-2%.</div><div class="rtt">⚠️ WRONG: 'Start metformin alone and skip lifestyle counseling once a drug is on board.' Lifestyle modification is foundational and continues lifelong alongside every pharmacologic step. Discriminator: drugs are added TO lifestyle, never instead of it.</div></div><div class="rt"><div class="rtl">2. Step 2 Metformin</div><div class="rte">Step 2: metformin (start 500 mg daily with meals, titrate to 1000 mg BID) is first-line for essentially all T2DM unless contraindicated. Mechanism: decreases hepatic gluconeogenesis (AMPK), weight-neutral, no hypoglycemia. Reassess A1c at ~3 months. Hold if eGFR &lt;30 (lactic-acidosis risk).</div><div class="rtt">⚠️ WRONG: 'A patient with new T2DM and A1c 7.4% should start a sulfonylurea because it lowers glucose fastest.' Metformin is first-line for nearly everyone; sulfonylureas cause hypoglycemia and weight gain and are not preferred initial therapy. Discriminator: default monotherapy = metformin unless contraindicated.</div></div><div class="rt"><div class="rtl">3. Step 3 Dual therapy</div><div class="rte">Step 3: add a second agent chosen by COMORBIDITY, not by A1c alone. ASCVD/high CV risk -&gt; GLP-1 RA (or SGLT2i with proven CV benefit). HFrEF/HFpEF or CKD -&gt; SGLT2i. These benefits apply REGARDLESS of baseline A1c, even if A1c is already at goal on metformin.</div><div class="rtt">⚠️ WRONG: 'A T2DM patient with HFrEF at A1c 6.8% on metformin needs no additional drug because they are at goal.' An SGLT2i is indicated for the heart-failure benefit independent of glycemic control. Discriminator: pick the second agent by ASCVD/HF/CKD comorbidity, not by whether A1c is already &lt;7%.</div></div><div class="rt"><div class="rtl">4. Step 4 Triple therapy</div><div class="rte">Step 4: triple non-insulin combination (e.g., metformin + SGLT2i + GLP-1 RA) if still above target after dual therapy. Choose agents with complementary mechanisms and avoid overlapping/contraindicated pairs. Prioritize agents with cardiorenal benefit and low hypoglycemia risk.</div><div class="rtt">⚠️ WRONG: 'Add a sulfonylurea as the third agent to a patient already on a GLP-1 RA without adjusting it.' Stacking insulin-secretagogues raises hypoglycemia risk; doses must be reduced and weight-neutral/cardioprotective agents are preferred. Discriminator: build triple therapy around complementary, low-hypoglycemia agents.</div></div><div class="rt"><div class="rtl">5. Step 5 Injectable</div><div class="rte">Step 5: when injectable therapy is needed, prefer a GLP-1 RA BEFORE basal insulin (greater A1c reduction, weight loss, CV benefit, less hypoglycemia) UNLESS the patient is catabolic. GLP-1 RAs and dual GIP/GLP-1 agonists (tirzepatide) are potent A1c-lowering injectables.</div><div class="rtt">⚠️ WRONG: 'Any T2DM patient needing an injectable should start basal insulin first.' Non-catabolic patients should generally get a GLP-1 RA before insulin. Discriminator: insulin-first is reserved for catabolic presentations (see next), otherwise GLP-1 RA is preferred.</div></div><div class="rt"><div class="rtl">6. Insulin if catabolic</div><div class="rte">Start INSULIN promptly if catabolic features are present: unintentional weight loss, ketosis/ketonuria, symptoms of marked hyperglycemia, A1c &gt;10% or glucose &gt;=300, or to distinguish from possible T1DM/LADA. Basal insulin start: 0.1-0.2 u/kg/day (up to ~0.4) at bedtime, titrate by fasting glucose.</div><div class="rtt">⚠️ WRONG: 'A newly diagnosed lean patient with A1c 11%, ketonuria, and weight loss should start metformin and recheck in 3 months.' Catabolic/symptomatic hyperglycemia requires INSULIN now (and consider T1DM/LADA workup). Discriminator: ketosis + weight loss + very high A1c = insulin first, not a slow oral titration.</div></div><div class="rt"><div class="rtl">7. Forbidden combo: no GLP-1 + DPP-4</div><div class="rte">Do NOT combine a GLP-1 RA with a DPP-4 inhibitor: both act on the incretin (GLP-1) axis, so DPP-4i adds no glycemic benefit on top of a GLP-1 RA and only adds cost/side effects. If starting a GLP-1 RA, stop the DPP-4i.</div><div class="rtt">⚠️ WRONG: 'Add sitagliptin (DPP-4i) to a patient already on semaglutide (GLP-1 RA) for extra incretin effect.' These share the incretin pathway and should not be combined. Discriminator: GLP-1 RA + DPP-4i = redundant; pick one incretin-based agent.</div></div><div class="rt"><div class="rtl">8. Preferred combos w/ SGLT2 &amp; GLP-1</div><div class="rte">Preferred comorbidity-driven pairings: metformin + SGLT2i (HF/CKD benefit), metformin + GLP-1 RA (ASCVD benefit, weight loss), and metformin + basal insulin when insulin is needed. SGLT2i + GLP-1 RA can be combined (different mechanisms) and gives additive cardiorenal protection.</div><div class="rtt">⚠️ WRONG: 'SGLT2i and GLP-1 RA cannot be used together because both are newer agents.' They act by distinct mechanisms (glycosuria vs incretin) and are commonly combined for additive cardiorenal benefit. Discriminator: the only forbidden incretin overlap is GLP-1 RA + DPP-4i, not SGLT2i + GLP-1 RA.</div></div><div class="rt"><div class="rtl">9. A1c target 7% default dial</div><div class="rte">Default glycemic target is A1c &lt;7% for most non-pregnant adults (ADA). This corresponds to an estimated average glucose ~154 mg/dL. The target is individualized up or down based on hypoglycemia risk, life expectancy, duration, and comorbidities.</div><div class="rtt">⚠️ WRONG: 'Aim for A1c &lt;7% in every diabetic regardless of age or frailty.' The &lt;7% default must be loosened for frail/elderly or tightened for low-risk young patients. Discriminator: &lt;7% is the DEFAULT, not a universal target.</div></div><div class="rt"><div class="rtl">10. Tighter 6.5% (young/short DM)</div><div class="rte">A tighter target (A1c &lt;6.5%) is appropriate for younger patients, short DM duration, long life expectancy, no significant CVD, and low hypoglycemia risk — when it can be achieved without undue hypoglycemia or polypharmacy burden.</div><div class="rtt">⚠️ WRONG: 'Push a frail 82-year-old on a sulfonylurea to A1c &lt;6.5% for maximal protection.' Tight targets are for low-risk YOUNG patients; in the elderly this causes dangerous hypoglycemia with little benefit. Discriminator: &lt;6.5% requires low hypoglycemia risk and long life expectancy.</div></div><div class="rt"><div class="rtl">11. Looser 7.5-8.5% (frail/elderly)</div><div class="rte">Looser targets: A1c 7.5-8% for advanced microvascular complications, extensive comorbidity, or longstanding hard-to-control DM; up to ~8-8.5% for frail elderly, hypoglycemia unawareness, or limited life expectancy. Avoiding hypoglycemia outweighs marginal glycemic gains here.</div><div class="rtt">⚠️ WRONG: 'A nursing-home patient with dementia and hypoglycemia unawareness needs intensification to reach A1c 7%.' Such patients warrant a relaxed target (~8-8.5%) to prevent hypoglycemia. Discriminator: frailty/limited life expectancy/hypo unawareness -&gt; loosen, do not intensify.</div></div><div class="rt"><div class="rtl">12. CGM time-in-range</div><div class="rte">Continuous glucose monitoring (CGM) metrics: time-in-range (70-180 mg/dL) &gt;70%; time-below-range (&lt;70) &lt;4% and (&lt;54) &lt;1%; time-above-range (&gt;180) &lt;25%. Each ~10% increase in time-in-range correlates with roughly a 0.5-0.8% lower A1c. A Glucose Management Indicator (GMI) estimates A1c from CGM data.</div><div class="rtt">⚠️ WRONG: 'A1c is always the most reliable marker, so CGM time-in-range is unnecessary.' A1c is misleading with anemia, hemoglobinopathies, CKD, recent transfusion, or pregnancy, where CGM/time-in-range is superior. Discriminator: use CGM metrics when A1c is unreliable or for granular hypoglycemia data.</div></div><div class="rt"><div class="rtl">13. Pregnancy uses insulin</div><div class="rte">In pregnancy, INSULIN is the preferred glucose-lowering therapy (does not cross the placenta, best safety data). Most non-insulin agents are avoided; GLP-1 RAs, SGLT2i, and statins are contraindicated. Glycemic goals are tighter (fasting &lt;95, 1-h postprandial &lt;140, 2-h &lt;120 mg/dL).</div><div class="rtt">⚠️ WRONG: 'Continue the patient's metformin/empagliflozin regimen unchanged when she becomes pregnant.' SGLT2i (and GLP-1 RA, statins) must be stopped; insulin is the standard. Discriminator: pregnancy = insulin-based therapy with tighter targets, not oral/incretin agents as first choice.</div></div><div class="rt"><div class="rtl">14. Special-population stand</div><div class="rte">Special populations: AVOID glyburide (long-acting sulfonylurea) in the elderly and in CKD (prolonged hypoglycemia) — it is a Beers-criteria drug. In severe obesity, favor GLP-1 RA or dual GIP/GLP-1 agonist (tirzepatide) for weight loss, and consider bariatric/metabolic surgery (esp. BMI &gt;=35 with uncontrolled DM).</div><div class="rtt">⚠️ WRONG: 'Glyburide is a safe, cheap first-line agent for an 80-year-old with mild CKD.' Glyburide accumulates in renal impairment and causes severe, prolonged hypoglycemia in the elderly. Discriminator: in elderly/CKD prefer agents with low hypoglycemia risk (metformin, SGLT2i, GLP-1 RA, DPP-4i); avoid glyburide.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_pharm_gut_kidney.html" title="DM — Scene 2 — Diabetes Pharmacology: The Gut-Kidney Plumbing">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_insulin.html" title="DM — Scene 4 — Insulin: Types, Kinetics &amp; Regimens">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

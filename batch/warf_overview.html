@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Warfarin — Mechanism &amp; Monitoring</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>VKORC1 target</b> — WRONG: 'warfarin directly inhibits thrombin or factor Xa.' Warfarin acts upstream by blocking vitamin K recycling (VKORC1) — it has NO effect on already-synthesized circulating factors and no direct anti-thrombin/anti-Xa activity (that is dabigatran / the -xabans).</li><li><b>Vit K → inactive</b> — WRONG: 'warfarin destroys vitamin K stores in the body.' Warfarin does not deplete vitamin K — it blocks REGENERATION of the active form; supplying vitamin K (reversal) overrides warfarin precisely because stores are intact.</li><li><b>No γ-carboxylation</b> — WRONG: 'warfarin reduces the NUMBER of clotting factors produced.' Factors are still synthesized — they are just non-functional (under-carboxylated, unable to bind Ca²⁺); it is a qualitative defect, not reduced production.</li><li><b>Factors II VII IX X</b> — WRONG: 'factors V and VIII are also warfarin-dependent.' Factors V and VIII are NOT vitamin K-dependent and are unaffected by warfarin — only II, VII, IX, X (plus proteins C and S) are. (Factor VIII can even rise as an acute-phase reactant.)</li><li><b>Protein C &amp; S</b> — WRONG: 'warfarin is purely anticoagulant from the first dose.' By dropping protein C early, warfarin is transiently PROCOAGULANT for the first few days — which is why heparin bridging is required and why protein C deficiency predisposes to skin necrosis.</li><li><b>VII shortest t½</b> — WRONG: 'a therapeutic INR on day 2 means the patient is fully anticoagulated and heparin can stop.' The early INR rise reflects only the rapid loss of factor VII — prothrombin (II) is still present, so true antithrombotic protection is NOT yet established. Continue heparin until INR is therapeutic ≥24 h AND ≥5 days of overlap.</li><li><b>II longest t½</b> — WRONG: 'warfarin's effect wears off within a day of stopping.' Because of prothrombin's ~3-day half-life, anticoagulant effect persists for several days after the last dose — hence stopping warfarin ~5 days before surgery, not the night before.</li><li><b>Pro-thrombotic window</b> — WRONG: 'start warfarin monotherapy for an acute DVT/PE.' Initiating warfarin without a parenteral anticoagulant exposes the patient to the early prothrombotic window (and skin necrosis); always bridge with heparin/LMWH (or start a DOAC) — warfarin alone for acute VTE is the classic error.</li><li><b>Skin necrosis risk</b> — WRONG: 'avoid heparin overlap to prevent bleeding when starting warfarin.' Heparin bridging actually PREVENTS skin necrosis and the prothrombotic window — omitting the bridge (and large loading doses) is what precipitates necrosis, especially in protein C deficiency.</li><li><b>Bridge ≥5 days</b> — WRONG: 'stop heparin as soon as the INR enters the therapeutic range.' You need BOTH ≥5 days of overlap AND INR ≥2 sustained for 24 h; stopping at first therapeutic INR (driven by factor VII) leaves prothrombin intact and the patient under-protected.</li><li><b>INR monitoring</b> — WRONG: 'monitor warfarin with the aPTT.' Warfarin is followed by PT/INR, not aPTT (that monitors unfractionated heparin); using aPTT to titrate warfarin is a classic mix-up.</li><li><b>CYP2C9 variant</b> — WRONG: 'a CYP2C9 poor metabolizer needs a higher warfarin dose.' Reduced metabolism means MORE drug accumulates per dose, so these patients require LOWER doses and have higher bleeding risk — the relationship is the opposite of what is sometimes assumed.</li><li><b>CYP3A4 metabolism</b> — WRONG: 'start rifampin in a warfarin patient and expect a stable INR.' Rifampin is a potent CYP inducer that drops the INR into the subtherapeutic range (thrombosis risk); any new interacting drug mandates closer INR monitoring and dose adjustment.</li><li><b>&gt;97% albumin-bound</b> — WRONG: 'highly protein-bound means warfarin is hard to start working and is safe from interactions.' The high protein binding actually makes it VULNERABLE to displacement interactions (and warfarin readily crosses the placenta despite binding) — protein binding does not confer interaction safety.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. VKORC1 target</div><div class="rte">Warfarin inhibits vitamin K epoxide reductase complex 1 (VKORC1), the enzyme that recycles oxidized vitamin K epoxide back to its active reduced form. Without reduced vitamin K, the liver cannot drive gamma-carboxylation of clotting factors. A VKORC1 polymorphism is a major determinant of dose sensitivity (along with CYP2C9). Onset is delayed (days), reflecting clearance of pre-formed factors.</div><div class="rtt">⚠️ WRONG: 'warfarin directly inhibits thrombin or factor Xa.' Warfarin acts upstream by blocking vitamin K recycling (VKORC1) — it has NO effect on already-synthesized circulating factors and no direct anti-thrombin/anti-Xa activity (that is dabigatran / the -xabans).</div></div><div class="rt"><div class="rtl">2. Vit K → inactive</div><div class="rte">During gamma-carboxylation, vitamin K is oxidized to vitamin K epoxide (inactive). VKORC1 normally regenerates the active reduced form; warfarin blocks this, so vitamin K stays trapped as the oxidized/inactive epoxide and the carboxylation cycle stalls. Giving exogenous vitamin K bypasses the block — the basis of reversal.</div><div class="rtt">⚠️ WRONG: 'warfarin destroys vitamin K stores in the body.' Warfarin does not deplete vitamin K — it blocks REGENERATION of the active form; supplying vitamin K (reversal) overrides warfarin precisely because stores are intact.</div></div><div class="rt"><div class="rtl">3. No γ-carboxylation</div><div class="rte">Gamma-carboxylation adds a carboxyl group to glutamate residues, creating the Gla domains that let factors bind Ca²⁺ and anchor to phospholipid membranes at the site of injury. Without it, factors II, VII, IX, X are released but cannot bind calcium/phospholipid and are functionally INACTIVE (PIVKA proteins). This is how warfarin produces anticoagulation despite normal factor quantity.</div><div class="rtt">⚠️ WRONG: 'warfarin reduces the NUMBER of clotting factors produced.' Factors are still synthesized — they are just non-functional (under-carboxylated, unable to bind Ca²⁺); it is a qualitative defect, not reduced production.</div></div><div class="rt"><div class="rtl">4. Factors II VII IX X</div><div class="rte">Warfarin lowers the activity of the vitamin K-dependent procoagulant factors II (prothrombin), VII, IX, and X — mnemonic '1972' (10-9-7-2). These span the extrinsic, intrinsic, and common pathways, prolonging both PT and aPTT (PT/INR more sensitive due to short-lived factor VII).</div><div class="rtt">⚠️ WRONG: 'factors V and VIII are also warfarin-dependent.' Factors V and VIII are NOT vitamin K-dependent and are unaffected by warfarin — only II, VII, IX, X (plus proteins C and S) are. (Factor VIII can even rise as an acute-phase reactant.)</div></div><div class="rt"><div class="rtl">5. Protein C &amp; S</div><div class="rte">Warfarin also reduces the vitamin K-dependent ANTICOAGULANT proteins C and S. Because protein C has a short half-life (~8 h) — comparable to factor VII — it falls fast in the first days, transiently tipping the balance toward clotting before the procoagulant factors decline. This is the mechanistic root of the early prothrombic state and skin necrosis.</div><div class="rtt">⚠️ WRONG: 'warfarin is purely anticoagulant from the first dose.' By dropping protein C early, warfarin is transiently PROCOAGULANT for the first few days — which is why heparin bridging is required and why protein C deficiency predisposes to skin necrosis.</div></div><div class="rt"><div class="rtl">6. VII shortest t½</div><div class="rte">Factor VII has the SHORTEST half-life (~6 h), so it is the first procoagulant factor to fall after warfarin starts. Because the PT/INR is most sensitive to factor VII (extrinsic pathway), the INR rises within ~24-48 h — well before full antithrombotic effect is achieved.</div><div class="rtt">⚠️ WRONG: 'a therapeutic INR on day 2 means the patient is fully anticoagulated and heparin can stop.' The early INR rise reflects only the rapid loss of factor VII — prothrombin (II) is still present, so true antithrombotic protection is NOT yet established. Continue heparin until INR is therapeutic ≥24 h AND ≥5 days of overlap.</div></div><div class="rt"><div class="rtl">7. II longest t½</div><div class="rte">Prothrombin (factor II) has the LONGEST half-life (~60-72 h), so it is the last factor to decline and the true marker of full anticoagulation. This long tail explains both why warfarin takes ~5 days to reach steady antithrombotic effect and why its action lingers for days after stopping (relevant to pre-op holding).</div><div class="rtt">⚠️ WRONG: 'warfarin's effect wears off within a day of stopping.' Because of prothrombin's ~3-day half-life, anticoagulant effect persists for several days after the last dose — hence stopping warfarin ~5 days before surgery, not the night before.</div></div><div class="rt"><div class="rtl">8. Pro-thrombotic window</div><div class="rte">During days 1-3, the short-lived anticoagulant protein C drops before the long-lived procoagulant factor II, creating a transient HYPERCOAGULABLE (prothrombotic) window — a 'false safety' period when the rising INR misleadingly suggests protection. This is why warfarin is never started alone for acute thrombosis.</div><div class="rtt">⚠️ WRONG: 'start warfarin monotherapy for an acute DVT/PE.' Initiating warfarin without a parenteral anticoagulant exposes the patient to the early prothrombotic window (and skin necrosis); always bridge with heparin/LMWH (or start a DOAC) — warfarin alone for acute VTE is the classic error.</div></div><div class="rt"><div class="rtl">9. Skin necrosis risk</div><div class="rte">The same early protein C/S drop can cause warfarin-induced skin necrosis — painful purpuric lesions over fatty tissue (breast, thigh, buttock) within the first ~3-5 days from microvascular thrombosis. Risk is markedly higher in inherited protein C (or protein S) deficiency, and is mitigated by overlapping heparin and avoiding large warfarin loading doses.</div><div class="rtt">⚠️ WRONG: 'avoid heparin overlap to prevent bleeding when starting warfarin.' Heparin bridging actually PREVENTS skin necrosis and the prothrombotic window — omitting the bridge (and large loading doses) is what precipitates necrosis, especially in protein C deficiency.</div></div><div class="rt"><div class="rtl">10. Bridge ≥5 days</div><div class="rte">When starting warfarin for acute thrombosis, overlap (bridge) with heparin/LMWH for AT LEAST 5 days AND until the INR is therapeutic (≥2.0) for ≥24 h — both conditions must be met. The 5 days covers the prothrombotic window and ensures prothrombin (long t½) has actually fallen, not just factor VII.</div><div class="rtt">⚠️ WRONG: 'stop heparin as soon as the INR enters the therapeutic range.' You need BOTH ≥5 days of overlap AND INR ≥2 sustained for 24 h; stopping at first therapeutic INR (driven by factor VII) leaves prothrombin intact and the patient under-protected.</div></div><div class="rt"><div class="rtl">11. INR monitoring</div><div class="rte">Warfarin is monitored by the INR (a standardized PT). PT/INR reflects the extrinsic and common pathways and is especially sensitive to the short-lived factor VII. Warfarin has a NARROW therapeutic index with major diet (vitamin K), drug, and genetic variability, so frequent INR checks and dose titration are required; most targets are 2.0-3.0.</div><div class="rtt">⚠️ WRONG: 'monitor warfarin with the aPTT.' Warfarin is followed by PT/INR, not aPTT (that monitors unfractionated heparin); using aPTT to titrate warfarin is a classic mix-up.</div></div><div class="rt"><div class="rtl">12. CYP2C9 variant</div><div class="rte">The more potent S-warfarin enantiomer is metabolized by CYP2C9. Loss-of-function CYP2C9 variants (*2, *3) slow clearance, so poor metabolizers need LOWER doses and bleed more; combined CYP2C9 + VKORC1 genotyping helps predict dose. Many drug interactions act through CYP2C9 inhibition/induction.</div><div class="rtt">⚠️ WRONG: 'a CYP2C9 poor metabolizer needs a higher warfarin dose.' Reduced metabolism means MORE drug accumulates per dose, so these patients require LOWER doses and have higher bleeding risk — the relationship is the opposite of what is sometimes assumed.</div></div><div class="rt"><div class="rtl">13. CYP3A4 metabolism</div><div class="rte">Warfarin is cleared by several CYP enzymes (CYP2C9 mainly, plus CYP1A2 and CYP3A4 for R-warfarin), making it prone to numerous interactions. INHIBITORS (amiodarone, fluconazole/azoles, metronidazole, TMP-SMX, macrolides, fluoroquinolones, SSRIs, cimetidine) raise INR/bleeding; INDUCERS (rifampin, carbamazepine, phenytoin, St. John's wort, chronic alcohol) lower INR/efficacy.</div><div class="rtt">⚠️ WRONG: 'start rifampin in a warfarin patient and expect a stable INR.' Rifampin is a potent CYP inducer that drops the INR into the subtherapeutic range (thrombosis risk); any new interacting drug mandates closer INR monitoring and dose adjustment.</div></div><div class="rt"><div class="rtl">14. &gt;97% albumin-bound</div><div class="rte">Warfarin is &gt;97-99% bound to albumin; only the small unbound (free) fraction is pharmacologically active. Drugs that displace it from albumin (or low albumin states) transiently increase the free active fraction and effect. Combined with its narrow therapeutic index, this protein binding underlies many interactions.</div><div class="rtt">⚠️ WRONG: 'highly protein-bound means warfarin is hard to start working and is safe from interactions.' The high protein binding actually makes it VULNERABLE to displacement interactions (and warfarin readily crosses the placenta despite binding) — protein binding does not confer interaction safety.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="warf_inr_reversal.html" title="Warfarin — INR Targets &amp; Reversal">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="arth_approach.html" title="Arthritis — Approach">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyperkalemia — treatment (stabilize, shift, remove)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>3 tiers</b> — WRONG answer: jumping straight to insulin or kayexalate when the ECG shows peaked T waves. Discriminator: with ECG changes you must give CALCIUM first to protect the heart before anything else — shifting and removing K+ take minutes to hours and won't prevent imminent arrhythmia.</li><li><b>Tier 1: stabilize</b> — WRONG answer: waiting for a 'high enough' number before treating a patient with ECG changes. Discriminator: ANY ECG manifestation of hyperkalemia is an emergency warranting immediate calcium regardless of the exact K+ value — the rhythm, not just the number, drives urgency.</li><li><b>IV calcium gluconate</b> — WRONG answer: believing calcium lowers the serum potassium. Discriminator: calcium does NOT change the K+ level at all — it only stabilizes the myocardium. A learner who gives calcium and stops has failed to treat the hyperkalemia; you still must shift and remove.</li><li><b>Central line for CaCl</b> — WRONG answer: pushing calcium chloride through a small peripheral IV in a stable ward patient. Discriminator: extravasation causes severe local necrosis — use calcium gluconate peripherally; reserve CaCl for central access or a true arrest situation.</li><li><b>Digoxin caution</b> — WRONG answer: rapidly bolusing IV calcium in a digoxin-toxic patient with hyperkalemia. Discriminator: classic teaching is to avoid/give calcium very cautiously here and prioritize digoxin-immune Fab — the hyperkalemia reflects pump poisoning that Fab reverses at its source.</li><li><b>Tier 2: shift</b> — WRONG answer: declaring the patient treated after the K+ drops with insulin/albuterol. Discriminator: shifting is temporary and total body K+ is the same — in a patient who cannot excrete K+ (oliguric AKI, ESRD), you MUST proceed to removal (dialysis) or the K+ will rebound.</li><li><b>Insulin + glucose</b> — WRONG answer: omitting the glucose 'because the patient got insulin.' Discriminator: hypoglycemia is a common, sometimes severe complication 30–60 min later — always give dextrose (and monitor glucose), EXCEPT when the patient is already significantly hyperglycemic (e.g., glucose &gt; 250), in which case give insulin alone and recheck.</li><li><b>Albuterol</b> — WRONG answer: relying on albuterol as monotherapy. Discriminator: up to ~40% of patients (especially those on beta-blockers) are poor responders, and the doses needed cause tachycardia — use it as an adjunct to insulin/glucose, not a substitute.</li><li><b>Bicarbonate</b> — WRONG answer: giving a bicarbonate bolus as first-line for isolated, non-acidotic hyperkalemia. Discriminator: bicarbonate is NOT first-line and is largely ineffective without acidosis; in ESRD it risks volume overload and hypocalcemia/tetany and does not reliably lower K+ acutely.</li><li><b>Tier 3: remove</b> — WRONG answer: treating with stabilize + shift only and discharging without a removal plan. Discriminator: without removal, shifted K+ returns within hours — match the removal modality to the cause (diuretic if kidneys work, dialysis if they don't, binders for chronic control).</li><li><b>Dialysis</b> — WRONG answer: delaying dialysis in an anuric ESRD patient while cycling more insulin and albuterol. Discriminator: if the kidneys cannot excrete K+, shifting only buys time — dialysis is the definitive answer and should be arranged early in severe/refractory cases.</li><li><b>Loop diuretic</b> — WRONG answer: ordering furosemide to fix hyperkalemia in an anuric/ESRD patient. Discriminator: no urine output means no diuretic-mediated K+ loss — in advanced renal failure the loop diuretic is ineffective and dialysis is required instead.</li><li><b>K+ binders</b> — WRONG answer: relying on kayexalate for EMERGENCY hyperkalemia. Discriminator: SPS works slowly (hours) and carries a risk of colonic/intestinal NECROSIS (especially with sorbitol, post-op, or bowel disease) — it is not a substitute for calcium/insulin in a crisis; patiromer and SZC are newer and generally safer for ongoing management.</li><li><b>Stop offending drugs</b> — WRONG answer: telling a hyperkalemic patient to use a 'low-sodium' salt substitute for blood pressure. Discriminator: salt substitutes are KCl and are a hidden, common cause of outpatient hyperkalemia — review the med and diet list, including OTC supplements, before escalating therapy.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. 3 tiers</div><div class="rte">Hyperkalemia management has three sequential jobs: (1) STABILIZE the myocardial membrane (calcium), (2) SHIFT K+ into cells temporarily (insulin/glucose, albuterol, +/- bicarb), and (3) REMOVE K+ from the body (diuretics, binders, dialysis). Only the third job lowers total body potassium; the first two buy time. Severity (ECG changes, K+ level) dictates how aggressively you move through the tiers.</div><div class="rtt">⚠️ WRONG answer: jumping straight to insulin or kayexalate when the ECG shows peaked T waves. Discriminator: with ECG changes you must give CALCIUM first to protect the heart before anything else — shifting and removing K+ take minutes to hours and won't prevent imminent arrhythmia.</div></div><div class="rt"><div class="rtl">2. Tier 1: stabilize</div><div class="rte">Tier 1 (membrane stabilization) is indicated when there are ECG changes (peaked T waves, then PR prolongation/widened QRS, loss of P waves, sine wave) OR when K+ is severe (commonly K+ &gt;= 6.5). Calcium raises the threshold potential, restoring the gap between resting and threshold membrane potential that hyperkalemia had narrowed.</div><div class="rtt">⚠️ WRONG answer: waiting for a 'high enough' number before treating a patient with ECG changes. Discriminator: ANY ECG manifestation of hyperkalemia is an emergency warranting immediate calcium regardless of the exact K+ value — the rhythm, not just the number, drives urgency.</div></div><div class="rt"><div class="rtl">3. IV calcium gluconate</div><div class="rte">IV calcium gluconate (typically 10 mL of 10% over 2–3 min, repeat in 5 min if ECG unchanged) is the FIRST drug given for hyperkalemia with ECG changes. It antagonizes the membrane effects of hyperkalemia within 1–3 minutes; the effect lasts only ~30–60 minutes, so it must be paired with shifting and removal.</div><div class="rtt">⚠️ WRONG answer: believing calcium lowers the serum potassium. Discriminator: calcium does NOT change the K+ level at all — it only stabilizes the myocardium. A learner who gives calcium and stops has failed to treat the hyperkalemia; you still must shift and remove.</div></div><div class="rt"><div class="rtl">4. Central line for CaCl</div><div class="rte">Calcium chloride contains about 3x more elemental calcium than calcium gluconate (≈270 mg vs ≈90 mg per 10 mL ampule), so it is preferred in cardiac arrest/peri-arrest, but it is highly caustic and should be given through a CENTRAL line to avoid severe tissue necrosis on extravasation. Calcium gluconate is safer peripherally for routine use.</div><div class="rtt">⚠️ WRONG answer: pushing calcium chloride through a small peripheral IV in a stable ward patient. Discriminator: extravasation causes severe local necrosis — use calcium gluconate peripherally; reserve CaCl for central access or a true arrest situation.</div></div><div class="rt"><div class="rtl">5. Digoxin caution</div><div class="rte">When hyperkalemia coexists with digoxin toxicity, give calcium cautiously and SLOWLY (over 20–30 min) because of the theoretical 'stone heart' — calcium added to digoxin-induced intracellular calcium overload may precipitate refractory contraction/arrhythmia. The definitive treatment is digoxin-specific antibody (Fab) fragments, which also correct the hyperkalemia.</div><div class="rtt">⚠️ WRONG answer: rapidly bolusing IV calcium in a digoxin-toxic patient with hyperkalemia. Discriminator: classic teaching is to avoid/give calcium very cautiously here and prioritize digoxin-immune Fab — the hyperkalemia reflects pump poisoning that Fab reverses at its source.</div></div><div class="rt"><div class="rtl">6. Tier 2: shift</div><div class="rte">Tier 2 drives K+ from the extracellular space into cells via the Na/K-ATPase. It works in minutes and lasts a few hours, but total body K+ is UNCHANGED — K+ will leak back out as the agents wear off. Shifting is a bridge to definitive removal, not a cure, especially in anuric/ESRD patients who cannot excrete the load.</div><div class="rtt">⚠️ WRONG answer: declaring the patient treated after the K+ drops with insulin/albuterol. Discriminator: shifting is temporary and total body K+ is the same — in a patient who cannot excrete K+ (oliguric AKI, ESRD), you MUST proceed to removal (dialysis) or the K+ will rebound.</div></div><div class="rt"><div class="rtl">7. Insulin + glucose</div><div class="rte">Regular insulin 10 units IV with 25 g of dextrose (one ampule of D50) is the fastest, most reliable shifting therapy; insulin activates the Na/K-ATPase to drive K+ into cells, lowering serum K+ by ~0.5–1.2 mEq/L within 15–30 minutes for several hours. Glucose is co-administered to prevent iatrogenic hypoglycemia.</div><div class="rtt">⚠️ WRONG answer: omitting the glucose 'because the patient got insulin.' Discriminator: hypoglycemia is a common, sometimes severe complication 30–60 min later — always give dextrose (and monitor glucose), EXCEPT when the patient is already significantly hyperglycemic (e.g., glucose &gt; 250), in which case give insulin alone and recheck.</div></div><div class="rt"><div class="rtl">8. Albuterol</div><div class="rte">High-dose nebulized albuterol (a beta-2 agonist, typically 10–20 mg — about 4–8x the bronchodilator dose) stimulates the Na/K-ATPase and shifts K+ into cells, lowering serum K+ by ~0.5–1.0 mEq/L. Its effect is ADDITIVE to insulin, making the two a standard combined shifting regimen.</div><div class="rtt">⚠️ WRONG answer: relying on albuterol as monotherapy. Discriminator: up to ~40% of patients (especially those on beta-blockers) are poor responders, and the doses needed cause tachycardia — use it as an adjunct to insulin/glucose, not a substitute.</div></div><div class="rt"><div class="rtl">9. Bicarbonate</div><div class="rte">Sodium bicarbonate raises pH, which can shift K+ into cells in exchange for H+, but it is slow and weak and only meaningfully helps when a metabolic acidosis is present. It is most useful as an infusion in acidotic CKD patients rather than as an acute bolus.</div><div class="rtt">⚠️ WRONG answer: giving a bicarbonate bolus as first-line for isolated, non-acidotic hyperkalemia. Discriminator: bicarbonate is NOT first-line and is largely ineffective without acidosis; in ESRD it risks volume overload and hypocalcemia/tetany and does not reliably lower K+ acutely.</div></div><div class="rt"><div class="rtl">10. Tier 3: remove</div><div class="rte">Tier 3 is the only category that lowers TOTAL BODY potassium: enhance renal excretion (loop diuretic), pull K+ out via the gut (binders), or extract it directly (dialysis). Every hyperkalemia patient ultimately needs a removal strategy once the membrane is stabilized and K+ is temporarily shifted.</div><div class="rtt">⚠️ WRONG answer: treating with stabilize + shift only and discharging without a removal plan. Discriminator: without removal, shifted K+ returns within hours — match the removal modality to the cause (diuretic if kidneys work, dialysis if they don't, binders for chronic control).</div></div><div class="rt"><div class="rtl">11. Dialysis</div><div class="rte">Hemodialysis is the most effective and definitive removal method and is the treatment of choice for severe or refractory hyperkalemia, ESRD, or oliguric AKI. It can remove large amounts of K+ rapidly; note that K+ can rebound after a session as it redistributes from cells, so recheck levels.</div><div class="rtt">⚠️ WRONG answer: delaying dialysis in an anuric ESRD patient while cycling more insulin and albuterol. Discriminator: if the kidneys cannot excrete K+, shifting only buys time — dialysis is the definitive answer and should be arranged early in severe/refractory cases.</div></div><div class="rt"><div class="rtl">12. Loop diuretic</div><div class="rte">Loop diuretics (e.g., furosemide) increase distal Na+ delivery and urine flow, enhancing renal K+ excretion — but they REQUIRE functioning kidneys and adequate volume status to work. They are useful in volume-overloaded patients with preserved renal function and as adjuncts in chronic management.</div><div class="rtt">⚠️ WRONG answer: ordering furosemide to fix hyperkalemia in an anuric/ESRD patient. Discriminator: no urine output means no diuretic-mediated K+ loss — in advanced renal failure the loop diuretic is ineffective and dialysis is required instead.</div></div><div class="rt"><div class="rtl">13. K+ binders</div><div class="rte">GI cation exchangers bind K+ in the gut and remove it in stool, lowering total body K+: patiromer and sodium zirconium cyclosilicate (SZC) are newer agents, while sodium polystyrene sulfonate (SPS/kayexalate) is the older one. SZC has the fastest onset of the binders (~1 hour) and is useful for both acute and chronic control; patiromer and SPS are slower (better for subacute/chronic).</div><div class="rtt">⚠️ WRONG answer: relying on kayexalate for EMERGENCY hyperkalemia. Discriminator: SPS works slowly (hours) and carries a risk of colonic/intestinal NECROSIS (especially with sorbitol, post-op, or bowel disease) — it is not a substitute for calcium/insulin in a crisis; patiromer and SZC are newer and generally safer for ongoing management.</div></div><div class="rt"><div class="rtl">14. Stop offending drugs</div><div class="rte">For the stable outpatient, the foundation of management is removing contributors: stop or reduce ACEi/ARBs, potassium-sparing diuretics (spironolactone/eplerenone/amiloride), NSAIDs, and trimethoprim; restrict dietary potassium; and counsel patients to AVOID salt substitutes (which are potassium chloride). Chronic binders (patiromer/SZC) can allow continuation of needed RAAS therapy in heart failure/CKD.</div><div class="rtt">⚠️ WRONG answer: telling a hyperkalemic patient to use a 'low-sodium' salt substitute for blood pressure. Discriminator: salt substitutes are KCl and are a hidden, common cause of outpatient hyperkalemia — review the med and diet list, including OTC supplements, before escalating therapy.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperk_redistribution.html" title="Hyperkalemia — redistribution (transcellular shift)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperk_renal.html" title="Hyperkalemia — where renal K+ excretion fails">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hemolytic Anemia — G6PD Drug &amp; Oxidant Triggers</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Primaquine (high risk)</b> — WRONG: 'A normal G6PD level during an acute hemolytic episode safely excludes deficiency, so primaquine can be continued.' Discriminator: during acute hemolysis the oldest, most deficient cells are already lysed and reticulocytes (which have higher G6PD) dominate, falsely normalizing the assay — repeat testing 2-3 months after the episode.</li><li><b>Tafenoquine</b> — WRONG: 'Tafenoquine is safer than primaquine in G6PD deficiency because it is a single dose.' Discriminator: the single dose is actually MORE dangerous — its prolonged half-life makes oxidant hemolysis unstoppable once started, which is exactly why a quantitative (not just qualitative) G6PD assay is required.</li><li><b>Dapsone</b> — WRONG: 'Cyanosis in a dapsone-treated patient with a normal arterial PaO2 indicates pulmonary shunting.' Discriminator: a normal PaO2 with low pulse-oximetry SpO2 (the 'saturation gap') points to methemoglobinemia, not lung pathology — confirm with co-oximetry, not standard ABG.</li><li><b>Rasburicase</b> — Rasburicase is safe in G6PD deficiency. WRONG — rasburicase is absolutely CONTRAINDICATED: the H2O2 byproduct triggers brisk oxidant hemolysis and methemoglobinemia. Discriminator: in a high-TLS-risk patient of Mediterranean/African/Asian descent, screen G6PD first and substitute allopurinol if deficient; never give rasburicase empirically.</li><li><b>Pegloticase</b> — WRONG: 'Pegloticase, being a chronic gout drug rather than an oncology agent, does not require G6PD screening.' Discriminator: mechanism (uricase → H2O2), not indication, drives the risk — both pegloticase and rasburicase carry the same contraindication and require pre-treatment G6PD testing.</li><li><b>Methylene blue</b> — Methylene blue is the treatment for G6PD methemoglobinemia. WRONG — it is contraindicated/ineffective in G6PD deficiency. Discriminator: methylene blue requires NADPH (the very thing G6PD deficiency lacks) to work; without it the drug acts as an oxidant. The right answer in a G6PD-deficient patient with methemoglobinemia is high-dose vitamin C or exchange transfusion.</li><li><b>Toluidine blue</b> — WRONG: 'Toluidine blue can be safely substituted for methylene blue in a G6PD-deficient patient with methemoglobinemia.' Discriminator: both are NADPH-dependent oxidant dyes — swapping one for the other does not solve the problem; choose ascorbic acid or exchange transfusion.</li><li><b>ASA high dose</b> — All aspirin doses are forbidden in G6PD. WRONG — only high anti-inflammatory doses (&gt;3 g/day) carry meaningful hemolytic risk; low-dose (81 mg) aspirin is generally safe. Discriminator: G6PD drug risk is dose-dependent for several agents — do not withhold cardioprotective low-dose aspirin from a G6PD-deficient patient who needs it.</li><li><b>Quinine/chloroquine</b> — WRONG: 'Chloroquine must never be given to a G6PD-deficient patient with acute malaria.' Discriminator: chloroquine is moderate-risk and the danger of untreated malaria exceeds the hemolytic risk — it is permitted for acute treatment; it is PRIMAQUINE/tafenoquine (radical cure) that demand pre-screening.</li><li><b>Sulfonamides (sulfamethoxazole)</b> — WRONG: 'A G6PD-deficient patient allergic-list says avoid sulfa, so thiazide diuretics and sulfonylureas are also unsafe.' Discriminator: it is the antibacterial sulfonamides (sulfamethoxazole, sulfadiazine, sulfasalazine) that trigger hemolysis; non-antibiotic sulfonamides (thiazides, glipizide, furosemide, celecoxib) do not cross-react and are not significant oxidant triggers.</li><li><b>Nitrofurantoin</b> — WRONG: 'Nitrofurantoin is contraindicated in G6PD only because of its known pulmonary and hepatic toxicity, not hemolysis.' Discriminator: nitrofurantoin is a direct OXIDANT that causes acute hemolysis in G6PD deficiency — the smear shows bite cells and Heinz bodies; its separate pulmonary/hepatic toxicities are unrelated to the G6PD contraindication.</li><li><b>Chloramphenicol</b> — WRONG: 'A G6PD-deficient patient on chloramphenicol who develops pancytopenia is having an oxidant hemolytic reaction.' Discriminator: oxidant hemolysis affects RBCs (anemia + Heinz bodies), whereas chloramphenicol's signature toxicity is idiosyncratic APLASTIC anemia (pancytopenia from marrow failure) — different mechanism, different smear, different reversibility.</li><li><b>Vitamin C (high dose) / naphthalene</b> — Vitamin C is always safe in G6PD. WRONG — high-dose IV ascorbic acid (&gt;1 g) is a pro-oxidant that causes hemolysis. Discriminator: dose dictates direction — low-dose vitamin C is the preferred antidote for methemoglobinemia in G6PD deficiency, but gram-scale IV vitamin C precipitates hemolysis; the naphthalene mothball exposure is the classic pediatric trigger.</li><li><b>Probenecid / safe-ish (low risk)</b> — WRONG: 'Phenazopyridine should be given freely for UTI dysuria in G6PD deficiency because it is on the low-risk list.' Discriminator: phenazopyridine is lower-risk than sulfa drugs but can still cause methemoglobinemia and hemolysis at high or prolonged doses, especially in renal impairment — acetaminophen is the truly safe analgesic anchor here.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Primaquine (high risk)</div><div class="rte">Primaquine is the classic high-risk oxidant antimalarial in G6PD deficiency — it generates reactive oxygen species that overwhelm a G6PD-deficient cell's limited NADPH/glutathione reserve, oxidizing hemoglobin to Heinz bodies and causing acute intravascular hemolysis 2-4 days after exposure. It is given for radical cure of P. vivax/ovale hypnozoites, so ALWAYS screen G6PD level BEFORE prescribing. Mnemonic for oxidant drugs: 'Dr. PANIC' — Dapsone, Primaquine, Aspirin (high-dose), Nitrofurantoin, Isoniazid/Isobutyl(naphthalene), Ciprofloxacin/Sulfa.</div><div class="rtt">⚠️ WRONG: 'A normal G6PD level during an acute hemolytic episode safely excludes deficiency, so primaquine can be continued.' Discriminator: during acute hemolysis the oldest, most deficient cells are already lysed and reticulocytes (which have higher G6PD) dominate, falsely normalizing the assay — repeat testing 2-3 months after the episode.</div></div><div class="rt"><div class="rtl">2. Tafenoquine</div><div class="rte">Tafenoquine is a long-acting 8-aminoquinoline antimalarial (single 300 mg dose for vivax radical cure) and, like primaquine, is a potent oxidant that triggers severe hemolysis in G6PD deficiency. Because its long half-life (~15 days) means exposure cannot be withdrawn quickly, the FDA mandates documented quantitative G6PD activity &gt;70% of normal before use. Contraindicated in pregnancy and breastfeeding of a G6PD-deficient infant.</div><div class="rtt">⚠️ WRONG: 'Tafenoquine is safer than primaquine in G6PD deficiency because it is a single dose.' Discriminator: the single dose is actually MORE dangerous — its prolonged half-life makes oxidant hemolysis unstoppable once started, which is exactly why a quantitative (not just qualitative) G6PD assay is required.</div></div><div class="rt"><div class="rtl">3. Dapsone</div><div class="rte">Dapsone is a sulfone antibiotic (used for PCP prophylaxis, leprosy, dermatitis herpetiformis) and one of the strongest clinically encountered oxidants — it causes dose-dependent hemolysis AND methemoglobinemia even in patients with normal G6PD, but far worse in deficiency. Screen G6PD before starting; methemoglobinemia presents with cyanosis unresponsive to oxygen and a saturation gap (low SpO2, normal PaO2). Co-administer with cimetidine to reduce the toxic hydroxylamine metabolite.</div><div class="rtt">⚠️ WRONG: 'Cyanosis in a dapsone-treated patient with a normal arterial PaO2 indicates pulmonary shunting.' Discriminator: a normal PaO2 with low pulse-oximetry SpO2 (the 'saturation gap') points to methemoglobinemia, not lung pathology — confirm with co-oximetry, not standard ABG.</div></div><div class="rt"><div class="rtl">4. Rasburicase</div><div class="rte">Rasburicase is a recombinant urate oxidase used for tumor lysis syndrome; it converts uric acid to allantoin, generating hydrogen peroxide (H2O2) as a byproduct that directly oxidizes G6PD-deficient RBCs → severe hemolysis AND methemoglobinemia. It is absolutely contraindicated in G6PD deficiency — screen high-risk (Mediterranean, African, Asian) patients before TLS prophylaxis, and use allopurinol/rasburicase-alternative instead. Onset of hemolysis can be within 24-48 h.</div><div class="rtt">⚠️ Rasburicase is safe in G6PD deficiency. WRONG — rasburicase is absolutely CONTRAINDICATED: the H2O2 byproduct triggers brisk oxidant hemolysis and methemoglobinemia. Discriminator: in a high-TLS-risk patient of Mediterranean/African/Asian descent, screen G6PD first and substitute allopurinol if deficient; never give rasburicase empirically.</div></div><div class="rt"><div class="rtl">5. Pegloticase</div><div class="rte">Pegloticase is a PEGylated recombinant uricase for refractory chronic gout; like rasburicase it generates H2O2 during urate breakdown and is therefore contraindicated in G6PD deficiency (boxed warning). Screen G6PD before the first infusion. Both uricases share the 'goblin/H2O2' visual because the peroxide byproduct is the shared mechanism of oxidant hemolysis.</div><div class="rtt">⚠️ WRONG: 'Pegloticase, being a chronic gout drug rather than an oncology agent, does not require G6PD screening.' Discriminator: mechanism (uricase → H2O2), not indication, drives the risk — both pegloticase and rasburicase carry the same contraindication and require pre-treatment G6PD testing.</div></div><div class="rt"><div class="rtl">6. Methylene blue</div><div class="rte">Methylene blue is the standard antidote for acquired methemoglobinemia (1-2 mg/kg IV) because it is reduced by NADPH-dependent methemoglobin reductase back to leukomethylene blue, which then reduces Fe3+ to Fe2+. In G6PD deficiency there is insufficient NADPH to drive this pathway, so methylene blue is ineffective AND itself becomes an oxidant → paradoxically worsens both methemoglobinemia and hemolysis. Use ascorbic acid or exchange transfusion instead in G6PD-deficient methemoglobinemia.</div><div class="rtt">⚠️ Methylene blue is the treatment for G6PD methemoglobinemia. WRONG — it is contraindicated/ineffective in G6PD deficiency. Discriminator: methylene blue requires NADPH (the very thing G6PD deficiency lacks) to work; without it the drug acts as an oxidant. The right answer in a G6PD-deficient patient with methemoglobinemia is high-dose vitamin C or exchange transfusion.</div></div><div class="rt"><div class="rtl">7. Toluidine blue</div><div class="rte">Toluidine blue is an alternative methemoglobinemia agent and tissue/dye stain that, like methylene blue, is an oxidant dye to be avoided in G6PD deficiency. It shares the same NADPH-dependent limitation and oxidant risk. Grouped with methylene blue as 'blue dye oxidants' on the high-risk side of the scene.</div><div class="rtt">⚠️ WRONG: 'Toluidine blue can be safely substituted for methylene blue in a G6PD-deficient patient with methemoglobinemia.' Discriminator: both are NADPH-dependent oxidant dyes — swapping one for the other does not solve the problem; choose ascorbic acid or exchange transfusion.</div></div><div class="rt"><div class="rtl">8. ASA high dose</div><div class="rte">Aspirin is dose-dependent: high anti-inflammatory doses (&gt;3 g/day) can precipitate oxidant hemolysis in G6PD deficiency, whereas low-dose antiplatelet aspirin (81 mg, cardioprotective) is generally safe. The board point is that risk is a function of cumulative oxidant burden and dose, not an all-or-none drug-class ban. Most everyday analgesic/antiplatelet use does not require avoidance.</div><div class="rtt">⚠️ All aspirin doses are forbidden in G6PD. WRONG — only high anti-inflammatory doses (&gt;3 g/day) carry meaningful hemolytic risk; low-dose (81 mg) aspirin is generally safe. Discriminator: G6PD drug risk is dose-dependent for several agents — do not withhold cardioprotective low-dose aspirin from a G6PD-deficient patient who needs it.</div></div><div class="rt"><div class="rtl">9. Quinine/chloroquine</div><div class="rte">Quinine and chloroquine are moderate-risk oxidant antimalarials — at standard therapeutic antimalarial doses hemolysis is uncommon in mild (Class II-III) G6PD variants, and the WHO permits chloroquine for acute malaria treatment even in deficiency because the risk of untreated malaria outweighs mild hemolysis. Risk rises with severe (Mediterranean) variants. They sit in the 'medium-low risk' zone of the scene, distinct from primaquine.</div><div class="rtt">⚠️ WRONG: 'Chloroquine must never be given to a G6PD-deficient patient with acute malaria.' Discriminator: chloroquine is moderate-risk and the danger of untreated malaria exceeds the hemolytic risk — it is permitted for acute treatment; it is PRIMAQUINE/tafenoquine (radical cure) that demand pre-screening.</div></div><div class="rt"><div class="rtl">10. Sulfonamides (sulfamethoxazole)</div><div class="rte">Sulfonamide antibiotics — sulfamethoxazole (in TMP-SMX/Bactrim), sulfadiazine, sulfasalazine, sulfadimidine — are classic oxidant triggers of G6PD hemolysis and appear on virtually every 'avoid' list. TMP-SMX is high-yield because it is so widely prescribed (UTI, PCP prophylaxis). Note the related sulfa drug dapsone is also a sulfone oxidant. Distinguish from non-antibiotic sulfonamides (thiazides, sulfonylureas, celecoxib), which carry low hemolytic risk.</div><div class="rtt">⚠️ WRONG: 'A G6PD-deficient patient allergic-list says avoid sulfa, so thiazide diuretics and sulfonylureas are also unsafe.' Discriminator: it is the antibacterial sulfonamides (sulfamethoxazole, sulfadiazine, sulfasalazine) that trigger hemolysis; non-antibiotic sulfonamides (thiazides, glipizide, furosemide, celecoxib) do not cross-react and are not significant oxidant triggers.</div></div><div class="rt"><div class="rtl">11. Nitrofurantoin</div><div class="rte">Nitrofurantoin (a nitrofuran UTI antibiotic) is a well-established oxidant trigger of G6PD hemolysis; some fluoroquinolones (ciprofloxacin, norfloxacin, moxifloxacin) are also implicated. The board scenario is a woman treated for a UTI with nitrofurantoin who develops dark urine, jaundice, and anemia with bite cells/Heinz bodies. Choose an alternative such as fosfomycin or a beta-lactam in a known G6PD-deficient patient.</div><div class="rtt">⚠️ WRONG: 'Nitrofurantoin is contraindicated in G6PD only because of its known pulmonary and hepatic toxicity, not hemolysis.' Discriminator: nitrofurantoin is a direct OXIDANT that causes acute hemolysis in G6PD deficiency — the smear shows bite cells and Heinz bodies; its separate pulmonary/hepatic toxicities are unrelated to the G6PD contraindication.</div></div><div class="rt"><div class="rtl">12. Chloramphenicol</div><div class="rte">Chloramphenicol is an oxidant antibiotic that can precipitate hemolysis in G6PD deficiency (medium-risk). Do not confuse this with its far more famous, dose-independent idiosyncratic aplastic anemia and the dose-dependent reversible marrow suppression ('gray baby syndrome' is a separate neonatal toxicity from immature glucuronidation). On boards, chloramphenicol = aplastic anemia first, G6PD oxidant second.</div><div class="rtt">⚠️ WRONG: 'A G6PD-deficient patient on chloramphenicol who develops pancytopenia is having an oxidant hemolytic reaction.' Discriminator: oxidant hemolysis affects RBCs (anemia + Heinz bodies), whereas chloramphenicol's signature toxicity is idiosyncratic APLASTIC anemia (pancytopenia from marrow failure) — different mechanism, different smear, different reversibility.</div></div><div class="rt"><div class="rtl">13. Vitamin C (high dose) / naphthalene</div><div class="rte">High-dose IV vitamin C (&gt;1 g, especially gram-scale infusions) and naphthalene (mothballs, dimethyl-naphthalene) are oxidants that cause hemolysis in G6PD deficiency — classic peds vignette is a G6PD-deficient infant exposed to mothball-stored clothing who develops hemolytic anemia. Note the irony: low-dose vitamin C is actually a REDUCING agent and is used as an antidote for methemoglobinemia in G6PD patients, but supraphysiologic doses flip to a pro-oxidant role.</div><div class="rtt">⚠️ Vitamin C is always safe in G6PD. WRONG — high-dose IV ascorbic acid (&gt;1 g) is a pro-oxidant that causes hemolysis. Discriminator: dose dictates direction — low-dose vitamin C is the preferred antidote for methemoglobinemia in G6PD deficiency, but gram-scale IV vitamin C precipitates hemolysis; the naphthalene mothball exposure is the classic pediatric trigger.</div></div><div class="rt"><div class="rtl">14. Probenecid / safe-ish (low risk)</div><div class="rte">Probenecid (uricosuric), acetaminophen, phenazopyridine, and phenacetin are LOW-risk at usual therapeutic doses — useful 'safe' contrast items so students don't reflexively avoid every drug. Acetaminophen is the preferred analgesic/antipyretic in G6PD deficiency. Phenazopyridine and phenacetin can rarely cause methemoglobinemia/hemolysis at high doses, but standard dosing is generally tolerated.</div><div class="rtt">⚠️ WRONG: 'Phenazopyridine should be given freely for UTI dysuria in G6PD deficiency because it is on the low-risk list.' Discriminator: phenazopyridine is lower-risk than sulfa drugs but can still cause methemoglobinemia and hemolysis at high or prolonged doses, especially in renal impairment — acetaminophen is the truly safe analgesic anchor here.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hemol_g6pd.html" title="Hemolytic Anemia — G6PD Deficiency (Shield System)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hemol_spherocytosis.html" title="Hemolytic Anemia — Hereditary Spherocytosis (Sphere Factory)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

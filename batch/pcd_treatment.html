@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Plasma Cell — Treatment Backbone &amp; Transplant</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>IMiDs class</b> — WRONG answer: 'IMiDs and proteasome inhibitors are interchangeable / share the same mechanism, so failing one predicts failing the other.' Different mechanisms (cereblon/IKZF degradation vs. proteasome blockade) — that's exactly why frontline regimens COMBINE them (e.g., VRd). Discriminator: lenalidomide-refractory disease still responds to a proteasome inhibitor or pomalidomide; do not assume cross-resistance.</li><li><b>IMiD = VTE risk</b> — WRONG answer: 'IMiDs cause cytopenias and bleeding, so anticoagulation/aspirin is contraindicated.' The dominant vascular hazard is THROMBOSIS, not bleeding — omitting prophylaxis is the classic error. Discriminator: risk-stratify and choose ASA (low risk) vs LMWH/DOAC (high risk); thrombocytopenia &lt;50k may modify but does not eliminate the need to consider prophylaxis.</li><li><b>Thalidomide teratogen</b> — WRONG answer: 'only thalidomide is teratogenic; lenalidomide and pomalidomide are safe in pregnancy.' ALL IMiDs are teratogenic and all require the REMS/pregnancy-prevention program. Discriminator: never start any IMiD in a person of childbearing potential without documented contraception and negative pregnancy testing.</li><li><b>Lenalidomide neuropathy-sparing</b> — WRONG answer: 'new peripheral neuropathy in a patient on lenalidomide maintenance is from the lenalidomide.' Lenalidomide rarely causes neuropathy — suspect THALIDOMIDE or BORTEZOMIB instead, or another cause. Discriminator: lenalidomide's signature problems are cytopenias and VTE; stocking-glove neuropathy points to thalidomide/bortezomib.</li><li><b>Proteasome inhibitors</b> — WRONG answer: 'all proteasome inhibitors share the same toxicity profile.' They differ critically: bortezomib → peripheral neuropathy; carfilzomib → cardiotoxicity (spares nerves); ixazomib → GI/thrombocytopenia. Discriminator: match the adverse effect to the agent — neuropathy = bortezomib, heart failure/HTN = carfilzomib, oral convenience = ixazomib.</li><li><b>Bortezomib neuropathy</b> — WRONG answer: 'a patient starting bortezomib doesn't need antiviral prophylaxis.' PIs (especially bortezomib) markedly raise herpes-zoster reactivation risk — acyclovir/valacyclovir prophylaxis is standard. Discriminator: bortezomib = neuropathy + zoster risk (give SC weekly + acyclovir); carfilzomib substitutes cardiotoxicity for the neuropathy.</li><li><b>Anti-CD38</b> — WRONG answer: 'an unexpected positive antibody screen / interference on the M-protein assay after starting daratumumab is a transfusion alloantibody or treatment failure.' Daratumumab binds CD38 on reagent RBCs → FALSE-positive indirect Coombs/antibody screen (mitigate with DTT-treated cells), and it migrates as IgG-kappa on immunofixation, mimicking/masking the M-spike. Discriminator: phenotype/genotype the patient BEFORE starting; use daratumumab-specific assays (e.g., DIRA) to interpret the M-protein.</li><li><b>Transplant-eligible induction</b> — WRONG answer: 'transplant-eligible patients should receive high-dose alkylator (e.g., melphalan) DURING induction.' Melphalan is AVOIDED in induction for transplant candidates because it damages the stem-cell pool and impairs later collection — it is reserved for the transplant conditioning step. Discriminator: PI+IMiD+steroid (±anti-CD38) for induction; melphalan only at conditioning.</li><li><b>Age/fitness triage</b> — WRONG answer: 'this 71-year-old is automatically ineligible for autologous transplant because of age.' Age ALONE does not exclude transplant — assess functional status and comorbidities. Discriminator: a fit older adult can proceed to ASCT, whereas significant frailty/organ dysfunction is the true disqualifier.</li><li><b>Maintenance</b> — WRONG answer: 'maintenance therapy is given for a fixed short course after transplant.' Standard lenalidomide maintenance is CONTINUOUS until progression (or intolerance), and this duration is what drives the survival benefit. Discriminator: stopping maintenance early forfeits the PFS/OS advantage; high-risk cytogenetics warrant intensified (PI-containing) maintenance.</li><li><b>HDT + ASCT 'the bomb'</b> — WRONG answer: 'autologous transplant is CURATIVE for multiple myeloma.' ASCT is NOT curative — it deepens response and extends remission but the disease invariably relapses; that is why maintenance follows. Discriminator: myeloma remains incurable with standard therapy; ASCT improves depth/duration of response, not cure.</li><li><b>Stem-cell rescue</b> — WRONG answer: 'the reinfused stem cells provide a graft-versus-myeloma immune effect.' Autologous cells are the patient's OWN — there is NO graft-versus-tumor and no GVHD; they simply restore hematopoiesis. Discriminator: graft-versus-myeloma/GVHD belong to ALLOGENEIC transplant, which is rarely used in myeloma.</li><li><b>Allogeneic rarely used</b> — WRONG answer: 'allogeneic transplant is the standard consolidative therapy for newly diagnosed myeloma.' Standard consolidation is AUTOLOGOUS transplant; allo is not standard of care due to prohibitive TRM/GVHD. Discriminator: 'autologous' = standard in eligible patients; 'allogeneic' = investigational/last-resort in myeloma.</li><li><b>Tandem/early vs delayed</b> — WRONG answer: 'every myeloma patient should receive tandem (double) autologous transplant for best outcomes.' Tandem ASCT benefits only HIGH-RISK cytogenetics; for standard-risk it adds toxicity without clear survival gain. Discriminator: reserve tandem for del(17p)/t(4;14)-type high-risk disease, and always collect stem cells early regardless of transplant timing.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. IMiDs class</div><div class="rte">Immunomodulatory drugs (IMiDs) — Thalidomide, lenalidomide (Revlimid), Pomalidomide — are a core myeloma backbone. They bind CEREBLON, redirecting the E3 ubiquitin ligase to degrade transcription factors IKZF1/IKZF3 (Ikaros/Aiolos), killing plasma cells AND stimulating T/NK cells. Lenalidomide is the workhorse, especially for MAINTENANCE. Mnemonic: T-R-P shields = the three IMiDs; cereblon is the lock they fit.</div><div class="rtt">⚠️ WRONG answer: 'IMiDs and proteasome inhibitors are interchangeable / share the same mechanism, so failing one predicts failing the other.' Different mechanisms (cereblon/IKZF degradation vs. proteasome blockade) — that's exactly why frontline regimens COMBINE them (e.g., VRd). Discriminator: lenalidomide-refractory disease still responds to a proteasome inhibitor or pomalidomide; do not assume cross-resistance.</div></div><div class="rt"><div class="rtl">2. IMiD = VTE risk</div><div class="rte">All IMiDs (thalidomide, lenalidomide, pomalidomide) substantially raise VENOUS THROMBOEMBOLISM risk, amplified when combined with high-dose dexamethasone or erythropoiesis-stimulating agents. Every patient needs thromboprophylaxis: aspirin for low-risk patients, and LMWH or a DOAC (e.g., apixaban) for high-risk patients (prior VTE, immobility, high-risk regimen). Mnemonic: the DVT skull warns you to add prophylaxis before starting an IMiD.</div><div class="rtt">⚠️ WRONG answer: 'IMiDs cause cytopenias and bleeding, so anticoagulation/aspirin is contraindicated.' The dominant vascular hazard is THROMBOSIS, not bleeding — omitting prophylaxis is the classic error. Discriminator: risk-stratify and choose ASA (low risk) vs LMWH/DOAC (high risk); thrombocytopenia &lt;50k may modify but does not eliminate the need to consider prophylaxis.</div></div><div class="rt"><div class="rtl">3. Thalidomide teratogen</div><div class="rte">Thalidomide is the infamous teratogen causing phocomelia (limb-shortening); lenalidomide and pomalidomide are likewise strictly teratogenic. All are dispensed under a mandatory REMS pregnancy-prevention program requiring two reliable contraception methods, regular pregnancy testing, and counseling. Thalidomide additionally causes sedation, constipation, and peripheral neuropathy. Mnemonic: the teratogen warning sign is nailed right next to thalidomide.</div><div class="rtt">⚠️ WRONG answer: 'only thalidomide is teratogenic; lenalidomide and pomalidomide are safe in pregnancy.' ALL IMiDs are teratogenic and all require the REMS/pregnancy-prevention program. Discriminator: never start any IMiD in a person of childbearing potential without documented contraception and negative pregnancy testing.</div></div><div class="rt"><div class="rtl">4. Lenalidomide neuropathy-sparing</div><div class="rte">Lenalidomide causes LITTLE peripheral neuropathy (unlike thalidomide and the PI bortezomib) — its main toxicities are MYELOSUPPRESSION (neutropenia, thrombocytopenia), VTE, diarrhea, rash, and a small increased risk of second primary malignancies with prolonged use. This favorable neuro profile makes it ideal for long-term maintenance. Mnemonic: lenalidomide spares the nerves but hits the marrow.</div><div class="rtt">⚠️ WRONG answer: 'new peripheral neuropathy in a patient on lenalidomide maintenance is from the lenalidomide.' Lenalidomide rarely causes neuropathy — suspect THALIDOMIDE or BORTEZOMIB instead, or another cause. Discriminator: lenalidomide's signature problems are cytopenias and VTE; stocking-glove neuropathy points to thalidomide/bortezomib.</div></div><div class="rt"><div class="rtl">5. Proteasome inhibitors</div><div class="rte">Proteasome inhibitors (PIs) — Bortezomib (reversible, IV/SC), Carfilzomib (irreversible, IV), Ixazomib (reversible, ORAL) — block the 26S proteasome's chymotryptic activity, so misfolded/ubiquitinated proteins accumulate and trigger plasma-cell apoptosis (plasma cells are exquisitely sensitive due to heavy immunoglobulin synthesis). Bortezomib is the prototype INDUCTION drug. Mnemonic: the hammer rack smashes the proteasome 'garbage disposal.'</div><div class="rtt">⚠️ WRONG answer: 'all proteasome inhibitors share the same toxicity profile.' They differ critically: bortezomib → peripheral neuropathy; carfilzomib → cardiotoxicity (spares nerves); ixazomib → GI/thrombocytopenia. Discriminator: match the adverse effect to the agent — neuropathy = bortezomib, heart failure/HTN = carfilzomib, oral convenience = ixazomib.</div></div><div class="rt"><div class="rtl">6. Bortezomib neuropathy</div><div class="rte">Bortezomib's dose-limiting toxicity is painful PERIPHERAL NEUROPATHY; giving it SUBCUTANEOUS and WEEKLY (rather than IV twice-weekly) markedly reduces neuropathy without losing efficacy. It also reactivates VARICELLA-ZOSTER, so antiviral prophylaxis (acyclovir/valacyclovir) is required. Mnemonic: SC-weekly bortezomib + acyclovir shield = fewer nerves damaged, no shingles.</div><div class="rtt">⚠️ WRONG answer: 'a patient starting bortezomib doesn't need antiviral prophylaxis.' PIs (especially bortezomib) markedly raise herpes-zoster reactivation risk — acyclovir/valacyclovir prophylaxis is standard. Discriminator: bortezomib = neuropathy + zoster risk (give SC weekly + acyclovir); carfilzomib substitutes cardiotoxicity for the neuropathy.</div></div><div class="rt"><div class="rtl">7. Anti-CD38</div><div class="rte">Anti-CD38 monoclonal antibodies — daratumumab (SC preferred over IV) and isatuximab — target CD38 on plasma cells (ADCC/ADCP/CDC/direct apoptosis) and are now in NEARLY EVERY regimen, including frontline QUADRUPLET therapy (Dara-VRd / Dara-RVd). Premedicate to limit infusion reactions; expect neutropenia and infection risk. Mnemonic: CD38 rockets are now part of almost every launch.</div><div class="rtt">⚠️ WRONG answer: 'an unexpected positive antibody screen / interference on the M-protein assay after starting daratumumab is a transfusion alloantibody or treatment failure.' Daratumumab binds CD38 on reagent RBCs → FALSE-positive indirect Coombs/antibody screen (mitigate with DTT-treated cells), and it migrates as IgG-kappa on immunofixation, mimicking/masking the M-spike. Discriminator: phenotype/genotype the patient BEFORE starting; use daratumumab-specific assays (e.g., DIRA) to interpret the M-protein.</div></div><div class="rt"><div class="rtl">8. Transplant-eligible induction</div><div class="rte">Fit, transplant-ELIGIBLE patients get a 3- or 4-drug INDUCTION combining a PI + IMiD + steroid ± anti-CD38 — e.g., VRd (bortezomib-lenalidomide-dexamethasone) or quadruplet Dara-VRd, sometimes KRd — for roughly 4 cycles, then stem-cell collection, then autologous transplant. Combining classes attacks via complementary mechanisms for deeper response. Mnemonic: the transplant-eligible booth stocks VRd/Dara-VRd quad regimens.</div><div class="rtt">⚠️ WRONG answer: 'transplant-eligible patients should receive high-dose alkylator (e.g., melphalan) DURING induction.' Melphalan is AVOIDED in induction for transplant candidates because it damages the stem-cell pool and impairs later collection — it is reserved for the transplant conditioning step. Discriminator: PI+IMiD+steroid (±anti-CD38) for induction; melphalan only at conditioning.</div></div><div class="rt"><div class="rtl">9. Age/fitness triage</div><div class="rte">Transplant eligibility is determined by PERFORMANCE STATUS, frailty, and comorbidity burden (cardiac, pulmonary, renal, hepatic) — NOT a rigid chronologic age cutoff. Many fit patients in their early 70s undergo ASCT; conversely a frail 60-year-old may not be a candidate. Mnemonic: the triage officer weighs fitness and comorbidities, not just the birth date.</div><div class="rtt">⚠️ WRONG answer: 'this 71-year-old is automatically ineligible for autologous transplant because of age.' Age ALONE does not exclude transplant — assess functional status and comorbidities. Discriminator: a fit older adult can proceed to ASCT, whereas significant frailty/organ dysfunction is the true disqualifier.</div></div><div class="rt"><div class="rtl">10. Maintenance</div><div class="rte">After induction (and after transplant in eligible patients), continuous LENALIDOMIDE maintenance until progression improves both PFS and overall survival; high-risk patients often get a PI-containing maintenance (e.g., add bortezomib/ixazomib). Continue thromboprophylaxis and monitor counts and for second primary malignancies. Mnemonic: the maintenance chamber keeps lenalidomide running long-term.</div><div class="rtt">⚠️ WRONG answer: 'maintenance therapy is given for a fixed short course after transplant.' Standard lenalidomide maintenance is CONTINUOUS until progression (or intolerance), and this duration is what drives the survival benefit. Discriminator: stopping maintenance early forfeits the PFS/OS advantage; high-risk cytogenetics warrant intensified (PI-containing) maintenance.</div></div><div class="rt"><div class="rtl">11. HDT + ASCT 'the bomb'</div><div class="rte">Autologous stem-cell transplant = high-dose MELPHALAN (200 mg/m2) conditioning ('the bomb') to maximally cytoreduce, followed by rescue with the patient's own previously collected/cryopreserved stem cells. It deepens response (raises CR rate) and prolongs remission/PFS in eligible patients. Mnemonic: the melphalan bomb levels the marrow before the rescue.</div><div class="rtt">⚠️ WRONG answer: 'autologous transplant is CURATIVE for multiple myeloma.' ASCT is NOT curative — it deepens response and extends remission but the disease invariably relapses; that is why maintenance follows. Discriminator: myeloma remains incurable with standard therapy; ASCT improves depth/duration of response, not cure.</div></div><div class="rt"><div class="rtl">12. Stem-cell rescue</div><div class="rte">After melphalan conditioning, the cryopreserved AUTOLOGOUS hematopoietic stem cells are reinfused to rescue the ablated marrow and restore counts (engraftment over ~10–14 days). This rescue is what allows the otherwise marrow-lethal melphalan dose; it deepens CR by roughly 25–40%. Mnemonic: the stored stem cells parachute back down to rebuild the marrow.</div><div class="rtt">⚠️ WRONG answer: 'the reinfused stem cells provide a graft-versus-myeloma immune effect.' Autologous cells are the patient's OWN — there is NO graft-versus-tumor and no GVHD; they simply restore hematopoiesis. Discriminator: graft-versus-myeloma/GVHD belong to ALLOGENEIC transplant, which is rarely used in myeloma.</div></div><div class="rt"><div class="rtl">13. Allogeneic rarely used</div><div class="rte">Allogeneic transplant offers a potential graft-versus-myeloma effect but carries high treatment-related mortality and GVHD, so it is RARELY used — reserved for select young, very-high-risk or relapsed patients, ideally on a trial. Mnemonic: the allogeneic door is crossed out — 'high toxicity, rarely used.'</div><div class="rtt">⚠️ WRONG answer: 'allogeneic transplant is the standard consolidative therapy for newly diagnosed myeloma.' Standard consolidation is AUTOLOGOUS transplant; allo is not standard of care due to prohibitive TRM/GVHD. Discriminator: 'autologous' = standard in eligible patients; 'allogeneic' = investigational/last-resort in myeloma.</div></div><div class="rt"><div class="rtl">14. Tandem/early vs delayed</div><div class="rte">Stem cells are COLLECTED EARLY (before extended therapy compromises the pool) even if the transplant itself is DELAYED — early vs delayed ASCT show similar overall survival, so timing can be individualized. TANDEM (two sequential autologous transplants) benefits mainly HIGH-RISK cytogenetic patients, not standard-risk. Mnemonic: collect now, transplant whenever; tandem only for the high-risk crowd.</div><div class="rtt">⚠️ WRONG answer: 'every myeloma patient should receive tandem (double) autologous transplant for best outcomes.' Tandem ASCT benefits only HIGH-RISK cytogenetics; for standard-risk it adds toxicity without clear survival gain. Discriminator: reserve tandem for del(17p)/t(4;14)-type high-risk disease, and always collect stem cells early regardless of transplant timing.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcd_antibody_factory.html" title="Plasma Cell — The Antibody Factory (Immunoglobulin Structure)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcd_hyperviscosity.html" title="Plasma Cell — Waldenström Macroglobulinemia &amp; Hyperviscosity">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

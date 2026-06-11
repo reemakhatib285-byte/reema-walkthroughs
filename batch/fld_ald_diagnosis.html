@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Fatty Liver — Alcoholic liver disease labs &amp; steroid contraindications</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>AST:ALT &gt;2:1</b> — WRONG: diagnosing MASLD or viral hepatitis when AST:ALT is &gt;2:1. Discriminator: MASLD usually has ALT ≥ AST (ratio &lt;1), and viral/most other hepatitides are ALT-dominant; an AST:ALT &gt;2:1 with modestly elevated transaminases points to alcohol.</li><li><b>AST &gt; ALT</b> — WRONG: expecting ALT &gt; AST in a heavy drinker. Discriminator: ALT-dominant injury suggests viral hepatitis, MASLD, or drug toxicity; alcohol characteristically flips the ratio so AST is the higher enzyme.</li><li><b>AST pan</b> — WRONG: assuming a high AST means a non-hepatic source can be ignored. Discriminator: AST also rises with muscle/cardiac injury and hemolysis; in ALD it is hepatic, corroborated by the &gt;2:1 ratio, elevated GGT, and clinical history.</li><li><b>ALT pan lower</b> — WRONG: ruling out significant alcoholic liver disease because ALT is near-normal. Discriminator: ALT is characteristically suppressed in ALD; an unimpressive ALT with a high AST:ALT ratio and elevated GGT still fits alcohol, and severity is judged by bilirubin/INR (Maddrey), not ALT.</li><li><b>400 IU/L ceiling</b> — WRONG: attributing an AST of 1500 purely to alcohol. Discriminator: AST &gt;400-500 is essentially never pure alcohol — search for DILI (e.g., acetaminophen), ischemic hepatitis (shock liver), or acute viral hepatitis on top of the alcohol use.</li><li><b>AST &gt;400 think other</b> — WRONG: stopping the workup at 'alcoholic hepatitis' when AST is in the thousands. Discriminator: such high values indicate DILI/ischemia/viral; check acetaminophen level, hemodynamics, and viral serologies — and give NAC if acetaminophen toxicity is plausible.</li><li><b>Active UGIB contraindication</b> — WRONG: starting prednisolone in a severe-AH patient who is actively bleeding from varices. Discriminator: active UGIB is an absolute contraindication — secure hemostasis first; steroids can be reconsidered only after the bleed is controlled.</li><li><b>Infection/sepsis</b> — WRONG: withholding steroids permanently because infection was present, OR giving steroids despite active sepsis. Discriminator: control the infection first, then steroids may be started; conversely, never immunosuppress through uncontrolled sepsis.</li><li><b>AKI / HRS</b> — WRONG: pushing high-dose steroids while AKI/HRS is evolving. Discriminator: renal dysfunction predicts steroid futility (Lille non-response); manage the kidney injury/HRS and reconsider, rather than relying on steroids.</li><li><b>HIV / viral hep / HCC</b> — WRONG: starting steroids without checking viral serologies/HIV status or imaging for HCC. Discriminator: uncontrolled HIV/active viral hepatitis/HCC are contraindications; screen first, treat/control the comorbidity, and only then weigh steroids.</li><li><b>High INR not contraindicated</b> — WRONG: withholding steroids because the INR is high. Discriminator: high INR is a SEVERITY criterion (it raises the Maddrey DF, indicating the patient may benefit from steroids), not a contraindication — bleeding source control matters, but the number alone doesn't block therapy.</li><li><b>Ascites not contraindicated</b> — WRONG: refusing steroids in severe AH solely because the patient has ascites. Discriminator: ascites is not a contraindication; only an associated UNCONTROLLED infection like SBP would be — so tap the ascites to exclude SBP, then proceed.</li><li><b>Low Na not contraindicated</b> — WRONG: deferring steroids because of a low serum sodium. Discriminator: hyponatremia is a marker of decompensation, not a contraindication; treat with fluid restriction (and cautious correction to avoid osmotic demyelination) while proceeding with indicated steroids.</li><li><b>Pentoxifylline closed</b> — WRONG: choosing pentoxifylline when steroids are contraindicated (e.g., infection). Discriminator: pentoxifylline does not improve survival (STOPAH); when steroids can't be given, the answer is to treat the contraindication and provide supportive/abstinence care, not to substitute pentoxifylline.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. AST:ALT &gt;2:1</div><div class="rte">Alcoholic liver disease classically shows an AST:ALT ratio &gt;2:1 (often 2-3:1), the single most testable lab clue. The mechanism: chronic alcohol causes pyridoxine (vitamin B6) deficiency, and ALT synthesis depends more on B6 than AST does, so ALT is suppressed while mitochondrial AST is released by alcohol-injured hepatocytes. Diagnosis is clinical/lab-based (history of heavy use + this ratio + GGT/macrocytosis); biopsy is rarely needed. Mnemonic: 'A Scotch and Tonic' (AST &gt; ALT) or 'AST = Alcohol, Toast = 2.'</div><div class="rtt">⚠️ WRONG: diagnosing MASLD or viral hepatitis when AST:ALT is &gt;2:1. Discriminator: MASLD usually has ALT ≥ AST (ratio &lt;1), and viral/most other hepatitides are ALT-dominant; an AST:ALT &gt;2:1 with modestly elevated transaminases points to alcohol.</div></div><div class="rt"><div class="rtl">2. AST &gt; ALT</div><div class="rte">In ALD, AST exceeds ALT — the reverse of most liver injury. This reflects alcohol-induced mitochondrial damage (AST is both cytosolic and mitochondrial) plus the relative ALT deficit from low B6. The pattern holds across the alcoholic spectrum (steatosis, hepatitis, cirrhosis). It is the 'detective' clue that points away from viral and metabolic causes.</div><div class="rtt">⚠️ WRONG: expecting ALT &gt; AST in a heavy drinker. Discriminator: ALT-dominant injury suggests viral hepatitis, MASLD, or drug toxicity; alcohol characteristically flips the ratio so AST is the higher enzyme.</div></div><div class="rt"><div class="rtl">3. AST pan</div><div class="rte">AST sits on the heavier (higher) pan in the alcoholic pattern. Quantitatively AST is usually the higher of the two but still typically modest (&lt;300-400 IU/L). GGT is also disproportionately elevated in alcohol use and supports the picture when paired with the high AST:ALT ratio.</div><div class="rtt">⚠️ WRONG: assuming a high AST means a non-hepatic source can be ignored. Discriminator: AST also rises with muscle/cardiac injury and hemolysis; in ALD it is hepatic, corroborated by the &gt;2:1 ratio, elevated GGT, and clinical history.</div></div><div class="rt"><div class="rtl">4. ALT pan lower</div><div class="rte">ALT sits on the lighter pan — relatively low because alcohol-related B6 deficiency limits ALT production. Both transaminases are usually only modestly elevated in ALD (typically under a few hundred), unlike the thousands seen in acute viral or ischemic hepatitis. A 'low' ALT in the face of clear liver disease is itself a clue to alcohol.</div><div class="rtt">⚠️ WRONG: ruling out significant alcoholic liver disease because ALT is near-normal. Discriminator: ALT is characteristically suppressed in ALD; an unimpressive ALT with a high AST:ALT ratio and elevated GGT still fits alcohol, and severity is judged by bilirubin/INR (Maddrey), not ALT.</div></div><div class="rt"><div class="rtl">5. 400 IU/L ceiling</div><div class="rte">In pure ALD, AST is almost always &lt;400 IU/L (commonly 100-300); transaminases rarely climb very high because the enzyme-releasing hepatocyte mass and B6 deficiency cap the rise. A drinker whose AST is well above this ceiling should make you look for a SECOND, superimposed insult. This number is a high-yield board discriminator.</div><div class="rtt">⚠️ WRONG: attributing an AST of 1500 purely to alcohol. Discriminator: AST &gt;400-500 is essentially never pure alcohol — search for DILI (e.g., acetaminophen), ischemic hepatitis (shock liver), or acute viral hepatitis on top of the alcohol use.</div></div><div class="rt"><div class="rtl">6. AST &gt;400 think other</div><div class="rte">Markedly elevated transaminases (AST &gt;400-500, or into the thousands) point AWAY from pure alcohol toward other or additive causes: drug/toxin-induced liver injury (especially acetaminophen, to which heavy drinkers are sensitized via CYP2E1 induction and glutathione depletion), ischemic 'shock' hepatitis, or acute viral hepatitis. Heavy drinkers are at risk of acetaminophen toxicity at lower-than-usual doses. Always consider a co-insult.</div><div class="rtt">⚠️ WRONG: stopping the workup at 'alcoholic hepatitis' when AST is in the thousands. Discriminator: such high values indicate DILI/ischemia/viral; check acetaminophen level, hemodynamics, and viral serologies — and give NAC if acetaminophen toxicity is plausible.</div></div><div class="rt"><div class="rtl">7. Active UGIB contraindication</div><div class="rte">Active, uncontrolled GI bleeding is a contraindication to corticosteroids in alcoholic hepatitis because steroids impair mucosal healing and raise GI-bleed/ulcer risk. These patients often have varices and portal-hypertensive bleeding. Control the bleed first (endoscopy, octreotide, antibiotics) before considering prednisolone.</div><div class="rtt">⚠️ WRONG: starting prednisolone in a severe-AH patient who is actively bleeding from varices. Discriminator: active UGIB is an absolute contraindication — secure hemostasis first; steroids can be reconsidered only after the bleed is controlled.</div></div><div class="rt"><div class="rtl">8. Infection/sepsis</div><div class="rte">Uncontrolled infection or sepsis contraindicates corticosteroids because immunosuppression worsens infection-related mortality (the leading cause of death in severe AH). The correct sequence is to treat and control the infection (e.g., SBP, pneumonia) FIRST, then reassess steroid candidacy. Infection is the most common reason steroids are withheld or fail.</div><div class="rtt">⚠️ WRONG: withholding steroids permanently because infection was present, OR giving steroids despite active sepsis. Discriminator: control the infection first, then steroids may be started; conversely, never immunosuppress through uncontrolled sepsis.</div></div><div class="rt"><div class="rtl">9. AKI / HRS</div><div class="rte">Acute kidney injury / hepatorenal syndrome is both a relative contraindication and a powerful marker of poor steroid response and high mortality in AH. Renal failure predicts non-response (high Lille) and complicates infection risk. Address volume status, treat HRS (albumin + vasoconstrictors such as terlipressin/midodrine-octreotide), and reassess.</div><div class="rtt">⚠️ WRONG: pushing high-dose steroids while AKI/HRS is evolving. Discriminator: renal dysfunction predicts steroid futility (Lille non-response); manage the kidney injury/HRS and reconsider, rather than relying on steroids.</div></div><div class="rt"><div class="rtl">10. HIV / viral hep / HCC</div><div class="rte">Uncontrolled HIV, active uncontrolled viral hepatitis (e.g., hepatitis B), or hepatocellular carcinoma contraindicate corticosteroids in AH because immunosuppression can flare viral replication or worsen malignancy. Screen for these before committing to steroids. They also change the differential away from pure alcohol.</div><div class="rtt">⚠️ WRONG: starting steroids without checking viral serologies/HIV status or imaging for HCC. Discriminator: uncontrolled HIV/active viral hepatitis/HCC are contraindications; screen first, treat/control the comorbidity, and only then weigh steroids.</div></div><div class="rt"><div class="rtl">11. High INR not contraindicated</div><div class="rte">An elevated INR / coagulopathy alone does NOT contraindicate corticosteroids — in fact, the prolonged PT/INR is part of the severity score (Maddrey, MELD) that QUALIFIES a patient for steroids. Coagulopathy reflects synthetic failure, not a steroid hazard per se. Don't confuse a severity marker with a contraindication.</div><div class="rtt">⚠️ WRONG: withholding steroids because the INR is high. Discriminator: high INR is a SEVERITY criterion (it raises the Maddrey DF, indicating the patient may benefit from steroids), not a contraindication — bleeding source control matters, but the number alone doesn't block therapy.</div></div><div class="rt"><div class="rtl">12. Ascites not contraindicated</div><div class="rte">Ascites is NOT a contraindication to corticosteroids; it is an expected feature of decompensated alcoholic liver disease/portal hypertension. Manage it with sodium restriction and diuretics (spironolactone ± furosemide), and rule out SBP (which IS a steroid contraindication until treated). Ascites itself doesn't block steroid therapy.</div><div class="rtt">⚠️ WRONG: refusing steroids in severe AH solely because the patient has ascites. Discriminator: ascites is not a contraindication; only an associated UNCONTROLLED infection like SBP would be — so tap the ascites to exclude SBP, then proceed.</div></div><div class="rt"><div class="rtl">13. Low Na not contraindicated</div><div class="rte">Hyponatremia does NOT contraindicate corticosteroid therapy. It is common in advanced cirrhosis (dilutional, from impaired free-water excretion and high ADH) and is managed with fluid restriction, not by withholding steroids. Like ascites and high INR, it is a feature of decompensation, not a steroid hazard.</div><div class="rtt">⚠️ WRONG: deferring steroids because of a low serum sodium. Discriminator: hyponatremia is a marker of decompensation, not a contraindication; treat with fluid restriction (and cautious correction to avoid osmotic demyelination) while proceeding with indicated steroids.</div></div><div class="rt"><div class="rtl">14. Pentoxifylline closed</div><div class="rte">The pentoxifylline file is closed: the STOPAH trial and meta-analyses showed no survival benefit, and it is inferior to prednisolone, so it is no longer recommended even when renal failure is a concern. It was historically used as a TNF-modulating alternative when steroids were contraindicated, but that role has been abandoned. Know it as a classic distractor.</div><div class="rtt">⚠️ WRONG: choosing pentoxifylline when steroids are contraindicated (e.g., infection). Discriminator: pentoxifylline does not improve survival (STOPAH); when steroids can't be given, the answer is to treat the contraindication and provide supportive/abstinence care, not to substitute pentoxifylline.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="fld_alcoholic_hepatitis.html" title="Fatty Liver — Alcoholic hepatitis severity &amp; steroids cellar">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="fld_masld_treatment.html" title="Fatty Liver — MASLD diagnosis &amp; treatment apothecary">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

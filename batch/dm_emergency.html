@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Diabetes — Emergency: DKA &amp; HHS Resuscitation</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>DKA precipitants</b> — WRONG: 'Treat the DKA and discharge once glucose normalizes without searching for a cause.' Missing the precipitant (e.g. silent MI or pyelonephritis) is a classic error. Discriminator: an MI or sepsis can both cause AND complicate DKA — the underlying trigger must be identified and treated.</li><li><b>Step 1 — Fluids first</b> — WRONG: 'Bolus IV insulin as the first intervention.' Giving insulin before volume resuscitation worsens hypovolemic shock (intracellular fluid shift) and can precipitate fatal hypokalemia. Discriminator: fluids first, ALWAYS — and check K+ before the insulin drip.</li><li><b>Step 2 — Insulin infusion</b> — WRONG: 'Hold insulin entirely once the drip is started until labs return.' OR 'Give a large SC insulin dose.' The 'pause button' applies only when K+ &lt;3.3. Discriminator: in DKA, IV infusion (not SC) is standard, and the only reason to hold it is K+ &lt;3.3.</li><li><b>DKA clinical picture</b> — WRONG: 'The abdominal pain mandates surgical exploration / CT for appendicitis.' DKA-related abdominal pain usually resolves with correction of acidosis — treat the DKA first, reassess. Discriminator: pain that clears as the anion gap closes was metabolic, not surgical.</li><li><b>K+ management panel</b> — WRONG: 'Serum K+ is 5.5, so the patient has too much potassium — withhold replacement entirely and don't worry about it.' Total-body K+ is low; once insulin/fluids start, serum K+ plummets. Discriminator: a 'normal' or high serum K+ in DKA still means depletion — anticipate the fall.</li><li><b>Bicarbonate — only if pH&lt;7.0</b> — WRONG: 'Give an amp of bicarb for a pH of 7.1 to speed recovery.' At pH &gt;7.0 bicarb provides no benefit and adds risk. Discriminator: the only DKA bicarb indication is pH &lt;7.0 — moderate acidosis is treated with insulin and fluids alone.</li><li><b>HHS picture</b> — WRONG: 'The patient is obtunded with glucose 800 but pH 7.35 and no ketones — this can't be a hyperglycemic emergency.' That IS HHS. Discriminator: HHS is defined by osmolality + AMS, NOT by acidosis/ketones; degree of AMS tracks osmolality (&gt;320).</li><li><b>HHS dehydration / sunken eyes</b> — WRONG: 'AMS in this elderly diabetic must be a primary CNS event (stroke), so go straight to neuro workup.' Hyperosmolar dehydration alone causes the obtundation, which reverses with fluids. Discriminator: check glucose/osm before attributing AMS to a stroke — though a precipitating stroke must still be excluded.</li><li><b>HHS fluid treatment</b> — WRONG: 'Correct the glucose/osmolality rapidly to normal in the first few hours.' Over-rapid osmolar correction risks cerebral edema and central pontine injury. Discriminator: lower osmolality SLOWLY; fluids (not aggressive insulin) are the mainstay in HHS.</li><li><b>Euglycemic DKA corner</b> — WRONG: 'Glucose is 180, so rule out DKA and stop the workup.' SGLT2i-associated euglycemic DKA is easily missed this way. Discriminator: in any acidotic patient on an SGLT2i, check the anion gap and serum/urine ketones regardless of a near-normal glucose.</li><li><b>Anion gap drives diagnosis</b> — WRONG: 'Follow the urine ketone dipstick to gauge improvement.' As DKA improves, beta-OHB converts to acetoacetate, so urine ketones can paradoxically RISE while the patient is getting better. Discriminator: track the anion gap (and serum beta-OHB), not urine ketones, for resolution.</li><li><b>Add dextrose at glucose ~200</b> — WRONG: 'Glucose hit 200, so turn off the insulin drip.' Stopping insulin halts ketone clearance and the gap reopens (rebound ketoacidosis). Discriminator: at glucose ~200, ADD dextrose and KEEP insulin — never stop insulin to chase a normal glucose.</li><li><b>Inpatient management — no sliding scale</b> — WRONG: 'Manage the hospitalized diabetic with sliding-scale insulin only' OR 'aim for tight control &lt;110.' Both worsen outcomes. Discriminator: basal-bolus with a 140-180 target; sliding-scale-monotherapy and tight &lt;110 control are the wrong answers.</li><li><b>Steroid-induced DM corner</b> — WRONG: 'Fasting glucose is normal, so the steroids aren't causing hyperglycemia.' Steroid hyperglycemia characteristically spares the morning FPG. Discriminator: a normal FPG does NOT exclude steroid-induced DM — you must check afternoon/postprandial values.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. DKA precipitants</div><div class="rte">Always hunt the trigger — DKA rarely happens without one. The 5 I's: Infection (most common — pneumonia, UTI; check WBC, cultures, CXR), Infarction (MI — often silent in diabetics; get ECG/troponin), Insulin missed/nonadherence (leading cause in young T1DM), Ischemia/stroke, and Iatrogenic/Intoxication (SGLT2i, steroids, antipsychotics, cocaine). A modestly elevated WBC is expected from stress/dehydration, but bandemia or fever points to true infection.</div><div class="rtt">⚠️ WRONG: 'Treat the DKA and discharge once glucose normalizes without searching for a cause.' Missing the precipitant (e.g. silent MI or pyelonephritis) is a classic error. Discriminator: an MI or sepsis can both cause AND complicate DKA — the underlying trigger must be identified and treated.</div></div><div class="rt"><div class="rtl">2. Step 1 — Fluids first</div><div class="rte">FIRST step in DKA = aggressive IV fluids, isotonic 0.9% NS, ~1-1.5 L in the first hour (15-20 mL/kg), NOT insulin. Patients have a 3-6 L deficit; fluids alone drop glucose by hemodilution + improved renal perfusion/clearance. Volume expansion also restores tissue perfusion before insulin shifts K+ and water intracellularly.</div><div class="rtt">⚠️ WRONG: 'Bolus IV insulin as the first intervention.' Giving insulin before volume resuscitation worsens hypovolemic shock (intracellular fluid shift) and can precipitate fatal hypokalemia. Discriminator: fluids first, ALWAYS — and check K+ before the insulin drip.</div></div><div class="rt"><div class="rtl">3. Step 2 — Insulin infusion</div><div class="rte">After fluids are started and K+ confirmed &gt;=3.3, begin regular insulin IV infusion at 0.1 U/kg/hr (optionally a 0.1 U/kg bolus first; bolus is omitted in children). Target glucose fall ~50-100 mg/dL/hr; if it does not drop ~10% in the first hour, increase the rate or recheck fluids. Insulin halts ketogenesis and lipolysis — this, not glucose lowering, is the therapeutic goal.</div><div class="rtt">⚠️ WRONG: 'Hold insulin entirely once the drip is started until labs return.' OR 'Give a large SC insulin dose.' The 'pause button' applies only when K+ &lt;3.3. Discriminator: in DKA, IV infusion (not SC) is standard, and the only reason to hold it is K+ &lt;3.3.</div></div><div class="rt"><div class="rtl">4. DKA clinical picture</div><div class="rte">DKA presentation: Kussmaul respirations (deep, rapid breathing = respiratory compensation for metabolic acidosis, blowing off CO2), fruity/acetone breath (exhaled acetone), nausea, vomiting, and diffuse abdominal pain that can mimic an acute abdomen. Onset is rapid (&lt;24h), typically T1DM/younger. The abdominal pain correlates with the degree of acidosis and resolves as the gap closes.</div><div class="rtt">⚠️ WRONG: 'The abdominal pain mandates surgical exploration / CT for appendicitis.' DKA-related abdominal pain usually resolves with correction of acidosis — treat the DKA first, reassess. Discriminator: pain that clears as the anion gap closes was metabolic, not surgical.</div></div><div class="rt"><div class="rtl">5. K+ management panel</div><div class="rte">Total-body potassium is profoundly DEPLETED in DKA (osmotic diuresis + acidosis shifting K+ out of cells), even when serum K+ reads high. Rules: K+ &lt;3.3 → HOLD insulin, replete K+ first (insulin would crash it fatally). K+ 3.3-5.0 → give insulin AND add 20-30 mEq K+ per liter. K+ &gt;5.0 → start insulin, no K+ yet, recheck q2h. Insulin and correction of acidosis both drive K+ intracellularly.</div><div class="rtt">⚠️ WRONG: 'Serum K+ is 5.5, so the patient has too much potassium — withhold replacement entirely and don't worry about it.' Total-body K+ is low; once insulin/fluids start, serum K+ plummets. Discriminator: a 'normal' or high serum K+ in DKA still means depletion — anticipate the fall.</div></div><div class="rt"><div class="rtl">6. Bicarbonate — only if pH&lt;7.0</div><div class="rte">Bicarbonate is NOT routine in DKA — insulin + fluids correct the acidosis by clearing ketones. Reserve it for severe acidemia pH &lt;7.0 (some say &lt;6.9), where myocardial contractility/pressor response is impaired. Harms: paradoxical CSF acidosis, worsened hypokalemia, delayed ketone clearance, rebound alkalosis, and possible cerebral edema in children.</div><div class="rtt">⚠️ WRONG: 'Give an amp of bicarb for a pH of 7.1 to speed recovery.' At pH &gt;7.0 bicarb provides no benefit and adds risk. Discriminator: the only DKA bicarb indication is pH &lt;7.0 — moderate acidosis is treated with insulin and fluids alone.</div></div><div class="rt"><div class="rtl">7. HHS picture</div><div class="rte">HHS = Hyperosmolar Hyperglycemic State: profound hyperglycemia (typically &gt;600 mg/dL), serum effective osmolality &gt;320 mOsm/kg, severe altered mental status, with little/no ketosis and pH &gt;7.3, HCO3 &gt;18. Occurs in T2DM/elderly because residual insulin suppresses ketogenesis but not hyperglycemia. Onset is insidious (days). Mortality (~10-20%) is HIGHER than DKA, mostly from the precipitant and the patient's age/comorbidities.</div><div class="rtt">⚠️ WRONG: 'The patient is obtunded with glucose 800 but pH 7.35 and no ketones — this can't be a hyperglycemic emergency.' That IS HHS. Discriminator: HHS is defined by osmolality + AMS, NOT by acidosis/ketones; degree of AMS tracks osmolality (&gt;320).</div></div><div class="rt"><div class="rtl">8. HHS dehydration / sunken eyes</div><div class="rte">HHS produces extreme dehydration — free-water deficit ~8-12 L, larger than DKA's ~3-6 L — because the osmotic diuresis runs for days. Signs: sunken eyes, dry mucous membranes, poor skin turgor, hypotension, tachycardia, and AMS proportional to hyperosmolality. Calculate effective osm = 2×Na + glucose/18 (urea is freely permeable, so it's excluded from the 'effective' figure).</div><div class="rtt">⚠️ WRONG: 'AMS in this elderly diabetic must be a primary CNS event (stroke), so go straight to neuro workup.' Hyperosmolar dehydration alone causes the obtundation, which reverses with fluids. Discriminator: check glucose/osm before attributing AMS to a stroke — though a precipitating stroke must still be excluded.</div></div><div class="rt"><div class="rtl">9. HHS fluid treatment</div><div class="rte">HHS treatment is fluid-driven: start 0.9% NS (1-1.5 L/hr initially) to restore perfusion, then switch to 0.45% NaCl guided by corrected sodium/osmolality (if corrected Na is high/normal → half-NS; if low → stay on NS). Insulin is also given (0.1 U/kg/hr) but is secondary — fluids do most of the glucose lowering. Aim to drop osmolality no faster than ~3 mOsm/kg/hr.</div><div class="rtt">⚠️ WRONG: 'Correct the glucose/osmolality rapidly to normal in the first few hours.' Over-rapid osmolar correction risks cerebral edema and central pontine injury. Discriminator: lower osmolality SLOWLY; fluids (not aggressive insulin) are the mainstay in HHS.</div></div><div class="rt"><div class="rtl">10. Euglycemic DKA corner</div><div class="rte">Euglycemic DKA = full ketoacidosis (high anion gap, ketones, low pH) with glucose &lt;250 (often 150-200). Causes: SGLT2 inhibitors (glucosuria masks hyperglycemia), pregnancy, prolonged fasting/starvation, heavy alcohol use, and reduced carbohydrate intake. Treat exactly like DKA but add dextrose EARLIER (D5/D10) so you can keep insulin running to clear ketones without causing hypoglycemia.</div><div class="rtt">⚠️ WRONG: 'Glucose is 180, so rule out DKA and stop the workup.' SGLT2i-associated euglycemic DKA is easily missed this way. Discriminator: in any acidotic patient on an SGLT2i, check the anion gap and serum/urine ketones regardless of a near-normal glucose.</div></div><div class="rt"><div class="rtl">11. Anion gap drives diagnosis</div><div class="rte">The anion gap (Na − [Cl + HCO3], normal ~8-12) is BOTH the diagnostic marker and the resolution marker for DKA. Beta-hydroxybutyrate is the dominant ketone (measure it directly; the nitroprusside/urine test detects acetoacetate and underestimates early severity). Resolution = anion gap normalized (and HCO3 &gt;=15-18, pH &gt;7.3), NOT a normal glucose.</div><div class="rtt">⚠️ WRONG: 'Follow the urine ketone dipstick to gauge improvement.' As DKA improves, beta-OHB converts to acetoacetate, so urine ketones can paradoxically RISE while the patient is getting better. Discriminator: track the anion gap (and serum beta-OHB), not urine ketones, for resolution.</div></div><div class="rt"><div class="rtl">12. Add dextrose at glucose ~200</div><div class="rte">Once glucose falls to ~200 mg/dL (DKA) or ~250-300 (HHS), add D5 (or D5-half-NS) to the IV fluids so you can CONTINUE the insulin infusion. Insulin must keep running to suppress ketogenesis and close the anion gap; dextrose just prevents hypoglycemia in the meantime. You can also titrate the insulin rate down slightly while keeping it on.</div><div class="rtt">⚠️ WRONG: 'Glucose hit 200, so turn off the insulin drip.' Stopping insulin halts ketone clearance and the gap reopens (rebound ketoacidosis). Discriminator: at glucose ~200, ADD dextrose and KEEP insulin — never stop insulin to chase a normal glucose.</div></div><div class="rt"><div class="rtl">13. Inpatient management — no sliding scale</div><div class="rte">Non-critically-ill inpatient glucose target is 140-180 mg/dL (per NICE-SUGAR, tight control &lt;110 increased mortality from hypoglycemia). Use scheduled basal-bolus (basal + nutritional + correction) insulin, NOT sliding scale alone. Sliding scale is purely reactive — it chases highs after they occur and never provides basal coverage, causing wide swings.</div><div class="rtt">⚠️ WRONG: 'Manage the hospitalized diabetic with sliding-scale insulin only' OR 'aim for tight control &lt;110.' Both worsen outcomes. Discriminator: basal-bolus with a 140-180 target; sliding-scale-monotherapy and tight &lt;110 control are the wrong answers.</div></div><div class="rt"><div class="rtl">14. Steroid-induced DM corner</div><div class="rte">Glucocorticoids cause predominantly POSTPRANDIAL and afternoon/evening hyperglycemia with a relatively spared morning fasting glucose, because once-daily morning prednisone peaks midday. NPH insulin given WITH the morning steroid dose matches this pharmacokinetic curve (NPH peaks ~6-8h later, in the afternoon). Monitor pre-lunch/pre-dinner and bedtime glucose to catch the pattern.</div><div class="rtt">⚠️ WRONG: 'Fasting glucose is normal, so the steroids aren't causing hyperglycemia.' Steroid hyperglycemia characteristically spares the morning FPG. Discriminator: a normal FPG does NOT exclude steroid-induced DM — you must check afternoon/postprandial values.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_dx_overview2.html" title="Diabetes — Dx Overview 2: Screening, Prediabetes &amp; Inpatient Targets">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_severity_triage.html" title="Diabetes — Scene 1: T2DM Severity Triage Gate">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

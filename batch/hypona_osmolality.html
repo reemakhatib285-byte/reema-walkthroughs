@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyponatremia — Serum Osmolality First (Rule Out Pseudo)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Rule out pseudo first</b> — Stem gives Na 128 and the choices jump straight to 'fluid restrict' or 'check volume status' without an osmolality. WRONG first step — without serum osm you can't tell true hypotonic hyponatremia from pseudohyponatremia (lipids/protein) or hyperglycemic translocational hyponatremia, which are managed completely differently. Osmolality is always step one.</li><li><b>2×Na + Glu + BUN</b> — A choice treats a high BUN as if it caused the hyponatremia. WRONG — urea is an ineffective osmole, so uremia raises measured osmolality without shifting water or lowering effective tonicity; it does not produce true hyponatremia or warrant Na treatment. Distinguish osmolality (all solutes) from tonicity (effective solutes only).</li><li><b>Hyperglycemia correction</b> — DKA/HHS patient, glucose 900, Na 128, and a choice gives 3% hypertonic saline for 'hyponatremia.' WRONG — corrected Na ≈ 128 + 2.4×8 ≈ 147 (actually HYPERnatremic). Fix the glucose; giving hypertonic saline risks dangerous overcorrection. Always glucose-correct the Na in any hyperglycemic stem before judging it.</li><li><b>Fisherman / pseudo (lipids)</b> — Milky/lipemic serum, Na 125, normal measured osm; a choice says 'true hyponatremia, restrict fluids / give saline.' WRONG — measured osm is normal, so this is a measurement artifact (pseudohyponatremia); the real Na is normal. No Na-directed treatment; instead treat the lipids/protein and remeasure Na by direct ISE.</li><li><b>Hypovolemic branch</b> — Calling a dry, orthostatic patient 'SIADH' and restricting fluids. WRONG — hypovolemic hyponatremia needs VOLUME (NS), and restriction worsens it. The euvolemic/SIADH branch is for patients with a normal volume exam, low uric acid, and inappropriately concentrated urine — not the dry patient.</li><li><b>Hypovolemic urine Na split</b> — Assuming all hypovolemic hyponatremia is GI/extrarenal. WRONG when urine Na is &gt;20 — that points to a renal/adrenal cause; scan for a thiazide (commonest drug), Addison's (hyperkalemia + hypotension), or CSW (recent CNS event, truly dry). The discriminator is urine Na, refined by urine Cl in the vomiting patient.</li><li><b>Euvolemic branch</b> — Diagnosing SIADH without first checking TSH and a cortisol/ACTH-stim. WRONG — hypothyroidism and adrenal/glucocorticoid deficiency are diagnoses of necessity to exclude; missing them means missing a treatable cause and mislabeling a euvolemic patient as idiopathic SIADH. SIADH is a diagnosis of exclusion.</li><li><b>SIADH high urine osm</b> — Diagnosing SIADH when the urine is DILUTE (low Uosm). WRONG — SIADH cannot make dilute urine; a low Uosm indicates primary polydipsia or low-solute intake instead. Conversely, don't forget LOW uric acid supports SIADH while HIGH uric acid suggests hypovolemia — use it to separate the two euvolemic-looking pictures.</li><li><b>Beer potomania / low solute</b> — Mistaking low-solute hyponatremia for SIADH. WRONG — Uosm is LOW here (kidney diluting maximally), the OPPOSITE of SIADH's concentrated urine; ADH is suppressed, so vaptans are useless. Treat with cautious solute repletion and brace for autocorrection, not fluid restriction + vaptan.</li><li><b>Hypervolemic branch</b> — Giving 0.9% NS or generous fluids to an edematous CHF/cirrhotic patient with hyponatremia. WRONG — they are volume-OVERLOADED; saline worsens edema. Despite a high total body volume, effective arterial volume is low (that's why ADH/RAAS are on), so the answer is restriction + loop diuretic, not more fluid.</li><li><b>Hypervolemic urine Na</b> — Seeing edema + low urine Na and calling it 'pre-renal hypovolemia, give fluids.' WRONG — in HF/cirrhosis the low urine Na reflects effective arterial underfilling within an overloaded body; the treatment is restriction + diuresis. Urine Na &gt;20 in an edematous patient instead suggests intrinsic renal failure as the driver.</li><li><b>Correction limit / ODS</b> — Raising Na rapidly in chronic (&gt;48h) hyponatremia 'to normalize it.' WRONG — speed, not the low Na itself, causes ODS; the brain tolerates a stable low Na far better than a fast rise. Cap at &lt;8/24h (4–6 if high-risk), and if you overshoot, actively re-lower with D5W + DDAVP.</li><li><b>DDAVP rescue</b> — Letting an overcorrection 'ride' because the patient looks fine now. WRONG — ODS is DELAYED (1+ days), so an asymptomatic post-correction patient can still develop it; actively re-lower with DDAVP + D5W when the 24h rise exceeds target rather than waiting.</li><li><b>ODS risk factors</b> — Applying the standard &lt;8/24h limit to an alcoholic, malnourished, or hypokalemic patient. WRONG — high-risk patients need an even SLOWER target (~4–6/24h) and proactive DDAVP-clamp planning; the usual ceiling is too permissive for them and risks ODS.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Rule out pseudo first</div><div class="rte">The boards algorithm in order: (1) measure SERUM OSMOLALITY to confirm the hyponatremia is truly HYPOtonic (&lt;275 mOsm/kg) — this excludes pseudohyponatremia (isotonic, normal osm) and translocational/hypertonic causes (high osm, e.g., hyperglycemia, mannitol); (2) assess VOLUME status (hypo-/eu-/hypervolemic); (3) check URINE Na (and urine osm). Only hypotonic hyponatremia represents true excess water relative to solute and needs the water-handling workup.</div><div class="rtt">⚠️ Stem gives Na 128 and the choices jump straight to 'fluid restrict' or 'check volume status' without an osmolality. WRONG first step — without serum osm you can't tell true hypotonic hyponatremia from pseudohyponatremia (lipids/protein) or hyperglycemic translocational hyponatremia, which are managed completely differently. Osmolality is always step one.</div></div><div class="rt"><div class="rtl">2. 2×Na + Glu + BUN</div><div class="rte">Calculated osmolality = 2×[Na] + glucose/18 + BUN/2.8 (mg/dL units). Compare to the MEASURED osm: a large osmolar gap (measured − calculated &gt; ~10) signals unmeasured solute. Note BUN is an INEFFECTIVE osmole (crosses membranes freely), so it raises measured osm but does NOT cause water shifts or true hyponatremia — tonicity depends on EFFECTIVE osmoles (Na, glucose, mannitol). Use the gap to flag pseudohyponatremia (lipids/paraproteins) or toxic alcohols.</div><div class="rtt">⚠️ A choice treats a high BUN as if it caused the hyponatremia. WRONG — urea is an ineffective osmole, so uremia raises measured osmolality without shifting water or lowering effective tonicity; it does not produce true hyponatremia or warrant Na treatment. Distinguish osmolality (all solutes) from tonicity (effective solutes only).</div></div><div class="rt"><div class="rtl">3. Hyperglycemia correction</div><div class="rte">Hyperglycemia causes HYPERtonic (translocational) hyponatremia: glucose is an effective osmole that pulls intracellular water into plasma, diluting Na. Correct the measured Na by adding ~1.6 mEq/L (classic) to ~2.4 mEq/L (more accurate, esp. glucose &gt;400) for every 100 mg/dL of glucose above 100. Measured osm is HIGH, not low. Treating the hyperglycemia (insulin + fluids) brings glucose down and Na rises back on its own.</div><div class="rtt">⚠️ DKA/HHS patient, glucose 900, Na 128, and a choice gives 3% hypertonic saline for 'hyponatremia.' WRONG — corrected Na ≈ 128 + 2.4×8 ≈ 147 (actually HYPERnatremic). Fix the glucose; giving hypertonic saline risks dangerous overcorrection. Always glucose-correct the Na in any hyperglycemic stem before judging it.</div></div><div class="rt"><div class="rtl">4. Fisherman / pseudo (lipids)</div><div class="rte">Isotonic pseudohyponatremia: severe hypertriglyceridemia or paraproteinemia (e.g., multiple myeloma, Waldenström, IVIG) expands the non-aqueous fraction of plasma. Flame-photometry/indirect ISE methods report a falsely low Na because they assume normal plasma water content. MEASURED serum osmolality is NORMAL (isotonic), so it's a lab artifact, not real water excess. Direct (whole-blood) ISE or blood-gas Na reads correctly.</div><div class="rtt">⚠️ Milky/lipemic serum, Na 125, normal measured osm; a choice says 'true hyponatremia, restrict fluids / give saline.' WRONG — measured osm is normal, so this is a measurement artifact (pseudohyponatremia); the real Na is normal. No Na-directed treatment; instead treat the lipids/protein and remeasure Na by direct ISE.</div></div><div class="rt"><div class="rtl">5. Hypovolemic branch</div><div class="rte">After confirming TRUE hypotonic hyponatremia, assess volume. Hypovolemic = dry: orthostasis, tachycardia, flat neck veins, BUN/Cr &gt;20, HIGH uric acid. Low effective circulating volume turns ADH on via baroreceptors. Treat with isotonic 0.9% NaCl, then watch for autocorrection once volume is restored and ADH switches off.</div><div class="rtt">⚠️ Calling a dry, orthostatic patient 'SIADH' and restricting fluids. WRONG — hypovolemic hyponatremia needs VOLUME (NS), and restriction worsens it. The euvolemic/SIADH branch is for patients with a normal volume exam, low uric acid, and inappropriately concentrated urine — not the dry patient.</div></div><div class="rt"><div class="rtl">6. Hypovolemic urine Na split</div><div class="rte">Within hypovolemia, split by urine Na: &lt;20 mEq/L = EXTRARENAL loss (GI vomiting/diarrhea, skin sweat/burns, third-spacing) with appropriately avid kidneys; &gt;20 mEq/L = RENAL loss (thiazides, salt-wasting nephropathy, cerebral salt wasting, adrenal insufficiency, osmotic/RTA). Caveat: vomiting can give a paradoxically high urine Na from bicarbonaturia — use urine Cl (&lt;20) to unmask the volume depletion.</div><div class="rtt">⚠️ Assuming all hypovolemic hyponatremia is GI/extrarenal. WRONG when urine Na is &gt;20 — that points to a renal/adrenal cause; scan for a thiazide (commonest drug), Addison's (hyperkalemia + hypotension), or CSW (recent CNS event, truly dry). The discriminator is urine Na, refined by urine Cl in the vomiting patient.</div></div><div class="rt"><div class="rtl">7. Euvolemic branch</div><div class="rte">Euvolemic hyponatremia (normal volume exam): differential is SIADH, hypothyroidism (myxedema), glucocorticoid/adrenal deficiency (secondary), primary polydipsia, and low-solute intake (beer potomania, tea-and-toast). Always exclude hypothyroidism and cortisol deficiency before settling on SIADH, since both are reversible and mimic it. Discriminate the rest with urine osmolality.</div><div class="rtt">⚠️ Diagnosing SIADH without first checking TSH and a cortisol/ACTH-stim. WRONG — hypothyroidism and adrenal/glucocorticoid deficiency are diagnoses of necessity to exclude; missing them means missing a treatable cause and mislabeling a euvolemic patient as idiopathic SIADH. SIADH is a diagnosis of exclusion.</div></div><div class="rt"><div class="rtl">8. SIADH high urine osm</div><div class="rte">SIADH: inappropriate ADH → urine is inappropriately CONCENTRATED (Uosm &gt;100, typically &gt;300) and urine Na is usually &gt;30–40, despite low serum osm; clinically EUVOLEMIC with LOW serum uric acid (&lt;4) and low BUN (volume-expanded, increased urate clearance). Criteria: hypotonic hyponatremia, Uosm &gt;100, urine Na &gt;30, euvolemia, normal thyroid/adrenal, no diuretics. Causes: CNS (stroke, hemorrhage), pulmonary (pneumonia, small-cell lung cancer — ectopic ADH), drugs (SSRIs, carbamazepine, cyclophosphamide), pain/nausea/post-op.</div><div class="rtt">⚠️ Diagnosing SIADH when the urine is DILUTE (low Uosm). WRONG — SIADH cannot make dilute urine; a low Uosm indicates primary polydipsia or low-solute intake instead. Conversely, don't forget LOW uric acid supports SIADH while HIGH uric acid suggests hypovolemia — use it to separate the two euvolemic-looking pictures.</div></div><div class="rt"><div class="rtl">9. Beer potomania / low solute</div><div class="rte">Low-solute states (beer potomania, tea-and-toast) and primary polydipsia produce maximally DILUTE urine (Uosm &lt;100) with appropriately SUPPRESSED ADH: the kidney can't excrete water without solute to obligate it (max water clearance = solute load / minimum Uosm). Euvolemic, low urine Na. Treatment is solute/protein repletion — and once solute returns, a brisk water diuresis can overcorrect Na fast (high ODS risk).</div><div class="rtt">⚠️ Mistaking low-solute hyponatremia for SIADH. WRONG — Uosm is LOW here (kidney diluting maximally), the OPPOSITE of SIADH's concentrated urine; ADH is suppressed, so vaptans are useless. Treat with cautious solute repletion and brace for autocorrection, not fluid restriction + vaptan.</div></div><div class="rt"><div class="rtl">10. Hypervolemic branch</div><div class="rte">Hypervolemic hyponatremia: edematous states (heart failure, cirrhosis, nephrotic syndrome, advanced renal failure). Total body Na AND water are both increased, but water is retained in excess because LOW effective arterial volume (poor cardiac output / arterial underfilling) triggers RAAS + ADH. Clinically: edema, ascites, JVD, crackles. First-line: water and salt restriction + loop diuretics; treat the underlying organ failure.</div><div class="rtt">⚠️ Giving 0.9% NS or generous fluids to an edematous CHF/cirrhotic patient with hyponatremia. WRONG — they are volume-OVERLOADED; saline worsens edema. Despite a high total body volume, effective arterial volume is low (that's why ADH/RAAS are on), so the answer is restriction + loop diuretic, not more fluid.</div></div><div class="rt"><div class="rtl">11. Hypervolemic urine Na</div><div class="rte">In hypervolemic hyponatremia, urine Na is LOW (&lt;20) in HF, cirrhosis, and nephrotic syndrome because low effective arterial volume drives intense RAAS-mediated Na avidity (the body hoards Na despite edema). The exception is RENAL FAILURE, where the diseased kidney can't conserve Na, so urine Na is &gt;20.</div><div class="rtt">⚠️ Seeing edema + low urine Na and calling it 'pre-renal hypovolemia, give fluids.' WRONG — in HF/cirrhosis the low urine Na reflects effective arterial underfilling within an overloaded body; the treatment is restriction + diuresis. Urine Na &gt;20 in an edematous patient instead suggests intrinsic renal failure as the driver.</div></div><div class="rt"><div class="rtl">12. Correction limit / ODS</div><div class="rte">Correct CHRONIC hyponatremia SLOWLY: rise &lt;8 mEq/L per 24h (some use &lt;10), and only ~4–6 mEq/L/24h in high-risk patients. Too-fast correction shrinks brain cells that had osmotically adapted (lost organic osmolytes) → osmotic demyelination syndrome (central pontine myelinolysis), presenting days later with dysarthria, dysphagia, quadriparesis, locked-in syndrome — often irreversible. The acute/seizing exception: give 3% saline to raise Na ~4–6 mEq quickly, then stay within the 24h cap.</div><div class="rtt">⚠️ Raising Na rapidly in chronic (&gt;48h) hyponatremia 'to normalize it.' WRONG — speed, not the low Na itself, causes ODS; the brain tolerates a stable low Na far better than a fast rise. Cap at &lt;8/24h (4–6 if high-risk), and if you overshoot, actively re-lower with D5W + DDAVP.</div></div><div class="rt"><div class="rtl">13. DDAVP rescue</div><div class="rte">Overcorrection rescue: if Na rises faster than target, RE-LOWER it. Give DDAVP (synthetic ADH) to clamp the renal free-water diuresis plus D5W (electrolyte-free water) to bring Na back down to a safe trajectory. A proactive 'DDAVP clamp' can also be used up front in high-risk patients to keep correction controlled at 4–6 mEq/24h.</div><div class="rtt">⚠️ Letting an overcorrection 'ride' because the patient looks fine now. WRONG — ODS is DELAYED (1+ days), so an asymptomatic post-correction patient can still develop it; actively re-lower with DDAVP + D5W when the 24h rise exceeds target rather than waiting.</div></div><div class="rt"><div class="rtl">14. ODS risk factors</div><div class="rte">Highest-risk for ODS: chronic ALCOHOLISM, MALNUTRITION, HYPOKALEMIA, advanced liver disease / liver transplant, and very low Na (&lt;105–120). These brains are osmotically depleted/vulnerable — use the stricter 4–6 mEq/L/24h limit and correct K cautiously (note repleting K also raises Na). Beer potomania and tea-and-toast patients sit squarely in this high-risk group.</div><div class="rtt">⚠️ Applying the standard &lt;8/24h limit to an alcoholic, malnourished, or hypokalemic patient. WRONG — high-risk patients need an even SLOWER target (~4–6/24h) and proactive DDAVP-clamp planning; the usual ceiling is too permissive for them and risks ODS.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hypona_low_solute.html" title="Hyponatremia — Low Solute (Beer Potomania &amp; Tea-and-Toast)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hypona_treatment.html" title="Hyponatremia — Treatment, Correction Limits &amp; ODS">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

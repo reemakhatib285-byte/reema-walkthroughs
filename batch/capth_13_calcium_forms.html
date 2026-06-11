@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The Calcium Forms Courtroom</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>If story ≠ total Ca, check ionized (banner)</b> — A hyperventilating patient with perioral tingling and a NORMAL total calcium is told 'calcium is normal, this is purely anxiety' — WRONG. Alkalosis can lower ionized calcium with a normal total; the story (tetany) conflicts with the total, so the answer is to check ionized Ca. The discriminator: symptoms-vs-total mismatch → measure ionized.</li><li><b>CaSR judge hears only ionized Ca</b> — A case reasons that a low TOTAL calcium (from hypoalbuminemia) should drive PTH up — WRONG. The CaSR responds only to ionized calcium, which is normal in hypoalbuminemia, so PTH stays normal. The discriminator: PTH tracks ionized, not total; pseudohypocalcemia does not stimulate PTH.</li><li><b>Parathyroid listens to ionized</b> — A patient with acute respiratory alkalosis and tetany is expected to have a HIGH PTH because 'calcium is low' — possibly WRONG/misleading. Total calcium is normal so the lab may look unremarkable, and the acute ionized drop may not yet have raised measured PTH dramatically. The discriminator: it is ionized Ca that the parathyroid senses; interpret PTH against ionized, not total.</li><li><b>Biologically active = causes symptoms</b> — A symptomatic patient with a normal total calcium is reassured no treatment is needed — WRONG if ionized is low. Symptoms reflect the ionized fraction, not the total. The discriminator: in a symptomatic patient, the ionized level (not the total) determines whether they are truly hypo/hypercalcemic and need treatment.</li><li><b>Total Ca = sum of 3 fractions</b> — A reported total calcium is treated as if it equals the active calcium — WRONG when albumin or pH is abnormal. Only ~50% of total is the active ionized fraction, and that proportion shifts with albumin and pH. The discriminator: total is a composite; do not equate it with biologic activity without correcting for albumin (or measuring ionized).</li><li><b>Ionized ~50%</b> — An ICU patient's total calcium is used to guide replacement during massive transfusion — WRONG. Citrate from blood products chelates ionized calcium, dropping the active ~50% fraction while total may appear normal. The discriminator: in transfusion/critical illness, trust the directly measured ionized calcium, not the total.</li><li><b>Protein-bound ~40% (albumin)</b> — A malnourished/cirrhotic patient with low albumin and low total calcium is treated with IV calcium for 'hypocalcemia' — WRONG. The low total is from low albumin (less binding protein); ionized is normal, so this is pseudohypocalcemia needing no treatment. The discriminator: correct for albumin (or measure ionized) before treating a low total.</li><li><b>Complexed ~10% (PO4/citrate)</b> — A patient receiving massive transfusion or on regional citrate CRRT develops tetany, but their TOTAL calcium is normal so hypocalcemia is excluded — WRONG. Citrate complexes (chelates) ionized calcium, causing symptomatic hypocalcemia with a normal-appearing total. The discriminator: with citrate load, follow ionized calcium and replete it, ignoring the falsely reassuring total.</li><li><b>Low albumin = false low Ca</b> — A hospitalized patient with albumin 2.5 and total Ca 7.8 is diagnosed with true hypocalcemia and given calcium — WRONG. Corrected Ca = 7.8 + 0.8 x (4-2.5) = 9.0 (normal); this is pseudohypocalcemia. The discriminator: always albumin-correct (or measure ionized) before calling a low total calcium 'real.'</li><li><b>Albumin correction formula</b> — A clinician trusts the correction formula in a critically ill or acid-base-disturbed patient and forgoes the ionized level — WRONG. The formula is only an estimate, unreliable in critical illness, abnormal pH, paraproteinemia, and citrate load. The discriminator: when accuracy matters or the formula and clinical picture disagree, measure ionized calcium directly.</li><li><b>Pseudohypocalcemia worked example</b> — This patient (corrected Ca 9.6) is still given IV calcium gluconate because the uncorrected value 'looked low' — WRONG and potentially harmful. After albumin correction the calcium is normal. The discriminator: do the correction math first; treating pseudohypocalcemia risks iatrogenic hypercalcemia.</li><li><b>Alkalosis → ↑ binding → ↓ ionized</b> — A patient with respiratory alkalosis and tetany has a normal total calcium, so a calcium problem is excluded and only sedation is given — WRONG. Alkalosis lowers ionized calcium with a normal total. The discriminator: in alkalosis-driven tetany, measure/treat ionized calcium and correct the alkalosis; do not be reassured by the normal total.</li><li><b>Acid-base effect summary</b> — When correcting a patient's chronic acidosis (e.g., rapid bicarbonate in DKA or renal failure), no thought is given to calcium and the patient develops tetany — WRONG to ignore. Rapidly raising pH increases Ca-albumin binding and drops ionized calcium acutely. The discriminator: alkalosis lowers, acidosis raises ionized Ca — anticipate ionized changes when you shift pH.</li><li><b>Tingling/tetany with alkalosis</b> — A panic-attack patient with perioral tingling and carpopedal spasm is loaded with IV calcium for presumed true hypocalcemia — WRONG. The tetany is from an acute ionized drop due to respiratory alkalosis, with a normal total and normal total-body calcium. The discriminator: treat the alkalosis/hyperventilation; calcium stores are normal, so IV calcium is unnecessary.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. If story ≠ total Ca, check ionized (banner)</div><div class="rte">The unifying rule of the scene: when the clinical picture conflicts with the reported total calcium, measure the IONIZED (free) calcium, which is the physiologically active fraction the body actually senses. Total calcium is confounded by albumin (binding protein) and pH (binding affinity); ionized calcium bypasses both confounders and reflects the true biologic level.</div><div class="rtt">⚠️ A hyperventilating patient with perioral tingling and a NORMAL total calcium is told 'calcium is normal, this is purely anxiety' — WRONG. Alkalosis can lower ionized calcium with a normal total; the story (tetany) conflicts with the total, so the answer is to check ionized Ca. The discriminator: symptoms-vs-total mismatch → measure ionized.</div></div><div class="rt"><div class="rtl">2. CaSR judge hears only ionized Ca</div><div class="rte">The calcium-sensing receptor (CaSR), a G-protein-coupled receptor on parathyroid chief cells and renal tubules, senses only IONIZED calcium, not total. When ionized Ca falls, the CaSR signals increased PTH secretion; when it rises, PTH is suppressed. Because the body's entire calcium homeostasis is driven by ionized levels, that fraction is what matters clinically.</div><div class="rtt">⚠️ A case reasons that a low TOTAL calcium (from hypoalbuminemia) should drive PTH up — WRONG. The CaSR responds only to ionized calcium, which is normal in hypoalbuminemia, so PTH stays normal. The discriminator: PTH tracks ionized, not total; pseudohypocalcemia does not stimulate PTH.</div></div><div class="rt"><div class="rtl">3. Parathyroid listens to ionized</div><div class="rte">PTH secretion is governed by ionized calcium via the parathyroid CaSR: a drop in ionized Ca within minutes triggers PTH release, which raises calcium by mobilizing bone, increasing renal calcium reabsorption, and activating renal 1-alpha-hydroxylase (→ more calcitriol → gut absorption). PTH therefore tracks the free fraction, explaining why ionized changes (e.g., from alkalosis) drive symptoms even when total Ca is unchanged.</div><div class="rtt">⚠️ A patient with acute respiratory alkalosis and tetany is expected to have a HIGH PTH because 'calcium is low' — possibly WRONG/misleading. Total calcium is normal so the lab may look unremarkable, and the acute ionized drop may not yet have raised measured PTH dramatically. The discriminator: it is ionized Ca that the parathyroid senses; interpret PTH against ionized, not total.</div></div><div class="rt"><div class="rtl">4. Biologically active = causes symptoms</div><div class="rte">Ionized (free) calcium is the ONLY biologically active form, responsible for neuromuscular excitability, cardiac conduction, clotting, and hormone secretion. Normal ionized range is ~1.1-1.3 mmol/L (about 4.5-5.3 mg/dL). Symptoms — tetany, paresthesias, arrhythmia — track ionized calcium, which is why a normal total with a low ionized still produces full-blown symptoms.</div><div class="rtt">⚠️ A symptomatic patient with a normal total calcium is reassured no treatment is needed — WRONG if ionized is low. Symptoms reflect the ionized fraction, not the total. The discriminator: in a symptomatic patient, the ionized level (not the total) determines whether they are truly hypo/hypercalcemic and need treatment.</div></div><div class="rt"><div class="rtl">5. Total Ca = sum of 3 fractions</div><div class="rte">Total serum calcium (normal ~8.5-10.5 mg/dL) is the SUM of three fractions: ionized/free (~50%, active), protein-bound (~40%, mostly to albumin, inactive), and complexed to anions (~10%, to phosphate/citrate/bicarbonate, inactive). Standard chemistry panels measure TOTAL, which is why albumin and pH must be considered to infer the active ionized portion.</div><div class="rtt">⚠️ A reported total calcium is treated as if it equals the active calcium — WRONG when albumin or pH is abnormal. Only ~50% of total is the active ionized fraction, and that proportion shifts with albumin and pH. The discriminator: total is a composite; do not equate it with biologic activity without correcting for albumin (or measuring ionized).</div></div><div class="rt"><div class="rtl">6. Ionized ~50%</div><div class="rte">About 50% of total calcium circulates as free ionized Ca++, the glowing 'active' coin. This is the fraction the CaSR senses and the fraction that produces clinical effects. It is the gold-standard measurement when total calcium is unreliable (abnormal albumin, acid-base disturbance, citrate load, critical illness).</div><div class="rtt">⚠️ An ICU patient's total calcium is used to guide replacement during massive transfusion — WRONG. Citrate from blood products chelates ionized calcium, dropping the active ~50% fraction while total may appear normal. The discriminator: in transfusion/critical illness, trust the directly measured ionized calcium, not the total.</div></div><div class="rt"><div class="rtl">7. Protein-bound ~40% (albumin)</div><div class="rte">About 40% of calcium is bound to plasma proteins, predominantly albumin (a small amount to globulins), and is biologically INACTIVE. Because this pool is large, changes in albumin shift TOTAL calcium substantially without changing the active ionized level — the mechanism behind pseudohypo/hypercalcemia. Each 1 g/dL fall in albumin lowers total Ca by ~0.8 mg/dL.</div><div class="rtt">⚠️ A malnourished/cirrhotic patient with low albumin and low total calcium is treated with IV calcium for 'hypocalcemia' — WRONG. The low total is from low albumin (less binding protein); ionized is normal, so this is pseudohypocalcemia needing no treatment. The discriminator: correct for albumin (or measure ionized) before treating a low total.</div></div><div class="rt"><div class="rtl">8. Complexed ~10% (PO4/citrate)</div><div class="rte">About 10% of calcium is complexed (chelated) to small anions — phosphate, citrate, bicarbonate, lactate — and is inactive. This pool explains how citrate loads or hyperphosphatemia can lower ionized calcium: anions grab free Ca++. It also underlies citrate anticoagulation in apheresis/CRRT and the hypocalcemia of massive transfusion.</div><div class="rtt">⚠️ A patient receiving massive transfusion or on regional citrate CRRT develops tetany, but their TOTAL calcium is normal so hypocalcemia is excluded — WRONG. Citrate complexes (chelates) ionized calcium, causing symptomatic hypocalcemia with a normal-appearing total. The discriminator: with citrate load, follow ionized calcium and replete it, ignoring the falsely reassuring total.</div></div><div class="rt"><div class="rtl">9. Low albumin = false low Ca</div><div class="rte">Hypoalbuminemia (malnutrition, cirrhosis, nephrotic syndrome, critical illness) lowers TOTAL calcium because there is less albumin to bind the ~40% protein-bound pool, but the active IONIZED fraction stays normal. This is pseudohypocalcemia — a lab artifact, not a true calcium deficit, requiring no calcium treatment.</div><div class="rtt">⚠️ A hospitalized patient with albumin 2.5 and total Ca 7.8 is diagnosed with true hypocalcemia and given calcium — WRONG. Corrected Ca = 7.8 + 0.8 x (4-2.5) = 9.0 (normal); this is pseudohypocalcemia. The discriminator: always albumin-correct (or measure ionized) before calling a low total calcium 'real.'</div></div><div class="rt"><div class="rtl">10. Albumin correction formula</div><div class="rte">Corrected calcium = measured total Ca + 0.8 x (4.0 - serum albumin in g/dL). It estimates what the total calcium would be if albumin were normal (4 g/dL), unmasking pseudohypo/hypercalcemia. Example on the board: albumin 2.0, total Ca 8.0 → 8.0 + 0.8 x (4-2) = 9.6 mg/dL (normal). The formula assumes a normal albumin of 4.0.</div><div class="rtt">⚠️ A clinician trusts the correction formula in a critically ill or acid-base-disturbed patient and forgoes the ionized level — WRONG. The formula is only an estimate, unreliable in critical illness, abnormal pH, paraproteinemia, and citrate load. The discriminator: when accuracy matters or the formula and clinical picture disagree, measure ionized calcium directly.</div></div><div class="rt"><div class="rtl">11. Pseudohypocalcemia worked example</div><div class="rte">Worked example: albumin 2.0 g/dL with total Ca 8.0 mg/dL corrects to 8.0 + 0.8 x (4-2) = 9.6 mg/dL, which is normal. This is pseudohypocalcemia: the low total is entirely explained by the low binding protein, ionized is normal, and NO treatment is required. Reserve calcium therapy for true (corrected/ionized) hypocalcemia.</div><div class="rtt">⚠️ This patient (corrected Ca 9.6) is still given IV calcium gluconate because the uncorrected value 'looked low' — WRONG and potentially harmful. After albumin correction the calcium is normal. The discriminator: do the correction math first; treating pseudohypocalcemia risks iatrogenic hypercalcemia.</div></div><div class="rt"><div class="rtl">12. Alkalosis → ↑ binding → ↓ ionized</div><div class="rte">Alkalosis (high pH) deprotonates albumin's binding sites, INCREASING calcium binding to albumin and thereby LOWERING the free ionized fraction — while TOTAL calcium stays the same. This shifts active calcium into the inactive bound pool, producing symptoms (tetany) despite a normal total. The classic acute trigger is hyperventilation-induced respiratory alkalosis.</div><div class="rtt">⚠️ A patient with respiratory alkalosis and tetany has a normal total calcium, so a calcium problem is excluded and only sedation is given — WRONG. Alkalosis lowers ionized calcium with a normal total. The discriminator: in alkalosis-driven tetany, measure/treat ionized calcium and correct the alkalosis; do not be reassured by the normal total.</div></div><div class="rt"><div class="rtl">13. Acid-base effect summary</div><div class="rte">pH inversely controls the ionized fraction by competing with calcium for albumin's binding sites. ALKALOSIS (fewer H+ on albumin) increases Ca-albumin binding → LOWERS ionized (→ tetany). ACIDOSIS (more H+ displacing Ca) decreases binding → RAISES ionized free calcium. Total calcium is unchanged in both; only the active fraction shifts.</div><div class="rtt">⚠️ When correcting a patient's chronic acidosis (e.g., rapid bicarbonate in DKA or renal failure), no thought is given to calcium and the patient develops tetany — WRONG to ignore. Rapidly raising pH increases Ca-albumin binding and drops ionized calcium acutely. The discriminator: alkalosis lowers, acidosis raises ionized Ca — anticipate ionized changes when you shift pH.</div></div><div class="rt"><div class="rtl">14. Tingling/tetany with alkalosis</div><div class="rte">Hyperventilation (anxiety, panic) causes respiratory alkalosis, which increases calcium binding to albumin and lowers ionized calcium, producing perioral and acral tingling, carpopedal spasm, and frank tetany — all with a NORMAL total calcium. Treatment is to correct the hyperventilation (reassurance, rebreathing) rather than to infuse calcium.</div><div class="rtt">⚠️ A panic-attack patient with perioral tingling and carpopedal spasm is loaded with IV calcium for presumed true hypocalcemia — WRONG. The tetany is from an acute ionized drop due to respiratory alkalosis, with a normal total and normal total-body calcium. The discriminator: treat the alkalosis/hyperventilation; calcium stores are normal, so IV calcium is unnecessary.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_11_calcium_crisis_er.html" title="Calcium/PTH/VitD — The Calcium Crisis ER Ladder">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="capth_01_calcium_kingdom.html" title="Calcium/PTH/VitD — The Calcium Kingdom">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

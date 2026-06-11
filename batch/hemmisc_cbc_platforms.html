@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Anemia &amp; CBC Interpretation — MCV Platforms</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>17</em></summary><ol class="traps"><li><b>Arrival Hall — MCV scanner (patient cell size)</b> — Picking a cause before scanning size is the trap — e.g. calling fatigue + low Hb 'iron deficiency' when MCV is normal. Normal MCV (normocytic) demands reticulocytes, not ferritin, as the next test.</li><li><b>PLATFORM 1 — Microcytic &lt;80</b> — Reflexively giving iron is the trap. Empiric iron in thalassemia trait causes iron overload — confirm low ferritin/low TSAT before treating, and never iron-load a normal-ferritin microcytic patient.</li><li><b>#1 Worldwide / High-yield — Iron deficiency anemia</b> — Trap: ferritin is an acute-phase reactant, so a 'normal' ferritin in an inflamed patient can mask IDA — use TSAT and soluble transferrin receptor, or accept ferritin &lt;100 as deficient when CRP is high.</li><li><b>RDW high→low / Mentzer — Thalassemia vs IDA</b> — Trap: ordering iron for a microcytic patient with a normal RDW and high-normal RBC count. That is thalassemia trait — iron is normal and supplementation is harmful.</li><li><b>Sideroblastic anemia</b> — Trap: treating the high ferritin as iron overload needing iron, or as IDA. High ferritin + high TSAT in a microcytic anemia points to sideroblastic/lead, not iron deficiency.</li><li><b>Anemia of inflammation (often normocytic)</b> — Trap: confusing ACD with IDA because both have low serum iron. The TIBC splits them — HIGH TIBC = IDA, LOW/normal TIBC with high ferritin = anemia of inflammation.</li><li><b>PLATFORM 2 — Normocytic 85–95</b> — Trap: skipping the reticulocyte count. Without it you cannot tell a marrow that is failing (low retic) from one compensating for hemolysis/bleeding (high retic) — the entire normocytic workup pivots on this number.</li><li><b>Renal failure / PRCA — check EPO, BUN</b> — Trap: giving ESAs to a CKD patient who is iron-deficient — ESAs fail without adequate iron stores. Always check ferritin/TSAT and target TSAT &gt;20% before or alongside ESA therapy.</li><li><b>Multiple myeloma / marrow infiltration</b> — Trap: attributing an older patient's normocytic anemia + back pain + high calcium + renal failure to 'aging' — that CRAB picture is myeloma until SPEP/light chains prove otherwise.</li><li><b>PLATFORM 3 — Macrocytic &gt;95</b> — Trap: calling all macrocytosis B12/folate. Round macrocytes without hypersegmentation point to alcohol/liver/hypothyroid/reticulocytosis — check the smear and B12/folate before treating.</li><li><b>3A — Oval / DNA defect: B12 &amp; Folate</b> — Trap: giving folate to a B12-deficient patient and watching the CBC normalize while myelopathy worsens. Check/replace B12 first; an elevated MMA is the discriminator (high in B12, normal in pure folate deficiency).</li><li><b>MDS — confirms macrocytosis</b> — Trap: chasing B12/folate repeatedly in an older patient with refractory macrocytic anemia and normal vitamins. Persistent unexplained macrocytic cytopenias warrant a bone marrow biopsy for MDS.</li><li><b>3B — Round / membrane: alcohol, liver, hypothyroid</b> — Trap: ignoring reticulocytosis as a macrocytosis cause — a hemolyzing or recovering patient has many large reticulocytes that raise MCV. Don't work this up as B12 deficiency; the retic count and absent hypersegmentation give it away.</li><li><b>Dispatch Tower — platelet alarms (HIGH &gt;100K / LOW &lt;75K)</b> — Trap: transfusing platelets in TTP or HIT — it can worsen thrombosis. In a thrombocytopenic patient with schistocytes (TTP) or recent heparin (HIT), platelet transfusion is contraindicated; treat the underlying process.</li><li><b>Hemolysis OR Bleeding branch — high retics</b> — Trap: calling jaundice + anemia 'liver disease.' Indirect hyperbilirubinemia with high LDH, low haptoglobin, and high retics is hemolysis — check the DAT/Coombs and smear, not just LFTs.</li><li><b>Coombs / DAT — extrinsic vs intrinsic, mechanical</b> — Trap: starting steroids for every hemolysis. A DAT-negative hemolytic anemia with schistocytes is microangiopathic — steroids won't help; you need plasma exchange (TTP) or to treat DIC/valve, and platelet transfusion is harmful in TTP.</li><li><b>Master Flow Chart — CBC → retics → branches</b> — Trap: ordering a shotgun panel instead of following the tree. The boards reward a sequenced workup — MCV then reticulocytes then targeted tests — over reflexively sending B12, iron, and Coombs all at once.</li></ol></details><details class="panel"><summary>📖 Read-through — all 17 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Arrival Hall — MCV scanner (patient cell size)</div><div class="rte">Every CBC anemia is first triaged by mean corpuscular volume: the cell is 'scanned' for size and routed to a platform. Cutoffs: microcytic &lt;80 fL, normocytic 80–100 fL, macrocytic &gt;100 fL. MCV is the single most useful first branch point because it narrows the differential before any iron studies, B12, or marrow workup. Always pair MCV with the reticulocyte count to separate production from destruction.</div><div class="rtt">⚠️ Picking a cause before scanning size is the trap — e.g. calling fatigue + low Hb 'iron deficiency' when MCV is normal. Normal MCV (normocytic) demands reticulocytes, not ferritin, as the next test.</div></div><div class="rt"><div class="rtl">2. PLATFORM 1 — Microcytic &lt;80</div><div class="rte">MCV &lt;80 fL channels here. Mnemonic TAILS = Thalassemia, Anemia of chronic disease (often normo but can be micro), Iron deficiency, Lead, Sideroblastic. The dominant discriminators are iron studies and RDW. Hypochromia and target cells accompany the small cells on smear.</div><div class="rtt">⚠️ Reflexively giving iron is the trap. Empiric iron in thalassemia trait causes iron overload — confirm low ferritin/low TSAT before treating, and never iron-load a normal-ferritin microcytic patient.</div></div><div class="rt"><div class="rtl">3. #1 Worldwide / High-yield — Iron deficiency anemia</div><div class="rte">IDA is the most common anemia worldwide and the highest-yield microcytic cause. Classic iron panel: low ferritin (most specific, &lt;15–30 ng/mL), low serum iron, HIGH TIBC/transferrin, low transferrin saturation (&lt;15–20%). RDW is HIGH (anisocytosis) and platelets are often reactively elevated. In adults, occult GI blood loss must be excluded — colonoscopy in men and postmenopausal women.</div><div class="rtt">⚠️ Trap: ferritin is an acute-phase reactant, so a 'normal' ferritin in an inflamed patient can mask IDA — use TSAT and soluble transferrin receptor, or accept ferritin &lt;100 as deficient when CRP is high.</div></div><div class="rt"><div class="rtl">4. RDW high→low / Mentzer — Thalassemia vs IDA</div><div class="rte">RDW separates the two big microcytic causes: HIGH RDW favors IDA (mixed cell sizes), NORMAL/LOW RDW favors thalassemia trait (uniformly small cells). Mentzer index = MCV ÷ RBC count; &lt;13 suggests thalassemia (high RBC count, normal ferritin), &gt;13 suggests IDA. Thalassemia shows normal/high ferritin, normal TIBC, target cells, and elevated HbA2 (beta-trait) on electrophoresis.</div><div class="rtt">⚠️ Trap: ordering iron for a microcytic patient with a normal RDW and high-normal RBC count. That is thalassemia trait — iron is normal and supplementation is harmful.</div></div><div class="rt"><div class="rtl">5. Sideroblastic anemia</div><div class="rte">Defective heme synthesis traps iron in mitochondria, producing ringed sideroblasts on marrow Prussian-blue stain. Iron studies paradoxically show HIGH ferritin and HIGH transferrin saturation despite anemia. Causes: lead poisoning, alcohol, isoniazid/B6 deficiency, copper deficiency/zinc excess, and myelodysplasia (often macrocytic). Pyridoxine (B6) may help hereditary X-linked forms.</div><div class="rtt">⚠️ Trap: treating the high ferritin as iron overload needing iron, or as IDA. High ferritin + high TSAT in a microcytic anemia points to sideroblastic/lead, not iron deficiency.</div></div><div class="rt"><div class="rtl">6. Anemia of inflammation (often normocytic)</div><div class="rte">Hepcidin-driven anemia of chronic disease is usually normocytic but can drift microcytic in chronic states. Pattern: LOW serum iron, LOW TIBC (the discriminator from IDA, where TIBC is high), normal-to-HIGH ferritin, low TSAT. It is a hypoproliferative anemia with low reticulocytes. Treat the underlying inflammation, not iron.</div><div class="rtt">⚠️ Trap: confusing ACD with IDA because both have low serum iron. The TIBC splits them — HIGH TIBC = IDA, LOW/normal TIBC with high ferritin = anemia of inflammation.</div></div><div class="rt"><div class="rtl">7. PLATFORM 2 — Normocytic 85–95</div><div class="rte">MCV 80–100 fL routes here, then is split by reticulocyte count. LOW retics = hypoproliferative (marrow or EPO problem): aplastic anemia, marrow infiltration/myeloma, endocrine, renal failure (low EPO), pure red cell aplasia. HIGH retics = hemolysis or acute blood loss. Corrected retic = retic% × (Hct/45); reticulocyte production index &gt;2 means adequate marrow response.</div><div class="rtt">⚠️ Trap: skipping the reticulocyte count. Without it you cannot tell a marrow that is failing (low retic) from one compensating for hemolysis/bleeding (high retic) — the entire normocytic workup pivots on this number.</div></div><div class="rt"><div class="rtl">8. Renal failure / PRCA — check EPO, BUN</div><div class="rte">Chronic kidney disease causes a hypoproliferative normocytic anemia from inadequate erythropoietin — confirm with elevated BUN/creatinine and low/inappropriately-normal EPO, treat with ESAs once iron-replete. Pure red cell aplasia is isolated absent reticulocytes/erythroid precursors, classically from parvovirus B19 (especially in sickle cell aplastic crisis), thymoma, or anti-EPO antibodies. Workup: EPO level, BUN, serum protein/SPEP (myeloma), bone marrow.</div><div class="rtt">⚠️ Trap: giving ESAs to a CKD patient who is iron-deficient — ESAs fail without adequate iron stores. Always check ferritin/TSAT and target TSAT &gt;20% before or alongside ESA therapy.</div></div><div class="rt"><div class="rtl">9. Multiple myeloma / marrow infiltration</div><div class="rte">Marrow infiltration (myeloma, leukemia, metastasis, fibrosis) crowds out erythropoiesis, giving normocytic anemia with low retics and often a leukoerythroblastic smear (teardrop cells, nucleated RBCs, left-shifted granulocytes). Myeloma clues: rouleaux, high total protein/low albumin gap, hypercalcemia, renal failure, lytic bone lesions; confirm with SPEP/UPEP, free light chains, and marrow. Check serum protein (SP) as the scene notes.</div><div class="rtt">⚠️ Trap: attributing an older patient's normocytic anemia + back pain + high calcium + renal failure to 'aging' — that CRAB picture is myeloma until SPEP/light chains prove otherwise.</div></div><div class="rt"><div class="rtl">10. PLATFORM 3 — Macrocytic &gt;95</div><div class="rte">MCV &gt;100 fL routes here and splits into 3A megaloblastic (oval macrocytes, DNA-synthesis defect) and 3B non-megaloblastic (round macrocytes, membrane/lipid defect). The smear is the key fork: hypersegmented neutrophils (&gt;5 lobes) = megaloblastic. Very high MCV &gt;110–115 strongly favors B12/folate deficiency over the milder macrocytosis of liver disease or alcohol.</div><div class="rtt">⚠️ Trap: calling all macrocytosis B12/folate. Round macrocytes without hypersegmentation point to alcohol/liver/hypothyroid/reticulocytosis — check the smear and B12/folate before treating.</div></div><div class="rt"><div class="rtl">11. 3A — Oval / DNA defect: B12 &amp; Folate</div><div class="rte">Megaloblastic anemia from impaired DNA synthesis: B12 deficiency, folate deficiency, methotrexate/antimetabolites, MDS. Discriminate with metabolites — both B12 and folate deficiency raise homocysteine, but only B12 deficiency raises methylmalonic acid (MMA). B12 deficiency adds neurologic signs (subacute combined degeneration, paresthesias) that folate deficiency lacks. ALWAYS replace B12 before folate — giving folate alone corrects the anemia but lets neurologic damage progress irreversibly.</div><div class="rtt">⚠️ Trap: giving folate to a B12-deficient patient and watching the CBC normalize while myelopathy worsens. Check/replace B12 first; an elevated MMA is the discriminator (high in B12, normal in pure folate deficiency).</div></div><div class="rt"><div class="rtl">12. MDS — confirms macrocytosis</div><div class="rte">Myelodysplastic syndrome is a clonal marrow disorder of older adults causing macrocytic anemia with cytopenias and dysplastic cells (e.g. pseudo-Pelger-Huet neutrophils, ringed sideroblasts). It is megaloblast-mimicking but B12/folate are normal — diagnosis is by marrow with dysplasia and cytogenetics. Risk stratify with IPSS-R; del(5q) responds to lenalidomide.</div><div class="rtt">⚠️ Trap: chasing B12/folate repeatedly in an older patient with refractory macrocytic anemia and normal vitamins. Persistent unexplained macrocytic cytopenias warrant a bone marrow biopsy for MDS.</div></div><div class="rt"><div class="rtl">13. 3B — Round / membrane: alcohol, liver, hypothyroid</div><div class="rte">Non-megaloblastic macrocytosis: round macrocytes, NO hypersegmented neutrophils, normal B12/folate. Causes are membrane-cholesterol loading and marrow stress — alcohol (direct toxicity), chronic liver disease (target cells, lipid changes), hypothyroidism, reticulocytosis (large young cells), and smoking. MCV is usually only mildly elevated (100–110); the 100–105 range especially points to liver or thyroid.</div><div class="rtt">⚠️ Trap: ignoring reticulocytosis as a macrocytosis cause — a hemolyzing or recovering patient has many large reticulocytes that raise MCV. Don't work this up as B12 deficiency; the retic count and absent hypersegmentation give it away.</div></div><div class="rt"><div class="rtl">14. Dispatch Tower — platelet alarms (HIGH &gt;100K / LOW &lt;75K)</div><div class="rte">The platelet tower monitors thrombocytopenia thresholds. Spontaneous bleeding risk rises sharply below ~10–20K (consider prophylactic transfusion at &lt;10K). Most procedures need &gt;50K, and neurosurgery/epidural ~&gt;80–100K. Evaluate isolated thrombocytopenia by smear first — clumping (pseudothrombocytopenia), schistocytes (TMA), blasts (leukemia) — before assuming ITP.</div><div class="rtt">⚠️ Trap: transfusing platelets in TTP or HIT — it can worsen thrombosis. In a thrombocytopenic patient with schistocytes (TTP) or recent heparin (HIT), platelet transfusion is contraindicated; treat the underlying process.</div></div><div class="rt"><div class="rtl">15. Hemolysis OR Bleeding branch — high retics</div><div class="rte">High reticulocytes route here. Hemolysis labs: HIGH LDH and HIGH indirect (unconjugated) bilirubin, LOW haptoglobin, high retics. Intravascular hemolysis adds hemoglobinemia/hemoglobinuria and very low haptoglobin (MAHA, PNH, transfusion reactions, mechanical valves). Extravascular (spherocytosis, warm AIHA, hypersplenism) shows splenic clearance with less hemoglobinuria.</div><div class="rtt">⚠️ Trap: calling jaundice + anemia 'liver disease.' Indirect hyperbilirubinemia with high LDH, low haptoglobin, and high retics is hemolysis — check the DAT/Coombs and smear, not just LFTs.</div></div><div class="rt"><div class="rtl">16. Coombs / DAT — extrinsic vs intrinsic, mechanical</div><div class="rte">The DAT (direct antiglobulin/Coombs) splits immune from non-immune hemolysis. DAT-positive = autoimmune hemolytic anemia: warm IgG (lymphoma, SLE, drugs; treat steroids) vs cold IgM (Mycoplasma, EBV, cold agglutinins; avoid cold, rituximab). DAT-negative with schistocytes = mechanical/microangiopathic (TTP/HUS, DIC, prosthetic valve, malignant HTN). Intrinsic causes (membrane, enzyme G6PD, hemoglobinopathy) are Coombs-negative and often inherited.</div><div class="rtt">⚠️ Trap: starting steroids for every hemolysis. A DAT-negative hemolytic anemia with schistocytes is microangiopathic — steroids won't help; you need plasma exchange (TTP) or to treat DIC/valve, and platelet transfusion is harmful in TTP.</div></div><div class="rt"><div class="rtl">17. Master Flow Chart — CBC → retics → branches</div><div class="rte">The integrating algorithm: start with CBC + reticulocyte count. Branch by MCV (low → iron studies/TAILS; normal → retic-driven split; high → smear for hypersegmentation + B12/folate). For any high-retic anemia, run the hemolysis panel (LDH, haptoglobin, indirect bilirubin, DAT) and a smear. The retic count threads through every arm — it is the second universal test after MCV.</div><div class="rtt">⚠️ Trap: ordering a shotgun panel instead of following the tree. The boards reward a sequenced workup — MCV then reticulocytes then targeted tests — over reflexively sending B12, iron, and Coombs all at once.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,9 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="neuro_siadh.html" title="Pituitary/DI/SIADH — SIADH (euvolemic hyponatremia)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hemmisc_reticulocyte_indices.html" title="Anemia Workup — Reticulocytes &amp; RBC Indices">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

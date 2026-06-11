@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Platelet disorders — thrombocytopenia approach (Home of the Platelettes)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Threshold 150K</b> — Don't transfuse platelets just because the count is 'low' (e.g., 80K) in a stable, non-bleeding patient — the threshold for prophylactic transfusion is generally &lt;10K (or &lt;20K with fever/sepsis, &lt;50K for surgery/bleeding). Reflexively transfusing wastes product and is actively harmful in TTP/HIT (fuels thrombosis).</li><li><b>Three mechanisms</b> — Don't assume isolated thrombocytopenia means destruction — pancytopenia or a leukoerythroblastic smear points to a marrow (production) process and mandates marrow exam, not a course of steroids for presumed ITP.</li><li><b>Decreased production</b> — Don't call low platelets + macro-ovalocytes + hypersegmented neutrophils 'ITP' — that pattern is B12/folate deficiency; treat the vitamin, not with immunosuppression.</li><li><b>Sequestration</b> — Don't attribute a platelet count of 8K purely to hypersplenism — sequestration floors around 40K; a count that low means a concurrent destruction or production process is present.</li><li><b>Destruction</b> — Don't lump all destructive thrombocytopenias together — platelet transfusion helps in ITP bleeding but is contraindicated in TTP and HIT, where it adds substrate for thrombosis. Always check a smear and coags before transfusing.</li><li><b>Pseudothrombocytopenia</b> — Don't work up or treat a clumping artifact — repeat in citrate first. Starting steroids, IVIG, or transfusion for a falsely low EDTA count is a classic harm. The tip-off: 'asymptomatic, isolated severe thrombocytopenia, no bleeding' on a routine CBC.</li><li><b>Smear review first</b> — Don't order ADAMTS13, marrow biopsy, or immune workups before looking at the smear — skipping the smear is the classic way to miss schistocytes (TTP, a medical emergency) or platelet clumps (a non-disease).</li><li><b>Schistocytes → MAHA</b> — Don't wait for the ADAMTS13 result before treating suspected TTP — mortality is ~90% untreated. Empiric plasma exchange (plus steroids ± caplacizumab) is started on the clinical triad of MAHA + thrombocytopenia without another explanation.</li><li><b>DIC pattern</b> — Normal coags rule out DIC — reconsider TTP/HUS. Conversely, treating DIC with anticoagulation or factor replacement without addressing the trigger (e.g., source control in sepsis, ATRA in APL) fails — DIC is a symptom of an underlying catastrophe, not a primary diagnosis.</li><li><b>Always ask drugs/OTC</b> — Don't anchor on ITP and skip the medication list — a missed quinine (tonic water) or heparin exposure means the real fix (stop the drug) is delayed and immunosuppression is started unnecessarily.</li><li><b>Marrow exam if unexplained</b> — Don't biopsy the marrow for classic isolated ITP in a young patient — it's unnecessary; but DO biopsy before committing an older patient with 'ITP' to chronic immunosuppression, since MDS can masquerade as isolated thrombocytopenia.</li><li><b>Petechiae = low number</b> — Don't interpret petechiae as a clotting-factor problem — petechiae/mucosal bleeding = platelet (primary hemostasis); hemarthrosis and deep muscle bleeds = factor deficiency (hemophilia). Mixing these up sends the workup down the wrong pathway.</li><li><b>ITP = diagnosis of exclusion</b> — Don't diagnose ITP without checking HIV and HCV — both classically present as 'ITP' and are reversible/treatable causes; immunosuppressing an undiagnosed HIV patient is the trap. Also test before steroids, since steroids can mask/worsen an underlying infection or lymphoma.</li><li><b>Giant platelets mimic ITP</b> — Don't immunosuppress an inherited giant-platelet disorder as if it were ITP — these patients won't respond to steroids/IVIG and shouldn't have a splenectomy. The discriminator is reviewing PRIOR platelet counts (lifelong low) and family history; chronic, treatment-refractory 'ITP' should prompt this reconsideration.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Threshold 150K</div><div class="rte">Thrombocytopenia is defined as a platelet count &lt;150,000/µL (normal 150–450K). The number alone does not predict bleeding linearly — spontaneous mucocutaneous bleeding is uncommon until &lt;10–20K, and most invasive procedures/surgery can proceed safely above 50K. Counts of 100–150K are often incidental and benign (e.g., gestational), so always anchor the workup to the trend and the smear, not a single value.</div><div class="rtt">⚠️ Don't transfuse platelets just because the count is 'low' (e.g., 80K) in a stable, non-bleeding patient — the threshold for prophylactic transfusion is generally &lt;10K (or &lt;20K with fever/sepsis, &lt;50K for surgery/bleeding). Reflexively transfusing wastes product and is actively harmful in TTP/HIT (fuels thrombosis).</div></div><div class="rt"><div class="rtl">2. Three mechanisms</div><div class="rte">Every thrombocytopenia sorts into one of three buckets: decreased PRODUCTION (marrow problem), splenic SEQUESTRATION (redistribution), or increased DESTRUCTION/consumption (peripheral). A fourth, dilutional, occurs after massive transfusion/fluids. The fastest way to separate them is the smear plus an MPV/reticulated platelet check — destruction and sequestration give young, large platelets, while production failure gives few small platelets often with other cytopenias.</div><div class="rtt">⚠️ Don't assume isolated thrombocytopenia means destruction — pancytopenia or a leukoerythroblastic smear points to a marrow (production) process and mandates marrow exam, not a course of steroids for presumed ITP.</div></div><div class="rt"><div class="rtl">3. Decreased production</div><div class="rte">Production failure comes from marrow suppression (chemo, radiation, alcohol, viral — HIV/HCV/EBV/CMV/parvovirus), marrow infiltration/replacement (leukemia, lymphoma, myelofibrosis, metastatic cancer → leukoerythroblastic smear with teardrops and nucleated RBCs), or nutritional deficiency (B12/folate causing ineffective megaloblastic hematopoiesis, hypersegmented neutrophils). Typically OTHER cell lines are also low. Reticulated/immature platelet fraction is LOW because the marrow is not producing.</div><div class="rtt">⚠️ Don't call low platelets + macro-ovalocytes + hypersegmented neutrophils 'ITP' — that pattern is B12/folate deficiency; treat the vitamin, not with immunosuppression.</div></div><div class="rt"><div class="rtl">4. Sequestration</div><div class="rte">A normal spleen pools ~1/3 of platelets; with splenomegaly (cirrhosis/portal hypertension, lymphoma, Gaucher, infiltration) up to 90% are sequestered. The hallmark is a moderate floor — sequestration alone rarely drops counts below ~40,000/µL, and total platelet mass/lifespan is normal, so bleeding is mild. Look for the cause of splenomegaly (chronic liver disease is #1 in adults) rather than treating the count.</div><div class="rtt">⚠️ Don't attribute a platelet count of 8K purely to hypersplenism — sequestration floors around 40K; a count that low means a concurrent destruction or production process is present.</div></div><div class="rt"><div class="rtl">5. Destruction</div><div class="rte">Peripheral destruction/consumption is the 'fire' bucket: immune (ITP, drug-induced including HIT) and non-immune microangiopathic (TTP, HUS, DIC). Smear is the discriminator — schistocytes signal MAHA (TTP/HUS/DIC) and demand urgent action, while a clean smear with only large platelets suggests ITP. The reticulated platelet fraction is HIGH because the marrow is compensating for rapid turnover.</div><div class="rtt">⚠️ Don't lump all destructive thrombocytopenias together — platelet transfusion helps in ITP bleeding but is contraindicated in TTP and HIT, where it adds substrate for thrombosis. Always check a smear and coags before transfusing.</div></div><div class="rt"><div class="rtl">6. Pseudothrombocytopenia</div><div class="rte">Pseudothrombocytopenia is an in-vitro artifact: EDTA in the purple-top tube triggers naturally occurring antibodies to clump platelets, so the automated analyzer counts clumps as single cells and reports a falsely low number. The patient is asymptomatic with no bleeding. Confirm by examining the smear (visible clumps) and redrawing in a citrate (blue-top) or heparin tube — the count normalizes.</div><div class="rtt">⚠️ Don't work up or treat a clumping artifact — repeat in citrate first. Starting steroids, IVIG, or transfusion for a falsely low EDTA count is a classic harm. The tip-off: 'asymptomatic, isolated severe thrombocytopenia, no bleeding' on a routine CBC.</div></div><div class="rt"><div class="rtl">7. Smear review first</div><div class="rte">The peripheral smear is the essential, cheap first step in any thrombocytopenia. It rules in/out pseudothrombocytopenia (clumps), MAHA (schistocytes), acute leukemia (blasts), TTP/DIC, and inherited macrothrombocytopenia (giant platelets). It also lets you eyeball the count (≈ platelets per oil field × 15,000) and check the other two cell lines. No diagnostic algorithm should advance until the smear is seen.</div><div class="rtt">⚠️ Don't order ADAMTS13, marrow biopsy, or immune workups before looking at the smear — skipping the smear is the classic way to miss schistocytes (TTP, a medical emergency) or platelet clumps (a non-disease).</div></div><div class="rt"><div class="rtl">8. Schistocytes → MAHA</div><div class="rte">Schistocytes (fragmented, helmet-shaped RBCs) on the smear define microangiopathic hemolytic anemia (MAHA): RBCs sheared as they pass platelet/fibrin microthrombi. MAHA + thrombocytopenia is a thrombotic microangiopathy until proven otherwise — TTP, HUS, or DIC. Confirm hemolysis with high LDH, high indirect bilirubin, low haptoglobin, and negative direct Coombs (non-immune). Send coags and ADAMTS13 immediately; if TTP is plausible, start plasma exchange empirically.</div><div class="rtt">⚠️ Don't wait for the ADAMTS13 result before treating suspected TTP — mortality is ~90% untreated. Empiric plasma exchange (plus steroids ± caplacizumab) is started on the clinical triad of MAHA + thrombocytopenia without another explanation.</div></div><div class="rt"><div class="rtl">9. DIC pattern</div><div class="rte">DIC is consumptive coagulopathy from a systemic trigger (sepsis, malignancy especially APL, trauma, obstetric catastrophe). The lab signature is PROLONGED PT and aPTT, ELEVATED D-dimer (and FDPs), and LOW fibrinogen, with falling platelets and schistocytes — this coagulation derangement is exactly what distinguishes DIC from TTP/HUS, where PT/aPTT and fibrinogen are normal. Treat the underlying cause; replace with FFP/cryoprecipitate/platelets only if bleeding.</div><div class="rtt">⚠️ Normal coags rule out DIC — reconsider TTP/HUS. Conversely, treating DIC with anticoagulation or factor replacement without addressing the trigger (e.g., source control in sepsis, ATRA in APL) fails — DIC is a symptom of an underlying catastrophe, not a primary diagnosis.</div></div><div class="rt"><div class="rtl">10. Always ask drugs/OTC</div><div class="rte">Drug history is mandatory and frequently missed — include prescription, OTC, herbals, supplements, quinine (tonic water!), and especially heparin (any form, including flushes). Drug-induced immune thrombocytopenia typically appears ~1–2 weeks after a new drug (faster on re-exposure) and resolves 7–10 days after stopping. Classic culprits: heparin, quinine/quinidine, sulfa drugs, vancomycin, GPIIb/IIIa inhibitors, valproate, linezolid.</div><div class="rtt">⚠️ Don't anchor on ITP and skip the medication list — a missed quinine (tonic water) or heparin exposure means the real fix (stop the drug) is delayed and immunosuppression is started unnecessarily.</div></div><div class="rt"><div class="rtl">11. Marrow exam if unexplained</div><div class="rte">Bone marrow biopsy/aspirate is reserved for thrombocytopenia with features suggesting a production problem: additional cytopenias, abnormal cells (blasts) on smear, organomegaly/lymphadenopathy, age &gt;60 with new isolated thrombocytopenia, or failure to respond to ITP therapy. Megakaryocytes are increased in destruction (ITP) and decreased/abnormal in production failure (aplasia, MDS, infiltration).</div><div class="rtt">⚠️ Don't biopsy the marrow for classic isolated ITP in a young patient — it's unnecessary; but DO biopsy before committing an older patient with 'ITP' to chronic immunosuppression, since MDS can masquerade as isolated thrombocytopenia.</div></div><div class="rt"><div class="rtl">12. Petechiae = low number</div><div class="rte">Bleeding pattern localizes the lesion. Petechiae, purpura, mucosal/gingival bleeding, and epistaxis reflect a QUANTITATIVE platelet problem (low number) or qualitative platelet dysfunction — i.e., primary hemostasis. By contrast, deep bleeds, hemarthroses, and delayed bleeding point to a coagulation factor (secondary hemostasis) defect. Petechiae appearing only when count is very low (&lt;10–20K) reflects number, not platelet function.</div><div class="rtt">⚠️ Don't interpret petechiae as a clotting-factor problem — petechiae/mucosal bleeding = platelet (primary hemostasis); hemarthrosis and deep muscle bleeds = factor deficiency (hemophilia). Mixing these up sends the workup down the wrong pathway.</div></div><div class="rt"><div class="rtl">13. ITP = diagnosis of exclusion</div><div class="rte">ITP is immune-mediated platelet destruction (anti-GPIIb/IIIa antibodies) AND impaired production, diagnosed by ISOLATED thrombocytopenia with a normal smear after excluding drugs, infection (HIV, HCV, H. pylori), and other causes — there is no confirmatory test. First-line therapy is corticosteroids (prednisone or dexamethasone) ± IVIG (1 g/kg) for rapid rise or active bleeding; second-line includes TPO agonists (eltrombopag, romiplostim), rituximab, or splenectomy.</div><div class="rtt">⚠️ Don't diagnose ITP without checking HIV and HCV — both classically present as 'ITP' and are reversible/treatable causes; immunosuppressing an undiagnosed HIV patient is the trap. Also test before steroids, since steroids can mask/worsen an underlying infection or lymphoma.</div></div><div class="rt"><div class="rtl">14. Giant platelets mimic ITP</div><div class="rte">Inherited macrothrombocytopenias (MYH9-related disorders, Bernard-Soulier) produce giant platelets (larger than RBCs, high MPV) and a chronically low count that mimics ITP. Clues to inherited disease: lifelong low counts (check old CBCs), family history, syndromic features (MYH9: Döhle-like leukocyte inclusions, nephritis, deafness, cataracts), and NO response to steroids/IVIG/splenectomy. Bernard-Soulier is a GPIb deficiency causing giant platelets + bleeding.</div><div class="rtt">⚠️ Don't immunosuppress an inherited giant-platelet disorder as if it were ITP — these patients won't respond to steroids/IVIG and shouldn't have a splenectomy. The discriminator is reviewing PRIOR platelet counts (lifelong low) and family history; chronic, treatment-refractory 'ITP' should prompt this reconsideration.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="plt_ttp_tx.html" title="Platelet disorders — TTP treatment (TPE)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="plt_vwd.html" title="Platelet disorders — von Willebrand disease (Von Willebrand Field)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

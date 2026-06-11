@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pituitary/DI/SIADH — Diabetes insipidus treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>DDAVP replaces AVP</b> — WRONG: central DI is treated with thiazide diuretics. Discriminator — thiazides treat NEPHROGENIC DI; central DI is a hormone-deficiency state corrected by replacing the hormone (DDAVP). Giving only a thiazide in central DI leaves the patient undertreated.</li><li><b>Four DDAVP routes</b> — WRONG: DDAVP is only available as an IV formulation. Discriminator — intranasal and oral forms dominate outpatient maintenance; IV/SC is reserved for acute/inpatient or perioperative use. Assuming IV-only would miss the practical maintenance options patients actually use.</li><li><b>IV/SC route</b> — WRONG: oral DDAVP works faster than the IV/SC route. Discriminator — IV/SC is the fastest-onset, highest-potency route (~15 min); oral has the slowest onset and lowest bioavailability. For an acutely polyuric inpatient, choose parenteral.</li><li><b>Intranasal route</b> — WRONG: intranasal DDAVP absorption is unaffected by nasal pathology. Discriminator — mucosal inflammation (URI, allergic rhinitis) reduces and makes intranasal absorption unreliable; a patient whose DI 'breaks through' during a cold may simply need a route change, not a higher chronic dose.</li><li><b>Oral / oral melt</b> — WRONG: oral DDAVP can use the same microgram dose as the intranasal or IV form. Discriminator — because oral bioavailability is very low, oral doses are roughly 10–20× the intranasal dose; treating route doses as interchangeable would massively underdose an oral patient.</li><li><b>Intermittent delay = aquaresis</b> — WRONG: DDAVP should be dosed to keep the urine concentrated 24 hours a day. Discriminator — continuous around-the-clock antidiuresis without an escape window is the classic setup for iatrogenic hyponatremia; intentional intermittent dosing (planned aquaresis) is protective.</li><li><b>DDAVP escape / hyponatremia</b> — WRONG: hyperNATREMIA is the main complication of DDAVP therapy. Discriminator — untreated central DI causes hypernatremia, but the TREATMENT (DDAVP) causes water retention and therefore hypoNATREMIA; falling Na on DDAVP means hold the dose, not give more.</li><li><b>Hyponatremia severity</b> — WRONG: DDAVP-induced hyponatremia is always trivial and never needs intervention. Discriminator — a meaningful minority fall below 130 and can become symptomatic (headache, nausea, seizures); a falling Na warrants dose hold and water restriction, not reassurance alone.</li><li><b>Lithium NDI panel</b> — WRONG: nephrogenic DI is treated with desmopressin. Discriminator — the kidney cannot respond to AVP in nephrogenic DI, so DDAVP fails; treatment instead lowers urine output via thiazide + low-salt diet ± amiloride/NSAID and by correcting the underlying drug/metabolic cause.</li><li><b>Amiloride for lithium NDI</b> — WRONG: amiloride worsens lithium toxicity. Discriminator — by blocking ENaC, amiloride REDUCES lithium entry into principal cells (protective) without causing the volume contraction that raises serum lithium; it is thiazides (volume contraction) that can raise lithium levels.</li><li><b>HCTZ / thiazide</b> — WRONG: thiazides increase urine output in DI. Discriminator — although diuretics normally raise urine output, in DI the thiazide-induced mild volume contraction enhances proximal reabsorption and DECREASES urine volume; this counterintuitive 'paradoxical antidiuresis' is a favorite exam point.</li><li><b>Volume contraction / Li toxicity</b> — WRONG: thiazides lower serum lithium levels. Discriminator — thiazides cause volume contraction that increases proximal lithium reabsorption, RAISING lithium and risking toxicity; amiloride (which blocks lithium uptake without volume contraction) is the safer first choice.</li><li><b>Partial resistance combo</b> — WRONG: NSAIDs have no role in nephrogenic DI because the kidney can't respond to AVP anyway. Discriminator — NSAIDs reduce renal prostaglandins (which oppose AVP and promote water excretion), so they reduce urine output independent of the AVP-resistance defect; they are a legitimate adjunct, dosed cautiously for nephrotoxicity.</li><li><b>Primary polydipsia supportive</b> — WRONG: give desmopressin to a patient with primary polydipsia. Discriminator — these patients already over-retain water from drinking; adding DDAVP causes severe dilutional hyponatremia. Correct management is fluid restriction plus addressing the compulsive-drinking/psychiatric cause.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. DDAVP replaces AVP</div><div class="rte">Central DI (AVP deficiency) treatment is desmopressin (DDAVP), a V2-selective AVP analog that replaces the missing hormone and restores urine concentration. Because DDAVP forces water retention, the chief hazard is dilutional HYPONATREMIA, so serum sodium must be monitored and a daily 'aquaresis window' allowed. Ensure free access to water and treat any coexisting anterior-pituitary deficits (especially cortisol, which can mask DI until replaced).</div><div class="rtt">⚠️ WRONG: central DI is treated with thiazide diuretics. Discriminator — thiazides treat NEPHROGENIC DI; central DI is a hormone-deficiency state corrected by replacing the hormone (DDAVP). Giving only a thiazide in central DI leaves the patient undertreated.</div></div><div class="rt"><div class="rtl">2. Four DDAVP routes</div><div class="rte">DDAVP is available in four routes — IV/SC, intranasal spray, oral tablet, and oral-disintegrating (sublingual) melt — letting therapy be tailored to acuity and setting. Onset, potency, and bioavailability differ markedly: parenteral is most potent/fastest; oral has the lowest bioavailability. Doses are NOT interchangeable milligram-for-milligram across routes, so each route is titrated independently.</div><div class="rtt">⚠️ WRONG: DDAVP is only available as an IV formulation. Discriminator — intranasal and oral forms dominate outpatient maintenance; IV/SC is reserved for acute/inpatient or perioperative use. Assuming IV-only would miss the practical maintenance options patients actually use.</div></div><div class="rt"><div class="rtl">3. IV/SC route</div><div class="rte">IV or subcutaneous DDAVP 1–2 mcg has the FASTEST onset (~15 min) and highest potency, making it the choice for acute management, perioperative central DI, or when enteral/intranasal routes are unreliable. Because potency is high, sodium and urine output should be watched closely to avoid over-correction and hyponatremia.</div><div class="rtt">⚠️ WRONG: oral DDAVP works faster than the IV/SC route. Discriminator — IV/SC is the fastest-onset, highest-potency route (~15 min); oral has the slowest onset and lowest bioavailability. For an acutely polyuric inpatient, choose parenteral.</div></div><div class="rt"><div class="rtl">4. Intranasal route</div><div class="rte">Intranasal DDAVP 10–20 mcg dosed BID–TID is a common outpatient maintenance route with intermediate onset and bioavailability. Absorption can be erratic with rhinitis, nasal congestion, or upper-respiratory infection, which may require dose adjustment or temporary switch to oral/parenteral.</div><div class="rtt">⚠️ WRONG: intranasal DDAVP absorption is unaffected by nasal pathology. Discriminator — mucosal inflammation (URI, allergic rhinitis) reduces and makes intranasal absorption unreliable; a patient whose DI 'breaks through' during a cold may simply need a route change, not a higher chronic dose.</div></div><div class="rt"><div class="rtl">5. Oral / oral melt</div><div class="rte">Oral DDAVP (100–400 mcg) and the sublingual orally-disintegrating melt are convenient but have the LOWEST bioavailability (oral tablet only ~1–5%), so doses are much larger than intranasal/parenteral and are titrated to symptom control and serum Na. Food reduces tablet absorption, so consistent timing relative to meals matters.</div><div class="rtt">⚠️ WRONG: oral DDAVP can use the same microgram dose as the intranasal or IV form. Discriminator — because oral bioavailability is very low, oral doses are roughly 10–20× the intranasal dose; treating route doses as interchangeable would massively underdose an oral patient.</div></div><div class="rt"><div class="rtl">6. Intermittent delay = aquaresis</div><div class="rte">A key safety strategy is to deliberately allow a daily 'escape' or aquaresis window — let one DDAVP dose wear off before the next so the kidney can excrete any retained free water. This brief return of dilute urine each day prevents progressive water accumulation and dilutional hyponatremia. Patients are counseled to drink to thirst, not on a fixed schedule, while on DDAVP.</div><div class="rtt">⚠️ WRONG: DDAVP should be dosed to keep the urine concentrated 24 hours a day. Discriminator — continuous around-the-clock antidiuresis without an escape window is the classic setup for iatrogenic hyponatremia; intentional intermittent dosing (planned aquaresis) is protective.</div></div><div class="rt"><div class="rtl">7. DDAVP escape / hyponatremia</div><div class="rte">Hyponatremia is the MOST COMMON complication of DDAVP therapy, driven by water retention especially if the patient keeps drinking beyond thirst. Risk is highest in young children, the elderly, and anyone given supplemental IV fluids. Mitigation: lowest effective dose, daily aquaresis window, drink-to-thirst counseling, and periodic serum Na checks.</div><div class="rtt">⚠️ WRONG: hyperNATREMIA is the main complication of DDAVP therapy. Discriminator — untreated central DI causes hypernatremia, but the TREATMENT (DDAVP) causes water retention and therefore hypoNATREMIA; falling Na on DDAVP means hold the dose, not give more.</div></div><div class="rt"><div class="rtl">8. Hyponatremia severity</div><div class="rte">DDAVP-associated hyponatremia is usually MILD (Na ~131–134, roughly a quarter of treated patients) but can be SEVERE (&lt;130, ~15%) and symptomatic. Management is to hold the next DDAVP dose, restrict free water, and recheck sodium; severe symptomatic cases follow the standard cautious hyponatremia-correction limits to avoid osmotic demyelination.</div><div class="rtt">⚠️ WRONG: DDAVP-induced hyponatremia is always trivial and never needs intervention. Discriminator — a meaningful minority fall below 130 and can become symptomatic (headache, nausea, seizures); a falling Na warrants dose hold and water restriction, not reassurance alone.</div></div><div class="rt"><div class="rtl">9. Lithium NDI panel</div><div class="rte">Nephrogenic DI (AVP resistance) treatment: remove/treat the cause (stop or reduce lithium if possible, correct hypercalcemia and hypokalemia), then reduce solute/water load with a LOW-SALT, low-protein diet plus a thiazide (HCTZ), amiloride, and/or an NSAID. DDAVP does NOT work here because the defect is renal resistance, not hormone deficiency.</div><div class="rtt">⚠️ WRONG: nephrogenic DI is treated with desmopressin. Discriminator — the kidney cannot respond to AVP in nephrogenic DI, so DDAVP fails; treatment instead lowers urine output via thiazide + low-salt diet ± amiloride/NSAID and by correcting the underlying drug/metabolic cause.</div></div><div class="rt"><div class="rtl">10. Amiloride for lithium NDI</div><div class="rte">Amiloride is FIRST-LINE for lithium-induced nephrogenic DI: it blocks the apical ENaC sodium channel in collecting-duct principal cells, the very channel through which lithium enters the cell to downregulate AQP2. By preventing lithium uptake, amiloride protects the cell and may even let the patient continue lithium when no alternative mood stabilizer exists.</div><div class="rtt">⚠️ WRONG: amiloride worsens lithium toxicity. Discriminator — by blocking ENaC, amiloride REDUCES lithium entry into principal cells (protective) without causing the volume contraction that raises serum lithium; it is thiazides (volume contraction) that can raise lithium levels.</div></div><div class="rt"><div class="rtl">11. HCTZ / thiazide</div><div class="rte">Thiazides (e.g., HCTZ) PARADOXICALLY reduce urine output in DI: by blocking the distal Na-Cl cotransporter they cause mild volume contraction, which increases proximal sodium and water reabsorption and delivers less fluid distally. They work best paired with a low-sodium diet, which augments the volume-contraction effect.</div><div class="rtt">⚠️ WRONG: thiazides increase urine output in DI. Discriminator — although diuretics normally raise urine output, in DI the thiazide-induced mild volume contraction enhances proximal reabsorption and DECREASES urine volume; this counterintuitive 'paradoxical antidiuresis' is a favorite exam point.</div></div><div class="rt"><div class="rtl">12. Volume contraction / Li toxicity</div><div class="rte">Thiazide-induced volume contraction increases proximal tubular reabsorption of sodium AND lithium (lithium is handled like sodium), so it can RAISE serum lithium into the toxic range. When a thiazide is used in lithium nephrogenic DI, lithium levels and renal function must be monitored, which is part of why amiloride is preferred.</div><div class="rtt">⚠️ WRONG: thiazides lower serum lithium levels. Discriminator — thiazides cause volume contraction that increases proximal lithium reabsorption, RAISING lithium and risking toxicity; amiloride (which blocks lithium uptake without volume contraction) is the safer first choice.</div></div><div class="rt"><div class="rtl">13. Partial resistance combo</div><div class="rte">For partial nephrogenic DI, combine therapies for additive urine-reducing effect: low-sodium (and low-protein) diet to cut solute load, a thiazide for volume contraction, amiloride to block lithium/ENaC, and an NSAID (indomethacin) — prostaglandins normally antagonize AVP, so blocking them enhances water reabsorption. Watch NSAID renal and GI toxicity with chronic use.</div><div class="rtt">⚠️ WRONG: NSAIDs have no role in nephrogenic DI because the kidney can't respond to AVP anyway. Discriminator — NSAIDs reduce renal prostaglandins (which oppose AVP and promote water excretion), so they reduce urine output independent of the AVP-resistance defect; they are a legitimate adjunct, dosed cautiously for nephrotoxicity.</div></div><div class="rt"><div class="rtl">14. Primary polydipsia supportive</div><div class="rte">Primary polydipsia is managed with fluid restriction and behavioral/symptomatic measures for dry mouth (ice chips, hard candy/sugarless gum) plus treating the underlying psychiatric disorder. Desmopressin is AVOIDED because the patient's AVP axis is intact and they continue drinking, so DDAVP would precipitate water intoxication and hyponatremia.</div><div class="rtt">⚠️ WRONG: give desmopressin to a patient with primary polydipsia. Discriminator — these patients already over-retain water from drinking; adding DDAVP causes severe dilutional hyponatremia. Correct management is fluid restriction plus addressing the compulsive-drinking/psychiatric cause.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="neuro_di_causes.html" title="Pituitary/DI/SIADH — Diabetes insipidus causes (central vs nephrogenic)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="neuro_polyuria.html" title="Pituitary/DI/SIADH — Polyuria diagnostic approach">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

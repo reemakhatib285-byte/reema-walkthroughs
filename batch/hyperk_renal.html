@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyperkalemia — where renal K+ excretion fails</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Four broken pillars</b> — WRONG answer: lumping all renal hyperkalemia under 'kidney failure.' Discriminator: most chronic hyperkalemia in CKD is actually a distal-secretion problem (low aldo/aldo resistance/type 4 RTA), not simply low GFR. GFR usually has to fall below ~15–20 before reduced nephron mass alone causes hyperkalemia.</li><li><b>Low aldosterone</b> — WRONG answer: checking only a random aldosterone level to confirm. Discriminator: interpret aldosterone together with renin and volume status — and remember many drugs (ACEi/ARB, heparin, K-sparing diuretics) produce a functional low-aldo state that mimics primary adrenal disease.</li><li><b>Primary adrenal insuff</b> — WRONG answer: expecting hyperkalemia in SECONDARY (pituitary/ACTH) adrenal insufficiency. Discriminator: secondary AI spares the renin-angiotensin-aldosterone axis, so aldosterone is preserved and K+ is typically NORMAL (hyponatremia can still occur from cortisol-related ADH effects). Hyperkalemia points to a PRIMARY adrenal problem.</li><li><b>Heparin / LMWH</b> — WRONG answer: dismissing heparin as a hyperkalemia cause because the course was short or the dose was 'just prophylactic.' Discriminator: even brief, low-dose heparin can suppress aldosterone enough to raise K+ in at-risk patients — review the med list before chasing exotic causes.</li><li><b>Type 4 RTA</b> — WRONG answer: expecting hypokalemia because 'RTA causes RTA.' Discriminator: type 4 RTA is the ONE renal tubular acidosis with HYPERkalemia (types 1 and 2 are hypokalemic). The combination of mild NAGMA + hyperkalemia + diabetes/CKD is the giveaway.</li><li><b>Tubular resistance</b> — WRONG answer: treating aldo-resistant hyperkalemia with fludrocortisone. Discriminator: if the receptor/channel cannot respond, mineralocorticoid replacement won't work — high endogenous aldosterone already failed. Manage with loop/thiazide diuretics, dietary K+ restriction, and removing offending drugs (K-sparing diuretics, trimethoprim that blocks ENaC).</li><li><b>PHA / drugs</b> — WRONG answer: forgetting that the antibiotic TRIMETHOPRIM (and pentamidine) causes hyperkalemia. Discriminator: trimethoprim is an amiloride-like ENaC blocker — high-dose TMP-SMX in a patient with HIV/PCP or renal impairment is a board-classic, often-missed cause of hyperkalemia.</li><li><b>Low urine flow</b> — WRONG answer: assuming a normal serum creatinine rules out flow-dependent hyperkalemia. Discriminator: urine OUTPUT (oliguria/anuria) and distal flow matter independently of GFR snapshots — a falling urine output in AKI predicts hyperkalemia even before creatinine fully reflects the injury.</li><li><b>GFR &lt; 20</b> — WRONG answer: blaming moderate CKD (GFR 30–45) by itself for hyperkalemia. Discriminator: if K+ is high at GFR &gt; 20 and urine output is preserved, look for a SUPERIMPOSED secretory defect (ACEi/ARB, type 4 RTA, K-sparing diuretic, high K+ intake) rather than nephron loss alone.</li><li><b>Low distal Na+</b> — WRONG answer: missing that low effective circulating volume (not true Na+ deficiency) is the usual culprit. Discriminator: in CHF/cirrhosis the proximal nephron avidly reabsorbs Na+, leaving little for the distal tubule — the fix is improving distal Na+ delivery (e.g., a loop diuretic) rather than salt restriction alone.</li><li><b>CHF / volume deplete</b> — WRONG answer: adding a potassium-sparing diuretic (spironolactone) to a hyperkalemic CHF patient because 'it helps the heart.' Discriminator: in low-distal-Na+ states with concurrent RAAS blockade, K-sparing agents predictably worsen hyperkalemia — favor a loop diuretic to restore distal Na+ delivery and K+ excretion.</li><li><b>TTKG &lt; 5</b> — WRONG answer: trusting a TTKG when the urine is dilute or sodium-poor. Discriminator: TTKG is only valid when urine osmolality &gt; serum osmolality AND urine Na+ &gt; 25 mEq/L (so distal Na+ isn't the limiting factor). Outside those conditions the number is meaningless — note many guidelines now consider TTKG unreliable and prefer urine K+/creatinine ratio.</li><li><b>Urine K+ &lt; 40</b> — WRONG answer: interpreting urine K+ without the serum K+ context. Discriminator: a urine K+ of 30 is appropriate if the patient is hypokalemic but pathologically LOW if the serum K+ is 6.5 — always read renal K+ handling relative to the plasma level the kidney 'should' be responding to.</li><li><b>Find broken pillar</b> — WRONG answer: stopping after you find one mechanism. Discriminator: hyperkalemia is frequently MULTIFACTORIAL (e.g., a diabetic CKD patient with type 4 RTA, on an ACEi, plus TMP-SMX) — drugs get their own panel; review every contributor before deciding the workup is done.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Four broken pillars</div><div class="rte">Normal renal K+ excretion needs four things in the distal nephron: (1) aldosterone present, (2) a tubule that responds to aldosterone (functioning ENaC/MR), (3) adequate distal Na+ delivery, and (4) adequate distal flow/urine output. Hyperkalemia from a renal cause means one of these four pillars has failed. Framing the differential this way lets you map any drug or disease to a specific defect.</div><div class="rtt">⚠️ WRONG answer: lumping all renal hyperkalemia under 'kidney failure.' Discriminator: most chronic hyperkalemia in CKD is actually a distal-secretion problem (low aldo/aldo resistance/type 4 RTA), not simply low GFR. GFR usually has to fall below ~15–20 before reduced nephron mass alone causes hyperkalemia.</div></div><div class="rt"><div class="rtl">2. Low aldosterone</div><div class="rte">Aldosterone acts on principal cells of the distal nephron/collecting duct: it upregulates ENaC (Na+ reabsorption creates a lumen-negative voltage) and the basolateral Na/K-ATPase, driving K+ secretion via ROMK. No aldosterone means no electrochemical gradient for K+ to leave, so K+ is retained. This is pillar 1 — the 'empty forge.'</div><div class="rtt">⚠️ WRONG answer: checking only a random aldosterone level to confirm. Discriminator: interpret aldosterone together with renin and volume status — and remember many drugs (ACEi/ARB, heparin, K-sparing diuretics) produce a functional low-aldo state that mimics primary adrenal disease.</div></div><div class="rt"><div class="rtl">3. Primary adrenal insuff</div><div class="rte">Primary adrenal insufficiency (Addison's — autoimmune, TB, adrenal hemorrhage) destroys the cortex, so BOTH cortisol and aldosterone fall. The mineralocorticoid deficiency gives the classic electrolyte signature: hyperkalemia + hyponatremia, often with a mild NAGMA and volume depletion/hypotension. Confirm with a cosyntropin (ACTH) stimulation test; treat with hydrocortisone + fludrocortisone.</div><div class="rtt">⚠️ WRONG answer: expecting hyperkalemia in SECONDARY (pituitary/ACTH) adrenal insufficiency. Discriminator: secondary AI spares the renin-angiotensin-aldosterone axis, so aldosterone is preserved and K+ is typically NORMAL (hyponatremia can still occur from cortisol-related ADH effects). Hyperkalemia points to a PRIMARY adrenal problem.</div></div><div class="rt"><div class="rtl">4. Heparin / LMWH</div><div class="rte">Heparin and LMWH directly inhibit aldosterone synthesis in the zona glomerulosa (reduced number and affinity of angiotensin II receptors and inhibition of 18-hydroxylase), producing hypoaldosteronism and hyperkalemia. This is an under-recognized, dose-independent effect that can appear within days even at prophylactic doses, especially in patients with other risk factors (CKD, diabetes, ACEi).</div><div class="rtt">⚠️ WRONG answer: dismissing heparin as a hyperkalemia cause because the course was short or the dose was 'just prophylactic.' Discriminator: even brief, low-dose heparin can suppress aldosterone enough to raise K+ in at-risk patients — review the med list before chasing exotic causes.</div></div><div class="rt"><div class="rtl">5. Type 4 RTA</div><div class="rte">Hyporeninemic hypoaldosteronism (type 4 RTA) is the classic chronic cause of pillar-1 failure: low renin (often diabetic nephropathy) leads to low angiotensin II, then low aldosterone, then impaired distal K+ and H+ secretion — yielding hyperkalemia with a mild non-anion-gap metabolic acidosis. It is detailed in the dedicated type 4 RTA panel.</div><div class="rtt">⚠️ WRONG answer: expecting hypokalemia because 'RTA causes RTA.' Discriminator: type 4 RTA is the ONE renal tubular acidosis with HYPERkalemia (types 1 and 2 are hypokalemic). The combination of mild NAGMA + hyperkalemia + diabetes/CKD is the giveaway.</div></div><div class="rt"><div class="rtl">6. Tubular resistance</div><div class="rte">Pillar 2 failure: aldosterone is present but the tubule cannot respond (the 'deaf cathedral'). Causes include genetic ENaC/mineralocorticoid-receptor loss (pseudohypoaldosteronism type 1) and acquired tubulointerstitial disease that damages the principal cells. Hallmark is hyperkalemia with a HIGH aldosterone level (end-organ resistance, not deficiency).</div><div class="rtt">⚠️ WRONG answer: treating aldo-resistant hyperkalemia with fludrocortisone. Discriminator: if the receptor/channel cannot respond, mineralocorticoid replacement won't work — high endogenous aldosterone already failed. Manage with loop/thiazide diuretics, dietary K+ restriction, and removing offending drugs (K-sparing diuretics, trimethoprim that blocks ENaC).</div></div><div class="rt"><div class="rtl">7. PHA / drugs</div><div class="rte">ENaC/MR resistance comes from inherited PHA type 1 and from acquired tubulointerstitial disease: lupus nephritis (SLE), sickle cell nephropathy, obstructive uropathy, amyloidosis, and drugs that block ENaC (amiloride, triamterene, trimethoprim, pentamidine) or the MR (spironolactone, eplerenone). All blunt the tubule's response to aldosterone and cause hyperkalemia.</div><div class="rtt">⚠️ WRONG answer: forgetting that the antibiotic TRIMETHOPRIM (and pentamidine) causes hyperkalemia. Discriminator: trimethoprim is an amiloride-like ENaC blocker — high-dose TMP-SMX in a patient with HIV/PCP or renal impairment is a board-classic, often-missed cause of hyperkalemia.</div></div><div class="rt"><div class="rtl">8. Low urine flow</div><div class="rte">Pillar 4 failure: K+ secretion depends on adequate distal tubular flow (it washes secreted K+ downstream and maintains the gradient). Oliguric/anuric AKI and advanced renal failure ('broken windmill') sharply curtail flow, so even with intact aldosterone and channels, K+ cannot be excreted. This is why oliguric AKI causes severe, rapid hyperkalemia.</div><div class="rtt">⚠️ WRONG answer: assuming a normal serum creatinine rules out flow-dependent hyperkalemia. Discriminator: urine OUTPUT (oliguria/anuria) and distal flow matter independently of GFR snapshots — a falling urine output in AKI predicts hyperkalemia even before creatinine fully reflects the injury.</div></div><div class="rt"><div class="rtl">9. GFR &lt; 20</div><div class="rte">With advanced CKD/ESRD or oliguric AKI, GFR below roughly 15–20 mL/min leaves too few functioning nephrons to handle the daily K+ load, so hyperkalemia develops from reduced excretory capacity. Until that point, surviving nephrons and the colon increase K+ excretion to compensate, which is why mild-moderate CKD alone seldom causes resting hyperkalemia.</div><div class="rtt">⚠️ WRONG answer: blaming moderate CKD (GFR 30–45) by itself for hyperkalemia. Discriminator: if K+ is high at GFR &gt; 20 and urine output is preserved, look for a SUPERIMPOSED secretory defect (ACEi/ARB, type 4 RTA, K-sparing diuretic, high K+ intake) rather than nephron loss alone.</div></div><div class="rt"><div class="rtl">10. Low distal Na+</div><div class="rte">Pillar 3 failure: ENaC needs Na+ delivered to the distal nephron to reabsorb (creating the lumen-negative voltage that drives K+ out). If distal Na+ delivery is low (urine Na+ &lt; 25 mEq/L), there is no substrate for ENaC, no favorable voltage, and therefore no K+ secretion despite adequate aldosterone.</div><div class="rtt">⚠️ WRONG answer: missing that low effective circulating volume (not true Na+ deficiency) is the usual culprit. Discriminator: in CHF/cirrhosis the proximal nephron avidly reabsorbs Na+, leaving little for the distal tubule — the fix is improving distal Na+ delivery (e.g., a loop diuretic) rather than salt restriction alone.</div></div><div class="rt"><div class="rtl">11. CHF / volume deplete</div><div class="rte">CHF, cirrhosis, and true volume depletion reduce the EFFECTIVE arterial blood volume; the body responds with avid proximal Na+ reabsorption, so very little Na+ reaches the distal ENaC site and K+ secretion stalls (pillar 3). These same patients are often on ACEi/ARB and aldosterone antagonists, stacking multiple hits onto the same pathway.</div><div class="rtt">⚠️ WRONG answer: adding a potassium-sparing diuretic (spironolactone) to a hyperkalemic CHF patient because 'it helps the heart.' Discriminator: in low-distal-Na+ states with concurrent RAAS blockade, K-sparing agents predictably worsen hyperkalemia — favor a loop diuretic to restore distal Na+ delivery and K+ excretion.</div></div><div class="rt"><div class="rtl">12. TTKG &lt; 5</div><div class="rte">The transtubular potassium gradient estimates distal K+ secretion: TTKG = (urine K+ / serum K+) / (urine osm / serum osm). In hyperkalemia a normal kidney should secrete avidly and give TTKG &gt; 7–10; a TTKG &lt; 5 indicates inappropriately low secretion, pointing to an aldosterone/ENaC/tubule (pillar 1 or 2) problem rather than a flow/intake issue.</div><div class="rtt">⚠️ WRONG answer: trusting a TTKG when the urine is dilute or sodium-poor. Discriminator: TTKG is only valid when urine osmolality &gt; serum osmolality AND urine Na+ &gt; 25 mEq/L (so distal Na+ isn't the limiting factor). Outside those conditions the number is meaningless — note many guidelines now consider TTKG unreliable and prefer urine K+/creatinine ratio.</div></div><div class="rt"><div class="rtl">13. Urine K+ &lt; 40</div><div class="rte">In hyperkalemia, healthy kidneys should excrete large amounts of K+; a 24-hour urine K+ &lt; 40 mEq/day (or a low spot urine K+/creatinine ratio) confirms an INAPPROPRIATELY low renal excretion and localizes the problem to the kidney/aldosterone axis. A high urine K+ instead points to a redistribution or extrarenal-intake source.</div><div class="rtt">⚠️ WRONG answer: interpreting urine K+ without the serum K+ context. Discriminator: a urine K+ of 30 is appropriate if the patient is hypokalemic but pathologically LOW if the serum K+ is 6.5 — always read renal K+ handling relative to the plasma level the kidney 'should' be responding to.</div></div><div class="rt"><div class="rtl">14. Find broken pillar</div><div class="rte">Diagnostic algorithm: (1) no aldo (Addison's, heparin, type 4 RTA), (2) no ENaC/MR response (PHA, lupus/sickle/obstruction, amiloride/TMP/spironolactone), (3) no distal Na+ delivery (CHF, cirrhosis, volume depletion), or (4) no flow (oliguric AKI, GFR &lt; 20). Use urine K+, TTKG, renin/aldo, and the med list to assign the case to a pillar.</div><div class="rtt">⚠️ WRONG answer: stopping after you find one mechanism. Discriminator: hyperkalemia is frequently MULTIFACTORIAL (e.g., a diabetic CKD patient with type 4 RTA, on an ACEi, plus TMP-SMX) — drugs get their own panel; review every contributor before deciding the workup is done.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperk_treatment.html" title="Hyperkalemia — treatment (stabilize, shift, remove)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_hyperglycemic_crisis.html" title="DM — Scene 1 — Acute Hyperglycemic Crisis: DKA vs HHS Diagnosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

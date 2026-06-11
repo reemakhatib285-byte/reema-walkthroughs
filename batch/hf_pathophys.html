@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — Pathophysiology correlation of general therapeutic HF</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>HFpEF pathology: hypertrophy</b> — WRONG: 'EF is preserved, so cardiac output and prognosis are normal.' HFpEF carries mortality comparable to HFrEF; the limitation is diastolic filling and reduced stroke volume reserve, not contractility.</li><li><b>Fibrosis / altered collagen</b> — WRONG: 'Diastolic dysfunction in HFpEF is purely an active relaxation (lusitropy) defect.' Passive stiffness from fibrosis/collagen is the major contributor; that is why simply slowing the heart is not curative.</li><li><b>Infarction / ischemia substrate</b> — WRONG: 'Ischemia only matters in HFrEF.' Transient ischemia is a classic trigger of acute HFpEF (flash pulmonary edema with normal EF on later echo).</li><li><b>Risk markers: HTN, aging</b> — WRONG: 'HFpEF mainly affects young men with dilated hearts.' The prototype is an elderly hypertensive woman, often obese/diabetic, with a non-dilated stiff ventricle.</li><li><b>Risk markers: atherosclerosis, DM, obesity</b> — WRONG: 'Treating HFpEF means optimizing contractility.' There is no inotrope benefit; management targets the comorbidities (BP, weight, glucose, ischemia, AF) and congestion.</li><li><b>Reduce congestion (careful preload)</b> — WRONG: 'Aggressive, rapid diuresis is always safe in HFpEF.' Excessive preload reduction in a stiff ventricle precipitates hypotension and renal injury — titrate gently to euvolemia.</li><li><b>Control blood pressure</b> — WRONG: 'Brachial cuff pressure fully captures the ventricular load in HFpEF.' In stiff arteries the central aortic systolic pressure is the more relevant load on the LV.</li><li><b>Maintain sinus / treat AF</b> — WRONG: 'Rate vs rhythm doesn't matter much in HFpEF because EF is normal.' Loss of atrial kick and tachycardia critically impair filling of a non-compliant ventricle and commonly precipitate decompensation.</li><li><b>Treat ischemia / sleep apnea</b> — WRONG: 'Adaptive servo-ventilation should be used for sleep-disordered breathing in heart failure.' ASV increased mortality in HFrEF with predominant central sleep apnea (SERVE-HF) — it is contraindicated there; OSA gets CPAP.</li><li><b>RAAS therapy ineffective in HFpEF</b> — WRONG: 'ACEi/ARB reduce mortality in HFpEF just as in HFrEF.' They are effective in HFrEF but ineffective for outcomes in established HFpEF (only useful for BP/prevention); the partial winner in HFpEF is the MRA.</li><li><b>Digoxin / beta-blocker ineffective</b> — WRONG: 'Beta-blockers improve survival in HFpEF the way they do in HFrEF.' Their HFpEF role is limited to AF rate control; the mortality benefit of beta-blockers is an HFrEF phenomenon.</li><li><b>PDE-5 inhibitor (sildenafil) ineffective</b> — WRONG: 'Sildenafil treats the pulmonary hypertension of HFpEF.' It failed in HFpEF (RELAX) and is not used for Group 2 (post-capillary) PH; reserve PDE-5i for Group 1 PAH.</li><li><b>SGLT2i reduce HF hospitalization</b> — WRONG: 'No drug improves outcomes in HFpEF.' SGLT2 inhibitors reduce HF hospitalizations/CV death in HFpEF regardless of diabetes — they are the class to know.</li><li><b>Obesity: GLP-1 agonists</b> — WRONG: 'GLP-1 agonists only matter for glycemic control and have no role in non-diabetic HFpEF.' In obesity-phenotype HFpEF they improve symptoms and QOL independent of diabetes (STEP-HFpEF).</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. HFpEF pathology: hypertrophy</div><div class="rte">HFpEF substrate is concentric LV hypertrophy from chronic pressure overload (HTN, AS): wall thickening with a small, stiff, non-compliant cavity. Stiffness shifts the diastolic pressure-volume curve up and left, so filling pressures rise steeply for small volume increases (impaired relaxation + ↑passive stiffness). EF is preserved (≥50%) but stroke volume is filling-limited. On the Frank-Starling frame, HFpEF is a problem of getting blood IN (diastole), whereas HFrEF is a problem of pumping blood OUT (systole).</div><div class="rtt">⚠️ WRONG: 'EF is preserved, so cardiac output and prognosis are normal.' HFpEF carries mortality comparable to HFrEF; the limitation is diastolic filling and reduced stroke volume reserve, not contractility.</div></div><div class="rt"><div class="rtl">2. Fibrosis / altered collagen</div><div class="rte">Interstitial and perivascular fibrosis with a shift toward stiffer type I collagen increases passive myocardial stiffness, the dominant driver of diastolic dysfunction in HFpEF. Titin hypophosphorylation and microvascular inflammation (driven by HTN, DM, obesity) add to the stiffness. This is why anti-fibrotic/RAAS strategies were trialed; MRAs (spironolactone) blunt fibrosis and may help selected HFpEF.</div><div class="rtt">⚠️ WRONG: 'Diastolic dysfunction in HFpEF is purely an active relaxation (lusitropy) defect.' Passive stiffness from fibrosis/collagen is the major contributor; that is why simply slowing the heart is not curative.</div></div><div class="rt"><div class="rtl">3. Infarction / ischemia substrate</div><div class="rte">Prior MI and ongoing ischemia stiffen the ventricle (scar) and acutely impair ATP-dependent relaxation, precipitating flash pulmonary edema even with preserved EF. Demand ischemia raises LV diastolic pressure abruptly. This is why HF can behave as an 'anginal equivalent' and why revascularization/anti-ischemic therapy is part of HFpEF care.</div><div class="rtt">⚠️ WRONG: 'Ischemia only matters in HFrEF.' Transient ischemia is a classic trigger of acute HFpEF (flash pulmonary edema with normal EF on later echo).</div></div><div class="rt"><div class="rtl">4. Risk markers: HTN, aging</div><div class="rte">Hypertension and advancing age are the two strongest HFpEF risk markers: chronic afterload drives hypertrophy/fibrosis, and aging adds intrinsic myocardial and arterial stiffening (↑central aortic/pulse-wave pressure). The typical board patient is an older woman with HTN, dyspnea on exertion, preserved EF, and elevated NT-proBNP. Aggressive BP control is the single highest-yield preventive intervention.</div><div class="rtt">⚠️ WRONG: 'HFpEF mainly affects young men with dilated hearts.' The prototype is an elderly hypertensive woman, often obese/diabetic, with a non-dilated stiff ventricle.</div></div><div class="rt"><div class="rtl">5. Risk markers: atherosclerosis, DM, obesity</div><div class="rte">Atherosclerosis, diabetes, and obesity create the systemic inflammatory/metabolic milieu of HFpEF (coronary microvascular dysfunction, advanced glycation crosslinks, plasma volume expansion). Obesity-phenotype HFpEF has high filling pressures from volume overload and pericardial restraint. These comorbidities, not contractile failure, define the syndrome — and they explain why SGLT2i and GLP-1 agonists (metabolic drugs) became HFpEF therapies.</div><div class="rtt">⚠️ WRONG: 'Treating HFpEF means optimizing contractility.' There is no inotrope benefit; management targets the comorbidities (BP, weight, glucose, ischemia, AF) and congestion.</div></div><div class="rt"><div class="rtl">6. Reduce congestion (careful preload)</div><div class="rte">The stiff HFpEF ventricle sits on the steep part of the Frank-Starling/pressure-volume curve, so it is exquisitely preload-dependent: loop diuretics relieve congestion, but over-diuresis drops filling and cardiac output, causing hypotension and pre-renal AKI. Diurese to euvolemia and reassess; invasive/implantable hemodynamic monitoring (e.g., CardioMEMS) can guide titration.</div><div class="rtt">⚠️ WRONG: 'Aggressive, rapid diuresis is always safe in HFpEF.' Excessive preload reduction in a stiff ventricle precipitates hypotension and renal injury — titrate gently to euvolemia.</div></div><div class="rt"><div class="rtl">7. Control blood pressure</div><div class="rte">BP control is the cornerstone of HFpEF: lowering afterload reduces the hypertrophy/fibrosis stimulus and acutely lowers filling pressures. Central aortic pressure (pulse-wave reflection) correlates with LV load better than brachial cuff in the stiff-vessel elderly. Target guideline BP (generally &lt;130/80); any first-line agent that also treats a comorbidity (ACEi/ARB for DM, MRA for fibrosis) is reasonable.</div><div class="rtt">⚠️ WRONG: 'Brachial cuff pressure fully captures the ventricular load in HFpEF.' In stiff arteries the central aortic systolic pressure is the more relevant load on the LV.</div></div><div class="rt"><div class="rtl">8. Maintain sinus / treat AF</div><div class="rte">A stiff ventricle relies on the atrial kick (up to ~25–30% of filling) and on a long diastole, so loss of sinus rhythm or tachycardia abruptly worsens HFpEF — new AF with RVR is a classic decompensation trigger. Maintain sinus rhythm where feasible and rate-control AF; slowing rate lengthens diastolic filling time. AF ablation may reduce morbidity in selected patients.</div><div class="rtt">⚠️ WRONG: 'Rate vs rhythm doesn't matter much in HFpEF because EF is normal.' Loss of atrial kick and tachycardia critically impair filling of a non-compliant ventricle and commonly precipitate decompensation.</div></div><div class="rt"><div class="rtl">9. Treat ischemia / sleep apnea</div><div class="rte">Treat reversible drivers: myocardial ischemia (HFpEF as an anginal equivalent, flash edema) and obstructive sleep apnea, a common comorbidity causing nocturnal sympathetic surges, systemic + pulmonary hypertension, and right-heart strain. Screen and treat OSA (CPAP). Note: adaptive servo-ventilation is HARMFUL in HFrEF with central apnea (SERVE-HF ↑mortality) — do not confuse the two.</div><div class="rtt">⚠️ WRONG: 'Adaptive servo-ventilation should be used for sleep-disordered breathing in heart failure.' ASV increased mortality in HFrEF with predominant central sleep apnea (SERVE-HF) — it is contraindicated there; OSA gets CPAP.</div></div><div class="rt"><div class="rtl">10. RAAS therapy ineffective in HFpEF</div><div class="rte">Unlike HFrEF — where neurohormonal RAAS blockade (ACEi/ARB/ARNI) is mortality-reducing standard of care — ACEi/ARB do NOT reduce mortality in established HFpEF (CHARM-Preserved, I-PRESERVE neutral); they remain useful for prevention by treating HTN. MRAs (spironolactone, TOPCAT) may reduce HF hospitalizations in selected HFpEF, plausibly via anti-fibrotic action. Watch hyperkalemia/renal function on MRA + ACEi.</div><div class="rtt">⚠️ WRONG: 'ACEi/ARB reduce mortality in HFpEF just as in HFrEF.' They are effective in HFrEF but ineffective for outcomes in established HFpEF (only useful for BP/prevention); the partial winner in HFpEF is the MRA.</div></div><div class="rt"><div class="rtl">11. Digoxin / beta-blocker ineffective</div><div class="rte">Digoxin is an inotrope/AV-nodal agent and offers no outcome benefit in HFpEF (DIG-PEF: ↔ mortality, no symptom gain). Beta-blockers and non-dihydropyridine CCBs (diltiazem/verapamil) don't improve HFpEF outcomes either, but are useful for rate control of AF (lengthening diastolic filling). Avoid excessive bradycardia, which can lower output in a preload-dependent ventricle.</div><div class="rtt">⚠️ WRONG: 'Beta-blockers improve survival in HFpEF the way they do in HFrEF.' Their HFpEF role is limited to AF rate control; the mortality benefit of beta-blockers is an HFrEF phenomenon.</div></div><div class="rt"><div class="rtl">12. PDE-5 inhibitor (sildenafil) ineffective</div><div class="rte">PDE-5 inhibitors (sildenafil) were hypothesized to help via NO–cGMP enhancement and pulmonary vasodilation, but RELAX showed NO improvement in exercise capacity or clinical status in HFpEF. They remain a treatment for pulmonary ARTERIAL hypertension (Group 1), not for the post-capillary PH of HFpEF (Group 2).</div><div class="rtt">⚠️ WRONG: 'Sildenafil treats the pulmonary hypertension of HFpEF.' It failed in HFpEF (RELAX) and is not used for Group 2 (post-capillary) PH; reserve PDE-5i for Group 1 PAH.</div></div><div class="rt"><div class="rtl">13. SGLT2i reduce HF hospitalization</div><div class="rte">SGLT2 inhibitors (dapagliflozin DELIVER, empagliflozin EMPEROR-Preserved) are the breakthrough HFpEF class: they reduce HF hospitalization and CV death across the full EF spectrum, regardless of diabetes — mechanisms include natriuresis/decongestion, improved myocardial energetics, and reduced inflammation. They are now a guideline Class I/IIa pillar for HFpEF. ARNI (sacubitril-valsartan, PARAGON-HF) narrowly missed significance but may help lower-EF-range HFpEF.</div><div class="rtt">⚠️ WRONG: 'No drug improves outcomes in HFpEF.' SGLT2 inhibitors reduce HF hospitalizations/CV death in HFpEF regardless of diabetes — they are the class to know.</div></div><div class="rt"><div class="rtl">14. Obesity: GLP-1 agonists</div><div class="rte">In the obesity phenotype of HFpEF, GLP-1 receptor agonists (semaglutide, STEP-HFpEF) improve symptoms, exercise capacity (6-minute walk), and quality of life with weight loss — benefit seen irrespective of diabetes status. This reframes obesity as a treatable driver, not just a comorbidity. Combine with diet/exercise; weight reduction lowers plasma volume, pericardial restraint, and inflammation.</div><div class="rtt">⚠️ WRONG: 'GLP-1 agonists only matter for glycemic control and have no role in non-diabetic HFpEF.' In obesity-phenotype HFpEF they improve symptoms and QOL independent of diabetes (STEP-HFpEF).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_icd.html" title="Heart Failure — ICD (Anti-Death Device)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_causes.html" title="Heart Failure — SCENE 1 — HF CAUSES &amp; PATHOGENESIS">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

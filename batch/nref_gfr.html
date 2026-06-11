@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Reference — GFR Estimation Formulas</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>11</em></summary><ol class="traps"><li><b>Cockcroft-Gault equation</b> — Use eGFR (MDRD/CKD-EPI) for renal drug dosing. WRONG for many drugs — most renal dosing thresholds were derived from Cockcroft-Gault creatinine clearance (mL/min); using a BSA-indexed eGFR can misclassify dosing, especially at extremes of body size.</li><li><b>× 0.85 female factor</b> — Forgetting the 0.85 female factor overestimates a woman's clearance by ~18%, potentially leading to renal-cleared drug overdosing.</li><li><b>Weight in C-G</b> — Plug actual body weight into C-G for an obese patient. WRONG — fat and edema fluid don't generate creatinine, so actual weight overestimates clearance; use ideal/adjusted body weight.</li><li><b>MDRD equation</b> — MDRD clearance and C-G clearance are interchangeable. WRONG — MDRD is BSA-indexed (per 1.73m²) while C-G is absolute mL/min; converting requires de-indexing by the patient's actual BSA before using for drug dosing.</li><li><b>MDRD more accurate &lt;60</b> — An MDRD eGFR of 'roughly 75' should be acted on as a precise value. WRONG — MDRD is unreliable above 60 and underreports near-normal GFR; use CKD-EPI when GFR is near normal, and don't call a healthy patient CKD on an inflated-downward MDRD.</li><li><b>C-G for drug dosing</b> — Board favorite split: DRUG DOSING → Cockcroft-Gault (CrCl, mL/min); CKD STAGING → eGFR (CKD-EPI/MDRD, mL/min/1.73m²). Mixing them up is the classic distractor.</li><li><b>Critical rule — steady state</b> — Calculate an eGFR off a single creatinine in a patient whose creatinine jumped overnight. WRONG — non-steady-state creatinine makes eGFR/CrCl meaningless; you cannot estimate GFR during active AKI.</li><li><b>AKI invalidates formulas</b> — A normal creatinine on the first day of AKI means GFR is fine and full drug doses are safe. WRONG — creatinine lags GFR by days; true GFR may already be near zero, so estimating equations and standard dosing are unsafe in active AKI.</li><li><b>Low muscle mass trap</b> — A creatinine of 0.8 in a frail elderly woman means normal kidney function. WRONG — her low muscle mass keeps creatinine low; true GFR may be &lt;30. Creatinine-based eGFR is falsely reassuring in low-muscle states.</li><li><b>Elderly frail overestimate</b> — Dose a renally-cleared drug at full dose in a cachectic elderly patient because the creatinine is normal. WRONG — true GFR may be severely reduced; confirm with cystatin C-based eGFR or a measured creatinine clearance before dosing.</li><li><b>Cystatin C alternative</b> — Cystatin C is a flawless GFR marker. WRONG — it is falsely RAISED by corticosteroids, thyroid dysfunction (hyperthyroidism), high cell turnover, smoking, and inflammation/obesity, so it can overestimate the degree of renal impairment in those settings.</li></ol></details><details class="panel"><summary>📖 Read-through — all 11 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Cockcroft-Gault equation</div><div class="rte">Cockcroft-Gault estimates creatinine CLEARANCE in mL/min (absolute, NOT indexed to 1.73m²) from age, weight, sex, and serum creatinine. It systematically OVERESTIMATES true GFR because creatinine is also tubularly secreted. Despite being older and less accurate, it remains the formula behind most FDA drug renal-dosing labels.</div><div class="rtt">⚠️ Use eGFR (MDRD/CKD-EPI) for renal drug dosing. WRONG for many drugs — most renal dosing thresholds were derived from Cockcroft-Gault creatinine clearance (mL/min); using a BSA-indexed eGFR can misclassify dosing, especially at extremes of body size.</div></div><div class="rt"><div class="rtl">2. × 0.85 female factor</div><div class="rte">Women have lower muscle mass and thus lower creatinine generation, so C-G multiplies by 0.85 (a 15% reduction) for females. The analogous sex factor in MDRD is × 0.742.</div><div class="rtt">⚠️ Forgetting the 0.85 female factor overestimates a woman's clearance by ~18%, potentially leading to renal-cleared drug overdosing.</div></div><div class="rt"><div class="rtl">3. Weight in C-G</div><div class="rte">Cockcroft-Gault uniquely uses absolute body WEIGHT, which is why it gives an un-indexed mL/min. In obesity or edema, actual body weight inflates the estimate; use ideal body weight (or adjusted body weight if obese) for dosing. In underweight patients use actual weight.</div><div class="rtt">⚠️ Plug actual body weight into C-G for an obese patient. WRONG — fat and edema fluid don't generate creatinine, so actual weight overestimates clearance; use ideal/adjusted body weight.</div></div><div class="rt"><div class="rtl">4. MDRD equation</div><div class="rte">MDRD reports eGFR INDEXED to 1.73m² BSA (mL/min/1.73m²) using creatinine, age, and sex (the race coefficient has been removed in current practice). It is validated for CKD staging and more accurate than C-G for GFR &lt;60.</div><div class="rtt">⚠️ MDRD clearance and C-G clearance are interchangeable. WRONG — MDRD is BSA-indexed (per 1.73m²) while C-G is absolute mL/min; converting requires de-indexing by the patient's actual BSA before using for drug dosing.</div></div><div class="rt"><div class="rtl">5. MDRD more accurate &lt;60</div><div class="rte">MDRD was derived in a CKD population, so it is reliable for GFR &lt;60 but UNDERESTIMATES (and labs won't report exact values for) GFR above 60. CKD-EPI is the modern preferred equation because it is accurate across the full range, especially at near-normal GFR, and reduces false CKD labeling.</div><div class="rtt">⚠️ An MDRD eGFR of 'roughly 75' should be acted on as a precise value. WRONG — MDRD is unreliable above 60 and underreports near-normal GFR; use CKD-EPI when GFR is near normal, and don't call a healthy patient CKD on an inflated-downward MDRD.</div></div><div class="rt"><div class="rtl">6. C-G for drug dosing</div><div class="rte">Renal dose adjustments (e.g., DOACs like dabigatran/rivaroxaban, aminoglycosides, vancomycin, enoxaparin, gabapentin) were largely studied using Cockcroft-Gault CrCl, so guidelines and package inserts dose by C-G mL/min. CKD STAGING uses eGFR (CKD-EPI/MDRD).</div><div class="rtt">⚠️ Board favorite split: DRUG DOSING → Cockcroft-Gault (CrCl, mL/min); CKD STAGING → eGFR (CKD-EPI/MDRD, mL/min/1.73m²). Mixing them up is the classic distractor.</div></div><div class="rt"><div class="rtl">7. Critical rule — steady state</div><div class="rte">Every creatinine-based estimating equation assumes the creatinine is at STEADY STATE (stable day to day). The math is invalid the moment creatinine is rising or falling, because the equation can't account for the changing balance between production and clearance.</div><div class="rtt">⚠️ Calculate an eGFR off a single creatinine in a patient whose creatinine jumped overnight. WRONG — non-steady-state creatinine makes eGFR/CrCl meaningless; you cannot estimate GFR during active AKI.</div></div><div class="rt"><div class="rtl">8. AKI invalidates formulas</div><div class="rte">In AKI, true GFR can fall to near zero while serum creatinine is still 'normal' because creatinine accumulates with a 24–72h lag. Estimating equations therefore overstate GFR early in AKI; dose renally-cleared drugs conservatively (assume low GFR) and trend the creatinine instead.</div><div class="rtt">⚠️ A normal creatinine on the first day of AKI means GFR is fine and full drug doses are safe. WRONG — creatinine lags GFR by days; true GFR may already be near zero, so estimating equations and standard dosing are unsafe in active AKI.</div></div><div class="rt"><div class="rtl">9. Low muscle mass trap</div><div class="rte">Creatinine is generated by skeletal muscle, so low muscle mass produces a low serum creatinine independent of kidney function — making creatinine-based eGFR falsely HIGH. Affected groups: elderly, frail/bedridden, malnourished, cirrhotic, amputees, and patients with paralysis or on corticosteroids.</div><div class="rtt">⚠️ A creatinine of 0.8 in a frail elderly woman means normal kidney function. WRONG — her low muscle mass keeps creatinine low; true GFR may be &lt;30. Creatinine-based eGFR is falsely reassuring in low-muscle states.</div></div><div class="rt"><div class="rtl">10. Elderly frail overestimate</div><div class="rte">In sarcopenic/cachectic patients, a 'normal' creatinine (e.g., 0.8) can coexist with a true GFR &lt;30. This causes silent renal drug overdosing (e.g., DOACs, gabapentin) unless you adjust. Cystatin C or a measured/timed urine creatinine clearance gives a truer estimate here.</div><div class="rtt">⚠️ Dose a renally-cleared drug at full dose in a cachectic elderly patient because the creatinine is normal. WRONG — true GFR may be severely reduced; confirm with cystatin C-based eGFR or a measured creatinine clearance before dosing.</div></div><div class="rt"><div class="rtl">11. Cystatin C alternative</div><div class="rte">Cystatin C is a low-molecular-weight protein produced by ALL nucleated cells at a constant rate, freely filtered and not secreted — so it is independent of muscle mass, age, and sex. It is the preferred GFR marker when creatinine is unreliable (cachexia, amputees, cirrhosis, extremes of muscle mass); a combined creatinine + cystatin C eGFR (CKD-EPI 2021) is the most accurate.</div><div class="rtt">⚠️ Cystatin C is a flawless GFR marker. WRONG — it is falsely RAISED by corticosteroids, thyroid dysfunction (hyperthyroidism), high cell turnover, smoking, and inflammation/obesity, so it can overestimate the degree of renal impairment in those settings.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nref_fena.html" title="Renal Reference — FENa Interpretation">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nref_fluids.html" title="Renal Reference — IV Fluid Types">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

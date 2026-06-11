@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Respiratory Disturbance — Hypoxemia, A–a Gradient &amp; Shunt (Gas-Exchange Factory)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Alveolar gas equation</b> — Forgetting to divide PaCO2 by R (≈0.8), or forgetting to subtract water vapor (47 mmHg), undercalculates expected PAO2 and misclassifies the A–a gradient.</li><li><b>PiO2 = 150</b> — High-altitude (and any low-FiO2) hypoxemia is NOT a shunt or diffusion problem — the A–a gradient stays NORMAL because both alveolar and arterial O2 fall together.</li><li><b>NM disease / clean filter</b> — Pure hypoventilation has a NORMAL A–a gradient — do not call it a shunt or fibrosis. The two normal-gradient causes of hypoxemia are hypoventilation and low FiO2/altitude.</li><li><b>Myasthenia gravis</b> — Methacholine challenge tests for ASTHMA (airway hyperresponsiveness), NOT for neuromuscular weakness — don't pick it to work up MG.</li><li><b>Supine FVC drop &gt;25%</b> — A large supine FVC drop points to diaphragmatic/neuromuscular disease, not parenchymal lung disease — it's the classic clue to bilateral diaphragm paralysis.</li><li><b>ALS patient</b> — Hypercapnia + a NORMAL A–a gradient = a VENTILATION problem, not an oxygenation problem — the fix is supporting ventilation (NIV), and supplemental O2 alone can worsen hypercapnia.</li><li><b>A–a gradient calculator</b> — Using a single fixed cutoff (e.g., '10') for every patient is wrong — the normal A–a gradient rises with age, so a value of 19 may be normal in an older adult.</li><li><b>A–a gradient gauges</b> — A widened gradient EXCLUDES pure hypoventilation/low-FiO2 as the sole cause — there must be intrinsic lung pathology contributing.</li><li><b>Normal A–a / pure hypoventilation</b> — Don't attribute pure-hypoventilation hypoxemia to lung parenchyma — if the gradient is normal, the alveolar-capillary unit is working and the problem is ventilatory drive/mechanics.</li><li><b>Refractory shunt</b> — Failure to correct hypoxemia with 100% O2 = SHUNT, NOT V/Q mismatch. This 100%-O2 test is the classic way to distinguish the two on the boards.</li><li><b>Responds to V:Q / O2</b> — If hypoxemia improves with supplemental O2, it is V/Q mismatch — true shunt would NOT correct. (V/Q mismatch is the default/most-common answer for unexplained hypoxemia.)</li><li><b>Surface area ↑→ DLCO ↑</b> — Anemia falsely LOWERS DLCO; polycythemia and alveolar hemorrhage falsely RAISE it — always interpret DLCO after correcting for hemoglobin.</li><li><b>Fibrosis (membrane thick ↓DLCO)</b> — Low DLCO + restriction = ILD/fibrosis, NOT obesity or neuromuscular disease (those keep a normal DLCO).</li><li><b>Vascular ↓DLCO / Pulm HTN</b> — Normal volumes + normal FEV1/FVC but an ISOLATED low DLCO = pulmonary vascular disease (PAH/CTEPH), not parenchymal or airway disease — a very high-yield pattern.</li><li><b>High DLCO causes</b> — A HIGH DLCO is a clue to alveolar hemorrhage or polycythemia — not a normal incidental finding to ignore; pair it with hemoptysis/anemia (hemorrhage) or elevated Hct (polycythemia).</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Alveolar gas equation</div><div class="rte">PAO2 = FiO2 × (Patm − PH2O) − PaCO2/R. On room air at sea level this simplifies to PAO2 ≈ 150 − PaCO2/0.8 (since 0.21 × (760 − 47) ≈ 150 and R ≈ 0.8). PAO2 is the calculated ALVEOLAR oxygen you subtract the measured arterial PaO2 from to get the A–a gradient.</div><div class="rtt">⚠️ Forgetting to divide PaCO2 by R (≈0.8), or forgetting to subtract water vapor (47 mmHg), undercalculates expected PAO2 and misclassifies the A–a gradient.</div></div><div class="rt"><div class="rtl">2. PiO2 = 150</div><div class="rte">Inspired/alveolar PO2 ≈ 150 mmHg on room air at sea level. At ALTITUDE the barometric pressure falls, so inspired PO2 falls → hypoxemia with a NORMAL A–a gradient (the lung is fine; the air is thin). Supplemental O2 corrects it readily.</div><div class="rtt">⚠️ High-altitude (and any low-FiO2) hypoxemia is NOT a shunt or diffusion problem — the A–a gradient stays NORMAL because both alveolar and arterial O2 fall together.</div></div><div class="rt"><div class="rtl">3. NM disease / clean filter</div><div class="rte">Neuromuscular weakness causes HYPOVENTILATION — the muscular 'pump' fails but the gas-exchange 'filter' (alveolar membrane) is intact, so the A–a gradient is NORMAL. PaCO2 rises and, because PAO2 = 150 − PaCO2/0.8, the rising CO2 mathematically lowers PAO2 and thus PaO2.</div><div class="rtt">⚠️ Pure hypoventilation has a NORMAL A–a gradient — do not call it a shunt or fibrosis. The two normal-gradient causes of hypoxemia are hypoventilation and low FiO2/altitude.</div></div><div class="rt"><div class="rtl">4. Myasthenia gravis</div><div class="rte">Myasthenia gravis causes a restrictive/hypoventilatory pattern from respiratory muscle weakness; diagnose with anti-acetylcholine-receptor (anti-AChR) antibodies (and anti-MuSK if seronegative), plus repetitive nerve stimulation/single-fiber EMG.</div><div class="rtt">⚠️ Methacholine challenge tests for ASTHMA (airway hyperresponsiveness), NOT for neuromuscular weakness — don't pick it to work up MG.</div></div><div class="rt"><div class="rtl">5. Supine FVC drop &gt;25%</div><div class="rte">A fall in FVC of &gt;25% (often cited &gt;10–25%) from upright to supine indicates BILATERAL diaphragm weakness (the abdominal contents push the weak diaphragm up when lying flat). Seen in ALS, bilateral phrenic palsy, and advanced neuromuscular disease; presents as orthopnea.</div><div class="rtt">⚠️ A large supine FVC drop points to diaphragmatic/neuromuscular disease, not parenchymal lung disease — it's the classic clue to bilateral diaphragm paralysis.</div></div><div class="rt"><div class="rtl">6. ALS patient</div><div class="rte">ALS leads to progressive respiratory muscle failure → pure hypoventilation: rising PaCO2 with a NORMAL A–a gradient. Respiratory failure (often nocturnal hypoventilation first) is the leading cause of death; treat with noninvasive ventilation (BiPAP).</div><div class="rtt">⚠️ Hypercapnia + a NORMAL A–a gradient = a VENTILATION problem, not an oxygenation problem — the fix is supporting ventilation (NIV), and supplemental O2 alone can worsen hypercapnia.</div></div><div class="rt"><div class="rtl">7. A–a gradient calculator</div><div class="rte">A–a gradient = PAO2 − PaO2. Normal estimate ≈ (age/4) + 4, and it widens physiologically with age. It is the central tool that separates the NORMAL-gradient causes (hypoventilation, low FiO2/altitude) from the WIDENED-gradient causes (V/Q mismatch, shunt, diffusion limitation).</div><div class="rtt">⚠️ Using a single fixed cutoff (e.g., '10') for every patient is wrong — the normal A–a gradient rises with age, so a value of 19 may be normal in an older adult.</div></div><div class="rt"><div class="rtl">8. A–a gradient gauges</div><div class="rte">Interpretation: a WIDENED A–a gradient = V/Q mismatch, right-to-left shunt, or diffusion defect (a problem in the lung between alveolus and capillary). A NORMAL A–a gradient = hypoventilation or low FiO2/altitude (the lung itself is fine).</div><div class="rtt">⚠️ A widened gradient EXCLUDES pure hypoventilation/low-FiO2 as the sole cause — there must be intrinsic lung pathology contributing.</div></div><div class="rt"><div class="rtl">9. Normal A–a / pure hypoventilation</div><div class="rte">Hypoxemia + elevated PaCO2 + NORMAL A–a gradient = pure hypoventilation: CNS depression (opioids, sedatives, central hypoventilation), neuromuscular disease, or chest-wall disorders. Correcting ventilation corrects the hypoxemia.</div><div class="rtt">⚠️ Don't attribute pure-hypoventilation hypoxemia to lung parenchyma — if the gradient is normal, the alveolar-capillary unit is working and the problem is ventilatory drive/mechanics.</div></div><div class="rt"><div class="rtl">10. Refractory shunt</div><div class="rte">A right-to-left SHUNT (blood bypasses ventilated alveoli) is the V/Q extreme of zero ventilation. Causes: ARDS, lobar pneumonia, atelectasis, pulmonary edema, AVMs, and intracardiac R→L shunts. It is REFRACTORY to supplemental O2 because shunted blood never contacts alveolar gas.</div><div class="rtt">⚠️ Failure to correct hypoxemia with 100% O2 = SHUNT, NOT V/Q mismatch. This 100%-O2 test is the classic way to distinguish the two on the boards.</div></div><div class="rt"><div class="rtl">11. Responds to V:Q / O2</div><div class="rte">V/Q mismatch is the MOST COMMON cause of hypoxemia (COPD, asthma, PE, pneumonia, atelectasis). Because some ventilation reaches the affected units, raising FiO2 boosts the alveolar O2 in low-V/Q regions and CORRECTS the hypoxemia.</div><div class="rtt">⚠️ If hypoxemia improves with supplemental O2, it is V/Q mismatch — true shunt would NOT correct. (V/Q mismatch is the default/most-common answer for unexplained hypoxemia.)</div></div><div class="rt"><div class="rtl">12. Surface area ↑→ DLCO ↑</div><div class="rte">DLCO is governed by alveolar-capillary SURFACE AREA, MEMBRANE thickness, and HEMOGLOBIN/pulmonary blood volume. More functioning surface area or more Hgb → higher DLCO; destroyed/thickened membrane or less Hgb → lower DLCO.</div><div class="rtt">⚠️ Anemia falsely LOWERS DLCO; polycythemia and alveolar hemorrhage falsely RAISE it — always interpret DLCO after correcting for hemoglobin.</div></div><div class="rt"><div class="rtl">13. Fibrosis (membrane thick ↓DLCO)</div><div class="rte">ILD/fibrosis thickens and destroys the alveolar-capillary membrane → DIFFUSION limitation → low DLCO and a WIDENED A–a gradient. Diffusion-limited hypoxemia classically appears or worsens with exercise (less transit time for equilibration) and does respond to supplemental O2.</div><div class="rtt">⚠️ Low DLCO + restriction = ILD/fibrosis, NOT obesity or neuromuscular disease (those keep a normal DLCO).</div></div><div class="rt"><div class="rtl">14. Vascular ↓DLCO / Pulm HTN</div><div class="rte">Isolated LOW DLCO with NORMAL spirometry and NORMAL lung volumes points to pulmonary VASCULAR disease — pulmonary arterial hypertension or chronic thromboembolic disease (loss of the capillary bed for CO uptake).</div><div class="rtt">⚠️ Normal volumes + normal FEV1/FVC but an ISOLATED low DLCO = pulmonary vascular disease (PAH/CTEPH), not parenchymal or airway disease — a very high-yield pattern.</div></div><div class="rt"><div class="rtl">15. High DLCO causes</div><div class="rte">High DLCO causes: diffuse alveolar hemorrhage, polycythemia, left-to-right shunt / early CHF (increased pulmonary blood volume), asthma, exercise, and the supine position.</div><div class="rtt">⚠️ A HIGH DLCO is a clue to alveolar hemorrhage or polycythemia — not a normal incidental finding to ignore; pair it with hemoptysis/anemia (hemorrhage) or elevated Hct (polycythemia).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="respdist_flowloops.html" title="Respiratory Disturbance — Flow-Volume Loop Gallery (Upper-Airway Obstruction)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="respdist_pft.html" title="Respiratory Disturbance — PFT Workshop (Volumes &amp; FEV₁/FVC Algorithm)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

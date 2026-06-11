@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Thyroid — Myxedema Coma &amp; Central Hypothyroidism</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Precipitants</b> — Waiting for confirmatory TSH/free-T4 before treating — labs take time and the diagnosis is clinical; empiric therapy must start on suspicion.</li><li><b>Not always comatose</b> — Excluding the diagnosis because the patient is awake — altered mentation without coma still qualifies, and delaying treatment is fatal.</li><li><b>IV levothyroxine</b> — Oral-only dosing in a patient with gut hypomotility/edema — absorption is too slow and unpredictable in true myxedema coma.</li><li><b>Steroids FIRST</b> — Giving thyroid hormone before steroids — the single most-tested sequencing pitfall; it can trigger adrenal crisis.</li><li><b>T3 adjunct cautious</b> — Aggressive high-dose T3/T4 in an elderly cardiac patient → MI, arrhythmia, or death from a sudden metabolic surge.</li><li><b>Hypothermia / passive warming</b> — Aggressive active rewarming (warming blankets/baths) → peripheral vasodilation → vasodilatory shock and collapse.</li><li><b>Hyponatremia &amp; hypoglycemia</b> — Rapid sodium correction → osmotic demyelination; or attributing hyponatremia to one cause without addressing thyroid/adrenal axes.</li><li><b>Central hypothyroidism causes</b> — Treating central hypothyroidism with T4 before checking the adrenal axis — can precipitate adrenal crisis just as in myxedema coma.</li><li><b>Central: monitor free T4 not TSH</b> — Using TSH to diagnose or titrate central hypothyroidism — a 'normal' TSH falsely reassures while the patient remains hypothyroid.</li><li><b>Biotin pitfall — stop 48h</b> — Treating a biotin-induced 'hyperthyroid' lab pattern as real disease — a clinically euthyroid patient with this discordant panel should prompt a biotin history and a repeat off biotin.</li><li><b>Sick euthyroid (TBG/T4 traps)</b> — Treating sick-euthyroid lab changes with levothyroxine — replacement does not help and may harm; avoid checking thyroid panels during acute illness unless myxedema coma is suspected.</li><li><b>Post-Graves use T4</b> — Over-replacing (or under-treating) because TSH is still suppressed post-Graves — the lag is physiologic; follow free T4 until TSH recovers.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Precipitants</div><div class="rte">Myxedema coma is almost always decompensated chronic hypothyroidism unmasked by an acute stressor — infection/sepsis (most common), cold exposure (classic winter presentation in elderly women), sedatives/opioids/anesthesia, MI or CHF, stroke, and GI bleed. Non-adherence to levothyroxine is a frequent under-recognized trigger. Mnemonic: hypothyroid patient + a stressor + hypothermia + ↓consciousness = think myxedema coma and treat empirically.</div><div class="rtt">⚠️ Waiting for confirmatory TSH/free-T4 before treating — labs take time and the diagnosis is clinical; empiric therapy must start on suspicion.</div></div><div class="rt"><div class="rtl">2. High mortality</div><div class="rte">Even with treatment, mortality is 20–40%, driven by the underlying cardiorespiratory failure, hypothermia, and the precipitant rather than the hypothyroidism alone. This is an ICU-level endocrine emergency. Poor prognostic markers: persistent hypothermia, hypotension unresponsive to pressors, bradycardia, low GCS, and high APACHE II.</div></div><div class="rt"><div class="rtl">3. Not always comatose</div><div class="rte">The name is a misnomer — most patients are obtunded/confused, not frankly comatose. The syndrome is decompensated hypothyroidism: altered mentation, hypothermia, hypoventilation with CO2 retention, bradycardia, and hypotension. 'Myxedema' refers to the non-pitting mucopolysaccharide skin/soft-tissue infiltration (puffy face, macroglossia, periorbital edema).</div><div class="rtt">⚠️ Excluding the diagnosis because the patient is awake — altered mentation without coma still qualifies, and delaying treatment is fatal.</div></div><div class="rt"><div class="rtl">4. IV levothyroxine</div><div class="rte">Treat with an IV levothyroxine loading dose of 200–400 µg (lower end for small/elderly/cardiac patients), then 50–100 µg IV daily. IV is preferred because gut absorption is unreliable in a hypothermic, hypoperfused patient. T4 has a long half-life (~7 days) so a load rapidly replenishes the depleted pool.</div><div class="rtt">⚠️ Oral-only dosing in a patient with gut hypomotility/edema — absorption is too slow and unpredictable in true myxedema coma.</div></div><div class="rt"><div class="rtl">5. Steroids FIRST</div><div class="rte">Give IV hydrocortisone BEFORE (or simultaneously with) thyroid hormone. Coexisting adrenal insufficiency is common (autoimmune polyglandular disease, or central/pituitary causes affecting both axes). Thyroid hormone increases metabolic clearance of cortisol — giving T4 first to an undiagnosed adrenal-insufficient patient can precipitate fatal adrenal crisis.</div><div class="rtt">⚠️ Giving thyroid hormone before steroids — the single most-tested sequencing pitfall; it can trigger adrenal crisis.</div></div><div class="rt"><div class="rtl">6. Hydrocortisone dosing</div><div class="rte">Empiric stress-dose hydrocortisone: 100 mg IV bolus then 50 mg IV q6–8h (≈200–300 mg/day) until adrenal insufficiency is excluded (ideally draw a random/stimulated cortisol first if it won't delay care). Hydrocortisone is chosen because it covers both glucocorticoid and mineralocorticoid needs.</div></div><div class="rt"><div class="rtl">7. T3 adjunct cautious</div><div class="rte">T3 (liothyronine) 5–20 µg IV may be added because peripheral T4→T3 conversion is impaired in critical illness, giving faster onset. However T3 raises the risk of arrhythmia and ischemia, so use lower doses (or avoid) in elderly and cardiac patients. Many protocols give T4 alone ± low-dose T3 if no improvement.</div><div class="rtt">⚠️ Aggressive high-dose T3/T4 in an elderly cardiac patient → MI, arrhythmia, or death from a sudden metabolic surge.</div></div><div class="rt"><div class="rtl">8. Hypothermia / passive warming</div><div class="rte">Hypothermia is a defining feature. Use PASSIVE external rewarming (blankets) — aggressive active rewarming causes peripheral vasodilation that worsens hypotension and can cause cardiovascular collapse. Reserve active warming for severe hypothermia (&lt;30°C). Core temperature corrects mainly as thyroid hormone is replaced.</div><div class="rtt">⚠️ Aggressive active rewarming (warming blankets/baths) → peripheral vasodilation → vasodilatory shock and collapse.</div></div><div class="rt"><div class="rtl">9. Hyponatremia &amp; hypoglycemia</div><div class="rte">Hyponatremia (e.g., Na 121) results from impaired free-water excretion (SIADH-like, reduced renal perfusion); correct slowly with fluid restriction ± hypertonic saline only if seizing — avoid overcorrection. Hypoglycemia reflects adrenal insufficiency and hypometabolism; give IV dextrose. Also expect hypoventilation/hypercapnia (may need ventilation) and bradycardia.</div><div class="rtt">⚠️ Rapid sodium correction → osmotic demyelination; or attributing hyponatremia to one cause without addressing thyroid/adrenal axes.</div></div><div class="rt"><div class="rtl">10. Central hypothyroidism causes</div><div class="rte">Central (secondary/tertiary) hypothyroidism arises from pituitary or hypothalamic disease: pituitary tumor/adenoma, Sheehan's syndrome (postpartum pituitary infarction), cranial/pituitary radiation, infiltrative disease (sarcoid, hemochromatosis), and trauma. Suspect when multiple pituitary axes are affected — always screen for and treat coexisting adrenal insufficiency first.</div><div class="rtt">⚠️ Treating central hypothyroidism with T4 before checking the adrenal axis — can precipitate adrenal crisis just as in myxedema coma.</div></div><div class="rt"><div class="rtl">11. Central: monitor free T4 not TSH</div><div class="rte">In central hypothyroidism the pituitary cannot mount an appropriate TSH response, so TSH is low, normal, or only mildly elevated despite a low free T4 — TSH is uninterpretable for diagnosis and monitoring. Diagnose and titrate replacement to a free T4 in the mid-to-upper normal range, not to TSH.</div><div class="rtt">⚠️ Using TSH to diagnose or titrate central hypothyroidism — a 'normal' TSH falsely reassures while the patient remains hypothyroid.</div></div><div class="rt"><div class="rtl">12. Biotin pitfall — stop 48h</div><div class="rte">High-dose biotin (supplements, hair/nail products) interferes with streptavidin-biotin immunoassays, producing a falsely LOW TSH and falsely HIGH free T4/T3 — a pattern that mimics Graves'/hyperthyroidism (and can also distort thyroid-antibody and troponin assays). Stop biotin ~48–72h before testing and repeat.</div><div class="rtt">⚠️ Treating a biotin-induced 'hyperthyroid' lab pattern as real disease — a clinically euthyroid patient with this discordant panel should prompt a biotin history and a repeat off biotin.</div></div><div class="rt"><div class="rtl">13. Sick euthyroid (TBG/T4 traps)</div><div class="rte">Non-thyroidal illness (sick euthyroid) in hospitalized/critically ill patients: low T3 first (↓peripheral T4→T3 conversion, ↑reverse T3), then low total T4 — but free T4 and TSH are typically normal and the patient is not truly hypothyroid. Low TBG (e.g., nephrotic/cirrhosis, androgens) also lowers TOTAL T4 with a normal FREE T4. Do not replace; recheck after recovery.</div><div class="rtt">⚠️ Treating sick-euthyroid lab changes with levothyroxine — replacement does not help and may harm; avoid checking thyroid panels during acute illness unless myxedema coma is suspected.</div></div><div class="rt"><div class="rtl">14. Post-Graves use T4</div><div class="rte">After definitive Graves' treatment (RAI, surgery, or thionamides), the pituitary thyrotrophs stay suppressed and TSH can remain low for weeks to months even once the patient is euthyroid or becoming hypothyroid. During this lag, titrate replacement to FREE T4, not the still-suppressed TSH.</div><div class="rtt">⚠️ Over-replacing (or under-treating) because TSH is still suppressed post-Graves — the lag is physiologic; follow free T4 until TSH recovers.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="thy_lt4.html" title="Thyroid — Levothyroxine (LT4) Therapy">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="thy_nodule.html" title="Thyroid — Nodule Workup &amp; TI-RADS">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

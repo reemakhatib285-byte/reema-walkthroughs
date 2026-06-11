@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Asthma — Acute Severe Asthma / Status Asthmaticus ER</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>11</em></summary><ol class="traps"><li><b>Antibiotics locked</b> — Do not give empiric antibiotics for an asthma exacerbation without evidence of bacterial pneumonia — purulent-looking sputum in asthma is usually eosinophil-laden, not bacterial.</li><li><b>Silent chest / PEF &lt;60% admit</b> — Absence of wheeze is NOT reassuring — a quiet chest in a distressed asthmatic signals too little air movement to wheeze, i.e., near-fatal obstruction.</li><li><b>Normal/rising PCO2 = danger</b> — A 'normal' PaCO2 in a tachypneic, distressed asthmatic is a red flag, not reassurance — it means fatigue and impending failure, not improvement.</li><li><b>Mg2+ sulfate cannon</b> — Magnesium is adjunct/rescue, not first-line — SABA, ipratropium, and systemic steroids come first; reaching for Mg before them is the wrong sequence.</li><li><b>Albuterol firehose (SABA)</b> — Side effects of high-dose β2-agonist: tachycardia, tremor, hypokalemia, and lactic acidosis — don't misread the lactate or low K as a separate disease process.</li><li><b>Ipratropium hose (SAMA)</b> — Ipratropium is for the acute attack only — it has no role in chronic asthma maintenance (that's tiotropium/LAMA at higher steps).</li><li><b>Intubation prevention</b> — Do not hyperventilate the intubated asthmatic — high respiratory rates prevent complete exhalation, causing breath-stacking, dynamic hyperinflation (auto-PEEP), hypotension, and barotrauma/pneumothorax.</li><li><b>Monitor / ventilator settings</b> — If a ventilated asthmatic suddenly drops their blood pressure, the first move is to DISCONNECT the circuit to let trapped air escape (auto-PEEP) and rule out tension pneumothorax — not to give more fluids blindly.</li><li><b>Steroids 'I arrive late' (4-6 hrs)</b> — Steroids are not bronchodilators and won't relieve symptoms immediately — but the delay is exactly why you start them at the first hour, not after bronchodilators fail.</li><li><b>Epinephrine in trash</b> — Do not reach for epinephrine in a routine asthma attack — but DO give it immediately if the attack is part of anaphylaxis (urticaria, angioedema, hypotension after an allergen).</li><li><b>Theophylline crossed out</b> — Theophylline is NOT recommended in acute exacerbations — and watch for toxicity precipitated by adding a macrolide or fluoroquinolone, which raises theophylline levels.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Antibiotics locked</div><div class="rte">Most asthma exacerbations are triggered by viral URIs, allergens, or non-adherence — not bacterial infection — so antibiotics are NOT routine. Reserve them for clear bacterial pneumonia (focal infiltrate + fever + purulent sputum) or proven bacterial sinusitis. Routine CXR is not needed for a typical exacerbation either; obtain it only if you suspect pneumonia, pneumothorax, or the patient fails to respond.</div><div class="rtt">⚠️ Do not give empiric antibiotics for an asthma exacerbation without evidence of bacterial pneumonia — purulent-looking sputum in asthma is usually eosinophil-laden, not bacterial.</div></div><div class="rt"><div class="rtl">2. Silent chest / PEF &lt;60% admit</div><div class="rte">A silent chest means airflow is too low to generate wheeze — a sign of life-threatening obstruction and impending arrest. Severity is graded by PEF: ≥50-75% predicted = moderate, 33-50% = acute severe, &lt;33% (or silent chest, cyanosis, bradycardia, exhaustion, SpO2 &lt;92%) = life-threatening. PEF/FEV1 &lt;60% predicted that fails to improve warrants admission.</div><div class="rtt">⚠️ Absence of wheeze is NOT reassuring — a quiet chest in a distressed asthmatic signals too little air movement to wheeze, i.e., near-fatal obstruction.</div></div><div class="rt"><div class="rtl">3. Firefighters at flames (inflamed lungs)</div><div class="rte">The acute attack is driven by bronchial smooth-muscle spasm, mucosal edema, and mucus plugging on a background of type-2 (eosinophilic) airway inflammation. The therapeutic strategy mirrors the firefight: bronchodilators (SABA ± ipratropium) relax muscle immediately while systemic steroids extinguish the underlying inflammation.</div></div><div class="rt"><div class="rtl">4. Normal/rising PCO2 = danger</div><div class="rte">Early in an attack the tachypneic patient blows off CO2 → respiratory ALKALOSIS with low PaCO2 (the expected ABG). As fatigue sets in, the PaCO2 climbs back toward 'normal' (40) and then high — this normalization/rise signals the patient can no longer sustain the work of breathing and is heading for respiratory failure. A rising PaCO2 with falling pH is an indication to consider intubation.</div><div class="rtt">⚠️ A 'normal' PaCO2 in a tachypneic, distressed asthmatic is a red flag, not reassurance — it means fatigue and impending failure, not improvement.</div></div><div class="rt"><div class="rtl">5. Mg2+ sulfate cannon</div><div class="rte">IV magnesium sulfate (typically 2 g over 20 min) is a smooth-muscle relaxant used as adjunctive rescue for severe/life-threatening exacerbations not responding to first-line nebulized SABA + ipratropium + steroids. It modestly reduces hospital admissions in severe attacks.</div><div class="rtt">⚠️ Magnesium is adjunct/rescue, not first-line — SABA, ipratropium, and systemic steroids come first; reaching for Mg before them is the wrong sequence.</div></div><div class="rt"><div class="rtl">6. Albuterol firehose (SABA)</div><div class="rte">Inhaled SABA (albuterol/salbutamol) is the first-line acute bronchodilator for every exacerbation — give early, repeated, and via nebulizer or MDI-spacer with continuous dosing in severe cases. It acts within minutes on β2 receptors to relax airway smooth muscle.</div><div class="rtt">⚠️ Side effects of high-dose β2-agonist: tachycardia, tremor, hypokalemia, and lactic acidosis — don't misread the lactate or low K as a separate disease process.</div></div><div class="rt"><div class="rtl">7. Ipratropium hose (SAMA)</div><div class="rte">Add nebulized ipratropium (a SAMA/anticholinergic) to SABA in moderate-to-severe exacerbations — the combination produces greater bronchodilation and fewer admissions than SABA alone. It is an ED adjunct, not a maintenance controller.</div><div class="rtt">⚠️ Ipratropium is for the acute attack only — it has no role in chronic asthma maintenance (that's tiotropium/LAMA at higher steps).</div></div><div class="rt"><div class="rtl">8. Intubation prevention</div><div class="rte">Maximal pharmacotherapy (continuous SABA, ipratropium, steroids, IV Mg ± heliox) aims to avoid intubation, which is high-risk in asthma. If ventilation is required, use a lung-protective, low-rate, low-tidal-volume strategy with prolonged expiratory time to allow full exhalation and permissive hypercapnia.</div><div class="rtt">⚠️ Do not hyperventilate the intubated asthmatic — high respiratory rates prevent complete exhalation, causing breath-stacking, dynamic hyperinflation (auto-PEEP), hypotension, and barotrauma/pneumothorax.</div></div><div class="rt"><div class="rtl">9. Monitor / ventilator settings</div><div class="rte">Ventilator settings in severe asthma maximize expiratory time (low rate ~8-12, low tidal volume ~6 mL/kg, high inspiratory flow, minimal/zero applied PEEP) to combat air-trapping. Tolerate hypercapnia (pH down to ~7.2) rather than raising the rate. Sudden hypotension on the vent = check for auto-PEEP/tension pneumothorax (disconnect to exhale).</div><div class="rtt">⚠️ If a ventilated asthmatic suddenly drops their blood pressure, the first move is to DISCONNECT the circuit to let trapped air escape (auto-PEEP) and rule out tension pneumothorax — not to give more fluids blindly.</div></div><div class="rt"><div class="rtl">10. Steroids 'I arrive late' (4-6 hrs)</div><div class="rte">Systemic corticosteroids (oral prednisone ~40-50 mg or IV methylprednisolone) reduce airway inflammation and relapse but take 4-6 hours to act — so give them EARLY in every moderate-to-severe attack rather than waiting. Oral and IV are equivalent in efficacy; a typical course is 5-7 days with no taper needed for short courses.</div><div class="rtt">⚠️ Steroids are not bronchodilators and won't relieve symptoms immediately — but the delay is exactly why you start them at the first hour, not after bronchodilators fail.</div></div><div class="rt"><div class="rtl">11. Epinephrine in trash</div><div class="rte">IM epinephrine is the treatment for ANAPHYLAXIS, not routine asthma — for an ordinary exacerbation, inhaled SABA delivers selective β2 bronchodilation without epinephrine's systemic α/β1 effects. Epinephrine is reserved for asthma only when anaphylaxis is the trigger or as a last resort in peri-arrest.</div><div class="rtt">⚠️ Do not reach for epinephrine in a routine asthma attack — but DO give it immediately if the attack is part of anaphylaxis (urticaria, angioedema, hypotension after an allergen).</div></div><div class="rt"><div class="rtl">12. Theophylline crossed out</div><div class="rte">Theophylline/aminophylline is largely abandoned in acute asthma — it adds no benefit over standard therapy and has a narrow therapeutic window with dangerous toxicity (arrhythmias, seizures, vomiting), worsened by interactions (macrolides, ciprofloxacin, cimetidine inhibit its metabolism).</div><div class="rtt">⚠️ Theophylline is NOT recommended in acute exacerbations — and watch for toxicity precipitated by adding a macrolide or fluoroquinolone, which raises theophylline levels.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="copd_sketchy_pharma.html" title="COPD — Sketchy Pharma (The Hockey Rink)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="asthma_2.html" title="Asthma — Chronic Step-Up Therapy Ladder">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

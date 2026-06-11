@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">COPD — Sketchy Pharma (The Hockey Rink)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>10</em></summary><ol class="traps"><li><b>‘ForEVer #1 For ViCtory’ — FEV1</b> — Diagnosis needs the FEV1/FVC RATIO &lt;0.7 (POST-bronchodilator), not FEV1 alone. FEV1 % grades severity but does NOT, by itself, select the inhaler regimen.</li><li><b>‘Visit for Capacity’ — spirometry</b> — COPD can't be diagnosed on symptoms or chest X-ray alone — spirometry is mandatory. A reduced DLCO points to emphysema, distinguishing it from chronic bronchitis.</li><li><b>GOLD CUP — GOLD staging &amp; groups</b> — Inhaler choice is driven by symptoms + exacerbations (ABE groups), NOT by the spirometric 1-4 grade alone.</li><li><b>Pink player — ‘pink puffer’ (emphysema)</b> — Emphysema = the ‘pink puffer’ — don't swap it with the cyanotic ‘blue bloater.’ Pink puffers are typically thin with preserved oxygenation until late.</li><li><b>Blue goalie — ‘blue bloater’ (chronic bronchitis)</b> — Chronic bronchitis is a CLINICAL (cough-duration) diagnosis, not a spirometric or pathologic one. Blue bloaters are hypoxemic/cyanotic and prone to cor pulmonale.</li><li><b>Lettered jerseys — bronchodilators (LAMA/LABA)</b> — Long-acting agents are MAINTENANCE — they are NOT for acute rescue (that's the SABA). Conversely, don't manage chronic symptoms with SABA alone.</li><li><b>Inhaled corticosteroid (ICS)</b> — ICS raises PNEUMONIA risk and is NOT first-line for everyone — reserve it for eosinophilic/exacerbator phenotypes, and never use it as monotherapy in COPD.</li><li><b>Crossed sign — smoking cessation</b> — Inhalers relieve symptoms and reduce exacerbations but do NOT change the disease course or mortality the way quitting smoking does. Only smoking cessation and LTOT (in hypoxemia) reduce mortality.</li><li><b>Wheelchair player — LTOT &amp; cor pulmonale</b> — LTOT mortality benefit applies only to RESTING hypoxemia meeting criteria — exercise-only or sleep-only desaturation does NOT qualify for the survival benefit.</li><li><b>The brawl — acute exacerbation</b> — A SHORT oral steroid course (~5 days) is sufficient — no prolonged taper for an exacerbation. Antibiotics are added based on cardinal features/purulence or ventilatory support, not for every exacerbation.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ‘ForEVer #1 For ViCtory’ — FEV1</div><div class="rte">FEV1 = forced expiratory volume in 1 second. A reduced FEV1/FVC ratio (&lt;0.70 post-bronchodilator) defines obstruction; FEV1 % predicted then grades severity as GOLD 1 (&gt;=80%), 2 (50-79%), 3 (30-49%), 4 (&lt;30%). FEV1 is the 'O' in the BODE prognostic index.</div><div class="rtt">⚠️ Diagnosis needs the FEV1/FVC RATIO &lt;0.7 (POST-bronchodilator), not FEV1 alone. FEV1 % grades severity but does NOT, by itself, select the inhaler regimen.</div></div><div class="rt"><div class="rtl">2. ‘Visit for Capacity’ — spirometry</div><div class="rte">Spirometry is required to diagnose COPD and is the objective test of airflow. Expect a reduced FEV1/FVC with INCREASED TLC and RV (air trapping/hyperinflation) and a REDUCED DLCO in emphysema (alveolar destruction lowers diffusing capacity); DLCO is typically normal in pure chronic bronchitis.</div><div class="rtt">⚠️ COPD can't be diagnosed on symptoms or chest X-ray alone — spirometry is mandatory. A reduced DLCO points to emphysema, distinguishing it from chronic bronchitis.</div></div><div class="rt"><div class="rtl">3. GOLD CUP — GOLD staging &amp; groups</div><div class="rte">GOLD grades 1-4 by FEV1 % predicted describe airflow severity, while the A/B/E groups (built from symptom scores — mMRC/CAT — plus exacerbation history) guide INITIAL inhaler therapy: Group A = single bronchodilator, Group B = LABA+LAMA, Group E = LABA+LAMA (+ICS if eos &gt;=300).</div><div class="rtt">⚠️ Inhaler choice is driven by symptoms + exacerbations (ABE groups), NOT by the spirometric 1-4 grade alone.</div></div><div class="rt"><div class="rtl">4. Pink player — ‘pink puffer’ (emphysema)</div><div class="rte">Pink puffer = emphysema: progressive dyspnea, pursed-lip breathing, barrel chest, thin/cachectic build, hyperinflation, low DLCO, and relatively maintained oxygenation (they 'puff' to keep PaO2 up). Pathology is alveolar wall destruction with loss of elastic recoil.</div><div class="rtt">⚠️ Emphysema = the ‘pink puffer’ — don't swap it with the cyanotic ‘blue bloater.’ Pink puffers are typically thin with preserved oxygenation until late.</div></div><div class="rt"><div class="rtl">5. Blue goalie — ‘blue bloater’ (chronic bronchitis)</div><div class="rte">Blue bloater = chronic bronchitis, a CLINICAL diagnosis: productive cough on most days for &gt;=3 months/year over 2 consecutive years. Mucus gland hyperplasia (increased Reid index) → airway obstruction, cyanosis, hypoxemia, secondary erythrocytosis, cor pulmonale, and fluid retention ('bloated').</div><div class="rtt">⚠️ Chronic bronchitis is a CLINICAL (cough-duration) diagnosis, not a spirometric or pathologic one. Blue bloaters are hypoxemic/cyanotic and prone to cor pulmonale.</div></div><div class="rt"><div class="rtl">6. Wind instruments — air trapping</div><div class="rte">Airflow limitation → prolonged expiration and air trapping → hyperinflation with a flattened diaphragm, increased AP (barrel) chest diameter, and increased retrosternal air on imaging. Dynamic hyperinflation worsens with exertion and drives exertional dyspnea.</div></div><div class="rt"><div class="rtl">7. Lettered jerseys — bronchodilators (LAMA/LABA)</div><div class="rte">Long-acting bronchodilators are the maintenance backbone: LAMA (e.g., tiotropium, blocks M3) and/or LABA (e.g., salmeterol/formoterol). SABA (albuterol) +/- SAMA (ipratropium) are for acute RESCUE and exacerbations.</div><div class="rtt">⚠️ Long-acting agents are MAINTENANCE — they are NOT for acute rescue (that's the SABA). Conversely, don't manage chronic symptoms with SABA alone.</div></div><div class="rt"><div class="rtl">8. Inhaled corticosteroid (ICS)</div><div class="rte">Add an inhaled corticosteroid (to LABA/LAMA) for frequent exacerbations or high blood eosinophils (&gt;=300 cells/μL strongly favors it; &lt;100 favors against). ICS is always combined, building toward triple therapy in Group E exacerbators.</div><div class="rtt">⚠️ ICS raises PNEUMONIA risk and is NOT first-line for everyone — reserve it for eosinophilic/exacerbator phenotypes, and never use it as monotherapy in COPD.</div></div><div class="rt"><div class="rtl">9. DAILY REHAB — pulmonary rehab</div><div class="rte">Pulmonary rehabilitation (supervised exercise + education + breathing techniques) improves dyspnea, exercise capacity, and quality of life and reduces hospital readmissions, especially when started after an exacerbation. It does not change FEV1 but improves function.</div></div><div class="rt"><div class="rtl">10. Crossed sign — smoking cessation</div><div class="rte">Smoking cessation is the SINGLE most effective intervention in COPD — it slows the accelerated rate of FEV1 decline back toward normal. Along with long-term oxygen (in qualifying hypoxemia), it is one of the only interventions proven to reduce MORTALITY.</div><div class="rtt">⚠️ Inhalers relieve symptoms and reduce exacerbations but do NOT change the disease course or mortality the way quitting smoking does. Only smoking cessation and LTOT (in hypoxemia) reduce mortality.</div></div><div class="rt"><div class="rtl">11. Wheelchair player — LTOT &amp; cor pulmonale</div><div class="rte">Advanced disease → chronic hypoxemia → pulmonary HTN → cor pulmonale (right heart failure). Long-term oxygen therapy (&gt;=15 h/day) reduces MORTALITY when resting PaO2 &lt;=55 mmHg or SpO2 &lt;=88%, OR PaO2 &lt;=59 / SpO2 &lt;=89% WITH cor pulmonale, RHF, or erythrocytosis (Hct &gt;55%).</div><div class="rtt">⚠️ LTOT mortality benefit applies only to RESTING hypoxemia meeting criteria — exercise-only or sleep-only desaturation does NOT qualify for the survival benefit.</div></div><div class="rt"><div class="rtl">12. Green germs — exacerbation triggers</div><div class="rte">Exacerbations are most often triggered by respiratory infections — viruses (rhinovirus, influenza) and bacteria (Haemophilus influenzae, Streptococcus pneumoniae, Moraxella catarrhalis); air pollution is another trigger. Prevention includes influenza, pneumococcal, COVID, and pertussis vaccination.</div></div><div class="rt"><div class="rtl">13. The brawl — acute exacerbation</div><div class="rte">Acute exacerbation = increased dyspnea, increased sputum VOLUME, and/or increased sputum PURULENCE (the 3 cardinal Anthonisen criteria). Treat with: bronchodilators (SABA +/- SAMA), systemic steroids (prednisone ~40 mg x5 days), and antibiotics when &gt;=2 cardinal features (including purulence) or mechanical ventilation. Consider NIPPV if respiratory acidosis (pH &lt;7.35).</div><div class="rtt">⚠️ A SHORT oral steroid course (~5 days) is sufficient — no prolonged taper for an exacerbation. Antibiotics are added based on cardinal features/purulence or ventilatory support, not for every exacerbation.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="../copd1.html" title="COPD — Oxygen, NIPPV &amp; Exacerbations">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="asthma_1.html" title="Asthma — Acute Severe Asthma / Status Asthmaticus ER">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Reference — Intrinsic Renal Failure Figure (Harrison)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Small vessels callout</b> — WRONG: giving platelet transfusion in TTP because the platelets are low. Platelet transfusion in TTP fuels more microthrombi and can worsen neuro/renal outcomes — withhold unless life-threatening bleeding. Discriminator: schistocytes + ADAMTS13 &lt;10% = TTP, manage with urgent plasma exchange, not transfusion.</li><li><b>Tubules callout</b> — WRONG: stopping the aminoglycoside fixes the kidney immediately. Aminoglycoside ATN can keep worsening for days AFTER the drug is stopped because the drug accumulates in proximal tubular cells. Discriminator: non-oliguric AKI with muddy-brown casts + Mg/K wasting roughly a week into therapy = aminoglycoside ATN; expect delayed recovery, not instant reversal.</li><li><b>Intratubular callout</b> — WRONG: ordering iodinated-contrast imaging or NSAIDs in suspected myeloma AKI. Contrast and volume depletion promote light-chain cast precipitation and worsen myeloma kidney. Discriminator: AKI + anemia + hypercalcemia + 'bland' urine with a dipstick-negative/UPEP-positive protein gap = myeloma cast nephropathy; hydrate and get free light chains, avoid nephrotoxins.</li><li><b>Cortex label</b> — WRONG: assuming all intrinsic AKI is tubular. The cortex vs medulla split matters — cortical glomerular disease (RBC casts, proteinuria) is a different workup (serologies, biopsy) than medullary ATN (muddy-brown casts, supportive care). Discriminator: localize by sediment before committing to a cause.</li><li><b>Glomerulus</b> — WRONG: waiting on outpatient follow-up for hematuria + rising creatinine + RBC casts. That is RPGN until proven otherwise and needs urgent biopsy/immunosuppression — delay loses nephrons irreversibly. Discriminator: RBC casts localize bleeding to the glomerulus, never the bladder.</li><li><b>Proximal convoluted tubule</b> — WRONG: calling normoglycemic glycosuria a diabetes problem. Glucose in the urine with a normal serum glucose signals proximal tubular (Fanconi) injury, often drug-induced (tenofovir/ifosfamide). Discriminator: check phosphate (low), bicarb (low, type 2 RTA), and the med list, not an A1c.</li><li><b>Thick ascending limb</b> — WRONG: assuming a brief hypotensive episode that 'resolved' can't cause AKI. The outer-medullary watershed can necrose from transient ischemia, producing ATN that manifests after the blood pressure has normalized. Discriminator: muddy-brown granular casts + FENa &gt;2% appearing 24–72h after the insult.</li><li><b>Loop of Henle</b> — WRONG: expecting loop diuretics to convert oliguric ATN into recovery. Loops may increase urine output but do NOT improve mortality or dialysis-free survival in established ATN — high doses risk ototoxicity. Discriminator: diuretics treat volume overload symptoms, not the AKI itself.</li><li><b>Collecting duct</b> — WRONG: attributing distal-tubule potassium/acid problems to a single drug class only. Amphotericin B classically causes BOTH hypokalemia and distal RTA with renal Mg/K wasting. Discriminator: a patient on amphotericin with persistent hypokalemia + non-anion-gap acidosis = drug-induced distal tubular dysfunction.</li><li><b>Medulla label</b> — WRONG: confusing papillary necrosis with simple UTI. Gross hematuria + flank pain + sloughed papillae on imaging in a patient with the POSTCARDS risk factors (Pyelonephritis, Obstruction, Sickle cell, TB, Cirrhosis, Analgesics/NSAIDs, Renal vein thrombosis, Diabetes, Systemic vasculitis) = renal papillary necrosis, a medullary ischemic process. Discriminator: 'ring sign' on imaging, not just pyuria.</li><li><b>Large vessels callout</b> — WRONG: ignoring AKI + oliguria in a tensely distended abdomen after massive fluid resuscitation. Abdominal compartment syndrome (bladder pressure &gt;20 mmHg with new organ dysfunction) causes a venous-outflow AKI that fluids will WORSEN. Discriminator: rising bladder pressures and abdominal distension — the fix is decompression, not more crystalloid.</li><li><b>Interstitium callout</b> — WRONG: requiring the full triad (fever + rash + eosinophilia) to diagnose AIN. The complete triad appears in well under 10–15% of cases — its absence does NOT rule out AIN. Discriminator: subacute AKI + sterile pyuria + WBC casts + a new culprit drug (PPI/NSAID/antibiotic) is enough; eosinophiluria is neither sensitive nor specific.</li><li><b>Crystal/cast inset</b> — WRONG: treating crystalluria-driven AKI the same as glomerular AKI. The intervention for most intratubular/crystal AKI is aggressive volume + removing the offending solute (rasburicase for urate, alkalinization for MTX), NOT immunosuppression. Discriminator: identify the crystal type on microscopy to pin the cause.</li><li><b>Figure caption</b> — WRONG: lumping all 'renal/intrinsic' AKI into one bucket on the boards. The compartment approach (vascular vs glomerular vs tubular vs interstitial) drives different urine sediments, workups, and treatments. Discriminator: always sub-localize intrinsic AKI before choosing management.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Small vessels callout</div><div class="rte">Small-vessel / glomerular causes of intrinsic AKI. Mechanism is microvascular thrombosis or inflammation that drops glomerular perfusion. TTP/HUS = MAHA + thrombocytopenia + AKI (HUS: Shiga-toxin E. coli O157:H7 in kids, plasma exchange NOT for typical HUS; TTP: ADAMTS13 &lt;10%, treat with plasma exchange + steroids ± caplacizumab/rituximab). Atheroemboli (cholesterol crystal emboli) appear days–weeks after catheterization with livedo reticularis, blue toes, eosinophilia, and low complement. Calcineurin inhibitors (cyclosporine, tacrolimus) cause dose-dependent afferent arteriolar vasoconstriction.</div><div class="rtt">⚠️ WRONG: giving platelet transfusion in TTP because the platelets are low. Platelet transfusion in TTP fuels more microthrombi and can worsen neuro/renal outcomes — withhold unless life-threatening bleeding. Discriminator: schistocytes + ADAMTS13 &lt;10% = TTP, manage with urgent plasma exchange, not transfusion.</div></div><div class="rt"><div class="rtl">2. Tubules callout</div><div class="rte">Tubular causes = ATN, split into endogenous toxins (myoglobin from rhabdo, hemoglobin from hemolysis), exogenous toxins (iodinated contrast, cisplatin, aminoglycosides like gentamicin), plus ischemia and sepsis. Aminoglycoside ATN is classically NON-oliguric and appears 5–10 days in with hypomagnesemia/hypokalemia (proximal tubule toxicity); dose once-daily and follow troughs to reduce nephrotoxicity. Contrast nephropathy peaks at 3–5 days and usually resolves by 7–10 days; prevent with isotonic saline hydration.</div><div class="rtt">⚠️ WRONG: stopping the aminoglycoside fixes the kidney immediately. Aminoglycoside ATN can keep worsening for days AFTER the drug is stopped because the drug accumulates in proximal tubular cells. Discriminator: non-oliguric AKI with muddy-brown casts + Mg/K wasting roughly a week into therapy = aminoglycoside ATN; expect delayed recovery, not instant reversal.</div></div><div class="rt"><div class="rtl">3. Intratubular callout</div><div class="rte">Intratubular obstruction by crystals or proteins. Myeloma cast nephropathy: filtered free light chains (Bence Jones) precipitate with Tamm-Horsfall protein → check serum free light chains/SPEP-UPEP, treat with chemo + hydration. Tumor lysis: uric acid + calcium-phosphate crystals after cytotoxic therapy of bulky/high-grade tumors — prevent with IV fluids + rasburicase (allopurinol if low risk). Acyclovir (give slow IV + hydration) and high-dose methotrexate (alkalinize urine, leucovorin, glucarpidase) crystallize when underdosed on fluids.</div><div class="rtt">⚠️ WRONG: ordering iodinated-contrast imaging or NSAIDs in suspected myeloma AKI. Contrast and volume depletion promote light-chain cast precipitation and worsen myeloma kidney. Discriminator: AKI + anemia + hypercalcemia + 'bland' urine with a dipstick-negative/UPEP-positive protein gap = myeloma cast nephropathy; hydrate and get free light chains, avoid nephrotoxins.</div></div><div class="rt"><div class="rtl">4. Cortex label</div><div class="rte">The cortex houses the glomeruli and the proximal/distal convoluted tubules and is comparatively oxygen-rich. Cortical injury patterns map to glomerular/vascular disease (the small-vessel box). Bilateral cortical necrosis (a rarer, severe pattern) follows obstetric catastrophes (abruption, septic abortion) and severe DIC.</div><div class="rtt">⚠️ WRONG: assuming all intrinsic AKI is tubular. The cortex vs medulla split matters — cortical glomerular disease (RBC casts, proteinuria) is a different workup (serologies, biopsy) than medullary ATN (muddy-brown casts, supportive care). Discriminator: localize by sediment before committing to a cause.</div></div><div class="rt"><div class="rtl">5. Glomerulus</div><div class="rte">Glomeruli sit in the cortex; injury here = glomerulonephritis/vasculitis (the small-vessel box). Nephritic clues: hematuria with dysmorphic RBCs, RBC casts, HTN, sub-nephrotic proteinuria. A rapidly rising creatinine over days–weeks with these findings = RPGN (crescentic GN) — an emergency needing biopsy and pulse steroids ± cyclophosphamide/rituximab/plasma exchange.</div><div class="rtt">⚠️ WRONG: waiting on outpatient follow-up for hematuria + rising creatinine + RBC casts. That is RPGN until proven otherwise and needs urgent biopsy/immunosuppression — delay loses nephrons irreversibly. Discriminator: RBC casts localize bleeding to the glomerulus, never the bladder.</div></div><div class="rt"><div class="rtl">6. Proximal convoluted tubule</div><div class="rte">The PCT is the main site of aminoglycoside, cisplatin, and contrast tubular toxicity because it reabsorbs and concentrates these agents. PCT injury also produces Fanconi syndrome (glycosuria with normal glucose, phosphaturia, aminoaciduria, type 2 RTA) — think tenofovir, ifosfamide, cisplatin, and again myeloma light chains.</div><div class="rtt">⚠️ WRONG: calling normoglycemic glycosuria a diabetes problem. Glucose in the urine with a normal serum glucose signals proximal tubular (Fanconi) injury, often drug-induced (tenofovir/ifosfamide). Discriminator: check phosphate (low), bicarb (low, type 2 RTA), and the med list, not an A1c.</div></div><div class="rt"><div class="rtl">7. Thick ascending limb</div><div class="rte">The outer medulla (TAL + pars recta of the proximal tubule) is the watershed zone most vulnerable to ischemic ATN: it has high O2 demand (active NKCC2 transport) but borderline O2 supply from the descending vasa recta. This is why hypotension/sepsis preferentially necroses this segment.</div><div class="rtt">⚠️ WRONG: assuming a brief hypotensive episode that 'resolved' can't cause AKI. The outer-medullary watershed can necrose from transient ischemia, producing ATN that manifests after the blood pressure has normalized. Discriminator: muddy-brown granular casts + FENa &gt;2% appearing 24–72h after the insult.</div></div><div class="rt"><div class="rtl">8. Loop of Henle</div><div class="rte">The loop of Henle straddles the medulla and is the engine of the countercurrent multiplier that builds the medullary osmotic gradient for urine concentration. The TAL's NKCC2 cotransporter is the target of loop diuretics (furosemide, bumetanide, torsemide) and the site of Bartter syndrome.</div><div class="rtt">⚠️ WRONG: expecting loop diuretics to convert oliguric ATN into recovery. Loops may increase urine output but do NOT improve mortality or dialysis-free survival in established ATN — high doses risk ototoxicity. Discriminator: diuretics treat volume overload symptoms, not the AKI itself.</div></div><div class="rt"><div class="rtl">9. Collecting duct</div><div class="rte">The collecting duct is the final ADH/aldosterone-responsive segment and a distal site where crystals and protein casts (myeloma light chains, uric acid) lodge and obstruct. It is also where amphotericin B causes distal (type 1) RTA and the principal cells respond to ADH via aquaporin-2.</div><div class="rtt">⚠️ WRONG: attributing distal-tubule potassium/acid problems to a single drug class only. Amphotericin B classically causes BOTH hypokalemia and distal RTA with renal Mg/K wasting. Discriminator: a patient on amphotericin with persistent hypokalemia + non-anion-gap acidosis = drug-induced distal tubular dysfunction.</div></div><div class="rt"><div class="rtl">10. Medulla label</div><div class="rte">The medulla (outer and inner) is the hypoxia-prone zone — perfused by vasa recta running parallel to the concentrating loops, it normally sits at very low pO2. This makes the medulla the first casualty in ischemic ATN, contrast nephropathy (medullary vasoconstriction), and sickle cell (papillary necrosis).</div><div class="rtt">⚠️ WRONG: confusing papillary necrosis with simple UTI. Gross hematuria + flank pain + sloughed papillae on imaging in a patient with the POSTCARDS risk factors (Pyelonephritis, Obstruction, Sickle cell, TB, Cirrhosis, Analgesics/NSAIDs, Renal vein thrombosis, Diabetes, Systemic vasculitis) = renal papillary necrosis, a medullary ischemic process. Discriminator: 'ring sign' on imaging, not just pyuria.</div></div><div class="rt"><div class="rtl">11. Large vessels callout</div><div class="rte">Large-vessel vascular causes of intrinsic AKI. Renal artery embolism/thrombosis: sudden flank pain + LDH spike + AKI, often in AFib — CT angiography, consider anticoagulation/thrombolysis. Renal vein thrombosis: classic in nephrotic syndrome (especially membranous), flank pain + hematuria + AKI. Abdominal compartment syndrome: intra-abdominal pressure &gt;20 mmHg (after massive resuscitation/trauma) compresses renal veins → oliguria; treat by decompression.</div><div class="rtt">⚠️ WRONG: ignoring AKI + oliguria in a tensely distended abdomen after massive fluid resuscitation. Abdominal compartment syndrome (bladder pressure &gt;20 mmHg with new organ dysfunction) causes a venous-outflow AKI that fluids will WORSEN. Discriminator: rising bladder pressures and abdominal distension — the fix is decompression, not more crystalloid.</div></div><div class="rt"><div class="rtl">12. Interstitium callout</div><div class="rte">Acute interstitial nephritis via the 4 I's: Allergic (drugs — beta-lactams/PCN, PPIs, NSAIDs, sulfa, rifampin, allopurinol, and immune checkpoint inhibitors), Infection (pyelonephritis, Legionella, leptospira), Infiltration (lymphoma/leukemia, sarcoid), Inflammatory/autoimmune (Sjögren, SLE, TINU). Findings: subacute AKI, sterile pyuria, WBC casts, eosinophiluria (low sensitivity/specificity), and rising creatinine days–weeks after drug start. First step: stop the offending drug; steroids if no recovery.</div><div class="rtt">⚠️ WRONG: requiring the full triad (fever + rash + eosinophilia) to diagnose AIN. The complete triad appears in well under 10–15% of cases — its absence does NOT rule out AIN. Discriminator: subacute AKI + sterile pyuria + WBC casts + a new culprit drug (PPI/NSAID/antibiotic) is enough; eosinophiluria is neither sensitive nor specific.</div></div><div class="rt"><div class="rtl">13. Crystal/cast inset</div><div class="rte">Histologic inset of intratubular obstruction — debris, sloughed tubular cells, and crystals/protein casts plugging the lumen. This is the unifying mechanism for cast nephropathy (myeloma), crystalline nephropathies (uric acid in TLS, calcium oxalate in ethylene glycol, acyclovir/sulfa/MTX), and the granular casts of ATN.</div><div class="rtt">⚠️ WRONG: treating crystalluria-driven AKI the same as glomerular AKI. The intervention for most intratubular/crystal AKI is aggressive volume + removing the offending solute (rasburicase for urate, alkalinization for MTX), NOT immunosuppression. Discriminator: identify the crystal type on microscopy to pin the cause.</div></div><div class="rt"><div class="rtl">14. Figure caption</div><div class="rte">Legend defines ATN (acute tubular necrosis), DIC (disseminated intravascular coagulation), HTN (hypertension), PCN (penicillin), PPI (proton pump inhibitors), TINU (tubulointerstitial nephritis-uveitis), TTP/HUS. The figure organizes intrinsic AKI by anatomic compartment — vessels, glomeruli, tubules, interstitium — which is the highest-yield framework for localizing a cause.</div><div class="rtt">⚠️ WRONG: lumping all 'renal/intrinsic' AKI into one bucket on the boards. The compartment approach (vascular vs glomerular vs tubular vs interstitial) drives different urine sediments, workups, and treatments. Discriminator: always sub-localize intrinsic AKI before choosing management.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nref_intrinsic_compartment.html" title="Renal Reference — Intrinsic AKI by Compartment">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nref_low_fena.html" title="Renal Reference — Low FENa Exceptions">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

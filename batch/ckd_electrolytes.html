@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CKD — Electrolyte &amp; Acid-Base Chaos</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Electrolyte chaos banner</b> — WRONG to expect symmetric loss of all functions early — CKD preserves K+, acid and phosphate homeostasis until G4–5 via compensatory mechanisms (aldosterone, ammoniagenesis, FGF23). A patient with G2–G3a and a normal K+/HCO3/phosphate is the rule, not a reason to doubt the CKD diagnosis.</li><li><b>Flooded village / HTN + edema</b> — WRONG to call this hyponatremia or expect a low serum Na+ — isotonic expansion keeps [Na+] normal even as total-body sodium and water rise. True hyponatremia in CKD instead reflects impaired free-water excretion (excess water relative to salt), a different problem.</li><li><b>Furosemide strongman</b> — WRONG to abandon loops or switch to a thiazide alone at low GFR. Thiazides lose natriuretic efficacy below eGFR ~30, whereas loops still work and simply need uptitration; the discriminator is that loops act in the thick ascending limb where filtered Na+ load is high.</li><li><b>Metolazone / thiazide add-on</b> — WRONG to add metolazone and not monitor — sequential blockade can cause brisk hypokalemia, hyponatremia and prerenal AKI. The combination is potent, so it requires close electrolyte and volume surveillance rather than being a benign add-on.</li><li><b>Volume depletion / prerenal AKI</b> — WRONG to keep diuretics/RAAS blockers running through an acute diarrheal illness — this converts a recoverable prerenal insult into ischemic ATN. The discriminator from intrinsic AKI is the bland sediment and rapid creatinine recovery once volume is restored.</li><li><b>K stays normal until tipped</b> — WRONG to attribute a high K+ in early CKD to the renal disease itself — significant hyperkalemia in G1–G3 should prompt a search for a trigger (RAAS blocker, high-K diet, NSAID, acidosis, tissue breakdown, type 4 RTA/hypoaldosteronism), not be dismissed as expected for CKD.</li><li><b>Aldo + GI compensate</b> — WRONG to assume the kidney is the only K+ excretion route — in advanced CKD the colon becomes a major escape valve, which is why constipation or stopping a potassium binder can unmask hyperkalemia.</li><li><b>Hyperkalemia triggers (RAAS, acidosis)</b> — WRONG to reflexively discontinue the ACEi/ARB for mild–moderate hyperkalemia. The board-preferred move is to treat the potassium (dietary K+ restriction, sodium bicarbonate for acidosis, patiromer/SZC) so the patient keeps the proven renal/cardiac protection; stopping RAAS blockade sacrifices long-term benefit for a manageable lab.</li><li><b>K binders (patiromer / SZC)</b> — WRONG to choose SPS as a fast emergency treatment for severe hyperkalemia — it is slow and risks colonic necrosis. Acute, ECG-positive hyperK is managed with calcium → insulin/glucose + albuterol → definitive removal (diuretics/dialysis); binders are for chronic control.</li><li><b>Avoid salt substitutes</b> — WRONG to recommend a 'salt substitute' to a CKD patient as a heart-healthy swap — these products are potassium chloride and can precipitate life-threatening hyperkalemia. The discriminator is reading the label: KCl, not NaCl.</li><li><b>Baking soda / sodium bicarbonate</b> — WRONG to ignore the obligatory sodium load of NaHCO3 in a volume-overloaded or hypertensive patient — each gram delivers sodium that can worsen edema and BP. Balance acidosis correction against volume; this is the discriminator versus simply maximizing bicarbonate.</li><li><b>Early / late metabolic acidosis</b> — WRONG to expect a high anion gap in early CKD — the G3 pattern is a NAGMA (hyperchloremic). Seeing a wide gap signals advanced disease (G4–5) or a separate cause (lactate, ketones, toxins); using the gap to stage acidosis is the key discriminator.</li><li><b>Retained NH4 / ammonium</b> — WRONG to interpret a non-maximally-acidic urine pH in CKD acidosis as a distal (type 1) RTA. In CKD the urine can still acidify; the problem is reduced ammoniagenesis (low urinary ammonium / low urine anion gap interpretation), not a distal H+ secretion defect.</li><li><b>Bone buffering / demineralization skeleton</b> — WRONG to treat CKD bone disease as ordinary osteoporosis with bisphosphonates first — the underlying drivers are acidosis, phosphate retention, low active vitamin D and secondary hyperPTH. The fix is treating CKD-MBD (phosphate binders, calcitriol/calcimimetics, bicarbonate), not reflexive antiresorptive therapy.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Electrolyte chaos banner</div><div class="rte">As GFR falls below ~30 mL/min (CKD G4–5), the kidney loses its ability to fine-tune water, sodium, potassium, hydrogen ion and ammonium handling, so derangements cluster together. The three boards-classic abnormalities of advanced CKD are hyperkalemia, high-anion-gap metabolic acidosis, and hyperphosphatemia. These tend to appear together late and are the targets of medical management and, ultimately, dialysis.</div><div class="rtt">⚠️ WRONG to expect symmetric loss of all functions early — CKD preserves K+, acid and phosphate homeostasis until G4–5 via compensatory mechanisms (aldosterone, ammoniagenesis, FGF23). A patient with G2–G3a and a normal K+/HCO3/phosphate is the rule, not a reason to doubt the CKD diagnosis.</div></div><div class="rt"><div class="rtl">2. Flooded village / HTN + edema</div><div class="rte">The failing kidney cannot excrete a sodium load, so Na+ and water are retained in iso-osmotic proportion (isotonic expansion of the extracellular fluid), producing volume overload, hypertension, and peripheral/pulmonary edema. Serum sodium concentration is typically normal because water follows salt. Management is dietary sodium restriction (&lt;2 g/day) plus diuretics; volume overload, not renin, is the dominant driver of CKD hypertension.</div><div class="rtt">⚠️ WRONG to call this hyponatremia or expect a low serum Na+ — isotonic expansion keeps [Na+] normal even as total-body sodium and water rise. True hyponatremia in CKD instead reflects impaired free-water excretion (excess water relative to salt), a different problem.</div></div><div class="rt"><div class="rtl">3. Furosemide strongman</div><div class="rte">Loop diuretics (furosemide, bumetanide, torsemide) block the Na-K-2Cl cotransporter in the thick ascending limb and remain the workhorse for volume control in CKD. As GFR falls, less drug is delivered into the tubular lumen and organic-anion competition rises, so higher doses are needed (diuretic resistance) — e.g., IV furosemide 80–200 mg or torsemide, which has better oral bioavailability. Torsemide/bumetanide are favored over furosemide when gut absorption is erratic.</div><div class="rtt">⚠️ WRONG to abandon loops or switch to a thiazide alone at low GFR. Thiazides lose natriuretic efficacy below eGFR ~30, whereas loops still work and simply need uptitration; the discriminator is that loops act in the thick ascending limb where filtered Na+ load is high.</div></div><div class="rt"><div class="rtl">4. Metolazone / thiazide add-on</div><div class="rte">Metolazone is a thiazide-like agent that blocks the distal convoluted tubule Na-Cl cotransporter; added to a loop it produces sequential nephron blockade, defeating the post-loop distal sodium reabsorption that drives refractory edema. Unlike pure thiazides, metolazone retains efficacy at low GFR, making it the go-to add-on even in CKD G4. Dose ~2.5–10 mg given ~30 min before the loop; watch for profound diuresis, hypokalemia and volume depletion.</div><div class="rtt">⚠️ WRONG to add metolazone and not monitor — sequential blockade can cause brisk hypokalemia, hyponatremia and prerenal AKI. The combination is potent, so it requires close electrolyte and volume surveillance rather than being a benign add-on.</div></div><div class="rt"><div class="rtl">5. Volume depletion / prerenal AKI</div><div class="rte">Over-diuresis, vomiting/diarrhea, or poor intake during illness causes volume depletion and prerenal acute kidney injury superimposed on CKD (acute-on-chronic), with a rising creatinine, BUN:Cr &gt;20, and bland urine. 'Sick-day rules' instruct patients to temporarily hold diuretics, ACEi/ARB, SGLT2 inhibitors and metformin when acutely ill to protect the kidney. Volume status, not a single creatinine, guides resuscitation.</div><div class="rtt">⚠️ WRONG to keep diuretics/RAAS blockers running through an acute diarrheal illness — this converts a recoverable prerenal insult into ischemic ATN. The discriminator from intrinsic AKI is the bland sediment and rapid creatinine recovery once volume is restored.</div></div><div class="rt"><div class="rtl">6. K stays normal until tipped</div><div class="rte">Serum potassium is defended until advanced CKD (G4–G5) because remaining nephrons increase distal K+ secretion and the colon ramps up K+ excretion. Hyperkalemia then becomes the lethal danger, with ECG changes progressing from peaked T waves to widened QRS to a sine wave and arrest. Acute hyperK is treated with IV calcium gluconate (membrane stabilization), then insulin+glucose and albuterol (intracellular shift), then loop diuretics/binders/dialysis (removal).</div><div class="rtt">⚠️ WRONG to attribute a high K+ in early CKD to the renal disease itself — significant hyperkalemia in G1–G3 should prompt a search for a trigger (RAAS blocker, high-K diet, NSAID, acidosis, tissue breakdown, type 4 RTA/hypoaldosteronism), not be dismissed as expected for CKD.</div></div><div class="rt"><div class="rtl">7. Aldo + GI compensate</div><div class="rte">Two adaptations keep K+ normal until late CKD: aldosterone drives principal-cell K+ secretion in surviving nephrons, and the colon upregulates K+ excretion (GI compensation can clear up to ~30–50% of a K+ load in advanced disease). When these are overwhelmed or blunted (e.g., by ACEi/ARB/MRA, low aldosterone in diabetic type 4 RTA), hyperkalemia emerges.</div><div class="rtt">⚠️ WRONG to assume the kidney is the only K+ excretion route — in advanced CKD the colon becomes a major escape valve, which is why constipation or stopping a potassium binder can unmask hyperkalemia.</div></div><div class="rt"><div class="rtl">8. Hyperkalemia triggers (RAAS, acidosis)</div><div class="rte">Common triggers that tip K+ up in CKD: high-potassium diet, metabolic acidosis (drives K+ out of cells in exchange for H+), tissue breakdown/hemolysis, and RAAS inhibitors (ACEi, ARB, MRA, finerenone). Treating the modifiable drivers — correcting acidosis with bicarbonate, restricting dietary K+, adding a K+ binder — often allows the nephroprotective RAAS blocker to be continued rather than stopped.</div><div class="rtt">⚠️ WRONG to reflexively discontinue the ACEi/ARB for mild–moderate hyperkalemia. The board-preferred move is to treat the potassium (dietary K+ restriction, sodium bicarbonate for acidosis, patiromer/SZC) so the patient keeps the proven renal/cardiac protection; stopping RAAS blockade sacrifices long-term benefit for a manageable lab.</div></div><div class="rt"><div class="rtl">9. K binders (patiromer / SZC)</div><div class="rte">Potassium binders exchange K+ in the gut for excretion. Newer agents — patiromer (binds K+ for Ca2+ in the colon) and sodium zirconium cyclosilicate/SZC (a selective inorganic lattice, fast-acting) — are well tolerated for chronic outpatient hyperK and let patients stay on RAAS therapy. Older sodium polystyrene sulfonate (SPS/Kayexalate) is slower and carries a rare risk of intestinal necrosis, especially with sorbitol or postoperatively.</div><div class="rtt">⚠️ WRONG to choose SPS as a fast emergency treatment for severe hyperkalemia — it is slow and risks colonic necrosis. Acute, ECG-positive hyperK is managed with calcium → insulin/glucose + albuterol → definitive removal (diuretics/dialysis); binders are for chronic control.</div></div><div class="rt"><div class="rtl">10. Avoid salt substitutes</div><div class="rte">CKD patients are counseled to restrict dietary potassium (high-K culprits: bananas, oranges/orange juice, tomatoes, potatoes, salt substitutes). 'Low-sodium' or 'lite' salt substitutes are largely potassium chloride, so they trade a sodium benefit for a dangerous potassium load. This counseling matters most in G4–5 and in patients on RAAS blockers or with type 4 RTA.</div><div class="rtt">⚠️ WRONG to recommend a 'salt substitute' to a CKD patient as a heart-healthy swap — these products are potassium chloride and can precipitate life-threatening hyperkalemia. The discriminator is reading the label: KCl, not NaCl.</div></div><div class="rt"><div class="rtl">11. Baking soda / sodium bicarbonate</div><div class="rte">Oral sodium bicarbonate is given to keep serum HCO3 in the ~22–26 mEq/L range. Correcting metabolic acidosis reduces muscle protein catabolism, improves bone health, lowers potassium, and may slow CKD progression. Typical dosing is sodium bicarbonate 650 mg tablets titrated to the bicarbonate level; veverimer is an investigational non-absorbed alternative.</div><div class="rtt">⚠️ WRONG to ignore the obligatory sodium load of NaHCO3 in a volume-overloaded or hypertensive patient — each gram delivers sodium that can worsen edema and BP. Balance acidosis correction against volume; this is the discriminator versus simply maximizing bicarbonate.</div></div><div class="rt"><div class="rtl">12. Early / late metabolic acidosis</div><div class="rte">CKD acidosis evolves in two stages. Early (G3) it is a normal-anion-gap (hyperchloremic) metabolic acidosis from impaired ammoniagenesis and reduced acid excretion. Late (G4–5) it becomes a high-anion-gap metabolic acidosis as phosphate, sulfate and other organic acids are retained behind the falling GFR. The anion gap pattern thus tracks CKD severity.</div><div class="rtt">⚠️ WRONG to expect a high anion gap in early CKD — the G3 pattern is a NAGMA (hyperchloremic). Seeing a wide gap signals advanced disease (G4–5) or a separate cause (lactate, ketones, toxins); using the gap to stage acidosis is the key discriminator.</div></div><div class="rt"><div class="rtl">13. Retained NH4 / ammonium</div><div class="rte">Net acid excretion depends largely on urinary ammonium (NH4+); in CKD, fewer functioning nephrons make less ammonia, so the kidney cannot buffer and excrete the daily acid load. Because titratable acid and NH4+ excretion fall, urine pH is often inappropriately near-normal (~5.5) despite systemic acidosis — the defect is quantity of buffer, not the ability to acidify.</div><div class="rtt">⚠️ WRONG to interpret a non-maximally-acidic urine pH in CKD acidosis as a distal (type 1) RTA. In CKD the urine can still acidify; the problem is reduced ammoniagenesis (low urinary ammonium / low urine anion gap interpretation), not a distal H+ secretion defect.</div></div><div class="rt"><div class="rtl">14. Bone buffering / demineralization skeleton</div><div class="rte">Chronic acid retention is buffered in part by bone, which releases carbonate and phosphate at the cost of demineralization, worsening CKD–mineral and bone disorder (CKD-MBD) and renal osteodystrophy. This bone buffering is another reason to correct acidosis with bicarbonate. CKD-MBD also involves hyperphosphatemia, low calcitriol, secondary hyperparathyroidism and high FGF23.</div><div class="rtt">⚠️ WRONG to treat CKD bone disease as ordinary osteoporosis with bisphosphonates first — the underlying drivers are acidosis, phosphate retention, low active vitamin D and secondary hyperPTH. The fix is treating CKD-MBD (phosphate binders, calcitriol/calcimimetics, bicarbonate), not reflexive antiresorptive therapy.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ckd_definition_kdigo.html" title="CKD — Definition &amp; KDIGO Staging">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ckd_management.html" title="CKD — Management &amp; Slowing Progression">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

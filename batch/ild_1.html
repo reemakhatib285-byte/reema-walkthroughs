@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">ILD — IPF Treatment &amp; the Antifibrotic Paradigm Shift</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Grandfather clock</b> — WRONG answer: 'start antifibrotic to restore lung function / wean off oxygen.' Antifibrotics only flatten the decline curve; the discriminator is that no therapy short of transplant improves established fibrosis, so any answer implying reversal or normalization of FVC/DLCO is incorrect.</li><li><b>Crowd of older men</b> — WRONG answer: labeling a young woman with ILD as 'IPF.' Discriminator — a patient &lt;50, female, or with arthralgias/Raynaud/rash should redirect to CTD-ILD (scleroderma, RA, dermatomyositis with anti-MDA5/Jo-1) or NSIP, which are steroid/immunosuppressant-responsive, not antifibrotic-first.</li><li><b>FVC decline slows/reverses (false)</b> — WRONG answer: 'antifibrotics reverse fibrosis / produce a sustained rise in FVC.' The discriminator is the trial endpoint: the benefit was a SLOWER rate of decline, not improvement; survival benefit is modest and pooled, never a cure.</li><li><b>Survival meter</b> — WRONG answer: quoting a benign prognosis or 'watchful waiting indefinitely.' The discriminator is that confirmed UIP/IPF warrants early antifibrotic initiation and transplant referral, because the survival meter runs low fast — delay costs lung function that never returns.</li><li><b>Pirfenidone (PIRFEN) figure</b> — WRONG answer: 'give pirfenidone for steroid-responsive COP or cellular NSIP.' Discriminator — those inflammatory ILDs respond to corticosteroids; pirfenidone is reserved for the fibrotic UIP phenotype, so the radiographic/histologic pattern decides the drug.</li><li><b>Pirfenidone photosensitivity</b> — WRONG answer: attributing a sun-exposed rash on pirfenidone to a new CTD/dermatomyositis flare. Discriminator — drug-induced photosensitivity resolves with sun avoidance and dose adjustment, whereas a true CTD rash comes with myositis, mechanic's hands, or autoantibodies.</li><li><b>Nintedanib (NINTE) figure</b> — WRONG answer: 'use nintedanib as the immunosuppressant for active inflammatory/cellular ILD.' Discriminator — nintedanib is antifibrotic, not immunosuppressive; purely inflammatory ILD needs steroids ± mycophenolate, and the UIP/progressive-fibrosis phenotype is what selects nintedanib.</li><li><b>Nintedanib diarrhea</b> — WRONG answer: discontinuing nintedanib at the first loose stool. Discriminator — diarrhea is usually manageable with antimotility agents and dose reduction; true stopping triggers are ALT/AST &gt;3–5× ULN (hepatotoxicity) or significant bleeding, not mild GI symptoms.</li><li><b>Increased bleeding/PE risk</b> — WRONG answer: starting full anticoagulation plus nintedanib in an IPF patient without weighing risk. Discriminator — the combination amplifies bleeding; the question usually wants you to recognize the heightened bleeding/cardiovascular risk rather than reflexively anticoagulate.</li><li><b>PPI / GERD acid</b> — WRONG answer: 'PPI therapy is a proven disease-modifying treatment that halts IPF progression.' Discriminator — PPIs are adjunctive/symptomatic for GERD; only antifibrotics slow decline and only transplant is definitive, so PPI is never the primary IPF therapy.</li><li><b>Fire / acute exacerbation</b> — WRONG answer: 'treat the acute decompensation as simple CHF/diurese and discharge.' Discriminator — you must rule out HF, PE, and infection, but new diffuse GGO on a UIP lung with no other cause is an acute exacerbation, an ominous event, not volume overload.</li><li><b>Advanced IPF lung module</b> — WRONG answer: 'high-dose corticosteroids' or 'cyclophosphamide' for end-stage IPF. Discriminator — immunosuppression neither helps nor is definitive (the PANTHER trial showed prednisone/azathioprine/NAC INCREASED death/hospitalization in IPF); transplant is the only definitive option.</li><li><b>CTD-ILD only meds (X)</b> — WRONG answer: 'mycophenolate or azathioprine for idiopathic UIP/IPF.' Discriminator — the landmark PANTHER-IPF trial showed combination immunosuppression (prednisone + azathioprine + NAC) caused HARM; immunosuppression is correct only when there is an underlying CTD or cellular inflammatory pattern.</li><li><b>Mortality + morbidity tombstone</b> — WRONG answer: telling a patient antifibrotics will 'cure' or 'normalize life expectancy.' Discriminator — counseling must reflect a progressive, fatal disease with modest pharmacologic benefit; over-optimistic prognosis is the trap and palliative/transplant planning is appropriate.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Grandfather clock</div><div class="rte">IPF is a disease of aging — the median age at diagnosis is ~65, and the 'clock' theme (the 2014 paradigm shift) means antifibrotics buy TIME rather than reverse disease. They decelerate the time-course of FVC decline but cannot undo established honeycomb fibrosis. Think of the whole scene as 'slowing the clock,' not turning it back.</div><div class="rtt">⚠️ WRONG answer: 'start antifibrotic to restore lung function / wean off oxygen.' Antifibrotics only flatten the decline curve; the discriminator is that no therapy short of transplant improves established fibrosis, so any answer implying reversal or normalization of FVC/DLCO is incorrect.</div></div><div class="rt"><div class="rtl">2. Crowd of older men</div><div class="rte">Classic IPF demographic: man &gt;60, ever-smoker, presenting with chronic exertional dyspnea, dry cough, and bibasilar 'Velcro' inspiratory crackles, often with digital clubbing. These features plus a UIP pattern on HRCT make IPF the diagnosis without biopsy. The combination of age + smoking + insidious dyspnea is the high-yield trigger.</div><div class="rtt">⚠️ WRONG answer: labeling a young woman with ILD as 'IPF.' Discriminator — a patient &lt;50, female, or with arthralgias/Raynaud/rash should redirect to CTD-ILD (scleroderma, RA, dermatomyositis with anti-MDA5/Jo-1) or NSIP, which are steroid/immunosuppressant-responsive, not antifibrotic-first.</div></div><div class="rt"><div class="rtl">3. FVC decline slows/reverses (false)</div><div class="rte">Both pirfenidone and nintedanib reduce the annual rate of FVC decline by roughly 50% (from ~200 mL/yr toward ~100 mL/yr) in the ASCEND/CAPACITY and INPULSIS trials. The curve still slopes downward — it just slopes less steeply. The 'reverses' label is deliberately the false hook the scene is teaching you to reject.</div><div class="rtt">⚠️ WRONG answer: 'antifibrotics reverse fibrosis / produce a sustained rise in FVC.' The discriminator is the trial endpoint: the benefit was a SLOWER rate of decline, not improvement; survival benefit is modest and pooled, never a cure.</div></div><div class="rt"><div class="rtl">4. Survival meter</div><div class="rte">Untreated IPF has a grim prognosis — median survival ~3–5 years from diagnosis, worse than many cancers. Poor-prognosis markers: lower baseline FVC/DLCO, a &gt;10% absolute FVC drop over 6–12 months, pulmonary hypertension, and acute exacerbations. Antifibrotics give only a modest mortality/progression benefit.</div><div class="rtt">⚠️ WRONG answer: quoting a benign prognosis or 'watchful waiting indefinitely.' The discriminator is that confirmed UIP/IPF warrants early antifibrotic initiation and transplant referral, because the survival meter runs low fast — delay costs lung function that never returns.</div></div><div class="rt"><div class="rtl">5. Pirfenidone (PIRFEN) figure</div><div class="rte">Pirfenidone is an oral antifibrotic (antagonizes TGF-β and reduces fibroblast proliferation/collagen) dosed by titration up to 801 mg three times daily with food. It slows FVC decline in mild-to-moderate IPF (ASCEND/CAPACITY) and requires LFT monitoring. It is an IPF/progressive-fibrosis drug, not an anti-inflammatory.</div><div class="rtt">⚠️ WRONG answer: 'give pirfenidone for steroid-responsive COP or cellular NSIP.' Discriminator — those inflammatory ILDs respond to corticosteroids; pirfenidone is reserved for the fibrotic UIP phenotype, so the radiographic/histologic pattern decides the drug.</div></div><div class="rt"><div class="rtl">6. Pirfenidone photosensitivity</div><div class="rte">Pirfenidone's signature adverse effects: PHOTOSENSITIVITY rash (counsel strict sun protection/sunscreen), GI upset (nausea, anorexia, dyspepsia), and elevated transaminases. The sun icon is the memory hook distinguishing it from nintedanib's GI/bleeding profile. Avoid strong CYP1A2 inhibitors (e.g., fluvoxamine) and smoking, which alter levels.</div><div class="rtt">⚠️ WRONG answer: attributing a sun-exposed rash on pirfenidone to a new CTD/dermatomyositis flare. Discriminator — drug-induced photosensitivity resolves with sun avoidance and dose adjustment, whereas a true CTD rash comes with myositis, mechanic's hands, or autoantibodies.</div></div><div class="rt"><div class="rtl">7. Nintedanib (NINTE) figure</div><div class="rte">Nintedanib is an oral intracellular tyrosine kinase inhibitor (blocks VEGFR, FGFR, PDGFR) dosed 150 mg twice daily; it slows FVC decline in IPF (INPULSIS), in scleroderma-ILD (SENSCIS), and in progressive fibrosing ILD (INBUILD). Its anti-angiogenic action explains both its antifibrotic effect and its bleeding risk.</div><div class="rtt">⚠️ WRONG answer: 'use nintedanib as the immunosuppressant for active inflammatory/cellular ILD.' Discriminator — nintedanib is antifibrotic, not immunosuppressive; purely inflammatory ILD needs steroids ± mycophenolate, and the UIP/progressive-fibrosis phenotype is what selects nintedanib.</div></div><div class="rt"><div class="rtl">8. Nintedanib diarrhea</div><div class="rte">Nintedanib's hallmark adverse effect is DIARRHEA (&gt;60% of patients — manage with loperamide and hydration), plus nausea and hepatotoxicity requiring baseline and periodic LFT monitoring. Contrast with pirfenidone's photosensitivity. The 'fire/heat' near NINTE is the diarrhea cue.</div><div class="rtt">⚠️ WRONG answer: discontinuing nintedanib at the first loose stool. Discriminator — diarrhea is usually manageable with antimotility agents and dose reduction; true stopping triggers are ALT/AST &gt;3–5× ULN (hepatotoxicity) or significant bleeding, not mild GI symptoms.</div></div><div class="rt"><div class="rtl">9. Increased bleeding/PE risk</div><div class="rte">Nintedanib's anti-VEGF activity increases BLEEDING risk and, via impaired vascular healing, raises arterial thromboembolic/MI risk and risk of GI perforation. Use caution in patients on full-dose anticoagulation and in those with recent cardiovascular events. This is the key safety nuance unique to nintedanib over pirfenidone.</div><div class="rtt">⚠️ WRONG answer: starting full anticoagulation plus nintedanib in an IPF patient without weighing risk. Discriminator — the combination amplifies bleeding; the question usually wants you to recognize the heightened bleeding/cardiovascular risk rather than reflexively anticoagulate.</div></div><div class="rt"><div class="rtl">10. PPI / GERD acid</div><div class="rte">GERD is highly prevalent in IPF, and chronic micro-aspiration is thought to contribute to repetitive alveolar injury driving fibrosis. Guidelines suggest considering anti-reflux therapy (PPI) as adjunctive management, though evidence for slowing fibrosis is weak. The reflux–fibrosis link is the testable association.</div><div class="rtt">⚠️ WRONG answer: 'PPI therapy is a proven disease-modifying treatment that halts IPF progression.' Discriminator — PPIs are adjunctive/symptomatic for GERD; only antifibrotics slow decline and only transplant is definitive, so PPI is never the primary IPF therapy.</div></div><div class="rt"><div class="rtl">11. Fire / acute exacerbation</div><div class="rte">Acute exacerbation of IPF = acute (&lt;1 month) unexplained worsening of dyspnea with NEW bilateral ground-glass/consolidation superimposed on the UIP background, after excluding infection, PE, heart failure, and fluid overload. It carries very high in-hospital mortality (often &gt;50%); management is supportive ± high-dose steroids (low-quality evidence).</div><div class="rtt">⚠️ WRONG answer: 'treat the acute decompensation as simple CHF/diurese and discharge.' Discriminator — you must rule out HF, PE, and infection, but new diffuse GGO on a UIP lung with no other cause is an acute exacerbation, an ominous event, not volume overload.</div></div><div class="rt"><div class="rtl">12. Advanced IPF lung module</div><div class="rte">Lung TRANSPLANTATION is the only definitive, survival-prolonging therapy for end-stage IPF and should be referred early (at diagnosis of advanced/progressive disease, before patients are too deconditioned). Antifibrotics buy time to transplant; supplemental O2 and pulmonary rehab are supportive adjuncts.</div><div class="rtt">⚠️ WRONG answer: 'high-dose corticosteroids' or 'cyclophosphamide' for end-stage IPF. Discriminator — immunosuppression neither helps nor is definitive (the PANTHER trial showed prednisone/azathioprine/NAC INCREASED death/hospitalization in IPF); transplant is the only definitive option.</div></div><div class="rt"><div class="rtl">13. CTD-ILD only meds (X)</div><div class="rte">Immunosuppressants (mycophenolate mofetil, azathioprine, cyclophosphamide, rituximab) are for CTD-associated ILD and inflammatory NSIP — NOT idiopathic UIP/IPF. The red X means 'do not use these in IPF.' Pattern recognition: inflammatory/cellular = immunosuppress; fibrotic/UIP = antifibrose.</div><div class="rtt">⚠️ WRONG answer: 'mycophenolate or azathioprine for idiopathic UIP/IPF.' Discriminator — the landmark PANTHER-IPF trial showed combination immunosuppression (prednisone + azathioprine + NAC) caused HARM; immunosuppression is correct only when there is an underlying CTD or cellular inflammatory pattern.</div></div><div class="rt"><div class="rtl">14. Mortality + morbidity tombstone</div><div class="rte">Even on antifibrotics, IPF remains relentlessly progressive with high morbidity and mortality; median survival is only ~3–5 years and the main drivers of death are progressive respiratory failure and acute exacerbations. The tombstone underscores that disease modification is partial and transplant is the only path to longer survival.</div><div class="rtt">⚠️ WRONG answer: telling a patient antifibrotics will 'cure' or 'normalize life expectancy.' Discriminator — counseling must reflect a progressive, fatal disease with modest pharmacologic benefit; over-optimistic prognosis is the trap and palliative/transplant planning is appropriate.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ild_2.html" title="ILD — Diagnosis &amp; Imaging Patterns (UIP/NSIP/COP) + PFTs">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ild_3.html" title="ILD — Treatment by Responsiveness &amp; Drug-Induced Causes">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

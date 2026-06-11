@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">AKI — Complications &amp; Treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>17</em></summary><ol class="traps"><li><b>Dialysis indications</b> — Initiating dialysis purely because the creatinine or BUN crosses a number is the wrong answer — recent trials show no benefit to early dialysis without a clinical indication. The discriminator is presence of a refractory AEIOU complication.</li><li><b>AEIOU</b> — Forgetting that the dialysis trigger is REFRACTORY complications — e.g., hyperkalemia that responds to medical therapy does NOT need dialysis. The discriminator is failure of, or contraindication to, medical management.</li><li><b>Hyperkalemia</b> — Two traps: (1) giving insulin/glucose or kayexalate FIRST in a patient with ECG changes — calcium must come first to protect the heart; (2) thinking calcium lowers potassium — it only stabilizes the myocardium and buys time while you shift/remove K.</li><li><b>Metabolic acidosis</b> — Aggressively giving bicarbonate for mild AKI acidosis is wrong — it risks volume overload, hypocalcemia, and hypokalemia. Reserve bicarbonate for severe acidosis; the discriminator for dialysis is REFRACTORINESS, not the mere presence of acidosis.</li><li><b>Volume overload</b> — Giving IV fluids to an AKI patient regardless of volume status is WRONG — fluids help only PRERENAL/hypovolemic AKI. In a volume-overloaded oliguric patient, fluids worsen pulmonary edema. The discriminator is assessing actual volume status before prescribing fluids vs diuresis.</li><li><b>Uremia</b> — Treating uremic pericarditis with NSAIDs/colchicine as for viral pericarditis is wrong — the definitive treatment is DIALYSIS (and NSAIDs are nephrotoxic). The discriminator is the uremic etiology, which calls for renal replacement, not anti-inflammatories.</li><li><b>Uremic bleeding</b> — Transfusing platelets for uremic bleeding is the wrong answer — the platelet COUNT is normal and the defect is functional, so transfused platelets quickly become dysfunctional too. The discriminators/fixes are DDAVP, dialysis, and correcting anemia, not platelet transfusion.</li><li><b>Treat the cause</b> — Jumping to dialysis or generic supportive care without working through the prerenal/intrinsic/postrenal framework misses reversible causes — e.g., a bladder-outlet obstruction fixed by a Foley catheter. Always exclude obstruction with a bladder scan/ultrasound.</li><li><b>Give fluids</b> — Believing fluids help ALL AKI is wrong — in volume-overloaded or oliguric intrinsic AKI, fluids cause pulmonary edema. Fluids are for the HYPOVOLEMIC/prerenal patient; the discriminator is documented volume depletion.</li><li><b>Stop nephrotoxins</b> — Continuing an ACE-I/ARB or NSAID in AKI ‘because the patient was on it chronically’ is wrong — these worsen AKI in most settings. The big EXCEPTION is scleroderma renal crisis, where ACE-I is life-saving and must NOT be stopped.</li><li><b>ACE-I scleroderma</b> — Avoiding or stopping ACE-I in scleroderma renal crisis (the usual AKI reflex) is the deadly wrong answer — here ACE-I dramatically improves survival. Also do NOT give high-dose steroids in scleroderma, as they precipitate the crisis.</li><li><b>No benefit</b> — Choosing low-dose dopamine ‘to protect the kidney’ or improve urine output is a classic wrong answer — it does not preserve renal function or reduce mortality and risks arrhythmia. None of these agents change AKI outcomes.</li><li><b>Stress-ulcer prophylaxis</b> — Giving stress-ulcer prophylaxis to every floor patient is over-treatment and may raise C. difficile/pneumonia risk — reserve it for ICU patients with genuine risk factors. Note PPIs are themselves a leading cause of AIN, so use judiciously.</li><li><b>Recovery diuresis</b> — Reflexively matching urine output milliliter-for-milliliter during post-obstructive diuresis can perpetuate it and cause volume depletion — replace a fraction (e.g., ~50–75% of losses) and monitor volume status. Failing to replace electrolytes risks dangerous hypokalemia/hypomagnesemia.</li><li><b>Phosphate binder pharmacy</b> — Giving IV calcium for the hypocalcemia of hyperphosphatemia (e.g., in tumor lysis) can precipitate calcium-phosphate in tissues and worsen AKI — treat the phosphate first. Also, binders only work if taken WITH food; given between meals they don't bind dietary phosphate.</li><li><b>Albuminuria monitoring</b> — Discharging a recovered-AKI patient with no renal follow-up because the creatinine ‘came back to normal’ is wrong — apparent recovery can mask reduced renal reserve and ongoing albuminuria. The discriminator is monitoring eGFR and ACR over time, not a single normal creatinine.</li><li><b>Nutrition 20-30 kcal/kg</b> — Severely restricting protein to ‘rest the kidney’ or delay dialysis is the wrong answer — it promotes malnutrition and catabolism. Adequate calories and protein (more, not less, on CRRT) are the goal; dialysis is driven by AEIOU indications, not by diet.</li></ol></details><details class="panel"><summary>📖 Read-through — all 17 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Dialysis indications</div><div class="rte">Renal replacement therapy (intermittent hemodialysis or CRRT in the unstable ICU patient) is the rescue for AKI complications that are refractory to medical management. There is no proven mortality benefit to ‘early/prophylactic’ dialysis based on BUN/creatinine numbers alone — start it for the AEIOU clinical indications, not for an arbitrary lab threshold.</div><div class="rtt">⚠️ Initiating dialysis purely because the creatinine or BUN crosses a number is the wrong answer — recent trials show no benefit to early dialysis without a clinical indication. The discriminator is presence of a refractory AEIOU complication.</div></div><div class="rt"><div class="rtl">2. AEIOU</div><div class="rte">Mnemonic AEIOU for urgent dialysis indications: Acidosis (severe metabolic, pH &lt;7.1 refractory to bicarbonate), Electrolytes (refractory hyperkalemia), Intoxications (dialyzable toxins — methanol, ethylene glycol, salicylates, lithium; mnemonic ‘I STUMBLED’), Overload (volume overload/pulmonary edema unresponsive to diuretics), and Uremia (pericarditis, encephalopathy, bleeding). About 10% of severe AKI progresses toward ESKD/CKD.</div><div class="rtt">⚠️ Forgetting that the dialysis trigger is REFRACTORY complications — e.g., hyperkalemia that responds to medical therapy does NOT need dialysis. The discriminator is failure of, or contraindication to, medical management.</div></div><div class="rt"><div class="rtl">3. Hyperkalemia</div><div class="rte">Hyperkalemia is the most immediately life-threatening AKI complication. ECG progresses: peaked T waves → flattened P/prolonged PR → widened QRS → sine wave → VF/asystole. Treatment order: (1) IV calcium gluconate to stabilize the cardiac membrane (does NOT lower K), (2) shift K intracellularly with insulin+glucose, albuterol, and bicarbonate if acidotic, then (3) REMOVE K with loop diuretics, potassium binders (patiromer, sodium zirconium cyclosilicate), or dialysis.</div><div class="rtt">⚠️ Two traps: (1) giving insulin/glucose or kayexalate FIRST in a patient with ECG changes — calcium must come first to protect the heart; (2) thinking calcium lowers potassium — it only stabilizes the myocardium and buys time while you shift/remove K.</div></div><div class="rt"><div class="rtl">4. Metabolic acidosis</div><div class="rte">AKI causes a high anion-gap metabolic acidosis from retained organic acids, sulfates, and phosphates that the failing kidney cannot excrete. Treat with IV sodium bicarbonate when severe (e.g., pH &lt;7.1–7.2); persistent severe acidosis refractory to bicarbonate is an AEIOU dialysis indication.</div><div class="rtt">⚠️ Aggressively giving bicarbonate for mild AKI acidosis is wrong — it risks volume overload, hypocalcemia, and hypokalemia. Reserve bicarbonate for severe acidosis; the discriminator for dialysis is REFRACTORINESS, not the mere presence of acidosis.</div></div><div class="rt"><div class="rtl">5. Volume overload</div><div class="rte">Oliguric AKI causes volume overload and pulmonary edema. First-line is high-dose loop diuretics (e.g., furosemide, often a continuous infusion or a stepped/escalating regimen); if the patient is truly diuretic-resistant, use ultrafiltration or dialysis to remove fluid.</div><div class="rtt">⚠️ Giving IV fluids to an AKI patient regardless of volume status is WRONG — fluids help only PRERENAL/hypovolemic AKI. In a volume-overloaded oliguric patient, fluids worsen pulmonary edema. The discriminator is assessing actual volume status before prescribing fluids vs diuresis.</div></div><div class="rt"><div class="rtl">6. Uremia</div><div class="rte">Uremia from accumulated nitrogenous waste causes encephalopathy (asterixis, confusion, seizures), pericarditis (with a friction rub and risk of tamponade), platelet dysfunction with bleeding, nausea, and pruritus. Uremic pericarditis and encephalopathy are firm indications for urgent dialysis.</div><div class="rtt">⚠️ Treating uremic pericarditis with NSAIDs/colchicine as for viral pericarditis is wrong — the definitive treatment is DIALYSIS (and NSAIDs are nephrotoxic). The discriminator is the uremic etiology, which calls for renal replacement, not anti-inflammatories.</div></div><div class="rt"><div class="rtl">7. Uremic bleeding</div><div class="rte">Uremic toxins impair platelet adhesion/aggregation (qualitative platelet dysfunction) causing mucosal/GI bleeding and a prolonged bleeding time despite a normal platelet count and normal PT/PTT. Treatment ladder: DDAVP (desmopressin, rapid onset, releases vWF), cryoprecipitate, conjugated estrogens (slower but longer-lasting), correct anemia (raise Hct to ~30%), and dialysis to remove uremic toxins.</div><div class="rtt">⚠️ Transfusing platelets for uremic bleeding is the wrong answer — the platelet COUNT is normal and the defect is functional, so transfused platelets quickly become dysfunctional too. The discriminators/fixes are DDAVP, dialysis, and correcting anemia, not platelet transfusion.</div></div><div class="rt"><div class="rtl">8. Treat the cause</div><div class="rte">The core of AKI management is identifying and reversing the underlying cause: relieve obstruction (postrenal), restore perfusion (prerenal), treat sepsis, and give immunosuppression for immune-mediated intrinsic disease (e.g., steroids for AIN or rapidly progressive GN). Everything else is supportive.</div><div class="rtt">⚠️ Jumping to dialysis or generic supportive care without working through the prerenal/intrinsic/postrenal framework misses reversible causes — e.g., a bladder-outlet obstruction fixed by a Foley catheter. Always exclude obstruction with a bladder scan/ultrasound.</div></div><div class="rt"><div class="rtl">9. Give fluids</div><div class="rte">Restore renal perfusion with isotonic crystalloid (normal saline or a balanced solution like lactated Ringer's) in prerenal/hypovolemic AKI. Balanced crystalloids may cause less hyperchloremic acidosis and AKI than large-volume saline. Fluids are the treatment for prerenal AKI specifically.</div><div class="rtt">⚠️ Believing fluids help ALL AKI is wrong — in volume-overloaded or oliguric intrinsic AKI, fluids cause pulmonary edema. Fluids are for the HYPOVOLEMIC/prerenal patient; the discriminator is documented volume depletion.</div></div><div class="rt"><div class="rtl">10. Stop nephrotoxins</div><div class="rte">Stop and avoid nephrotoxins: NSAIDs, iodinated contrast, aminoglycosides, amphotericin B, ACE-I/ARBs (in most AKI), and renally cleared drugs that need dose adjustment. Review the full med list and renally dose-adjust everything in AKI to prevent further injury and drug toxicity.</div><div class="rtt">⚠️ Continuing an ACE-I/ARB or NSAID in AKI ‘because the patient was on it chronically’ is wrong — these worsen AKI in most settings. The big EXCEPTION is scleroderma renal crisis, where ACE-I is life-saving and must NOT be stopped.</div></div><div class="rt"><div class="rtl">11. ACE-I scleroderma</div><div class="rte">Scleroderma renal crisis presents with malignant hypertension, AKI, and MAHA (schistocytes) in a patient with diffuse systemic sclerosis. ACE inhibitors (captopril, titrated rapidly) are LIFE-SAVING and the treatment of choice — this is the major exception to the rule of avoiding ACE-I in AKI. Risk is increased by high-dose corticosteroids.</div><div class="rtt">⚠️ Avoiding or stopping ACE-I in scleroderma renal crisis (the usual AKI reflex) is the deadly wrong answer — here ACE-I dramatically improves survival. Also do NOT give high-dose steroids in scleroderma, as they precipitate the crisis.</div></div><div class="rt"><div class="rtl">12. No benefit</div><div class="rte">Therapies with NO proven benefit (and potential harm) in AKI: low-dose ‘renal-dose’ dopamine, fenoldopam, ANP/natriuretic peptides, mannitol, and loop diuretics given FOR renal protection or recovery. Diuretics may help fluid management but do not improve renal recovery or mortality and don't convert AKI to a milder course in outcome terms.</div><div class="rtt">⚠️ Choosing low-dose dopamine ‘to protect the kidney’ or improve urine output is a classic wrong answer — it does not preserve renal function or reduce mortality and risks arrhythmia. None of these agents change AKI outcomes.</div></div><div class="rt"><div class="rtl">13. Stress-ulcer prophylaxis</div><div class="rte">Supportive ICU care for critically ill AKI patients includes stress-ulcer prophylaxis (PPI or H2 blocker for those with risk factors such as mechanical ventilation &gt;48h or coagulopathy) and VTE/thrombosis prophylaxis. Avoid unnecessary prophylaxis in low-risk patients.</div><div class="rtt">⚠️ Giving stress-ulcer prophylaxis to every floor patient is over-treatment and may raise C. difficile/pneumonia risk — reserve it for ICU patients with genuine risk factors. Note PPIs are themselves a leading cause of AIN, so use judiciously.</div></div><div class="rt"><div class="rtl">14. Recovery diuresis</div><div class="rte">In the recovery phase of ATN and after relief of obstruction, a POLYURIC (post-obstructive) diuresis occurs as tubular function returns but concentrating ability lags. Watch for and replace fluid and electrolyte (K, Mg, phosphate) losses; most patients (~50–75% or more) recover baseline renal function, with creatinine cycling back toward normal.</div><div class="rtt">⚠️ Reflexively matching urine output milliliter-for-milliliter during post-obstructive diuresis can perpetuate it and cause volume depletion — replace a fraction (e.g., ~50–75% of losses) and monitor volume status. Failing to replace electrolytes risks dangerous hypokalemia/hypomagnesemia.</div></div><div class="rt"><div class="rtl">15. Phosphate binder pharmacy</div><div class="rte">Hyperphosphatemia from reduced renal excretion (worsened by tumor lysis or rhabdomyolysis) is managed with dietary phosphate restriction and oral phosphate binders taken WITH meals — non-calcium binders (sevelamer, lanthanum) or calcium-based binders (calcium acetate/carbonate). Severe hyperphosphatemia drives hypocalcemia and may require dialysis.</div><div class="rtt">⚠️ Giving IV calcium for the hypocalcemia of hyperphosphatemia (e.g., in tumor lysis) can precipitate calcium-phosphate in tissues and worsen AKI — treat the phosphate first. Also, binders only work if taken WITH food; given between meals they don't bind dietary phosphate.</div></div><div class="rt"><div class="rtl">16. Albuminuria monitoring</div><div class="rte">AKI is a major risk factor for progression to CKD (the ‘AKI-to-CKD’ transition, ~10% reach ESKD). Survivors need follow-up with serial creatinine/eGFR and albuminuria (urine albumin-to-creatinine ratio) staging, because persistent albuminuria and incomplete recovery predict progression. Nephrology follow-up after significant AKI is recommended.</div><div class="rtt">⚠️ Discharging a recovered-AKI patient with no renal follow-up because the creatinine ‘came back to normal’ is wrong — apparent recovery can mask reduced renal reserve and ongoing albuminuria. The discriminator is monitoring eGFR and ACR over time, not a single normal creatinine.</div></div><div class="rt"><div class="rtl">17. Nutrition 20-30 kcal/kg</div><div class="rte">Nutritional support in AKI targets roughly 20–30 kcal/kg/day with adequate protein (≈0.8–1.0 g/kg/day non-catabolic, up to 1.5–1.7 g/kg/day in critically ill or those on CRRT, which removes amino acids). Enteral nutrition is preferred; avoid severe protein restriction, which worsens catabolism without preventing dialysis.</div><div class="rtt">⚠️ Severely restricting protein to ‘rest the kidney’ or delay dialysis is the wrong answer — it promotes malnutrition and catabolism. Adequate calories and protein (more, not less, on CRRT) are the goal; dialysis is driven by AEIOU indications, not by diet.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ckd_management.html" title="CKD — Management &amp; Slowing Progression">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aki_diagnosis.html" title="AKI — Diagnosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

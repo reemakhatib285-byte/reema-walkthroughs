@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Parathyroid/Bone — Three-River Harbor: Ca, Phosphate &amp; Magnesium</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Normal Ca / ionized / albumin</b> — WRONG: diagnosing hypocalcemia from a low TOTAL calcium in a hypoalbuminemic patient (cirrhosis, nephrotic, malnutrition). Low albumin lowers the bound fraction and thus total Ca, but the IONIZED (active) Ca is normal — the patient is not truly hypocalcemic. Correct for albumin or measure ionized Ca before treating.</li><li><b>CaSR lighthouse</b> — WRONG: mixing up the direction of CaSR mutations. LOSS-of-function -&gt; the gland can't 'see' high Ca -&gt; doesn't suppress PTH -&gt; Familial Hypocalciuric Hypercalcemia (FHH, high Ca, low urine Ca, inappropriately normal PTH) or neonatal severe hyperPTH. GAIN-of-function -&gt; gland over-suppresses -&gt; Autosomal Dominant Hypocalcemia (ADH, low Ca with low/normal PTH and hypercalciuria).</li><li><b>Cinacalcet dials down PTH</b> — WRONG: giving cinacalcet to a hypocalcemic patient or expecting it to RAISE calcium. It LOWERS both PTH and serum Ca (CaSR activation), so it can cause/worsen hypocalcemia — it is for high-PTH states, not for treating low Ca, and not where Ca is already low.</li><li><b>Lithium raises set-point</b> — WRONG: diagnosing primary hyperparathyroidism in a bipolar patient on lithium without considering the drug. Lithium-induced hypercalcemia mimics primary hyperPTH (high Ca, non-suppressed PTH, low urine Ca like FHH) — review the med list; the picture may improve off lithium.</li><li><b>Calcium river handling</b> — WRONG: assuming diuretics affect Ca the same way. THIAZIDES act at the DCT to INCREASE Ca reabsorption -&gt; RAISE serum Ca / lower urine Ca (used for recurrent Ca stones and to reduce hypercalciuria). LOOP diuretics block the TAL Na-K-2Cl transporter -&gt; LOSE Ca in urine -&gt; LOWER serum Ca (used in hypercalcemia after volume repletion).</li><li><b>Thiazide / loop on Ca</b> — WRONG: giving a LOOP diuretic as a first move in hypercalcemia, or a THIAZIDE to a patient prone to hypercalcemia. Use a LOOP (not a thiazide) to lower Ca, and only AFTER restoring volume with saline. Conversely a thiazide can UNMASK or worsen hypercalcemia (e.g., in occult hyperPTH).</li><li><b>Phosphate / NaPi-2c</b> — WRONG: thinking PTH raises phosphate the way it raises calcium. PTH raises Ca but LOWERS phosphate (it wastes phosphate in urine via NaPi downregulation). BOTH PTH and FGF23 are phosphaturic. That's why primary hyperPTH shows high Ca with LOW phosphate.</li><li><b>FGF23 / Klotho</b> — WRONG: forgetting FGF23 in unexplained hypophosphatemic bone disease. FGF23 EXCESS states cause low phosphate + low 1,25-D rickets/osteomalacia: X-linked hypophosphatemia (XLH, PHEX mutation) and TUMOR-INDUCED OSTEOMALACIA (paraneoplastic FGF23 from a small mesenchymal tumor). These don't respond to plain vitamin D — need calcitritol + phosphate (or burosumab, an anti-FGF23 antibody).</li><li><b>Magnesium channel (TRPM6)</b> — WRONG: overlooking drug/genetic causes of refractory hypomagnesemia. Mg wasters: LOOP diuretics, PPIs (chronic), aminoglycosides, cisplatin, amphotericin, calcineurin inhibitors, and GITELMAN syndrome (DCT, also low K, low Ca-uria) / Bartter (TAL). Because low Mg drives refractory hypocalcemia/hypokalemia, missing it stalls correction of both.</li><li><b>PTH-Mg paradox</b> — WRONG: escalating calcium repletion in refractory hypocalcemia without checking magnesium. If Mg is low, PTH can neither be secreted nor act, so Ca will not rise — REPLETE MAGNESIUM FIRST. Refractory hypocalcemia = think (and fix) magnesium before adding more calcium.</li><li><b>Feedback circuit</b> — WRONG: forgetting that PTH's net effect on phosphate is opposite its effect on calcium. While the loop RAISES Ca via bone, kidney, and gut, the same PTH simultaneously LOWERS serum phosphate (phosphaturia) — so the classic primary-hyperPTH chemistry is high Ca + low phosphate + high PTH.</li><li><b>PTH suppressing / NaPi</b> — WRONG: treating each ion in isolation. Ca, phosphate, and Mg are interdependent — fixing hypocalcemia may require correcting Mg first; lowering Ca means a loop (not thiazide) AFTER saline; and unexplained hypophosphatemia should trigger an FGF23 workup. Always read the three rivers together.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Normal Ca / ionized / albumin</div><div class="rte">Reference ranges: total Ca 8.5-10.5 mg/dL (~50% is the biologically active IONIZED fraction, ~40% albumin-bound, ~10% complexed); phosphate 2.5-4.5 mg/dL; magnesium 1.7-2.4 mg/dL. Correct total Ca for hypoalbuminemia: ADD 0.8 mg/dL to measured Ca for every 1.0 g/dL the albumin is below 4.0. When in doubt, measure IONIZED calcium directly.</div><div class="rtt">⚠️ WRONG: diagnosing hypocalcemia from a low TOTAL calcium in a hypoalbuminemic patient (cirrhosis, nephrotic, malnutrition). Low albumin lowers the bound fraction and thus total Ca, but the IONIZED (active) Ca is normal — the patient is not truly hypocalcemic. Correct for albumin or measure ionized Ca before treating.</div></div><div class="rt"><div class="rtl">2. CaSR lighthouse</div><div class="rte">The calcium-sensing receptor (CaSR) is a class C GPCR (signals via Gq/G11 and Gi) on parathyroid chief cells and the renal tubule. It is the master Ca sentinel: HIGH serum Ca activates CaSR -&gt; SUPPRESSES PTH secretion and increases renal Ca excretion; LOW Ca releases the brake -&gt; PTH rises. It also senses Mg.</div><div class="rtt">⚠️ WRONG: mixing up the direction of CaSR mutations. LOSS-of-function -&gt; the gland can't 'see' high Ca -&gt; doesn't suppress PTH -&gt; Familial Hypocalciuric Hypercalcemia (FHH, high Ca, low urine Ca, inappropriately normal PTH) or neonatal severe hyperPTH. GAIN-of-function -&gt; gland over-suppresses -&gt; Autosomal Dominant Hypocalcemia (ADH, low Ca with low/normal PTH and hypercalciuria).</div></div><div class="rt"><div class="rtl">3. Cinacalcet dials down PTH</div><div class="rte">Calcimimetics (CINACALCET, etelcalcetide) are allosteric CaSR activators — they 'dial down' the PTH set-point so the gland releases less PTH at any given Ca. Uses: secondary hyperPTH in dialysis CKD, parathyroid CARCINOMA, and inoperable primary hyperPTH. Pharmacologically they mimic a CaSR gain-of-function (like ADH).</div><div class="rtt">⚠️ WRONG: giving cinacalcet to a hypocalcemic patient or expecting it to RAISE calcium. It LOWERS both PTH and serum Ca (CaSR activation), so it can cause/worsen hypocalcemia — it is for high-PTH states, not for treating low Ca, and not where Ca is already low.</div></div><div class="rt"><div class="rtl">4. Lithium raises set-point</div><div class="rte">Lithium shifts the parathyroid CaSR set-point UPWARD — the gland now requires a higher Ca to suppress, so it keeps secreting PTH at a normal Ca -&gt; mild HYPERcalcemia with an inappropriately normal/high PTH. Lithium also reduces urinary Ca excretion. Effect can persist and resemble primary hyperPTH.</div><div class="rtt">⚠️ WRONG: diagnosing primary hyperparathyroidism in a bipolar patient on lithium without considering the drug. Lithium-induced hypercalcemia mimics primary hyperPTH (high Ca, non-suppressed PTH, low urine Ca like FHH) — review the med list; the picture may improve off lithium.</div></div><div class="rt"><div class="rtl">5. Calcium river handling</div><div class="rte">Calcium handling: GUT absorbs ~20-70% (proximal small intestine), via passive paracellular flux AND active transcellular transport that is 1,25-D-DEPENDENT (TRPV6/calbindin). BONE holds 99% of body Ca. KIDNEY reabsorbs ~65% in the proximal tubule (paracellular, follows Na/water) and fine-tunes in the DISTAL convoluted tubule via TRPV5, which is stimulated by PTH.</div><div class="rtt">⚠️ WRONG: assuming diuretics affect Ca the same way. THIAZIDES act at the DCT to INCREASE Ca reabsorption -&gt; RAISE serum Ca / lower urine Ca (used for recurrent Ca stones and to reduce hypercalciuria). LOOP diuretics block the TAL Na-K-2Cl transporter -&gt; LOSE Ca in urine -&gt; LOWER serum Ca (used in hypercalcemia after volume repletion).</div></div><div class="rt"><div class="rtl">6. Thiazide / loop on Ca</div><div class="rte">Mechanistic split: THIAZIDES (DCT) -&gt; decrease URINARY Ca -&gt; serum Ca rises; clinically used to prevent calcium-oxalate stones and reduce renal Ca wasting (e.g., in hypoparathyroidism). LOOP diuretics (TAL) -&gt; increase urinary Ca -&gt; serum Ca falls; useful adjunct in hypercalcemia (only after rehydration) or in volume overload.</div><div class="rtt">⚠️ WRONG: giving a LOOP diuretic as a first move in hypercalcemia, or a THIAZIDE to a patient prone to hypercalcemia. Use a LOOP (not a thiazide) to lower Ca, and only AFTER restoring volume with saline. Conversely a thiazide can UNMASK or worsen hypercalcemia (e.g., in occult hyperPTH).</div></div><div class="rt"><div class="rtl">7. Phosphate / NaPi-2c</div><div class="rte">Phosphate is reabsorbed in the proximal tubule by sodium-phosphate cotransporters (NaPi-2a/NaPi-2c). Two hormones promote PHOSPHATURIA by downregulating these transporters: PTH and FGF23. So serum phosphate is governed largely by renal handling, and anything raising PTH or FGF23 lowers serum phosphate.</div><div class="rtt">⚠️ WRONG: thinking PTH raises phosphate the way it raises calcium. PTH raises Ca but LOWERS phosphate (it wastes phosphate in urine via NaPi downregulation). BOTH PTH and FGF23 are phosphaturic. That's why primary hyperPTH shows high Ca with LOW phosphate.</div></div><div class="rt"><div class="rtl">8. FGF23 / Klotho</div><div class="rte">FGF23 is secreted by OSTEOCYTES and requires the co-receptor KLOTHO to signal. It does two things: increases renal phosphate EXCRETION (downregulates NaPi) and SUPPRESSES 1-alpha-hydroxylase -&gt; lowers 1,25-D (and thus gut phosphate absorption). Net effect: lowers serum phosphate.</div><div class="rtt">⚠️ WRONG: forgetting FGF23 in unexplained hypophosphatemic bone disease. FGF23 EXCESS states cause low phosphate + low 1,25-D rickets/osteomalacia: X-linked hypophosphatemia (XLH, PHEX mutation) and TUMOR-INDUCED OSTEOMALACIA (paraneoplastic FGF23 from a small mesenchymal tumor). These don't respond to plain vitamin D — need calcitritol + phosphate (or burosumab, an anti-FGF23 antibody).</div></div><div class="rt"><div class="rtl">9. Magnesium channel (TRPM6)</div><div class="rte">Magnesium is reabsorbed mostly PARACELLULARLY in the thick ascending limb (through claudin-16/19 tight junctions, driven by the lumen-positive voltage) and actively in the DCT via TRPM6. Defects or drugs here cause renal Mg wasting -&gt; hypomagnesemia.</div><div class="rtt">⚠️ WRONG: overlooking drug/genetic causes of refractory hypomagnesemia. Mg wasters: LOOP diuretics, PPIs (chronic), aminoglycosides, cisplatin, amphotericin, calcineurin inhibitors, and GITELMAN syndrome (DCT, also low K, low Ca-uria) / Bartter (TAL). Because low Mg drives refractory hypocalcemia/hypokalemia, missing it stalls correction of both.</div></div><div class="rt"><div class="rtl">10. PTH-Mg paradox</div><div class="rte">The magnesium-PTH paradox: NORMAL Mg is required for PTH secretion, but BOTH severe HYPOmagnesemia AND HYPERmagnesemia SUPPRESS PTH release. Severe hypomagnesemia additionally causes end-organ PTH RESISTANCE — a double hit producing functional hypoparathyroidism and refractory hypocalcemia.</div><div class="rtt">⚠️ WRONG: escalating calcium repletion in refractory hypocalcemia without checking magnesium. If Mg is low, PTH can neither be secreted nor act, so Ca will not rise — REPLETE MAGNESIUM FIRST. Refractory hypocalcemia = think (and fix) magnesium before adding more calcium.</div></div><div class="rt"><div class="rtl">11. Feedback circuit</div><div class="rte">Integrated calcium-restoring loop: LOW Ca -&gt; CaSR 'off' the brake -&gt; PTH RISES -&gt; (1) bone osteoclastic resorption releases Ca, (2) DCT increases Ca reabsorption (and wastes phosphate via NaPi), and (3) renal 1-alpha-hydroxylase turns ON -&gt; more 1,25-D -&gt; gut absorbs more Ca. All three arms raise serum Ca back to normal; high Ca then re-activates CaSR and shuts PTH off.</div><div class="rtt">⚠️ WRONG: forgetting that PTH's net effect on phosphate is opposite its effect on calcium. While the loop RAISES Ca via bone, kidney, and gut, the same PTH simultaneously LOWERS serum phosphate (phosphaturia) — so the classic primary-hyperPTH chemistry is high Ca + low phosphate + high PTH.</div></div><div class="rt"><div class="rtl">12. PTH suppressing / NaPi</div><div class="rte">Summary banner of the harbor: PTH wastes phosphate via NaPi downregulation; CaSR is the master Ca sensor (calcimimetics down, lithium up); FGF23 (+Klotho) is the phosphate/1,25-D enforcer; thiazides lower urine Ca (raise serum Ca), loops raise urine Ca (lower serum Ca); and magnesium must be corrected first in refractory hypocalcemia.</div><div class="rtt">⚠️ WRONG: treating each ion in isolation. Ca, phosphate, and Mg are interdependent — fixing hypocalcemia may require correcting Mg first; lowering Ca means a loop (not thiazide) AFTER saline; and unexplained hypophosphatemia should trigger an FGF23 workup. Always read the three rivers together.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pbone_pseudohypopth.html" title="Parathyroid/Bone — Pseudohypoparathyroidism (GNAS Masquerade)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pbone_vitd.html" title="Parathyroid/Bone — Vitamin D Action &amp; Deficiency (Marketplace)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

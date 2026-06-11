@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Bone Marrow Failure — The Fibrotic Quarry (Myelophthisic Anemias)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Fibrotic quarry</b> — Don't confuse the INFILTRATED/replaced marrow of myelophthisis with the EMPTY, hypocellular, fatty marrow of aplastic anemia — the smear is the giveaway (leukoerythroblastic + teardrops in myelophthisis vs. pure pancytopenia without immature forms in AA).</li><li><b>Leukoerythroblastic smear</b> — A leukoerythroblastic smear is not specific for malignancy alone — severe sepsis, massive hemorrhage, and severe hemolysis can transiently mimic it, but persistent leukoerythroblastosis with teardrops strongly implies marrow infiltration/fibrosis.</li><li><b>Teardrop cells</b> — Teardrop cells point to marrow stress/infiltration but are not pathognomonic for any one cause — pair them with the clinical context (massive splenomegaly + JAK2 → myelofibrosis; bone pain + known primary → metastatic carcinoma).</li><li><b>Nucleated RBCs</b> — In an adult, any circulating nucleated RBCs warrant explanation — together with teardrops and a left shift they signal marrow infiltration; in isolation they may reflect severe hemolysis, hypoxia, or post-splenectomy state.</li><li><b>Dry tap</b> — A dry tap should never be reported as 'aplastic/hypocellular' — it usually means the marrow is too FIBROTIC or PACKED to aspirate. Always proceed to core biopsy; an aspirate alone can completely miss myelofibrosis or metastatic carcinoma.</li><li><b>Breast cancer mets</b> — New unexplained cytopenias plus bone pain in a patient with breast/prostate/lung cancer = think marrow metastasis (myelophthisis), not chemotherapy myelosuppression alone — biopsy confirms.</li><li><b>Prostate cancer</b> — Prostate (and breast) bone mets are typically osteoBLASTIC/sclerotic — multiple myeloma's are osteoLYTIC. Don't reflexively call sclerotic marrow-infiltrating lesions myeloma.</li><li><b>Myelofibrosis / PDGF</b> — The fibroblasts in myelofibrosis are a REACTIVE, polyclonal response to cytokines from the malignant clone — the fibroblasts themselves are not neoplastic. Also: massive splenomegaly + teardrops + JAK2 favors primary myelofibrosis over metastatic carcinoma.</li><li><b>Granulomatous (TB/fungus/sarcoid)</b> — In an immunocompromised or febrile patient with pancytopenia, granulomatous marrow infiltration (disseminated TB/histoplasmosis) is a treatable, easily-missed cause — always stain and culture the marrow, don't just label it idiopathic.</li><li><b>Storage / Gaucher</b> — Gaucher cells (wrinkled tissue-paper cytoplasm) are macrophages stuffed with glucocerebroside — distinguish from the foamy 'sea-blue' or Niemann-Pick storage cells; the clue is splenomegaly + cytopenias + bone crises in a young adult.</li><li><b>Osteopetrosis</b> — Osteopetrosis bone is DENSE but BRITTLE — paradoxically prone to fractures despite high radiographic density. The marrow failure is from physical obliteration of the cavity, and transplant works because osteoclasts derive from the hematopoietic lineage.</li><li><b>Spleen/liver EMH</b> — Massive splenomegaly with teardrop cells and a dry tap is the classic primary-myelofibrosis picture — but EMH can occur in any chronic marrow-failure/infiltration state, so it's a clue to chronicity, not a specific diagnosis.</li><li><b>Treat the cause</b> — There is no single 'myelophthisis treatment' — the cause dictates therapy, so the diagnostic core biopsy (with stains, cytogenetics, JAK2/CALR/MPL testing, and search for a primary) must come before management.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Fibrotic quarry</div><div class="rte">Myelophthisic anemia means the marrow space is physically invaded or replaced — by fibrosis, tumor, granuloma, or storage material — crowding out normal hematopoiesis and producing cytopenias. The hallmark is that the marrow is NOT empty (as in aplastic anemia) but packed with abnormal tissue, which forces immature precursors out into the blood.</div><div class="rtt">⚠️ Don't confuse the INFILTRATED/replaced marrow of myelophthisis with the EMPTY, hypocellular, fatty marrow of aplastic anemia — the smear is the giveaway (leukoerythroblastic + teardrops in myelophthisis vs. pure pancytopenia without immature forms in AA).</div></div><div class="rt"><div class="rtl">2. Leukoerythroblastic smear</div><div class="rte">The defining peripheral-blood picture is a leukoerythroblastic smear: immature myeloid precursors (myelocytes, metamyelocytes — a left shift) appear alongside nucleated red cells (normoblasts). The disrupted marrow architecture lets precursors escape prematurely into circulation. This triad — left-shifted granulocytes + nucleated RBCs + teardrop cells — should prompt a marrow biopsy.</div><div class="rtt">⚠️ A leukoerythroblastic smear is not specific for malignancy alone — severe sepsis, massive hemorrhage, and severe hemolysis can transiently mimic it, but persistent leukoerythroblastosis with teardrops strongly implies marrow infiltration/fibrosis.</div></div><div class="rt"><div class="rtl">3. Teardrop cells</div><div class="rte">Teardrop cells (dacrocytes) are red cells deformed as they are squeezed through a fibrotic/infiltrated marrow and the splenic cords during extramedullary hematopoiesis. They are the single most classic morphologic clue to marrow fibrosis or infiltration, and are a hallmark of primary myelofibrosis.</div><div class="rtt">⚠️ Teardrop cells point to marrow stress/infiltration but are not pathognomonic for any one cause — pair them with the clinical context (massive splenomegaly + JAK2 → myelofibrosis; bone pain + known primary → metastatic carcinoma).</div></div><div class="rt"><div class="rtl">4. Nucleated RBCs</div><div class="rte">Nucleated RBCs (normoblasts) in the peripheral blood of an adult are abnormal and signal marrow stress: either precursors are being pushed out by infiltration (myelophthisis) or there is intense erythropoietic drive/extramedullary hematopoiesis. Combined with immature myeloid forms they complete the leukoerythroblastic picture.</div><div class="rtt">⚠️ In an adult, any circulating nucleated RBCs warrant explanation — together with teardrops and a left shift they signal marrow infiltration; in isolation they may reflect severe hemolysis, hypoxia, or post-splenectomy state.</div></div><div class="rt"><div class="rtl">5. Dry tap</div><div class="rte">A 'dry tap' — failure to aspirate marrow — occurs when fibrosis or packed tumor makes the marrow inaspirable. This mandates a core trephine BIOPSY (with reticulin/collagen staining) rather than aspiration to demonstrate the fibrosis or infiltrate and reach a diagnosis.</div><div class="rtt">⚠️ A dry tap should never be reported as 'aplastic/hypocellular' — it usually means the marrow is too FIBROTIC or PACKED to aspirate. Always proceed to core biopsy; an aspirate alone can completely miss myelofibrosis or metastatic carcinoma.</div></div><div class="rt"><div class="rtl">6. Breast cancer mets</div><div class="rte">Metastatic carcinoma is the most common cause of myelophthisic anemia in adults. The classic marrow-seeking solid tumors are breast, prostate, and lung (also gastric, thyroid, renal). In a patient with a known primary plus new cytopenias, teardrops, and a leukoerythroblastic smear, marrow metastasis tops the differential.</div><div class="rtt">⚠️ New unexplained cytopenias plus bone pain in a patient with breast/prostate/lung cancer = think marrow metastasis (myelophthisis), not chemotherapy myelosuppression alone — biopsy confirms.</div></div><div class="rt"><div class="rtl">7. Prostate cancer</div><div class="rte">Prostate carcinoma classically metastasizes to bone with OSTEOBLASTIC (sclerotic) lesions and can infiltrate the marrow to cause myelophthisis. Look for the combination of a very high alkaline phosphatase/PSA, sclerotic bone lesions, and a leukoerythroblastic smear.</div><div class="rtt">⚠️ Prostate (and breast) bone mets are typically osteoBLASTIC/sclerotic — multiple myeloma's are osteoLYTIC. Don't reflexively call sclerotic marrow-infiltrating lesions myeloma.</div></div><div class="rt"><div class="rtl">8. Lung cancer</div><div class="rte">Lung cancer (especially small cell) is another common solid tumor that infiltrates the marrow, producing cytopenias and a leukoerythroblastic blood picture. It may also cause cytopenias via paraneoplastic mechanisms, so marrow biopsy distinguishes direct infiltration from other causes.</div></div><div class="rt"><div class="rtl">9. Myelofibrosis / PDGF</div><div class="rte">Primary myelofibrosis is a myeloproliferative neoplasm in which clonal megakaryocytes/monocytes release fibrogenic cytokines — PDGF and TGF-β — that stimulate reactive (polyclonal) fibroblast collagen/reticulin deposition. Drivers are JAK2 V617F (~50-60%), CALR, or MPL mutations. Clinically: massive splenomegaly (extramedullary hematopoiesis), teardrop cells, leukoerythroblastosis, and a dry tap. JAK inhibitors (ruxolitinib) reduce spleen size and symptoms; allogeneic transplant is the only cure.</div><div class="rtt">⚠️ The fibroblasts in myelofibrosis are a REACTIVE, polyclonal response to cytokines from the malignant clone — the fibroblasts themselves are not neoplastic. Also: massive splenomegaly + teardrops + JAK2 favors primary myelofibrosis over metastatic carcinoma.</div></div><div class="rt"><div class="rtl">10. Granulomatous (TB/fungus/sarcoid)</div><div class="rte">Infiltrative infections and granulomatous disease can replace marrow: disseminated tuberculosis, disseminated fungal infection (histoplasmosis), and sarcoidosis form marrow granulomas that displace hematopoiesis. Marrow biopsy with AFB/fungal stains and culture is key in a patient with fever, weight loss, and cytopenias.</div><div class="rtt">⚠️ In an immunocompromised or febrile patient with pancytopenia, granulomatous marrow infiltration (disseminated TB/histoplasmosis) is a treatable, easily-missed cause — always stain and culture the marrow, don't just label it idiopathic.</div></div><div class="rt"><div class="rtl">11. Storage / Gaucher</div><div class="rte">Storage diseases infiltrate marrow with lipid-laden macrophages — Gaucher disease (glucocerebrosidase deficiency) produces 'crumpled tissue paper' Gaucher cells that crowd out hematopoiesis, causing anemia, thrombocytopenia, and hepatosplenomegaly. Enzyme replacement therapy is the treatment.</div><div class="rtt">⚠️ Gaucher cells (wrinkled tissue-paper cytoplasm) are macrophages stuffed with glucocerebroside — distinguish from the foamy 'sea-blue' or Niemann-Pick storage cells; the clue is splenomegaly + cytopenias + bone crises in a young adult.</div></div><div class="rt"><div class="rtl">12. Osteopetrosis</div><div class="rte">Osteopetrosis results from defective osteoclasts (e.g., carbonic anhydrase II or chloride-channel defects) that cannot resorb bone, so dense sclerotic bone progressively obliterates the marrow cavity, causing marrow failure with anemia and thrombocytopenia. The malignant infantile form is treated by hematopoietic stem cell transplant (which restores osteoclasts).</div><div class="rtt">⚠️ Osteopetrosis bone is DENSE but BRITTLE — paradoxically prone to fractures despite high radiographic density. The marrow failure is from physical obliteration of the cavity, and transplant works because osteoclasts derive from the hematopoietic lineage.</div></div><div class="rt"><div class="rtl">13. Spleen/liver EMH</div><div class="rte">When the marrow can no longer support hematopoiesis, blood-cell production reverts to fetal sites — the spleen and liver — producing extramedullary hematopoiesis (EMH) with resultant hepatosplenomegaly (often massive splenomegaly in myelofibrosis). EMH also contributes to teardrop-cell formation as cells traverse the spleen.</div><div class="rtt">⚠️ Massive splenomegaly with teardrop cells and a dry tap is the classic primary-myelofibrosis picture — but EMH can occur in any chronic marrow-failure/infiltration state, so it's a clue to chronicity, not a specific diagnosis.</div></div><div class="rt"><div class="rtl">14. Treat the cause</div><div class="rte">Management of myelophthisic anemia is directed at the underlying process: treat the cancer (systemic therapy/radiation for metastatic carcinoma), the infection (anti-TB/antifungal), the storage disease (enzyme replacement), or the MPN (JAK inhibitors, allogeneic transplant for myelofibrosis). Transfusions and supportive care bridge while the cause is addressed.</div><div class="rtt">⚠️ There is no single 'myelophthisis treatment' — the cause dictates therapy, so the diagnostic core biopsy (with stains, cytogenetics, JAK2/CALR/MPL testing, and search for a primary) must come before management.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="bmf_overview.html" title="Bone Marrow Failure — The Empty Factory">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="bmf_aa_pathophysiology.html" title="Bone Marrow Failure — The Immune Siege (AA Pathophysiology &amp; Diagnosis)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

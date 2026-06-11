@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Adrenal Insufficiency/CAH — Etiology Atlas of Adrenal Insufficiency</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Left wing — primary causes</b> — Primary AI is the ONLY type with high ACTH, low aldosterone, hyperkalemia, and hyperpigmentation together.</li><li><b>Autoimmune adrenalitis</b> — Autoimmune is #1 in DEVELOPED countries, but TB remains #1 WORLDWIDE — the board loves this geography swap.</li><li><b>APS-1 / APS-2</b> — APS-1 = candidiasis + hypoparathyroidism + Addison; APS-2 = Addison + thyroid + T1DM (no candidiasis/hypoparathyroidism).</li><li><b>Tuberculosis</b> — TB (not autoimmune) is #1 worldwide; bilateral adrenal calcification on imaging points to TB or prior hemorrhage.</li><li><b>Infiltrative / infectious gallery</b> — Adrenal metastases are common but rarely cause AI unless BOTH glands are largely replaced (&gt;90% cortex lost).</li><li><b>Waterhouse-Friderichsen</b> — Waterhouse-Friderichsen = meningococcemia + bilateral adrenal hemorrhage → acute adrenal crisis; give stress-dose hydrocortisone immediately, don't wait for confirmatory labs.</li><li><b>Genetic / drug-induced (primary)</b> — In a young man with AI plus progressive neurologic/behavioral decline, think X-linked adrenoleukodystrophy (check very-long-chain fatty acids).</li><li><b>Central wing — secondary/tertiary</b> — Central AI keeps aldosterone → normal potassium and pale skin; only cortisol-deficiency hyponatremia (via ADH) is seen.</li><li><b>Pituitary tumor / mass effect</b> — In hypopituitarism, give glucocorticoid BEFORE levothyroxine — starting thyroid hormone first can precipitate adrenal crisis.</li><li><b>Sheehan syndrome</b> — Postpartum woman who can't lactate and has amenorrhea → Sheehan; remember her acute AI may still pass a cosyntropin test if the adrenal hasn't yet atrophied.</li><li><b>Pituitary apoplexy</b> — Sudden severe headache + visual change + hypotension in a known/occult pituitary adenoma = apoplexy → give hydrocortisone STAT before imaging confirms.</li><li><b>Exogenous steroids (tertiary)</b> — Any prednisone equivalent &gt;20 mg/day for &gt;3 weeks (or Cushingoid appearance) suppresses the axis — never stop abruptly; taper and stress-dose for illness/surgery.</li><li><b>Genetic/infiltrative central</b> — Checkpoint inhibitors (ipilimumab/nivolumab) are an increasingly tested cause — hypophysitis → secondary AI; direct adrenalitis → primary AI.</li><li><b>Clinical pearl banner</b> — Don't conflate 'most common primary' (autoimmune in developed world) with 'most common overall' (exogenous steroids).</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Left wing — primary causes</div><div class="rte">The left wing collects causes of PRIMARY AI, where the adrenal cortex itself is destroyed or fails. Because cortisol AND aldosterone AND androgens all fall, the labs show low cortisol, low aldosterone with high renin, and high ACTH (lost feedback). The high ACTH/MSH causes hyperpigmentation, and aldosterone loss causes hyponatremia + hyperkalemia. This is the only category with mineralocorticoid loss.</div><div class="rtt">⚠️ Primary AI is the ONLY type with high ACTH, low aldosterone, hyperkalemia, and hyperpigmentation together.</div></div><div class="rt"><div class="rtl">2. Autoimmune adrenalitis</div><div class="rte">Autoimmune (Addison) adrenalitis is the #1 cause of primary AI in the developed world, driven by 21-hydroxylase autoantibodies that destroy the cortex. It can be isolated or part of a polyglandular syndrome. The zona glomerulosa is often hit early, so isolated hyperreninemia/aldosterone loss can precede overt cortisol deficiency.</div><div class="rtt">⚠️ Autoimmune is #1 in DEVELOPED countries, but TB remains #1 WORLDWIDE — the board loves this geography swap.</div></div><div class="rt"><div class="rtl">3. APS-1 / APS-2</div><div class="rte">Autoimmune AI clusters in autoimmune polyglandular syndromes. APS-1 (AIRE gene, childhood): the triad of chronic mucocutaneous candidiasis + hypoparathyroidism + Addison disease (CMC + HypoPTH + Adrenal). APS-2 (adults, more common): Addison + autoimmune thyroid disease and/or type 1 diabetes (Schmidt syndrome). Screen patients with one autoimmune endocrinopathy for the others.</div><div class="rtt">⚠️ APS-1 = candidiasis + hypoparathyroidism + Addison; APS-2 = Addison + thyroid + T1DM (no candidiasis/hypoparathyroidism).</div></div><div class="rt"><div class="rtl">4. Tuberculosis</div><div class="rte">TB is the most common cause of primary AI WORLDWIDE, producing bilateral infiltrative/granulomatous destruction (and sometimes adrenal calcification on CT). It destroys both cortex and medulla over time. In endemic regions or immigrants, work up new primary AI with a chest X-ray and adrenal imaging.</div><div class="rtt">⚠️ TB (not autoimmune) is #1 worldwide; bilateral adrenal calcification on imaging points to TB or prior hemorrhage.</div></div><div class="rt"><div class="rtl">5. Infiltrative / infectious gallery</div><div class="rte">Other primary causes include opportunistic/disseminated infections (HIV-associated CMV adrenalitis, histoplasmosis, other fungi), metastatic disease (lung, breast — adrenals are a common metastatic site), and infiltrative diseases (amyloidosis, hemochromatosis, sarcoidosis). These typically need bilateral involvement to cause AI because of large cortical reserve.</div><div class="rtt">⚠️ Adrenal metastases are common but rarely cause AI unless BOTH glands are largely replaced (&gt;90% cortex lost).</div></div><div class="rt"><div class="rtl">6. Waterhouse-Friderichsen</div><div class="rte">Waterhouse-Friderichsen syndrome is acute bilateral adrenal hemorrhage classically from Neisseria meningitidis sepsis (also Pseudomonas, DIC). It presents as fulminant shock, purpura, and acute primary AI (adrenal crisis). Anticoagulation, antiphospholipid syndrome, and severe stress/surgery are other causes of bilateral adrenal hemorrhage.</div><div class="rtt">⚠️ Waterhouse-Friderichsen = meningococcemia + bilateral adrenal hemorrhage → acute adrenal crisis; give stress-dose hydrocortisone immediately, don't wait for confirmatory labs.</div></div><div class="rt"><div class="rtl">7. Genetic / drug-induced (primary)</div><div class="rte">Genetic primary causes: congenital adrenal hyperplasia (21-hydroxylase deficiency, ~90% of CAH — low cortisol/aldosterone with high androgens and salt-wasting) and X-linked adrenoleukodystrophy (ABCD1, very-long-chain fatty acids; AI + neurologic decline in boys/men). Drugs that block adrenal steroidogenesis: ketoconazole, etomidate (single dose can drop cortisol), metyrapone, mitotane.</div><div class="rtt">⚠️ In a young man with AI plus progressive neurologic/behavioral decline, think X-linked adrenoleukodystrophy (check very-long-chain fatty acids).</div></div><div class="rt"><div class="rtl">8. Central wing — secondary/tertiary</div><div class="rte">The central wing holds CENTRAL AI: secondary (pituitary ACTH deficiency) and tertiary (hypothalamic CRH deficiency, including steroid suppression). ACTH is low/inappropriately normal, so cortisol and androgens fall but ALDOSTERONE IS PRESERVED (RAAS-driven). Result: no hyperkalemia, no salt craving, no hyperpigmentation (low ACTH/MSH), pale skin.</div><div class="rtt">⚠️ Central AI keeps aldosterone → normal potassium and pale skin; only cortisol-deficiency hyponatremia (via ADH) is seen.</div></div><div class="rt"><div class="rtl">9. Pituitary tumor / mass effect</div><div class="rte">Pituitary macroadenomas, craniopharyngiomas, and metastases destroy or compress corticotrophs → secondary AI, often with mass effect (bitemporal hemianopia from optic chiasm compression) and other hormone deficits (panhypopituitarism). ACTH is typically among the LAST axes lost (order often: GH → gonadotropins → TSH → ACTH).</div><div class="rtt">⚠️ In hypopituitarism, give glucocorticoid BEFORE levothyroxine — starting thyroid hormone first can precipitate adrenal crisis.</div></div><div class="rt"><div class="rtl">10. Sheehan syndrome</div><div class="rte">Sheehan syndrome is postpartum pituitary necrosis from peripartum hemorrhage/hypotension acting on the gestationally enlarged gland → secondary AI plus other deficits. Classic clues: failure to lactate (prolactin loss) and failure to resume menses (gonadotropin loss), later fatigue/hypothyroid features. Onset can be acute or insidious months to years later.</div><div class="rtt">⚠️ Postpartum woman who can't lactate and has amenorrhea → Sheehan; remember her acute AI may still pass a cosyntropin test if the adrenal hasn't yet atrophied.</div></div><div class="rt"><div class="rtl">11. Pituitary apoplexy</div><div class="rte">Pituitary apoplexy is sudden hemorrhage or infarction of the pituitary (often into a pre-existing adenoma) → thunderclap headache, ophthalmoplegia, visual loss, and ACUTE secondary AI. It is an endocrine/neurosurgical emergency requiring immediate stress-dose glucocorticoids and urgent imaging.</div><div class="rtt">⚠️ Sudden severe headache + visual change + hypotension in a known/occult pituitary adenoma = apoplexy → give hydrocortisone STAT before imaging confirms.</div></div><div class="rt"><div class="rtl">12. Exogenous steroids (tertiary)</div><div class="rte">Chronic exogenous glucocorticoids suppress hypothalamic CRH and pituitary ACTH (tertiary AI) and cause the adrenal to atrophy — this is the MOST COMMON cause of AI overall. Risk rises with dose, duration (&gt;3 weeks of supraphysiologic dosing), and potency; abrupt withdrawal or an intercurrent stress unmasks crisis. Always taper and stress-dose.</div><div class="rtt">⚠️ Any prednisone equivalent &gt;20 mg/day for &gt;3 weeks (or Cushingoid appearance) suppresses the axis — never stop abruptly; taper and stress-dose for illness/surgery.</div></div><div class="rt"><div class="rtl">13. Genetic/infiltrative central</div><div class="rte">Central AI also arises from congenital combined pituitary hormone deficiency (CPHD), isolated ACTH deficiency, cranial irradiation, traumatic brain injury, and infiltrative disease — lymphocytic hypophysitis, sarcoidosis, hemochromatosis, and Langerhans cell histiocytosis. Newer cause: immune checkpoint inhibitors causing hypophysitis (secondary) or adrenalitis (primary).</div><div class="rtt">⚠️ Checkpoint inhibitors (ipilimumab/nivolumab) are an increasingly tested cause — hypophysitis → secondary AI; direct adrenalitis → primary AI.</div></div><div class="rt"><div class="rtl">14. Clinical pearl banner</div><div class="rte">Etiology one-liner to memorize: autoimmune adrenalitis = #1 primary in developed countries; TB = #1 primary worldwide; Waterhouse-Friderichsen = meningococcal bilateral adrenal hemorrhage; exogenous glucocorticoids = #1 cause of AI overall (tertiary). Localize with ACTH (high = primary, low/normal = central) plus renin/aldosterone and 21-hydroxylase antibodies.</div><div class="rtt">⚠️ Don't conflate 'most common primary' (autoimmune in developed world) with 'most common overall' (exogenous steroids).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="adrai_diagnosis.html" title="Adrenal Insufficiency/CAH — Diagnostic Algorithm Lab">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="adrai_hpa_axis.html" title="Adrenal Insufficiency/CAH — The HPA Axis &amp; Adrenal Zones Castle">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

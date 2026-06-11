@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Sleep Apnea — Treatment &amp; Complications</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>CPAP machine — first line</b> — WRONG answer: choosing an oral appliance or surgery first for moderate-severe OSA. CPAP is the most effective therapy and the first choice for these patients; alternatives are for mild disease or CPAP intolerance. The discriminator: CPAP is first-line; dental devices/surgery are second-line.</li><li><b>CPAP mask held up</b> — WRONG answer: abandoning CPAP and jumping to surgery the moment a patient reports discomfort. The correct next step is to TROUBLESHOOT adherence (mask refit, humidification, pressure adjustment, desensitization) before switching to a less effective modality. The discriminator: most CPAP failure is an adherence problem, not a device-efficacy problem.</li><li><b>Weight loss — mild OSA</b> — WRONG answer: relying on weight loss ALONE in a patient with severe OSA who needs immediate symptom and risk control. Weight loss is slow and adjunctive in severe disease — CPAP is still needed now. The discriminator: weight loss can be definitive for MILD obesity-related OSA but is adjunctive for moderate-severe disease.</li><li><b>Oral appliance</b> — WRONG answer: offering an oral appliance as primary therapy for severe OSA. Efficacy falls with severity, so CPAP remains first-line for AHI ≥30. The discriminator: oral appliances are for mild-moderate disease or CPAP intolerance, not as first-line for severe OSA.</li><li><b>UPPP — less effective</b> — WRONG answer: recommending UPPP as the first-line treatment for typical adult OSA. Surgery is NOT first-line — CPAP is. UPPP in particular is unreliable in obese, multilevel disease. The discriminator: surgery is a salvage/selected-anatomy option after CPAP failure, not initial therapy.</li><li><b>Avoid sedatives/alcohol</b> — WRONG answer: prescribing a benzodiazepine or 'sleeping pill' to a snoring, sleepy patient for 'insomnia' before evaluating for OSA. Sedatives worsen apneas and can be dangerous in undiagnosed OSA. The discriminator: in suspected/known OSA, sedatives and alcohol are contraindicated/avoided — they aggravate airway collapse.</li><li><b>No FDA drug</b> — WRONG answer: selecting a pharmacologic agent (e.g., modafinil) as PRIMARY therapy for OSA. Wake-promoting drugs only address leftover sleepiness in already-treated, adherent patients — they do nothing for the obstruction. The discriminator: primary OSA therapy is mechanical/behavioral; drugs are at most adjuncts for residual sleepiness.</li><li><b>Resistant HTN cuff</b> — WRONG answer: escalating to a fourth or fifth antihypertensive in an obese snorer with resistant HTN without screening for OSA. OSA is a treatable secondary cause that should be evaluated. The discriminator: resistant hypertension (≥3 drugs incl. diuretic) plus snoring/sleepiness/obesity warrants a sleep study, not just more pills.</li><li><b>Non-dipping → secondary HTN</b> — WRONG answer: ignoring a non-dipping pattern on ABPM as 'monitoring artifact.' Loss of nocturnal dipping is a meaningful sign that should prompt OSA evaluation. The discriminator: non-dipping/resistant nocturnal hypertension is a recognized OSA fingerprint and a cardiovascular risk marker.</li><li><b>AF / arrhythmia trophy</b> — WRONG answer: attempting repeat cardioversion/ablation in recurrent AF without screening for and treating coexisting OSA. Untreated OSA undermines rhythm control. The discriminator: recurrent AF after rhythm-control intervention should prompt evaluation for OSA, whose treatment improves outcomes.</li><li><b>Pulmonary HTN → right heart failure</b> — WRONG answer: working up isolated right-sided heart failure/pulmonary hypertension in an obese, sleepy snorer without a sleep study. OSA (and obesity hypoventilation) is a reversible contributor to Group 3 pulmonary hypertension. The discriminator: nocturnal-hypoxia-driven pulmonary HTN points to a sleep-breathing disorder as the cause.</li><li><b>Obesity hypoventilation (BiPAP)</b> — WRONG answer: prescribing plain CPAP for a hypercapnic obese patient with daytime CO2 retention. CPAP alone may not correct the hypoventilation — BiPAP (or volume-targeted support) is preferred when daytime hypercapnia is present. The discriminator: OHS is defined by AWAKE daytime hypercapnia (vs simple OSA, which has normal daytime CO2), and it needs bilevel ventilatory support.</li><li><b>Mortality benefit unproven</b> — WRONG answer: claiming CPAP has 'proven mortality benefit' as the main reason to prescribe it, or conversely refusing CPAP because trials were neutral on mortality. The evidence-based justification is symptomatic and BP/quality-of-life benefit (and accident reduction). The discriminator: CPAP's documented benefits are symptomatic/QoL/BP, while a hard cardiovascular mortality benefit remains unproven.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. CPAP machine — first line</div><div class="rte">Continuous positive airway pressure (CPAP) is the FIRST-LINE therapy for moderate-to-severe OSA (AHI ≥15, or ≥5 with significant symptoms/comorbidity). It works as a pneumatic splint: continuous pressure delivered through a mask holds the collapsible pharynx open across the whole respiratory cycle, abolishing apneas/hypopneas, restoring oxygenation, and consolidating sleep. Auto-titrating (APAP) and fixed-pressure devices are options.</div><div class="rtt">⚠️ WRONG answer: choosing an oral appliance or surgery first for moderate-severe OSA. CPAP is the most effective therapy and the first choice for these patients; alternatives are for mild disease or CPAP intolerance. The discriminator: CPAP is first-line; dental devices/surgery are second-line.</div></div><div class="rt"><div class="rtl">2. CPAP mask held up</div><div class="rte">CPAP reliably improves daytime sleepiness (Epworth), neurocognitive function, quality of life, and lowers blood pressure (modestly, especially in resistant HTN). Its principal limitation is ADHERENCE — many patients struggle with the mask/pressure. Adherence is improved by good mask fit, humidification, treating nasal congestion, ramp features, and behavioral support; non-adherence is the most common reason CPAP 'fails.'</div><div class="rtt">⚠️ WRONG answer: abandoning CPAP and jumping to surgery the moment a patient reports discomfort. The correct next step is to TROUBLESHOOT adherence (mask refit, humidification, pressure adjustment, desensitization) before switching to a less effective modality. The discriminator: most CPAP failure is an adherence problem, not a device-efficacy problem.</div></div><div class="rt"><div class="rtl">3. Weight loss — mild OSA</div><div class="rte">Weight loss is core therapy for all obese OSA patients and can be sufficient or even CURATIVE in mild, obesity-related disease. Losing parapharyngeal and visceral fat widens the airway and improves lung volumes; even 10% weight loss can substantially reduce AHI, and bariatric surgery markedly improves OSA in the morbidly obese. It complements CPAP in moderate-severe disease.</div><div class="rtt">⚠️ WRONG answer: relying on weight loss ALONE in a patient with severe OSA who needs immediate symptom and risk control. Weight loss is slow and adjunctive in severe disease — CPAP is still needed now. The discriminator: weight loss can be definitive for MILD obesity-related OSA but is adjunctive for moderate-severe disease.</div></div><div class="rt"><div class="rtl">4. Oral appliance</div><div class="rte">Mandibular advancement devices protrude the lower jaw (and tongue) forward, enlarging the retroglossal airway. They are a reasonable option for MILD-to-MODERATE OSA, for CPAP-intolerant patients, or for predominantly positional/supine disease. They are less effective than CPAP, especially as severity rises, and require dental follow-up (bite changes, TMJ discomfort).</div><div class="rtt">⚠️ WRONG answer: offering an oral appliance as primary therapy for severe OSA. Efficacy falls with severity, so CPAP remains first-line for AHI ≥30. The discriminator: oral appliances are for mild-moderate disease or CPAP intolerance, not as first-line for severe OSA.</div></div><div class="rt"><div class="rtl">5. UPPP — less effective</div><div class="rte">Uvulopalatopharyngoplasty (UPPP) removes redundant soft palate/uvular/pharyngeal tissue but has variable, often modest and non-durable success because OSA collapse is usually multilevel. It is reserved for selected patients (clear anatomic obstruction, non-obese, CPAP failure). Other surgical options: tonsillectomy (esp. children), maxillomandibular advancement (most effective surgery in adults), and hypoglossal nerve stimulation in selected CPAP-intolerant patients.</div><div class="rtt">⚠️ WRONG answer: recommending UPPP as the first-line treatment for typical adult OSA. Surgery is NOT first-line — CPAP is. UPPP in particular is unreliable in obese, multilevel disease. The discriminator: surgery is a salvage/selected-anatomy option after CPAP failure, not initial therapy.</div></div><div class="rt"><div class="rtl">6. Avoid sedatives/alcohol</div><div class="rte">Alcohol, benzodiazepines, opioids, and other sedative-hypnotics must be AVOIDED: they depress the pharyngeal dilator muscles and the arousal/ventilatory response, prolonging apneas, deepening desaturations, and worsening OSA. Alcohol near bedtime acutely increases AHI. Opioids can additionally precipitate or worsen CENTRAL sleep apnea.</div><div class="rtt">⚠️ WRONG answer: prescribing a benzodiazepine or 'sleeping pill' to a snoring, sleepy patient for 'insomnia' before evaluating for OSA. Sedatives worsen apneas and can be dangerous in undiagnosed OSA. The discriminator: in suspected/known OSA, sedatives and alcohol are contraindicated/avoided — they aggravate airway collapse.</div></div><div class="rt"><div class="rtl">7. No FDA drug</div><div class="rte">No medication reliably treats the airway obstruction of OSA itself — management is mechanical (CPAP/BiPAP, oral appliance) and behavioral (weight loss, positional therapy, avoiding sedatives). Wake-promoting agents (modafinil/armodafinil, solriamfetol) can be ADJUNCTS for residual daytime sleepiness despite adequate CPAP use, but they treat the symptom, not the apneas.</div><div class="rtt">⚠️ WRONG answer: selecting a pharmacologic agent (e.g., modafinil) as PRIMARY therapy for OSA. Wake-promoting drugs only address leftover sleepiness in already-treated, adherent patients — they do nothing for the obstruction. The discriminator: primary OSA therapy is mechanical/behavioral; drugs are at most adjuncts for residual sleepiness.</div></div><div class="rt"><div class="rtl">8. Resistant HTN cuff</div><div class="rte">Each apnea triggers hypoxia and arousal that drive sympathetic surges, raising blood pressure repeatedly through the night and chronically. OSA is a leading cause of SECONDARY and RESISTANT hypertension and of the non-dipping nocturnal BP pattern. CPAP produces a modest but real BP reduction, greatest in resistant hypertension.</div><div class="rtt">⚠️ WRONG answer: escalating to a fourth or fifth antihypertensive in an obese snorer with resistant HTN without screening for OSA. OSA is a treatable secondary cause that should be evaluated. The discriminator: resistant hypertension (≥3 drugs incl. diuretic) plus snoring/sleepiness/obesity warrants a sleep study, not just more pills.</div></div><div class="rt"><div class="rtl">9. Non-dipping → secondary HTN</div><div class="rte">Normally blood pressure 'dips' ≥10% during sleep; OSA blunts this, producing a NON-DIPPING (or reverse-dipping) pattern on ambulatory BP monitoring, a marker of more severe disease and elevated cardiovascular/target-organ risk. Non-dipping plus daytime hypertension in an obese snorer is a strong pointer to OSA.</div><div class="rtt">⚠️ WRONG answer: ignoring a non-dipping pattern on ABPM as 'monitoring artifact.' Loss of nocturnal dipping is a meaningful sign that should prompt OSA evaluation. The discriminator: non-dipping/resistant nocturnal hypertension is a recognized OSA fingerprint and a cardiovascular risk marker.</div></div><div class="rt"><div class="rtl">10. AF / arrhythmia trophy</div><div class="rte">OSA strongly predisposes to atrial fibrillation (via atrial stretch from negative intrathoracic pressure swings, hypoxia, sympathetic surges, and inflammation) and to nocturnal bradyarrhythmias/AV block during apneas. Untreated OSA markedly increases AF RECURRENCE after cardioversion or ablation; treating OSA with CPAP improves rhythm-control success.</div><div class="rtt">⚠️ WRONG answer: attempting repeat cardioversion/ablation in recurrent AF without screening for and treating coexisting OSA. Untreated OSA undermines rhythm control. The discriminator: recurrent AF after rhythm-control intervention should prompt evaluation for OSA, whose treatment improves outcomes.</div></div><div class="rt"><div class="rtl">11. Pulmonary HTN → right heart failure</div><div class="rte">Chronic nocturnal hypoxemia causes hypoxic pulmonary vasoconstriction and vascular remodeling, producing pulmonary hypertension and, over time, cor pulmonale (right heart failure) with peripheral edema, elevated JVP, and a loud P2. This is WHO Group 3 pulmonary hypertension (lung/hypoxia-related). Treating the OSA (and any coexisting obesity hypoventilation) is central to management.</div><div class="rtt">⚠️ WRONG answer: working up isolated right-sided heart failure/pulmonary hypertension in an obese, sleepy snorer without a sleep study. OSA (and obesity hypoventilation) is a reversible contributor to Group 3 pulmonary hypertension. The discriminator: nocturnal-hypoxia-driven pulmonary HTN points to a sleep-breathing disorder as the cause.</div></div><div class="rt"><div class="rtl">12. Obesity hypoventilation (BiPAP)</div><div class="rte">Obesity hypoventilation syndrome (OHS, 'Pickwickian') = obesity (BMI ≥30) + AWAKE DAYTIME hypercapnia (PaCO2 ≥45 mmHg) not explained by another cause; most OHS patients also have OSA. Treat with BiPAP, which delivers two pressures — higher inspiratory (IPAP) and lower expiratory (EPAP) — so the IPAP–EPAP difference provides ventilatory support to blow off CO2, unlike plain CPAP (one pressure) which only splints the airway.</div><div class="rtt">⚠️ WRONG answer: prescribing plain CPAP for a hypercapnic obese patient with daytime CO2 retention. CPAP alone may not correct the hypoventilation — BiPAP (or volume-targeted support) is preferred when daytime hypercapnia is present. The discriminator: OHS is defined by AWAKE daytime hypercapnia (vs simple OSA, which has normal daytime CO2), and it needs bilevel ventilatory support.</div></div><div class="rt"><div class="rtl">13. Mortality benefit unproven</div><div class="rte">CPAP clearly improves daytime sleepiness, quality of life, and blood pressure, and reduces accidents. However, large randomized trials (e.g., SAVE) did NOT demonstrate a clear reduction in hard cardiovascular events or mortality — partly attributed to low CPAP adherence in trials. CPAP is still indicated for symptom control and risk-factor modification.</div><div class="rtt">⚠️ WRONG answer: claiming CPAP has 'proven mortality benefit' as the main reason to prescribe it, or conversely refusing CPAP because trials were neutral on mortality. The evidence-based justification is symptomatic and BP/quality-of-life benefit (and accident reduction). The discriminator: CPAP's documented benefits are symptomatic/QoL/BP, while a hard cardiovascular mortality benefit remains unproven.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="osa_overview.html" title="Sleep Apnea — Overview &amp; Pathophysiology">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="respdist_dlco.html" title="Respiratory Disturbance — DLCO Bazaar (High vs Low Causes)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

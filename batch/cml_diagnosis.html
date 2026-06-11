@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CML — Diagnosis &amp; Lab Workup</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>9</em></summary><ol class="traps"><li><b>Cytogenetics mandatory</b> — Karyotype — not FISH or PCR — is the only test that detects additional cytogenetic abnormalities (+8, i(17q), double Ph, 3q26.2). These ACAs upstage to accelerated phase and change risk, so you cannot skip the marrow karyotype at diagnosis.</li><li><b>Ph t(9;22)</b> — Diagnosis needs BCR-ABL1 confirmation: a 'leukemoid reaction' (infection/sepsis) can mimic the CBC but is Ph-negative with a HIGH LAP score.</li><li><b>ACAs (additional abnormalities)</b> — ACAs are prognostically important but invisible to FISH/PCR — this is the board's favorite reason that karyotype remains mandatory despite molecular testing.</li><li><b>FISH</b> — FISH confirms the BCR-ABL1 fusion but CANNOT detect additional cytogenetic abnormalities or measure transcript level on the International Scale — it does not replace karyotype (for ACAs) or PCR (for monitoring).</li><li><b>Quantitative PCR</b> — PCR is the most sensitive test and the one used for serial monitoring/MRD and milestone assessment — not karyotype. Standard primers can miss atypical transcripts (false-negative).</li><li><b>Leukocytosis</b> — Unlike acute leukemia, CML shows the complete maturation spectrum with relatively FEW blasts in chronic phase — a 'leukoerythroblastic' full-range left shift, not a blast-dominant picture.</li><li><b>Low LAP score</b> — LAP is LOW in CML but HIGH in a leukemoid reaction, infection, and other myeloproliferative neoplasms (e.g. polycythemia vera). High WBC + LOW LAP → think CML; high WBC + HIGH LAP → reactive.</li><li><b>Basophilia</b> — Persistent unexplained basophilia should prompt a workup for CML. Basophils ≥20% specifically upstages to accelerated phase.</li><li><b>Blast % defines phase</b> — Memorize the cutoffs: chronic &lt;10%, accelerated 10-19%, blast crisis ≥20% blasts. Some older criteria use ≥30% for blast phase — know both.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Cytogenetics mandatory</div><div class="rte">Bone-marrow karyotype (conventional cytogenetics on ≥20 metaphases) is mandatory at diagnosis: it confirms the Ph chromosome AND surveys the whole genome for additional clonal abnormalities (ACAs) that FISH and PCR cannot see. It also establishes the baseline against which cytogenetic response is later measured.</div><div class="rtt">⚠️ Karyotype — not FISH or PCR — is the only test that detects additional cytogenetic abnormalities (+8, i(17q), double Ph, 3q26.2). These ACAs upstage to accelerated phase and change risk, so you cannot skip the marrow karyotype at diagnosis.</div></div><div class="rt"><div class="rtl">2. Ph t(9;22)</div><div class="rte">Demonstrating the Philadelphia chromosome — the derivative chr22 from t(9;22)(q34;q11) — establishes the diagnosis of CML in the right clinical/lab context. Found in nearly all metaphases at diagnosis; molecular confirmation of BCR-ABL1 is still required.</div><div class="rtt">⚠️ Diagnosis needs BCR-ABL1 confirmation: a 'leukemoid reaction' (infection/sepsis) can mimic the CBC but is Ph-negative with a HIGH LAP score.</div></div><div class="rt"><div class="rtl">3. ACAs (additional abnormalities)</div><div class="rte">Additional cytogenetic abnormalities are clonal changes beyond the Ph chromosome (trisomy 8, i(17q), a second Ph, 3q26.2/EVI1). They reflect clonal evolution, predict inferior outcomes, and their presence is an accelerated-phase criterion. Only full karyotype detects them.</div><div class="rtt">⚠️ ACAs are prognostically important but invisible to FISH/PCR — this is the board's favorite reason that karyotype remains mandatory despite molecular testing.</div></div><div class="rt"><div class="rtl">4. FISH</div><div class="rte">FISH uses fluorescent BCR and ABL1 probes to detect the fusion signal rapidly (can be done on blood, not just marrow) and confirms cryptic or variant translocations missed by karyotype. Useful for quick diagnostic confirmation.</div><div class="rtt">⚠️ FISH confirms the BCR-ABL1 fusion but CANNOT detect additional cytogenetic abnormalities or measure transcript level on the International Scale — it does not replace karyotype (for ACAs) or PCR (for monitoring).</div></div><div class="rt"><div class="rtl">5. Quantitative PCR</div><div class="rte">Quantitative RT-PCR measures BCR-ABL1 transcript level on the International Scale (IS) and is the most sensitive test (detects ~1 leukemic cell in 100,000). It is the gold standard for monitoring response and minimal residual disease — the baseline is set at diagnosis (~100% IS) and tracked at 3/6/12 months.</div><div class="rtt">⚠️ PCR is the most sensitive test and the one used for serial monitoring/MRD and milestone assessment — not karyotype. Standard primers can miss atypical transcripts (false-negative).</div></div><div class="rt"><div class="rtl">6. Leukocytosis</div><div class="rte">The classic CBC shows marked leukocytosis (often &gt;100,000) with a left-shifted myeloid series displaying the FULL maturation spectrum — myelocytes, metamyelocytes, bands, neutrophils — with a characteristic 'myelocyte bulge.' Often with thrombocytosis and mild anemia. Many patients are asymptomatic at diagnosis (incidental high WBC) or present with fatigue, splenomegaly, or early satiety.</div><div class="rtt">⚠️ Unlike acute leukemia, CML shows the complete maturation spectrum with relatively FEW blasts in chronic phase — a 'leukoerythroblastic' full-range left shift, not a blast-dominant picture.</div></div><div class="rt"><div class="rtl">7. Low LAP score</div><div class="rte">Leukocyte alkaline phosphatase (LAP, also called neutrophil ALP / NAP score) is LOW or absent in CML because the malignant neutrophils are functionally abnormal. This is a cheap discriminator from a reactive leukemoid response.</div><div class="rtt">⚠️ LAP is LOW in CML but HIGH in a leukemoid reaction, infection, and other myeloproliferative neoplasms (e.g. polycythemia vera). High WBC + LOW LAP → think CML; high WBC + HIGH LAP → reactive.</div></div><div class="rt"><div class="rtl">8. Basophilia</div><div class="rte">Peripheral basophilia (often with eosinophilia) is a near-universal CML hallmark and a useful diagnostic clue. The degree of basophilia rises with progression — basophils ≥20% is an accelerated-phase criterion.</div><div class="rtt">⚠️ Persistent unexplained basophilia should prompt a workup for CML. Basophils ≥20% specifically upstages to accelerated phase.</div></div><div class="rt"><div class="rtl">9. Chronic &lt;5% blasts</div><div class="rte">At diagnosis the vast majority (~90%) of patients are in chronic phase with &lt;10% blasts in blood and marrow (this drawing shows &lt;5%). Chronic phase is well controlled by TKIs with near-normal life expectancy.</div></div><div class="rt"><div class="rtl">10. Blast % defines phase</div><div class="rte">Blast percentage in blood/marrow is THE key parameter staging the disease: chronic &lt;10%, accelerated 10-19%, blast phase ≥20% (WHO). Always quantify blasts on the diagnostic marrow.</div><div class="rtt">⚠️ Memorize the cutoffs: chronic &lt;10%, accelerated 10-19%, blast crisis ≥20% blasts. Some older criteria use ≥30% for blast phase — know both.</div></div><div class="rt"><div class="rtl">11. Baseline BCR-ABL 100%</div><div class="rte">The baseline BCR-ABL1 transcript level (~100% on the International Scale) is established at diagnosis so that every subsequent log reduction can be measured against it. All response milestones (≤10% at 3mo, ≤1%/CCyR at 12mo, MMR ≤0.1%) reference this baseline.</div></div><div class="rt"><div class="rtl">12. MR2/CCyR ≤1%</div><div class="rte">Complete cytogenetic response (CCyR) corresponds to BCR-ABL1 ≤1% IS (a 2-log reduction, MR2) — an important early treatment goal, ideally by 12 months. The diagnostic baseline and these milestone bands frame the whole monitoring strategy.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="cml_blast_crisis.html" title="CML — Blast Crisis &amp; Special Situations">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="cml_monitoring.html" title="CML — Monitoring, Response Milestones &amp; Resistance">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

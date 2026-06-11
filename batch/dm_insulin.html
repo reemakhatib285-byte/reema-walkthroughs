@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DM — Scene 4 — Insulin: Types, Kinetics &amp; Regimens</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Basal/bolus split chart</b> — Wrong answer: 'put the whole daily dose into one shot of long-acting glargine.' Discriminator — basal insulin alone does not cover postprandial spikes; physiologic control needs basal PLUS prandial coverage (or premixed), especially in T1DM.</li><li><b>Carb ratio (1u per 10-15g)</b> — Wrong answer: 'use a fixed mealtime dose regardless of carbohydrate intake.' Discriminator — flexible carb-ratio dosing matches insulin to actual intake and reduces both hyper- and hypoglycemia; fixed dosing is inferior for carb-counting patients.</li><li><b>Sensitivity factor 1500 rule</b> — Wrong answer: 'give a large correction bolus and stack another correction 1-2 hours later when still high.' Discriminator — insulin stacking before the prior dose has peaked causes delayed hypoglycemia; wait the full action duration (~3-4 h for rapid) before re-correcting.</li><li><b>Glargine (long, peakless)</b> — Wrong answer: 'use glargine to cover the carbohydrates at each meal.' Discriminator — glargine is basal (background) insulin; mealtime/postprandial coverage requires a rapid-acting analog, not a long-acting basal.</li><li><b>Degludec (ultra-long 42h)</b> — Wrong answer: 'aggressively up-titrate degludec every day until fasting glucose is at goal.' Discriminator — because degludec accumulates over ~3 days to steady state, daily up-titration overshoots and causes hypoglycemia; adjust no more often than every 3-4 days.</li><li><b>NPH (intermediate, peak hypo)</b> — Wrong answer: 'NPH is a flat, peakless basal insulin.' Discriminator — NPH has a pronounced peak (unlike glargine/degludec); that peak is exactly what causes its nocturnal hypoglycemia risk.</li><li><b>Regular (short, 30-45 min pre-meal)</b> — Wrong answer: 'inject regular insulin right as the patient starts eating, like a rapid analog.' Discriminator — regular insulin's ~30 min onset means dosing at the meal causes early postprandial hyperglycemia then late hypoglycemia; it must lead the meal by 30-45 min.</li><li><b>Rapid analogs (lispro/aspart/glulisine)</b> — Wrong answer: 'dose lispro 30-45 minutes before the meal like regular insulin.' Discriminator — rapid analogs act within ~15 min; pre-dosing them 30-45 min early causes pre-meal hypoglycemia. Give them right at the meal.</li><li><b>Short door / runner timing</b> — Wrong answer: 'regular and rapid insulin have identical durations, so timing relative to meals doesn't matter.' Discriminator — regular has a longer, later peak/duration requiring pre-meal dosing, while rapid is dosed at the meal; the kinetic difference dictates timing.</li><li><b>Pump failure -&gt; DKA</b> — Wrong answer: 'pump failure leads to slow, gradual decompensation over days like missing a basal shot.' Discriminator — with no long-acting depot, pump failure precipitates DKA within hours; treat unexplained hyperglycemia in a pump patient as a possible delivery failure and DKA risk.</li><li><b>Dawn vs Somogyi (3 AM check)</b> — Wrong answer: 'a patient with morning hyperglycemia always needs MORE evening insulin.' Discriminator — if 3 AM glucose is low (Somogyi rebound), increasing evening insulin worsens the nocturnal hypoglycemia; check the 3 AM value before adjusting.</li><li><b>Met / SGLT2 / GLP-1 new T2DM sign</b> — Wrong answer: 'reflexively start every new T2DM patient on a sulfonylurea.' Discriminator — modern selection is comorbidity-driven (metformin foundation; SGLT2 for HF/CKD; GLP-1 for ASCVD/obesity); sulfonylureas are cheap but cause hypoglycemia and weight gain with no organ-protective benefit.</li><li><b>ASCVD/obese -&gt; GLP-1</b> — Wrong answer: 'choose a sulfonylurea for the obese T2DM patient with prior MI.' Discriminator — sulfonylureas add weight and hypoglycemia with no CV benefit; a GLP-1 RA (weight loss + MACE reduction) is preferred in obesity with ASCVD.</li><li><b>eGFR&lt;30 / CHF -&gt; no met/TZD, SGLT2</b> — Wrong answer: 'add pioglitazone to optimize glycemia in a patient with NYHA III heart failure.' Discriminator — TZD-induced fluid retention/edema worsens heart failure and is contraindicated; an SGLT2 inhibitor is the HF-friendly choice instead.</li><li><b>Catabolic / T1DM -&gt; insulin</b> — Wrong answer: 'manage this newly diagnosed T1DM (or DKA) patient with metformin plus a GLP-1 agonist.' Discriminator — T1DM is insulinopenic and requires exogenous insulin; non-insulin agents cannot prevent ketoacidosis, and GLP-1 RAs are also contraindicated when gastroparesis is present.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Basal/bolus split chart</div><div class="rte">Physiologic insulin replacement uses a basal/bolus design. Estimate total daily dose (TDD) ~0.4-1.0 u/kg/day — a common starting point in T1DM is ~0.5 u/kg/day — then split roughly 50% as basal (long-acting) and 50% as prandial bolus (rapid-acting divided across meals). Honeymoon/insulin-sensitive patients start lower (~0.2-0.3 u/kg); obese/insulin-resistant T2DM need more. Mnemonic: half keeps the fasting glucose flat (basal), half covers the food (bolus).</div><div class="rtt">⚠️ Wrong answer: 'put the whole daily dose into one shot of long-acting glargine.' Discriminator — basal insulin alone does not cover postprandial spikes; physiologic control needs basal PLUS prandial coverage (or premixed), especially in T1DM.</div></div><div class="rt"><div class="rtl">2. Carb ratio (1u per 10-15g)</div><div class="rte">The insulin-to-carbohydrate ratio for prandial dosing is ~1 unit per 10-15 g of carbohydrate (the '500 rule': 500 ÷ TDD = grams of carb covered by 1 unit). This lets carb-counting patients match mealtime rapid insulin to the meal. More insulin-resistant patients need a tighter ratio (e.g., 1 unit per 8 g).</div><div class="rtt">⚠️ Wrong answer: 'use a fixed mealtime dose regardless of carbohydrate intake.' Discriminator — flexible carb-ratio dosing matches insulin to actual intake and reduces both hyper- and hypoglycemia; fixed dosing is inferior for carb-counting patients.</div></div><div class="rt"><div class="rtl">3. Sensitivity factor 1500 rule</div><div class="rte">The correction (insulin sensitivity) factor estimates the mg/dL glucose drop per 1 unit of rapid insulin: ~1500-1800 ÷ TDD (use 1800 for rapid analogs, 1500 for regular). Example: TDD 50 u → 1800/50 ≈ 36 mg/dL drop per unit. Correction dose = (current glucose − target) ÷ sensitivity factor, added to the carb-coverage dose.</div><div class="rtt">⚠️ Wrong answer: 'give a large correction bolus and stack another correction 1-2 hours later when still high.' Discriminator — insulin stacking before the prior dose has peaked causes delayed hypoglycemia; wait the full action duration (~3-4 h for rapid) before re-correcting.</div></div><div class="rt"><div class="rtl">4. Glargine (long, peakless)</div><div class="rte">Glargine is a long-acting basal analog lasting ~24 h with a relatively flat, peakless profile, dosed once daily (detemir is similar but may need twice-daily dosing). Its flat kinetics give a lower nocturnal hypoglycemia risk than NPH. It cannot be mixed in a syringe with other insulins.</div><div class="rtt">⚠️ Wrong answer: 'use glargine to cover the carbohydrates at each meal.' Discriminator — glargine is basal (background) insulin; mealtime/postprandial coverage requires a rapid-acting analog, not a long-acting basal.</div></div><div class="rt"><div class="rtl">5. Degludec (ultra-long 42h)</div><div class="rte">Degludec is an ultra-long-acting basal analog with a duration of ~42 h and a very flat profile, allowing flexible dosing times and producing fewer nocturnal/overall hypoglycemic events than glargine. Its long half-life means steady state takes ~3 days, so titrate dose changes slowly (every ~3-4 days).</div><div class="rtt">⚠️ Wrong answer: 'aggressively up-titrate degludec every day until fasting glucose is at goal.' Discriminator — because degludec accumulates over ~3 days to steady state, daily up-titration overshoots and causes hypoglycemia; adjust no more often than every 3-4 days.</div></div><div class="rt"><div class="rtl">6. NPH (intermediate, peak hypo)</div><div class="rte">NPH is intermediate-acting (onset ~1-2 h, pronounced peak ~4-10 h, duration ~12-18 h), usually dosed twice daily. The distinct peak — especially overnight after an evening dose — drives nocturnal hypoglycemia, the classic NPH downside. It is cheap and can be mixed with regular insulin.</div><div class="rtt">⚠️ Wrong answer: 'NPH is a flat, peakless basal insulin.' Discriminator — NPH has a pronounced peak (unlike glargine/degludec); that peak is exactly what causes its nocturnal hypoglycemia risk.</div></div><div class="rt"><div class="rtl">7. Regular (short, 30-45 min pre-meal)</div><div class="rte">Regular (short-acting) insulin has onset ~30 min, peak ~2-3 h, duration ~4-8 h, so it must be given ~30-45 min before the meal for the peak to align with food absorption. IV regular insulin is the agent used in DKA/HHS and hospital infusions. It can be mixed with NPH.</div><div class="rtt">⚠️ Wrong answer: 'inject regular insulin right as the patient starts eating, like a rapid analog.' Discriminator — regular insulin's ~30 min onset means dosing at the meal causes early postprandial hyperglycemia then late hypoglycemia; it must lead the meal by 30-45 min.</div></div><div class="rt"><div class="rtl">8. Rapid analogs (lispro/aspart/glulisine)</div><div class="rte">Rapid-acting analogs (lispro, aspart, glulisine) have onset ~15 min, peak ~1 h, duration ~3-5 h, so they are dosed at the start of the meal — ideal for prandial coverage and insulin pumps. Their tight, predictable kinetics give better postprandial control and less late hypoglycemia than regular insulin.</div><div class="rtt">⚠️ Wrong answer: 'dose lispro 30-45 minutes before the meal like regular insulin.' Discriminator — rapid analogs act within ~15 min; pre-dosing them 30-45 min early causes pre-meal hypoglycemia. Give them right at the meal.</div></div><div class="rt"><div class="rtl">9. Short door / runner timing</div><div class="rte">Duration contrast: short-acting regular insulin lasts ~4-8 h, whereas rapid analogs last only ~3-5 h. The shorter rapid-analog tail means less risk of stacked/late hypoglycemia and is why rapid analogs are preferred for pumps and flexible mealtime dosing.</div><div class="rtt">⚠️ Wrong answer: 'regular and rapid insulin have identical durations, so timing relative to meals doesn't matter.' Discriminator — regular has a longer, later peak/duration requiring pre-meal dosing, while rapid is dosed at the meal; the kinetic difference dictates timing.</div></div><div class="rt"><div class="rtl">10. Pump failure -&gt; DKA</div><div class="rte">Insulin pumps deliver ONLY rapid-acting insulin (no long-acting depot). If the pump, infusion set, or cannula fails, there is no basal reservoir, so insulin levels fall within hours and DKA can develop rapidly — much faster than in patients on subcutaneous basal insulin. Pump patients with unexplained hyperglycemia/ketones should check the site and may need a backup injection.</div><div class="rtt">⚠️ Wrong answer: 'pump failure leads to slow, gradual decompensation over days like missing a basal shot.' Discriminator — with no long-acting depot, pump failure precipitates DKA within hours; treat unexplained hyperglycemia in a pump patient as a possible delivery failure and DKA risk.</div></div><div class="rt"><div class="rtl">11. Dawn vs Somogyi (3 AM check)</div><div class="rte">Morning hyperglycemia has two causes distinguished by a 3 AM glucose check. Dawn phenomenon: 3 AM glucose is normal/high and rises further from early-morning counterregulatory hormone (cortisol/GH) surge — treat by increasing or timing evening basal later. Somogyi (rebound): 3 AM glucose is LOW (nocturnal hypoglycemia) triggering counterregulatory rebound hyperglycemia — treat by DECREASING evening insulin or adding a bedtime snack. Mnemonic: low at 3 AM = Somogyi, so back off the insulin.</div><div class="rtt">⚠️ Wrong answer: 'a patient with morning hyperglycemia always needs MORE evening insulin.' Discriminator — if 3 AM glucose is low (Somogyi rebound), increasing evening insulin worsens the nocturnal hypoglycemia; check the 3 AM value before adjusting.</div></div><div class="rt"><div class="rtl">12. Met / SGLT2 / GLP-1 new T2DM sign</div><div class="rte">Drug selection in newly diagnosed T2DM is phenotype-driven: metformin remains the typical foundational/first-line oral agent; layer an SGLT2 inhibitor for HF or CKD; add a GLP-1 RA for obesity or ASCVD. Start insulin up front if markedly symptomatic/catabolic (A1c &gt;10%, glucose &gt;300, weight loss, ketosis).</div><div class="rtt">⚠️ Wrong answer: 'reflexively start every new T2DM patient on a sulfonylurea.' Discriminator — modern selection is comorbidity-driven (metformin foundation; SGLT2 for HF/CKD; GLP-1 for ASCVD/obesity); sulfonylureas are cheap but cause hypoglycemia and weight gain with no organ-protective benefit.</div></div><div class="rt"><div class="rtl">13. ASCVD/obese -&gt; GLP-1</div><div class="rte">Established ASCVD (or high ASCVD risk) and/or obesity favor a GLP-1 RA with proven cardiovascular benefit (semaglutide, dulaglutide, liraglutide), which reduces atherosclerotic MACE while producing weight loss — independent of baseline A1c.</div><div class="rtt">⚠️ Wrong answer: 'choose a sulfonylurea for the obese T2DM patient with prior MI.' Discriminator — sulfonylureas add weight and hypoglycemia with no CV benefit; a GLP-1 RA (weight loss + MACE reduction) is preferred in obesity with ASCVD.</div></div><div class="rt"><div class="rtl">14. eGFR&lt;30 / CHF -&gt; no met/TZD, SGLT2</div><div class="rte">Renal/cardiac flags: stop metformin when eGFR &lt;30 (lactic acidosis risk; caution and dose-reduce 30-45). Avoid TZDs (pioglitazone) in heart failure because fluid retention worsens HF. SGLT2 inhibitors are favored in both HF and CKD for their proven cardiorenal protection (note SGLT2 glycemic efficacy wanes at low eGFR but cardiorenal benefit persists).</div><div class="rtt">⚠️ Wrong answer: 'add pioglitazone to optimize glycemia in a patient with NYHA III heart failure.' Discriminator — TZD-induced fluid retention/edema worsens heart failure and is contraindicated; an SGLT2 inhibitor is the HF-friendly choice instead.</div></div><div class="rt"><div class="rtl">15. Catabolic / T1DM -&gt; insulin</div><div class="rte">Absolute insulin requirement: T1DM and catabolic/insulinopenic presentations (severe hyperglycemia with weight loss, ketosis, A1c &gt;10%) need insulin regardless of other agents. Gastroparesis is a reason to AVOID GLP-1 RAs because slowed gastric emptying worsens it.</div><div class="rtt">⚠️ Wrong answer: 'manage this newly diagnosed T1DM (or DKA) patient with metformin plus a GLP-1 agonist.' Discriminator — T1DM is insulinopenic and requires exogenous insulin; non-insulin agents cannot prevent ketoacidosis, and GLP-1 RAs are also contraindicated when gastroparesis is present.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_algorithm_escalation.html" title="DM — Scene 3 — T2DM Algorithms: The Escalation Staircase &amp; A1c Target Dial">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_complication1.html" title="Diabetes — Complication 1: Diabetic Nephropathy">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

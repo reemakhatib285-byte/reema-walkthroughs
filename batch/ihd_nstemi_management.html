@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD / ACS — NSTE-ACS Management: Antiplatelet, Anticoagulation &amp; Vasospasm</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>UFH — needs for PCI</b> — WRONG answer: stopping the antiplatelet drugs once heparin is started, thinking anticoagulation 'covers' the clotting. Discriminator — anticoagulants block the fibrin/coagulation cascade while antiplatelets block the platelet plug; ACS thrombus is platelet-rich, so heparin is ADDED to, never substituted for, aspirin + P2Y12.</li><li><b>Enoxaparin (LMWH)</b> — WRONG answer: switching a patient from enoxaparin to UFH (or vice versa) at the time of PCI. Discriminator — crossover between heparins increases major bleeding; pick ONE agent and continue it through the procedure. Also avoid enoxaparin as the sole anticoagulant in severe renal failure due to accumulation and bleeding.</li><li><b>Fondaparinux — less bleeding</b> — WRONG answer: choosing fondaparinux because it is 'more effective' than other anticoagulants. Discriminator — its proven advantage is REDUCED BLEEDING, not superior anti-ischemic efficacy. Second trap: taking a fondaparinux patient straight to PCI without adding UFH → catheter thrombosis.</li><li><b>DAPT = aspirin + P2Y12</b> — WRONG answer: aspirin monotherapy 'plus a statin' as definitive ACS antiplatelet management. Discriminator — a single antiplatelet is inadequate after ACS/stenting; a P2Y12 inhibitor is mandatory for 12 months to prevent recurrent thrombosis and stent thrombosis. Ticagrelor/prasugrel are preferred over clopidogrel in the invasively managed patient.</li><li><b>Antiplatelet, NOT anticoagulant</b> — WRONG answer: starting warfarin or a DOAC to 'prevent the stent from clotting.' Discriminator — anticoagulants prevent fibrin-rich clots (AFib stroke, DVT/PE) but do not adequately suppress the platelet aggregation that occludes a stent. The fix for stent-thrombosis prevention is uninterrupted DAPT, not anticoagulation.</li><li><b>Prasugrel dose adjustment</b> — WRONG answer: standard 10 mg prasugrel in a frail 80-year-old weighing 52 kg. Discriminator — TRITON-TIMI 38 showed net harm from excess bleeding in the elderly and low-weight; pick clopidogrel or ticagrelor, or use the reduced 5 mg dose. Also wrong: giving prasugrel before the anatomy is defined.</li><li><b>Prasugrel contraindicated post-stroke/TIA</b> — WRONG answer: selecting prasugrel for a post-ACS patient who mentions a TIA two years ago. Discriminator — prior CVA/TIA is a hard 'no' for prasugrel specifically; the history must be actively screened for. Ticagrelor is the go-to potent P2Y12 agent in this scenario; clopidogrel is the fallback if ticagrelor is contraindicated.</li><li><b>Clopidogrel — CYP2C19 poor responders</b> — WRONG answer: relying on clopidogrel + omeprazole together. Discriminator — strong CYP2C19-inhibiting PPIs (omeprazole, esomeprazole) further blunt clopidogrel activation; use pantoprazole if a PPI is needed. Prasugrel and ticagrelor are NOT CYP2C19-dependent and give more reliable inhibition.</li><li><b>Dabigatran / warfarin = anticoagulant</b> — WRONG answer: treating ACS with an anticoagulant alone because 'it thins the blood.' Discriminator — anticoagulant ≠ antiplatelet; they hit different limbs of hemostasis. A patient with both AFib and a recent stent may need combination therapy, but the antiplatelet component (P2Y12) is what protects the stent — the anticoagulant cannot replace it.</li><li><b>Vasospastic (Prinzmetal) angina</b> — WRONG answer: activating the cath lab for fibrinolysis on seeing the transient ST elevation. Discriminator — spasm-induced ST elevation is dynamic and resolves, with negative or only minimally positive troponin and clean coronaries, unlike a true STEMI from fixed thrombotic occlusion. Treat the spasm, do not lyse.</li><li><b>Spasm: troponin negative, smoking risk</b> — WRONG answer: ruling out coronary disease entirely and discharging without treatment because troponin is negative and arteries look clean. Discriminator — vasospasm is a real, recurrent, potentially lethal condition (can cause arrhythmia/MI); negative troponin + normal coronaries argues against fixed obstructive CAD/NSTEMI but mandates CCB therapy and trigger avoidance, not dismissal.</li><li><b>Beta-blocker worsens spasm; CCB first-line</b> — WRONG answer: prescribing a beta-blocker (especially non-selective like propranolol) for these 'anginal' episodes. Discriminator — beta-blockade is the standard answer for fixed-CAD effort angina but is harmful in vasospasm; the question rewards recognizing rest pain + transient ST elevation + clean coronaries and choosing a CCB instead. Same unopposed-alpha logic makes beta-blockers wrong in cocaine chest pain.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. UFH — needs for PCI</div><div class="rte">Every NSTE-ACS patient gets a parenteral anticoagulant on top of antiplatelets. Unfractionated heparin (60–70 U/kg bolus, then 12–15 U/kg/h infusion, titrated to aPTT ~50–70s) is preferred when an early invasive/PCI strategy is planned because it has a short half-life and is fully reversible with protamine — useful around catheter access and bleeding. Bivalirudin is the alternative procedural anticoagulant, especially with high bleeding risk.</div><div class="rtt">⚠️ WRONG answer: stopping the antiplatelet drugs once heparin is started, thinking anticoagulation 'covers' the clotting. Discriminator — anticoagulants block the fibrin/coagulation cascade while antiplatelets block the platelet plug; ACS thrombus is platelet-rich, so heparin is ADDED to, never substituted for, aspirin + P2Y12.</div></div><div class="rt"><div class="rtl">2. Enoxaparin (LMWH)</div><div class="rte">Enoxaparin (LMWH) 1 mg/kg SC q12h (q24h if CrCl &lt;30) is an acceptable anticoagulant in NSTE-ACS, particularly for a conservative/ischemia-guided strategy; it is more predictable than UFH and needs no aPTT monitoring. It is renally cleared, so avoid or dose-reduce in significant CKD where UFH (hepatic clearance, titratable) is safer.</div><div class="rtt">⚠️ WRONG answer: switching a patient from enoxaparin to UFH (or vice versa) at the time of PCI. Discriminator — crossover between heparins increases major bleeding; pick ONE agent and continue it through the procedure. Also avoid enoxaparin as the sole anticoagulant in severe renal failure due to accumulation and bleeding.</div></div><div class="rt"><div class="rtl">3. Fondaparinux — less bleeding</div><div class="rte">Fondaparinux 2.5 mg SC daily (a factor-Xa inhibitor) gives the LOWEST bleeding risk in conservatively managed NSTE-ACS (OASIS-5) with similar ischemic efficacy. Its catch: used alone during PCI it causes catheter-tip thrombosis, so adjunctive UFH must be given at the time of catheterization. It is also renally cleared and contraindicated at CrCl &lt;20.</div><div class="rtt">⚠️ WRONG answer: choosing fondaparinux because it is 'more effective' than other anticoagulants. Discriminator — its proven advantage is REDUCED BLEEDING, not superior anti-ischemic efficacy. Second trap: taking a fondaparinux patient straight to PCI without adding UFH → catheter thrombosis.</div></div><div class="rt"><div class="rtl">4. DAPT = aspirin + P2Y12</div><div class="rte">Foundational NSTE-ACS therapy is dual antiplatelet therapy (DAPT): aspirin (162–325 mg chewed load, then 81 mg daily indefinitely) PLUS a P2Y12 inhibitor — ticagrelor 180 mg load then 90 mg BID, prasugrel 60 mg load then 10 mg daily (PCI-treated), or clopidogrel 300–600 mg load then 75 mg daily. Standard DAPT duration is 12 months, then aspirin alone; shorten if high bleeding risk, extend if high ischemic/low bleeding risk.</div><div class="rtt">⚠️ WRONG answer: aspirin monotherapy 'plus a statin' as definitive ACS antiplatelet management. Discriminator — a single antiplatelet is inadequate after ACS/stenting; a P2Y12 inhibitor is mandatory for 12 months to prevent recurrent thrombosis and stent thrombosis. Ticagrelor/prasugrel are preferred over clopidogrel in the invasively managed patient.</div></div><div class="rt"><div class="rtl">5. Antiplatelet, NOT anticoagulant</div><div class="rte">Drug-eluting stent thrombosis is a platelet-driven event — the bare metal/polymer surface activates platelets before re-endothelialization. Therefore it is prevented by ANTIPLATELET therapy (DAPT), not by anticoagulants. Premature P2Y12 discontinuation is the single biggest risk factor for early stent thrombosis, a catastrophic event presenting as STEMI with high mortality.</div><div class="rtt">⚠️ WRONG answer: starting warfarin or a DOAC to 'prevent the stent from clotting.' Discriminator — anticoagulants prevent fibrin-rich clots (AFib stroke, DVT/PE) but do not adequately suppress the platelet aggregation that occludes a stent. The fix for stent-thrombosis prevention is uninterrupted DAPT, not anticoagulation.</div></div><div class="rt"><div class="rtl">6. Prasugrel dose adjustment</div><div class="rte">Prasugrel is the most potent and most consistent P2Y12 inhibitor (irreversible, no CYP2C19 dependence): 60 mg load, then 10 mg daily. Because of bleeding risk it should generally be AVOIDED in age ≥75 and dose-reduced to 5 mg daily in body weight &lt;60 kg. It is only for patients in whom coronary anatomy is known and PCI is planned (not for upstream/medically managed NSTE-ACS).</div><div class="rtt">⚠️ WRONG answer: standard 10 mg prasugrel in a frail 80-year-old weighing 52 kg. Discriminator — TRITON-TIMI 38 showed net harm from excess bleeding in the elderly and low-weight; pick clopidogrel or ticagrelor, or use the reduced 5 mg dose. Also wrong: giving prasugrel before the anatomy is defined.</div></div><div class="rt"><div class="rtl">7. Prasugrel contraindicated post-stroke/TIA</div><div class="rte">Prasugrel is ABSOLUTELY contraindicated in any patient with a prior stroke or TIA — in TRITON-TIMI 38 these patients had net clinical harm driven by intracranial hemorrhage. The acceptable alternatives are ticagrelor (preferred, reversible, fast-acting) or clopidogrel.</div><div class="rtt">⚠️ WRONG answer: selecting prasugrel for a post-ACS patient who mentions a TIA two years ago. Discriminator — prior CVA/TIA is a hard 'no' for prasugrel specifically; the history must be actively screened for. Ticagrelor is the go-to potent P2Y12 agent in this scenario; clopidogrel is the fallback if ticagrelor is contraindicated.</div></div><div class="rt"><div class="rtl">8. Clopidogrel — CYP2C19 poor responders</div><div class="rte">Clopidogrel is a PRODRUG requiring two-step hepatic CYP2C19 activation; ~30% of patients carry loss-of-function CYP2C19 alleles (highest prevalence in East Asians) and are 'poor responders' with reduced platelet inhibition and higher stent-thrombosis/MI risk. It also has a slower onset and weaker effect than ticagrelor/prasugrel, so it is generally the third choice unless cost, bleeding risk, or contraindications dictate otherwise.</div><div class="rtt">⚠️ WRONG answer: relying on clopidogrel + omeprazole together. Discriminator — strong CYP2C19-inhibiting PPIs (omeprazole, esomeprazole) further blunt clopidogrel activation; use pantoprazole if a PPI is needed. Prasugrel and ticagrelor are NOT CYP2C19-dependent and give more reliable inhibition.</div></div><div class="rt"><div class="rtl">9. Dabigatran / warfarin = anticoagulant</div><div class="rte">Warfarin (vitamin-K-dependent factor II/VII/IX/X inhibition) and dabigatran (direct thrombin/IIa inhibitor) are ANTICOAGULANTS — they impair the coagulation cascade and fibrin formation, not platelet aggregation. They prevent fibrin-rich clots (AFib cardioembolic stroke, VTE) but do not substitute for antiplatelet therapy in coronary/stent disease.</div><div class="rtt">⚠️ WRONG answer: treating ACS with an anticoagulant alone because 'it thins the blood.' Discriminator — anticoagulant ≠ antiplatelet; they hit different limbs of hemostasis. A patient with both AFib and a recent stent may need combination therapy, but the antiplatelet component (P2Y12) is what protects the stent — the anticoagulant cannot replace it.</div></div><div class="rt"><div class="rtl">10. Vasospastic (Prinzmetal) angina</div><div class="rte">Vasospastic (Prinzmetal/variant) angina is reversible focal coronary smooth-muscle spasm causing chest pain typically at REST, often nocturnal/early morning, in younger patients. The ECG hallmark is TRANSIENT ST ELEVATION that resolves with symptom relief (or with nitroglycerin). Diagnosis can be provoked with intracoronary acetylcholine/ergonovine; coronaries are usually angiographically normal.</div><div class="rtt">⚠️ WRONG answer: activating the cath lab for fibrinolysis on seeing the transient ST elevation. Discriminator — spasm-induced ST elevation is dynamic and resolves, with negative or only minimally positive troponin and clean coronaries, unlike a true STEMI from fixed thrombotic occlusion. Treat the spasm, do not lyse.</div></div><div class="rt"><div class="rtl">11. Spasm: troponin negative, smoking risk</div><div class="rte">In pure vasospastic angina the coronaries are angiographically normal (no obstructive plaque) and troponin is typically NEGATIVE because brief spasm rarely causes sustained necrosis. SMOKING is the single most important modifiable risk factor/trigger (others: cocaine, amphetamines, triptans, hyperventilation, cold, stress); smoking cessation is central to management.</div><div class="rtt">⚠️ WRONG answer: ruling out coronary disease entirely and discharging without treatment because troponin is negative and arteries look clean. Discriminator — vasospasm is a real, recurrent, potentially lethal condition (can cause arrhythmia/MI); negative troponin + normal coronaries argues against fixed obstructive CAD/NSTEMI but mandates CCB therapy and trigger avoidance, not dismissal.</div></div><div class="rt"><div class="rtl">12. Beta-blocker worsens spasm; CCB first-line</div><div class="rte">First-line treatment of vasospastic angina is a CALCIUM CHANNEL BLOCKER (e.g. amlodipine, diltiazem, or verapamil) which directly relaxes coronary smooth muscle and prevents spasm; long-acting nitrates are added for additional vasodilation. Aggressive smoking cessation is mandatory. Non-selective beta-blockers are AVOIDED because blocking β2-mediated vasodilation leaves UNOPPOSED ALPHA vasoconstriction → worsened spasm.</div><div class="rtt">⚠️ WRONG answer: prescribing a beta-blocker (especially non-selective like propranolol) for these 'anginal' episodes. Discriminator — beta-blockade is the standard answer for fixed-CAD effort angina but is harmful in vasospasm; the question rewards recognizing rest pain + transient ST elevation + clean coronaries and choosing a CCB instead. Same unopposed-alpha logic makes beta-blockers wrong in cocaine chest pain.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_nstemi_diagnosis.html" title="IHD / ACS — NSTE-ACS Diagnosis, Killip &amp; Drug Cautions">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_nstemi_pathophys.html" title="IHD / ACS — NSTE-ACS Pathophysiology &amp; Spectrum">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

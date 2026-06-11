@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — HFpEF Management &amp; Comorbidities</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>HFpEF — EF ≥ 50</b> — WRONG: HFpEF and HFrEF share the same proven four mortality-reducing pillars. ARNI, ACEi/ARB and beta-blockers have NOT shown clear mortality benefit in HFpEF; only SGLT2i (and to a borderline degree MRA) have evidence. The discriminator: HFrEF GDMT is reflexive, HFpEF treatment is congestion + comorbidity control + SGLT2i.</li><li><b>HFmrEF — EF 41-49</b> — WRONG: HFmrEF gets no GDMT because EF is 'almost normal.' Discriminator: the 2022 AHA/ACC/HFSA guideline gives a IIb–IIa recommendation to use the HFrEF pillars in HFmrEF; SGLT2i has the strongest support across the EF spectrum.</li><li><b>ACEi/ARB/ARNI — weak in HFpEF</b> — WRONG: ARNI clearly reduces HFpEF mortality. Discriminator: PARAGON-HF was statistically negative; ARNI is only FDA-labeled with a soft 'may be considered' nod in HFpEF, strongest where EF is below normal.</li><li><b>Beta-blockers — no HFpEF benefit</b> — WRONG: every HF patient should be on a beta-blocker. Discriminator: beta-blocker mortality benefit is a HFrEF/HFmrEF phenomenon; in pure HFpEF excessive bradycardia worsens diastolic filling and exercise tolerance.</li><li><b>MRA — TOPCAT borderline</b> — WRONG: TOPCAT proved spironolactone reduces HFpEF mortality everywhere. Discriminator: the overall trial was neutral; the 'benefit' is a post-hoc regional/secondary-endpoint signal, so MRA is a IIb consideration, not a mandate.</li><li><b>SGLT2i — the game changer</b> — WRONG: no drug helps HFpEF / SGLT2i only works in diabetics. Discriminator: DELIVER and EMPEROR-Preserved enrolled non-diabetics and still showed benefit — SGLT2i is now Class I for HFpEF independent of glycemic status.</li><li><b>Fourth pillar intact — SGLT2i</b> — WRONG: hold SGLT2i because the patient isn't diabetic or has CKD with eGFR 25. Discriminator: benefit is independent of DM, and SGLT2i are now started down to eGFR ~20–25; the expected small initial creatinine bump is hemodynamic, not a reason to stop.</li><li><b>GLP-1 RA / semaglutide</b> — WRONG: semaglutide is a proven mortality-reducing HFpEF drug. Discriminator: STEP-HFpEF measured symptoms/function/weight, not mortality — give it for the obese HFpEF phenotype, not as a substitute for SGLT2i.</li><li><b>BP control</b> — WRONG: lenient BP targets are fine in HFpEF since EF is normal. Discriminator: uncontrolled HTN directly worsens diastolic filling pressures and precipitates flash pulmonary edema — BP control is disease-modifying here.</li><li><b>AF management</b> — WRONG: rate vs rhythm doesn't matter in HFpEF as long as it's anticoagulated. Discriminator: because diastolic filling depends so heavily on the atrial kick and a slow rate, maintaining sinus rhythm is often more symptomatically valuable in HFpEF than in HFrEF.</li><li><b>Diuretics — careful</b> — WRONG: HFpEF tolerates aggressive diuresis as well as HFrEF. Discriminator: in HFpEF small volume shifts cause big pressure/output swings — over-diuresis triggers hypotension and azotemia, so you diurese gently.</li><li><b>Junk drawer — no benefit</b> — WRONG: nitrates improve exercise capacity in HFpEF. Discriminator: NEAT-HFpEF found nitrates REDUCED activity levels — avoid routine nitrate/PDE5i therapy in HFpEF; they belong in the junk drawer.</li><li><b>Iron deficiency — IV iron</b> — WRONG: give ORAL iron to correct iron deficiency in HF. Discriminator: IRONOUT-HF showed oral iron does NOT replete iron stores or improve outcomes in HF — the answer is IV ferric carboxymaltose, and you treat the deficiency even when hemoglobin is normal.</li><li><b>Sleep apnea — treat OSA, caution CSA</b> — WRONG: use adaptive servo-ventilation (ASV) for central sleep apnea in HFrEF. Discriminator: the SERVE-HF trial showed ASV INCREASED cardiovascular mortality in HFrEF (EF ≤45%) with central sleep apnea — ASV is contraindicated there; CPAP is for OSA, not CSA in HFrEF.</li><li><b>Depression / AF comorbidity</b> — WRONG: treat HF depression with a tricyclic antidepressant. Discriminator: TCAs are pro-arrhythmic and cause orthostasis — avoid them in HF; SSRIs are preferred (though SADHART-CHF/MOOD-HF show modest efficacy), and never ignore depression as it drives non-adherence and readmission.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. HFpEF — EF ≥ 50</div><div class="rte">HFpEF = HF with preserved EF (LVEF ≥50%) plus structural/functional evidence of raised filling pressures (LV hypertrophy, LA enlargement, elevated E/e′, raised BNP). It is a disease of a stiff, non-compliant ventricle with diastolic dysfunction, driven by HTN, obesity, DM, AF and aging. Historically NO drug reduced mortality — the entire treatment paradigm is congestion control plus the SGLT2i breakthrough. Use the H2FPEF or HFA-PEFF score to make the diagnosis when EF is normal but dyspnea is unexplained.</div><div class="rtt">⚠️ WRONG: HFpEF and HFrEF share the same proven four mortality-reducing pillars. ARNI, ACEi/ARB and beta-blockers have NOT shown clear mortality benefit in HFpEF; only SGLT2i (and to a borderline degree MRA) have evidence. The discriminator: HFrEF GDMT is reflexive, HFpEF treatment is congestion + comorbidity control + SGLT2i.</div></div><div class="rt"><div class="rtl">2. HFmrEF — EF 41-49</div><div class="rte">HFmrEF (mildly reduced EF, LVEF 41–49%) is the bridge category. Guidelines say treat like HFrEF — give the four pillars (ARNI/ACEi, beta-blocker, MRA, SGLT2i) even though the evidence is weaker and largely extrapolated/subgroup-derived. Many HFmrEF patients are recovering HFrEF or trending in either direction, so serial echo matters.</div><div class="rtt">⚠️ WRONG: HFmrEF gets no GDMT because EF is 'almost normal.' Discriminator: the 2022 AHA/ACC/HFSA guideline gives a IIb–IIa recommendation to use the HFrEF pillars in HFmrEF; SGLT2i has the strongest support across the EF spectrum.</div></div><div class="rt"><div class="rtl">3. ACEi/ARB/ARNI — weak in HFpEF</div><div class="rte">In HFpEF the RAAS pillar is cracked: ACEi (PEP-CHF/perindopril) and ARB (CHARM-Preserved candesartan, I-PRESERVE irbesartan) failed to reduce mortality. ARNI sacubitril-valsartan in PARAGON-HF narrowly MISSED its primary endpoint (p=0.06) with benefit only in the lower-EF and female subgroups. Net: no class-wide HFpEF mortality benefit.</div><div class="rtt">⚠️ WRONG: ARNI clearly reduces HFpEF mortality. Discriminator: PARAGON-HF was statistically negative; ARNI is only FDA-labeled with a soft 'may be considered' nod in HFpEF, strongest where EF is below normal.</div></div><div class="rt"><div class="rtl">4. Beta-blockers — no HFpEF benefit</div><div class="rte">Beta-blockers have NO proven mortality or hospitalization benefit in HFpEF — there is no dedicated positive trial. They can be harmful by blunting the chronotropic response, because a stiff ventricle is preload/rate dependent and relies on heart rate to maintain output. Only use a beta-blocker in HFpEF for a separate indication (AF rate control, angina, prior MI).</div><div class="rtt">⚠️ WRONG: every HF patient should be on a beta-blocker. Discriminator: beta-blocker mortality benefit is a HFrEF/HFmrEF phenomenon; in pure HFpEF excessive bradycardia worsens diastolic filling and exercise tolerance.</div></div><div class="rt"><div class="rtl">5. MRA — TOPCAT borderline</div><div class="rte">MRA (spironolactone 25–50 mg) in TOPCAT had a borderline/regional result — neutral overall but reduced HF hospitalization, with apparent benefit in the Americas (the Russia/Georgia sites had suspect drug-level data). Net: MRA may reduce HF hospitalization in HFpEF, especially at the lower end of the EF range, while you watch K+ and creatinine.</div><div class="rtt">⚠️ WRONG: TOPCAT proved spironolactone reduces HFpEF mortality everywhere. Discriminator: the overall trial was neutral; the 'benefit' is a post-hoc regional/secondary-endpoint signal, so MRA is a IIb consideration, not a mandate.</div></div><div class="rt"><div class="rtl">6. SGLT2i — the game changer</div><div class="rte">SGLT2i are THE game changer in HFpEF: dapagliflozin (DELIVER) and empagliflozin (EMPEROR-Preserved) are the first drugs to reduce the composite of CV death + HF hospitalization across the full EF spectrum, regardless of diabetes. Fixed dose 10 mg once daily, no titration. Mechanism is osmotic/natriuretic diuresis plus favorable cardiac-metabolic and anti-fibrotic effects. Watch for euglycemic DKA and genital mycotic infections.</div><div class="rtt">⚠️ WRONG: no drug helps HFpEF / SGLT2i only works in diabetics. Discriminator: DELIVER and EMPEROR-Preserved enrolled non-diabetics and still showed benefit — SGLT2i is now Class I for HFpEF independent of glycemic status.</div></div><div class="rt"><div class="rtl">7. Fourth pillar intact — SGLT2i</div><div class="rte">SGLT2i is the ONLY fully intact pillar across the HF spectrum — it works at LVEF &gt;40% (EMPEROR-Preserved, DELIVER) and at LVEF ≤40% (EMPEROR-Reduced, DAPA-HF), with or without diabetes and with or without CKD. This is why it is the unifying first move when you confirm any phenotype of HF.</div><div class="rtt">⚠️ WRONG: hold SGLT2i because the patient isn't diabetic or has CKD with eGFR 25. Discriminator: benefit is independent of DM, and SGLT2i are now started down to eGFR ~20–25; the expected small initial creatinine bump is hemodynamic, not a reason to stop.</div></div><div class="rt"><div class="rtl">8. GLP-1 RA / semaglutide</div><div class="rte">Semaglutide (STEP-HFpEF / STEP-HFpEF DM) in OBESE HFpEF improves symptoms (KCCQ score), exercise capacity (6-minute walk), weight and inflammation (CRP). It targets the obesity-driven inflammatory HFpEF phenotype. Note this is symptom/QOL data, not a proven mortality reduction.</div><div class="rtt">⚠️ WRONG: semaglutide is a proven mortality-reducing HFpEF drug. Discriminator: STEP-HFpEF measured symptoms/function/weight, not mortality — give it for the obese HFpEF phenotype, not as a substitute for SGLT2i.</div></div><div class="rt"><div class="rtl">9. BP control</div><div class="rte">Aggressive BP control is the foundation of HFpEF management because HTN is the main driver of the LV hypertrophy and diastolic stiffness. Target roughly &lt;130/80. Prefer agents that also help HF/comorbidity (ARB, MRA, with diuretic for volume); SPRINT-type intensive control reduces incident HF.</div><div class="rtt">⚠️ WRONG: lenient BP targets are fine in HFpEF since EF is normal. Discriminator: uncontrolled HTN directly worsens diastolic filling pressures and precipitates flash pulmonary edema — BP control is disease-modifying here.</div></div><div class="rt"><div class="rtl">10. AF management</div><div class="rte">AF is poorly tolerated in HFpEF because loss of the atrial kick removes up to ~20% of diastolic filling in a stiff ventricle, and rapid rates shorten the already-critical filling time. Control rate, and consider rhythm control/ablation since restoring sinus rhythm can markedly improve symptoms. Anticoagulate per CHA2DS2-VASc.</div><div class="rtt">⚠️ WRONG: rate vs rhythm doesn't matter in HFpEF as long as it's anticoagulated. Discriminator: because diastolic filling depends so heavily on the atrial kick and a slow rate, maintaining sinus rhythm is often more symptomatically valuable in HFpEF than in HFrEF.</div></div><div class="rt"><div class="rtl">11. Diuretics — careful</div><div class="rte">Loop diuretics relieve congestion in HFpEF, but use them carefully: the stiff ventricle sits on the steep part of the pressure–volume curve and is exquisitely preload-sensitive, so over-diuresis drops cardiac output, causes hypotension and pre-renal AKI. Titrate to euvolemia, not to a dry target.</div><div class="rtt">⚠️ WRONG: HFpEF tolerates aggressive diuresis as well as HFrEF. Discriminator: in HFpEF small volume shifts cause big pressure/output swings — over-diuresis triggers hypotension and azotemia, so you diurese gently.</div></div><div class="rt"><div class="rtl">12. Junk drawer — no benefit</div><div class="rte">HFpEF dead-ends with no benefit (or harm): digoxin (no HFpEF data), and nitrates/isosorbide dinitrate — NEAT-HFpEF actually showed LESS daily activity with isosorbide mononitrate, and INDIE-HFpEF showed no benefit from inhaled nitrite. Phosphodiesterase-5 inhibitors (RELAX, sildenafil) were also negative.</div><div class="rtt">⚠️ WRONG: nitrates improve exercise capacity in HFpEF. Discriminator: NEAT-HFpEF found nitrates REDUCED activity levels — avoid routine nitrate/PDE5i therapy in HFpEF; they belong in the junk drawer.</div></div><div class="rt"><div class="rtl">13. Iron deficiency — IV iron</div><div class="rte">Iron deficiency is present in up to ~50% of HF patients and worsens symptoms and exercise capacity even WITHOUT anemia. Diagnose by ferritin &lt;100, or ferritin 100–299 with transferrin saturation &lt;20%. Treat symptomatic HFrEF (and increasingly HFmrEF/HFpEF) with IV iron — ferric carboxymaltose (AFFIRM-AHF, FAIR-HF, CONFIRM-HF) improves symptoms/QOL and reduces HF hospitalizations.</div><div class="rtt">⚠️ WRONG: give ORAL iron to correct iron deficiency in HF. Discriminator: IRONOUT-HF showed oral iron does NOT replete iron stores or improve outcomes in HF — the answer is IV ferric carboxymaltose, and you treat the deficiency even when hemoglobin is normal.</div></div><div class="rt"><div class="rtl">14. Sleep apnea — treat OSA, caution CSA</div><div class="rte">Sleep-disordered breathing is common in HF. Obstructive sleep apnea worsens afterload and arrhythmia — treat with CPAP. Central sleep apnea (Cheyne-Stokes) marks advanced HF; treat the HF itself. Critically, adaptive servo-ventilation (ASV) is CONTRAINDICATED in HFrEF with predominant central sleep apnea.</div><div class="rtt">⚠️ WRONG: use adaptive servo-ventilation (ASV) for central sleep apnea in HFrEF. Discriminator: the SERVE-HF trial showed ASV INCREASED cardiovascular mortality in HFrEF (EF ≤45%) with central sleep apnea — ASV is contraindicated there; CPAP is for OSA, not CSA in HFrEF.</div></div><div class="rt"><div class="rtl">15. Depression / AF comorbidity</div><div class="rte">Depression affects ~20–40% of HF patients and independently predicts worse adherence, more hospitalizations and higher mortality — screen and treat. Atrial fibrillation both causes and complicates HF (tachycardia-mediated cardiomyopathy); rate/rhythm control plus anticoagulation per CHA2DS2-VASc, and catheter ablation (CASTLE-AF) reduces mortality/hospitalization in selected HFrEF + AF patients.</div><div class="rtt">⚠️ WRONG: treat HF depression with a tricyclic antidepressant. Discriminator: TCAs are pro-arrhythmic and cause orthostasis — avoid them in HF; SSRIs are preferred (though SADHART-CHF/MOOD-HF show modest efficacy), and never ignore depression as it drives non-adherence and readmission.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_mortality_figure.html" title="Heart Failure — Figure 265-3: Progressive Decline in HFrEF Mortality">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_drugs.html" title="Heart Failure — HFrEF drugs (TABLE 265-2)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

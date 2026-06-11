@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pituitary/DI/SIADH — Polyuria diagnostic approach</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Urine then Na then copeptin then MRI</b> — WRONG: start with an empiric desmopressin trial before any labs. Discriminator — giving DDAVP first can dangerously lower sodium in a primary-polydipsia patient and obscures the diagnosis; you must first confirm polyuria and characterize the diuresis biochemically.</li><li><b>24h urine &gt;3L confirms polyuria</b> — WRONG: urinary frequency without high total volume defines polyuria. Discriminator — polyuria requires a high 24-h VOLUME (&gt;3 L); frequent small voids (overactive bladder, UTI, BPH) are frequency, not polyuria, and do not need a DI workup.</li><li><b>Osmotic vs water diuresis</b> — WRONG: all polyuria represents a water diuresis. Discriminator — a large share is OSMOTIC (most commonly hyperglycemic glucosuria); a high Uosm with high solute excretion points to osmotic diuresis, not DI, so always check glucose/solute load before chasing AVP.</li><li><b>Primary polydipsia / low Na</b> — WRONG: a high serum sodium points to primary polydipsia. Discriminator — primary polydipsia DILUTES the plasma (low-normal Na); high Na reflects water LOSS and indicates true DI (central or nephrogenic). This single value is one of the most useful early discriminators.</li><li><b>Station 1: copeptin testing</b> — WRONG: copeptin cannot distinguish the DI subtypes. Discriminator — copeptin DOES separate them: high baseline indicates nephrogenic DI (resistance with high endogenous AVP), and stimulated copeptin separates central DI from primary polydipsia with high accuracy.</li><li><b>Baseline copeptin &gt;21.4</b> — WRONG: a high baseline copeptin means central DI. Discriminator — central DI is AVP DEFICIENCY, so copeptin is LOW; a markedly high baseline copeptin reflects resistance = NEPHROGENIC DI. Don't invert the deficiency vs resistance logic.</li><li><b>Station 2: baseline copeptin</b> — WRONG: you must perform hypertonic-saline stimulation in every patient before any diagnosis. Discriminator — a high BASELINE copeptin (&gt;21.4) already diagnoses nephrogenic DI, sparing the patient stimulation; stimulation is reserved for indeterminate baselines.</li><li><b>Stimulated copeptin &gt;4.9</b> — WRONG: a low stimulated copeptin means nephrogenic DI. Discriminator — nephrogenic DI is already settled by a high BASELINE copeptin; the STIMULATED test separates central DI (low response, ≤4.9) from primary polydipsia (good response, &gt;4.9).</li><li><b>Station 3: hypertonic saline</b> — WRONG: the hypertonic-saline copeptin test can be run without monitoring sodium during the infusion. Discriminator — you are intentionally raising Na to ~150, so frequent Na checks are mandatory to avoid overshoot/hypernatremic injury; it is a monitored procedure, not a simple blood draw.</li><li><b>Station 4: desmopressin response</b> — WRONG: nephrogenic DI concentrates the urine well after desmopressin. Discriminator — nephrogenic DI is renal RESISTANCE, so DDAVP produces little/no rise in Uosm; a robust &gt;50% rise after DDAVP indicates CENTRAL DI (deficiency that responds to replacement).</li><li><b>Uosm rises &gt;50% = AVP deficiency</b> — WRONG: a &gt;50% rise in Uosm after DDAVP indicates nephrogenic DI. Discriminator — a strong response means the kidney CAN respond once given hormone = central (deficiency) DI; nephrogenic DI (resistance) by definition fails to respond.</li><li><b>Uosm &lt;50% rise = AVP resistance</b> — WRONG: a minimal Uosm rise after DDAVP points to central DI. Discriminator — failure to concentrate despite exogenous DDAVP defines RESISTANCE = nephrogenic DI; central DI is precisely the form that DOES concentrate after DDAVP.</li><li><b>MRI bright spot</b> — WRONG: an absent bright spot means nephrogenic DI. Discriminator — loss of the bright spot reflects depleted AVP STORES = CENTRAL DI; nephrogenic DI has intact synthesis/storage and usually a preserved bright spot.</li><li><b>New names same diseases</b> — WRONG: 'AVP resistance' is the new name for central DI. Discriminator — AVP RESISTANCE = nephrogenic DI (kidney can't respond), whereas AVP DEFICIENCY = central DI (not enough hormone). Mixing the two reverses both diagnosis and treatment.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Urine then Na then copeptin then MRI</div><div class="rte">Stepwise polyuria workup: (1) confirm true polyuria by 24-h urine volume, (2) measure serum Na/osmolality and urine osmolality to separate water from osmotic diuresis, (3) measure copeptin — baseline and hypertonic-saline-stimulated — to type the DI, and (4) MRI the pituitary for structural disease and the bright spot. Modern practice uses copeptin in place of the cumbersome classic water-deprivation test.</div><div class="rtt">⚠️ WRONG: start with an empiric desmopressin trial before any labs. Discriminator — giving DDAVP first can dangerously lower sodium in a primary-polydipsia patient and obscures the diagnosis; you must first confirm polyuria and characterize the diuresis biochemically.</div></div><div class="rt"><div class="rtl">2. 24h urine &gt;3L confirms polyuria</div><div class="rte">Polyuria is defined as urine output &gt;3 L/day (or &gt;50 mL/kg/day) — this distinguishes true polyuria from urinary frequency or nocturia with normal total volume. Confirming the volume is the essential first step before any DI testing, since 'frequency' from a small overactive bladder is a different problem entirely.</div><div class="rtt">⚠️ WRONG: urinary frequency without high total volume defines polyuria. Discriminator — polyuria requires a high 24-h VOLUME (&gt;3 L); frequent small voids (overactive bladder, UTI, BPH) are frequency, not polyuria, and do not need a DI workup.</div></div><div class="rt"><div class="rtl">3. Osmotic vs water diuresis</div><div class="rte">Split polyuria by urine osmolality: OSMOTIC diuresis has a high urine solute output (Uosm typically &gt;300, e.g., uncontrolled diabetes/glucosuria, mannitol, high-protein tube feeds, post-obstructive urea) while WATER diuresis has dilute urine (Uosm &lt;300). Both DI subtypes and primary polydipsia are water diuresis; identifying osmotic diuresis (check glucose first) avoids an unnecessary DI workup.</div><div class="rtt">⚠️ WRONG: all polyuria represents a water diuresis. Discriminator — a large share is OSMOTIC (most commonly hyperglycemic glucosuria); a high Uosm with high solute excretion points to osmotic diuresis, not DI, so always check glucose/solute load before chasing AVP.</div></div><div class="rt"><div class="rtl">4. Primary polydipsia / low Na</div><div class="rte">Baseline serum sodium triages the water-diuresis causes: LOW-normal Na (overdrinking dilutes plasma) suggests primary polydipsia, whereas HIGH or high-normal Na (renal water loss outpacing intake) suggests true DI. A frankly elevated baseline Na essentially excludes primary polydipsia.</div><div class="rtt">⚠️ WRONG: a high serum sodium points to primary polydipsia. Discriminator — primary polydipsia DILUTES the plasma (low-normal Na); high Na reflects water LOSS and indicates true DI (central or nephrogenic). This single value is one of the most useful early discriminators.</div></div><div class="rt"><div class="rtl">5. Station 1: copeptin testing</div><div class="rte">Copeptin — the stable surrogate co-secreted 1:1 with AVP — has largely replaced the indirect water-deprivation test, which was slow and frequently misclassified partial cases. Copeptin can be assayed at baseline and after osmotic stimulation, giving a more direct readout of AVP secretory capacity.</div><div class="rtt">⚠️ WRONG: copeptin cannot distinguish the DI subtypes. Discriminator — copeptin DOES separate them: high baseline indicates nephrogenic DI (resistance with high endogenous AVP), and stimulated copeptin separates central DI from primary polydipsia with high accuracy.</div></div><div class="rt"><div class="rtl">6. Baseline copeptin &gt;21.4</div><div class="rte">A baseline (unstimulated) copeptin &gt;21.4 pmol/L diagnoses NEPHROGENIC DI (AVP resistance) outright — the kidney isn't responding, so endogenous AVP/copeptin is already very high — and NO water deprivation or saline stimulation is needed. This is the quick exit from the algorithm at the very first measurement.</div><div class="rtt">⚠️ WRONG: a high baseline copeptin means central DI. Discriminator — central DI is AVP DEFICIENCY, so copeptin is LOW; a markedly high baseline copeptin reflects resistance = NEPHROGENIC DI. Don't invert the deficiency vs resistance logic.</div></div><div class="rt"><div class="rtl">7. Station 2: baseline copeptin</div><div class="rte">The sequence is to draw baseline copeptin FIRST: if it is &gt;21.4 pmol/L you have nephrogenic DI and can stop; if it is below that cutoff (non-diagnostic), proceed to a hypertonic-saline-stimulated copeptin to separate central DI from primary polydipsia. This tiered approach minimizes the need for the more demanding stimulation test.</div><div class="rtt">⚠️ WRONG: you must perform hypertonic-saline stimulation in every patient before any diagnosis. Discriminator — a high BASELINE copeptin (&gt;21.4) already diagnoses nephrogenic DI, sparing the patient stimulation; stimulation is reserved for indeterminate baselines.</div></div><div class="rt"><div class="rtl">8. Stimulated copeptin &gt;4.9</div><div class="rte">After hypertonic-saline infusion raises serum Na to ~150 mmol/L, a stimulated copeptin &gt;4.9 pmol/L indicates PRIMARY POLYDIPSIA (the AVP axis responds appropriately to the osmotic stress), whereas ≤4.9 indicates CENTRAL DI (the axis fails to respond). This cutoff distinguishes the two with ~97% accuracy, far better than the old water-deprivation test.</div><div class="rtt">⚠️ WRONG: a low stimulated copeptin means nephrogenic DI. Discriminator — nephrogenic DI is already settled by a high BASELINE copeptin; the STIMULATED test separates central DI (low response, ≤4.9) from primary polydipsia (good response, &gt;4.9).</div></div><div class="rt"><div class="rtl">9. Station 3: hypertonic saline</div><div class="rte">The hypertonic-saline test infuses 3% saline to drive serum Na up to ~150 mmol/L, maximally stimulating AVP/copeptin to reveal secretory capacity. It is the discriminating step between central DI and primary polydipsia and requires close, frequent sodium monitoring during the infusion to do it safely.</div><div class="rtt">⚠️ WRONG: the hypertonic-saline copeptin test can be run without monitoring sodium during the infusion. Discriminator — you are intentionally raising Na to ~150, so frequent Na checks are mandatory to avoid overshoot/hypernatremic injury; it is a monitored procedure, not a simple blood draw.</div></div><div class="rt"><div class="rtl">10. Station 4: desmopressin response</div><div class="rte">The desmopressin challenge is the functional confirmatory step: give DDAVP and recheck urine osmolality. Central DI urine concentrates briskly (Uosm rises &gt;50%) because the kidney can respond once hormone is supplied; nephrogenic DI shows little/no rise (resistance). Primary polydipsia shows only a modest rise (medullary gradient washed out).</div><div class="rtt">⚠️ WRONG: nephrogenic DI concentrates the urine well after desmopressin. Discriminator — nephrogenic DI is renal RESISTANCE, so DDAVP produces little/no rise in Uosm; a robust &gt;50% rise after DDAVP indicates CENTRAL DI (deficiency that responds to replacement).</div></div><div class="rt"><div class="rtl">11. Uosm rises &gt;50% = AVP deficiency</div><div class="rte">A urine-osmolality rise of &gt;50% after desmopressin confirms CENTRAL DI (AVP deficiency): the concentrating machinery is intact and just needed the hormone. This functional response, together with low baseline/stimulated copeptin, nails the central diagnosis and predicts a good response to DDAVP therapy.</div><div class="rtt">⚠️ WRONG: a &gt;50% rise in Uosm after DDAVP indicates nephrogenic DI. Discriminator — a strong response means the kidney CAN respond once given hormone = central (deficiency) DI; nephrogenic DI (resistance) by definition fails to respond.</div></div><div class="rt"><div class="rtl">12. Uosm &lt;50% rise = AVP resistance</div><div class="rte">A urine-osmolality rise of &lt;50% (or essentially none) after desmopressin confirms NEPHROGENIC DI (AVP resistance) — the collecting duct cannot respond despite adequate hormone. This matches a high baseline copeptin and steers treatment toward thiazide + low-salt diet ± amiloride/NSAID and removing the cause, NOT DDAVP.</div><div class="rtt">⚠️ WRONG: a minimal Uosm rise after DDAVP points to central DI. Discriminator — failure to concentrate despite exogenous DDAVP defines RESISTANCE = nephrogenic DI; central DI is precisely the form that DOES concentrate after DDAVP.</div></div><div class="rt"><div class="rtl">13. MRI bright spot</div><div class="rte">Pituitary MRI serves two roles: the normal posterior-pituitary T1 'bright spot' (stored AVP) is ABSENT in central DI but typically present in nephrogenic DI/primary polydipsia, and MRI screens for structural causes (tumor, stalk thickening from infiltrative disease, infundibuloneurohypophysitis). Absence of the bright spot supports central DI but is not by itself diagnostic (can be absent in some normal elderly).</div><div class="rtt">⚠️ WRONG: an absent bright spot means nephrogenic DI. Discriminator — loss of the bright spot reflects depleted AVP STORES = CENTRAL DI; nephrogenic DI has intact synthesis/storage and usually a preserved bright spot.</div></div><div class="rt"><div class="rtl">14. New names same diseases</div><div class="rte">Updated nomenclature (to prevent confusion with diabetes mellitus): central DI = 'AVP deficiency,' nephrogenic DI = 'AVP resistance,' and primary polydipsia keeps its name. The underlying diseases and management are unchanged — only the labels emphasize the deficiency-vs-resistance mechanism.</div><div class="rtt">⚠️ WRONG: 'AVP resistance' is the new name for central DI. Discriminator — AVP RESISTANCE = nephrogenic DI (kidney can't respond), whereas AVP DEFICIENCY = central DI (not enough hormone). Mixing the two reverses both diagnosis and treatment.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="neuro_di_tx.html" title="Pituitary/DI/SIADH — Diabetes insipidus treatment">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="neuro_siadh.html" title="Pituitary/DI/SIADH — SIADH (euvolemic hyponatremia)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyperkalemia — mechanisms (real vs fake + 3 causes)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>K+ &gt;= 5.5</b> — WRONG to equate a given serum K+ with total-body potassium status. Discriminator: serum K+ can be high while total body K+ is depleted (DKA) or normal (pseudohyperkalemia) — interpret the number alongside acid-base status, glucose, and how the sample was drawn.</li><li><b>Is it REAL?</b> — WRONG ANSWER: rushing to insulin/calcium/kayexalate for a high K+ in a stable, asymptomatic patient with a normal ECG and a hemolyzed sample. Discriminator: if stable with a normal ECG and a suspicious draw, repeat first; if unstable or ECG changes are present, treat empirically and do not wait.</li><li><b>Pseudo — fake lane</b> — WRONG to treat pseudohyperkalemia as a true emergency. Discriminator: pseudohyperkalemia has NO ECG changes and a benign clinical picture — recognizing it avoids iatrogenic hypokalemia; treating it can drive the real K+ dangerously low.</li><li><b>Hemolysis</b> — WRONG to act on a hemolyzed sample's K+. Discriminator: a hemolysis flag plus a normal ECG points to a spurious result — redraw with good technique; do not confuse in-vitro hemolysis with in-vivo hemolysis (which is true hyperkalemia with high LDH, low haptoglobin, elevated indirect bilirubin).</li><li><b>Thrombocytosis</b> — WRONG to diagnose true hyperkalemia from a serum sample in a patient with extreme thrombocytosis/leukocytosis (e.g., myeloproliferative disease). Discriminator: serum (clotted) K+ is high but plasma (unclotted) K+ is normal — order a plasma potassium to unmask the artifact.</li><li><b>Fist/tourniquet</b> — WRONG to treat a mildly elevated K+ from a tourniquet-and-fist-pump draw in a well patient. Discriminator: technique-related pseudohyperkalemia resolves on a properly drawn repeat — fix the draw, not the patient.</li><li><b>Door 1: shift</b> — WRONG to assume a shift-driven hyperkalemia reflects potassium excess that must be removed. Discriminator: in pure shift, total body K+ is normal (or low, as in DKA) — treat the underlying driver and shift K+ back into cells; aggressive removal can cause rebound hypokalemia once the shift reverses.</li><li><b>DKA shift</b> — WRONG ANSWER: withholding potassium in DKA because the initial serum K+ looks normal or high. Discriminator: total body K+ is depleted — once serum K+ falls below ~5.2-5.3 mM, add K+ to fluids, and HOLD insulin if K+ &lt; 3.3 mM until repleted to avoid lethal hypokalemia.</li><li><b>Door 2: load</b> — WRONG to blame dietary/load causes when GFR and aldosterone are normal. Discriminator: with intact kidneys, load alone rarely sustains hyperkalemia — search for a concurrent excretion defect (CKD, hypoaldosteronism, drugs) that converts the load into a problem.</li><li><b>Salt sub = KCl</b> — WRONG to miss the salt substitute because the patient denies taking 'potassium.' Discriminator: patients view salt substitutes as food, not medicine — the classic deadly setup is elderly + DM + CKD on an ACEi who switched to 'lite' salt.</li><li><b>Door 3: kidney</b> — WRONG to anchor on shift or load and overlook an excretion defect in chronic/recurrent hyperkalemia. Discriminator: persistent hyperkalemia almost always involves impaired renal excretion — assess GFR, urine output, aldosterone status, and a medication list before settling on a shift/load cause.</li><li><b>Type 4 RTA</b> — WRONG to confuse Type 4 with Type 1 (distal) RTA. Discriminator: Type 4 RTA is the ONLY RTA with HYPERkalemia (Types 1 and 2 cause HYPOkalemia) — high K+ plus NAGMA in a diabetic points straight to hyporeninemic hypoaldosteronism.</li><li><b>Emergency? ECG</b> — WRONG to rely on the absolute K+ value and be reassured by a normal ECG in CKD/ESRD. Discriminator: the ECG can stay NORMAL even at K+ &gt; 7 in chronically adapted CKD/ESRD patients — treat based on the trend, rate of rise, and clinical context, not solely the tracing.</li><li><b>Treat if unstable</b> — WRONG to delay treatment to obtain aldosterone levels, TTKG, or other workup in an unstable hyperkalemic patient. Discriminator: hemodynamic instability or ECG changes mandate empiric treatment now — the diagnostic workup is completed after the emergency is controlled, never before.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. K+ &gt;= 5.5</div><div class="rte">Hyperkalemia is defined as serum K+ &gt;= 5.5 mM (normal 3.5-5.0). Severity tiers: mild 5.5-6.0, moderate 6.1-6.9, severe &gt;= 7.0 or any ECG change. The cell stores 98% of body potassium, so serum K+ is a small, tightly regulated window onto a large intracellular pool.</div><div class="rtt">⚠️ WRONG to equate a given serum K+ with total-body potassium status. Discriminator: serum K+ can be high while total body K+ is depleted (DKA) or normal (pseudohyperkalemia) — interpret the number alongside acid-base status, glucose, and how the sample was drawn.</div></div><div class="rt"><div class="rtl">2. Is it REAL?</div><div class="rte">The first question in any hyperkalemia case is whether the value is real or pseudohyperkalemia (spurious in-vitro K+ release). Reflexively confirm with a properly drawn repeat and review the sample (hemolysis note, platelet/WBC count, draw technique) if the patient is hemodynamically stable. This step prevents unnecessary, potentially harmful treatment.</div><div class="rtt">⚠️ WRONG ANSWER: rushing to insulin/calcium/kayexalate for a high K+ in a stable, asymptomatic patient with a normal ECG and a hemolyzed sample. Discriminator: if stable with a normal ECG and a suspicious draw, repeat first; if unstable or ECG changes are present, treat empirically and do not wait.</div></div><div class="rt"><div class="rtl">3. Pseudo — fake lane</div><div class="rte">Pseudohyperkalemia is a spurious elevation from K+ leaking out of cells after the blood is drawn; total body and in-vivo K+ are normal and no treatment is needed. Clues: a hemolysis flag, marked thrombocytosis/leukocytosis, difficult/traumatic draw, or a normal ECG that doesn't fit the number. Confirm with a fresh, atraumatic plasma sample.</div><div class="rtt">⚠️ WRONG to treat pseudohyperkalemia as a true emergency. Discriminator: pseudohyperkalemia has NO ECG changes and a benign clinical picture — recognizing it avoids iatrogenic hypokalemia; treating it can drive the real K+ dangerously low.</div></div><div class="rt"><div class="rtl">4. Hemolysis</div><div class="rte">In-vitro hemolysis — from a small-gauge needle, excessive aspiration, or delayed/agitated processing — lyses RBCs and leaks K+ into the serum, falsely raising the value. The lab often flags the specimen as hemolyzed. The fix is a clean, atraumatic redraw, not treatment.</div><div class="rtt">⚠️ WRONG to act on a hemolyzed sample's K+. Discriminator: a hemolysis flag plus a normal ECG points to a spurious result — redraw with good technique; do not confuse in-vitro hemolysis with in-vivo hemolysis (which is true hyperkalemia with high LDH, low haptoglobin, elevated indirect bilirubin).</div></div><div class="rt"><div class="rtl">5. Thrombocytosis</div><div class="rte">Platelets and leukocytes release potassium as blood clots in the tube, so marked thrombocytosis or leukocytosis falsely elevates SERUM K+ while PLASMA K+ stays normal. This is reverse pseudohyperkalemia's classic counterpart. Drawing a heparinized plasma (unclotted) sample reveals the true value.</div><div class="rtt">⚠️ WRONG to diagnose true hyperkalemia from a serum sample in a patient with extreme thrombocytosis/leukocytosis (e.g., myeloproliferative disease). Discriminator: serum (clotted) K+ is high but plasma (unclotted) K+ is normal — order a plasma potassium to unmask the artifact.</div></div><div class="rt"><div class="rtl">6. Fist/tourniquet</div><div class="rte">Repeated fist clenching or a prolonged/tight tourniquet causes local muscle K+ release and forearm ischemia, spuriously raising the drawn K+. Proper technique (release tourniquet, avoid pumping the fist) prevents it. This is a pure preanalytic artifact.</div><div class="rtt">⚠️ WRONG to treat a mildly elevated K+ from a tourniquet-and-fist-pump draw in a well patient. Discriminator: technique-related pseudohyperkalemia resolves on a properly drawn repeat — fix the draw, not the patient.</div></div><div class="rt"><div class="rtl">7. Door 1: shift</div><div class="rte">Transcellular shift = potassium moves OUT of cells into the extracellular space without a change in total body K+. Drivers: acidosis (especially mineral acids), insulin deficiency, hyperosmolality, beta-blockade, digoxin (Na/K-ATPase inhibition), succinylcholine, and cell lysis. Therapy that pushes K+ back IN (insulin/glucose, beta-2 agonists) exploits the reverse of these mechanisms.</div><div class="rtt">⚠️ WRONG to assume a shift-driven hyperkalemia reflects potassium excess that must be removed. Discriminator: in pure shift, total body K+ is normal (or low, as in DKA) — treat the underlying driver and shift K+ back into cells; aggressive removal can cause rebound hypokalemia once the shift reverses.</div></div><div class="rt"><div class="rtl">8. DKA shift</div><div class="rte">In DKA/HHS, insulin deficiency plus hyperosmolality (and solvent drag) drives K+ out of cells, so serum K+ may be high even though total body K+ is markedly DEPLETED from osmotic diuresis. As insulin and fluids are given, K+ shifts back into cells and serum K+ falls fast. Note: DKA's anion-gap (ketoacid) acidosis itself shifts K+ less than mineral-acid acidosis does — the dominant drivers are insulin deficiency and hyperosmolality.</div><div class="rtt">⚠️ WRONG ANSWER: withholding potassium in DKA because the initial serum K+ looks normal or high. Discriminator: total body K+ is depleted — once serum K+ falls below ~5.2-5.3 mM, add K+ to fluids, and HOLD insulin if K+ &lt; 3.3 mM until repleted to avoid lethal hypokalemia.</div></div><div class="rt"><div class="rtl">9. Door 2: load</div><div class="rte">Excess potassium load (exogenous: diet, salt substitutes, supplements, KCl, transfusion; endogenous: TLS, rhabdomyolysis, hemolysis) causes hyperkalemia chiefly when excretion is impaired. Healthy kidneys clear large loads, so load alone is rarely sufficient. Endogenous lysis loads are especially dangerous because they are large and ongoing.</div><div class="rtt">⚠️ WRONG to blame dietary/load causes when GFR and aldosterone are normal. Discriminator: with intact kidneys, load alone rarely sustains hyperkalemia — search for a concurrent excretion defect (CKD, hypoaldosteronism, drugs) that converts the load into a problem.</div></div><div class="rt"><div class="rtl">10. Salt sub = KCl</div><div class="rte">Salt substitutes and 'lite'/low-sodium salts are potassium chloride — a hidden, frequently underreported load. In CKD or on RAAS blockade they readily precipitate severe hyperkalemia. Always ask specifically about salt substitutes, supplements, herbals, and recent transfusions.</div><div class="rtt">⚠️ WRONG to miss the salt substitute because the patient denies taking 'potassium.' Discriminator: patients view salt substitutes as food, not medicine — the classic deadly setup is elderly + DM + CKD on an ACEi who switched to 'lite' salt.</div></div><div class="rt"><div class="rtl">11. Door 3: kidney</div><div class="rte">Decreased renal excretion is the MOST COMMON cause of true, sustained hyperkalemia: reduced GFR (CKD/AKI), low aldosterone effect (hypoaldosteronism, Type 4 RTA, Addison's), and drugs (ACEi/ARB, MRAs, ENaC blockers, NSAIDs, trimethoprim, heparin, calcineurin inhibitors). Effective secretion needs aldosterone, ENaC, distal Na+ delivery, and urine flow — failure of any limits excretion. This is the highest-yield bucket for chronic/recurrent hyperkalemia.</div><div class="rtt">⚠️ WRONG to anchor on shift or load and overlook an excretion defect in chronic/recurrent hyperkalemia. Discriminator: persistent hyperkalemia almost always involves impaired renal excretion — assess GFR, urine output, aldosterone status, and a medication list before settling on a shift/load cause.</div></div><div class="rt"><div class="rtl">12. Type 4 RTA</div><div class="rte">Type 4 RTA = hyporeninemic hypoaldosteronism, the highest-yield decreased-excretion cause, classically in diabetic nephropathy. It produces a NORMAL-anion-gap (hyperchloremic) metabolic acidosis WITH hyperkalemia and an inappropriately acidic-to-mildly-impaired urine. Treat by removing offending drugs, low-K+ diet, loop/thiazide diuretics, and fludrocortisone in selected patients.</div><div class="rtt">⚠️ WRONG to confuse Type 4 with Type 1 (distal) RTA. Discriminator: Type 4 RTA is the ONLY RTA with HYPERkalemia (Types 1 and 2 cause HYPOkalemia) — high K+ plus NAGMA in a diabetic points straight to hyporeninemic hypoaldosteronism.</div></div><div class="rt"><div class="rtl">13. Emergency? ECG</div><div class="rte">After confirming the value is real, assess for emergency: K+ &gt;= 6.5 mM OR any ECG change triggers immediate IV calcium for membrane stabilization, then shift (insulin/glucose, albuterol) and removal (dialysis, loop diuretics, GI binders). The ECG, not the number alone, governs urgency. Get a STAT ECG and monitor early.</div><div class="rtt">⚠️ WRONG to rely on the absolute K+ value and be reassured by a normal ECG in CKD/ESRD. Discriminator: the ECG can stay NORMAL even at K+ &gt; 7 in chronically adapted CKD/ESRD patients — treat based on the trend, rate of rise, and clinical context, not solely the tracing.</div></div><div class="rt"><div class="rtl">14. Treat if unstable</div><div class="rte">If the patient is unstable or shows ECG changes, treat first and diagnose later — stabilize the membrane with IV calcium, shift K+ intracellularly, and remove it, before completing the full etiologic workup. Mnemonic 'C BIG K Drop': Calcium, Bicarb (if acidotic), Insulin/glucose, Glucose, Kayexalate/binders, Dialysis/Diuretics. Definitive cause-finding follows stabilization.</div><div class="rtt">⚠️ WRONG to delay treatment to obtain aldosterone levels, TTKG, or other workup in an unstable hyperkalemic patient. Discriminator: hemodynamic instability or ECG changes mandate empiric treatment now — the diagnostic workup is completed after the emergency is controlled, never before.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperk_intake_load.html" title="Hyperkalemia — excess intake &amp; load">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperk_nephron_secretion.html" title="Hyperkalemia — nephron K+ secretion (4 pillars)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

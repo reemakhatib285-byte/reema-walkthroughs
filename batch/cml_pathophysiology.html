@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CML — Pathophysiology (Philadelphia / BCR-ABL1)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>9</em></summary><ol class="traps"><li><b>t(9;22) chromosomes</b> — Know the translocation pairings cold: t(9;22) = CML (and Ph+ ALL); t(15;17) PML-RARA = APL (M3); t(8;14) MYC = Burkitt; t(8;21) and inv(16) = good-prognosis AML; t(11;14) cyclin D1 = mantle cell.</li><li><b>Philadelphia chromosome</b> — The Ph chromosome is the SMALL derivative chromosome 22, not chromosome 9. Also: Ph positivity is not unique to CML — it appears in ~25% of adult ALL (worse prognosis) and rarely in AML.</li><li><b>BCR::ABL1 fusion</b> — A normal karyotype (Ph-negative on cytogenetics) does NOT exclude CML — a cryptic/masked BCR-ABL1 fusion can still be present, so always confirm with FISH or PCR before excluding the diagnosis.</li><li><b>Constitutive KINASE</b> — BCR-ABL1 is a TYROSINE kinase, not a serine/threonine kinase — this is why tyrosine kinase inhibitors (not mTOR/serine-threonine inhibitors) are the treatment.</li><li><b>Myristoyl pocket lost</b> — Asciminib targets the myristoyl pocket allosterically (STAMP), so it can work where ATP-pocket mutations like T315I cause resistance to conventional TKIs.</li><li><b>p210 (e13a2/e14a2)</b> — Treatment-free remission attempts require a 'typical' p210 transcript (e13a2/e14a2) that is quantifiable on the International Scale — atypical transcripts can't be monitored reliably.</li><li><b>p190 = ALL</b> — p190 in a CML patient is a RED FLAG (more aggressive disease / monocytosis), not reassuring. p190 = think Ph+ ALL; p210 = think CML.</li><li><b>e13a3/e14a3 false neg</b> — A negative quantitative PCR does not exclude CML if an atypical transcript is present — the standard primer set can miss it.</li><li><b>Clonal evolution markers</b> — Major-route ACAs (+8, i(17q), double Ph, 3q26.2) at diagnosis predict poorer response and are used to define accelerated phase — they prompt consideration of a 2nd-gen TKI and closer monitoring.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. t(9;22) chromosomes</div><div class="rte">CML is defined by the reciprocal translocation t(9;22)(q34;q11) that fuses the BCR gene on chromosome 22 with the ABL1 proto-oncogene on chromosome 9. The breakpoint in BCR (major breakpoint cluster region, M-bcr) joins to ABL1 exon 2, creating a chimeric BCR-ABL1 oncogene. This single genetic lesion is necessary and (in chronic phase) sufficient to cause CML.</div><div class="rtt">⚠️ Know the translocation pairings cold: t(9;22) = CML (and Ph+ ALL); t(15;17) PML-RARA = APL (M3); t(8;14) MYC = Burkitt; t(8;21) and inv(16) = good-prognosis AML; t(11;14) cyclin D1 = mantle cell.</div></div><div class="rt"><div class="rtl">2. Philadelphia chromosome</div><div class="rte">The shortened derivative chromosome 22 that carries the BCR-ABL1 fusion is the Philadelphia (Ph) chromosome — the first consistent cytogenetic abnormality ever linked to a human cancer and the diagnostic hallmark of CML. It is found in essentially all metaphases by karyotype at diagnosis.</div><div class="rtt">⚠️ The Ph chromosome is the SMALL derivative chromosome 22, not chromosome 9. Also: Ph positivity is not unique to CML — it appears in ~25% of adult ALL (worse prognosis) and rarely in AML.</div></div><div class="rt"><div class="rtl">3. BCR::ABL1 fusion</div><div class="rte">The BCR-ABL1 fusion is detectable in &gt;90-95% of CML cases and is the driver oncogene. Diagnosis requires molecular confirmation of BCR-ABL1 (by FISH or RT-PCR), not just morphology. The dimerization domain contributed by BCR forces the ABL1 kinase into a constitutively active state.</div><div class="rtt">⚠️ A normal karyotype (Ph-negative on cytogenetics) does NOT exclude CML — a cryptic/masked BCR-ABL1 fusion can still be present, so always confirm with FISH or PCR before excluding the diagnosis.</div></div><div class="rt"><div class="rtl">4. Constitutive KINASE</div><div class="rte">The fusion protein has a constitutively active ABL1 TYROSINE kinase domain that autophosphorylates and phosphorylates downstream substrates without any upstream signal. This drives unregulated proliferation, resistance to apoptosis, and decreased stromal adhesion. TKIs (imatinib etc.) work by occupying the ATP-binding pocket and locking the kinase off.</div><div class="rtt">⚠️ BCR-ABL1 is a TYROSINE kinase, not a serine/threonine kinase — this is why tyrosine kinase inhibitors (not mTOR/serine-threonine inhibitors) are the treatment.</div></div><div class="rt"><div class="rtl">5. Downstream pathways</div><div class="rte">Active BCR-ABL1 fires multiple oncogenic cascades simultaneously: RAS/MAPK (proliferation), JAK2-STAT5 (survival/anti-apoptosis via BCL-XL), and PI3K/AKT (growth and survival), plus MYC upregulation. The net effect is expansion of the myeloid clone with genomic instability that predisposes to additional mutations.</div></div><div class="rt"><div class="rtl">6. Myristoyl pocket lost</div><div class="rte">Normal ABL1 is autoinhibited by an N-terminal myristoyl group that folds into a regulatory pocket. The BCR fusion removes this cap, so the kinase loses its 'off switch' and stays permanently active. Asciminib is a STAMP inhibitor that restores inhibition by binding this allosteric myristoyl pocket — a mechanism distinct from ATP-competitive TKIs.</div><div class="rtt">⚠️ Asciminib targets the myristoyl pocket allosterically (STAMP), so it can work where ATP-pocket mutations like T315I cause resistance to conventional TKIs.</div></div><div class="rt"><div class="rtl">7. p210 (e13a2/e14a2)</div><div class="rte">p210 (transcripts e13a2/b2a2 and e14a2/b3a2, from the major breakpoint M-bcr) is the classic CML fusion protein, present in ~95% of cases. These are the standard transcripts quantified by RT-PCR on the International Scale for monitoring response and are required to attempt treatment-free remission.</div><div class="rtt">⚠️ Treatment-free remission attempts require a 'typical' p210 transcript (e13a2/e14a2) that is quantifiable on the International Scale — atypical transcripts can't be monitored reliably.</div></div><div class="rt"><div class="rtl">8. p190 = ALL</div><div class="rte">p190 (e1a2, from the minor breakpoint m-bcr) is the smaller fusion typical of Ph-positive ALL. When p190 occurs in CML it is uncommon and associated with monocytosis and a worse, more aggressive course.</div><div class="rtt">⚠️ p190 in a CML patient is a RED FLAG (more aggressive disease / monocytosis), not reassuring. p190 = think Ph+ ALL; p210 = think CML.</div></div><div class="rt"><div class="rtl">9. e13a3/e14a3 false neg</div><div class="rte">Atypical/rare fusion transcripts (e.g. e13a3, e14a3, e1a3, e19a2/p230) may not be picked up by standard PCR primers targeting p210/p190, producing a falsely negative or unquantifiable result. If clinical suspicion is high but PCR is negative, request atypical-transcript testing or FISH.</div><div class="rtt">⚠️ A negative quantitative PCR does not exclude CML if an atypical transcript is present — the standard primer set can miss it.</div></div><div class="rt"><div class="rtl">10. Lineages involved</div><div class="rte">CML arises from a transformed pluripotent hematopoietic STEM cell, so the Ph clone is present across granulocytic, erythroid, megakaryocytic, and monocytic lineages (and sometimes B-lymphoid). This multilineage involvement explains why the peripheral smear shows the full myeloid maturation spectrum plus thrombocytosis.</div></div><div class="rt"><div class="rtl">11. Second hit / progression</div><div class="rte">BCR-ABL1 alone causes chronic phase; progression to accelerated/blast phase requires additional 'second hits' (genomic instability driving mutations in TP53, RUNX1, ASXL1, loss of p16/CDKN2A, etc.). This stepwise acquisition is why untreated CML transforms over a few years and why TKIs — by suppressing the clone — prevent accumulation of these hits.</div></div><div class="rt"><div class="rtl">12. Clonal evolution markers</div><div class="rte">Additional cytogenetic abnormalities (ACAs) in the Ph clone signal clonal evolution and impending transformation. High-risk ACAs include +8 (trisomy 8), i(17q)/iso17, a second Ph (double Ph), and 3q26.2 (EVI1/MECOM) rearrangements. Their appearance on serial karyotype is itself an accelerated-phase criterion.</div><div class="rtt">⚠️ Major-route ACAs (+8, i(17q), double Ph, 3q26.2) at diagnosis predict poorer response and are used to define accelerated phase — they prompt consideration of a 2nd-gen TKI and closer monitoring.</div></div><div class="rt"><div class="rtl">13. Incidence 2/100,000</div><div class="rte">CML is a chronic myeloproliferative neoplasm with an incidence of ~1-2 per 100,000 per year, making up ~15% of adult leukemias. Median age at diagnosis is ~55-65 years with a slight male predominance (M:F ~1.6:1). Ionizing radiation is the only well-established risk factor.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="cml_monitoring.html" title="CML — Monitoring, Response Milestones &amp; Resistance">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="cml_phases.html" title="CML — Phases (Chronic / Accelerated / Blast)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pituitary/DI/SIADH — Diabetes insipidus causes (central vs nephrogenic)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>AVP deficiency wing (central)</b> — WRONG: central DI is renal resistance to ADH. Discriminator — central DI is a PRODUCTION/secretion deficit (low endogenous AVP, low copeptin) that corrects with exogenous DDAVP; renal resistance with high endogenous AVP is nephrogenic DI.</li><li><b>AVP resistance wing (nephrogenic)</b> — WRONG: nephrogenic DI is due to low ADH production. Discriminator — AVP production is intact (often elevated) in nephrogenic DI; the problem is end-organ resistance, so DDAVP fails to concentrate the urine — the opposite of central DI.</li><li><b>Primary polydipsia wing</b> — WRONG: primary polydipsia is treated with desmopressin. Discriminator — giving DDAVP to someone who keeps drinking causes dangerous water intoxication/hyponatremia; treatment is fluid restriction and behavioral measures. Key clue: low baseline serum osm in polydipsia vs high in true DI.</li><li><b>Trauma / surgery</b> — WRONG: head trauma causes nephrogenic DI. Discriminator — trauma/surgery damages the hypothalamic-stalk-posterior pituitary axis, producing AVP-deficient CENTRAL DI that responds to DDAVP; nephrogenic causes are renal/drug/metabolic.</li><li><b>Tumor</b> — WRONG: pituitary/hypothalamic tumors affect only the anterior pituitary. Discriminator — stalk and suprasellar lesions readily disrupt the posterior pituitary/hypothalamic AVP neurons, producing central DI; new-onset polyuria after a sellar mass should prompt a DI workup.</li><li><b>Infiltrative / infectious</b> — WRONG: sarcoidosis causes nephrogenic DI. Discriminator — sarcoid/histiocytosis infiltrate the hypothalamus/stalk and destroy AVP-producing neurons → CENTRAL DI (DDAVP-responsive). Nephrogenic DI's metabolic culprits are lithium, hypercalcemia, and hypokalemia.</li><li><b>Idiopathic / autoimmune</b> — WRONG: central DI is always due to a visible structural lesion. Discriminator — a substantial share is idiopathic/autoimmune or genetic with a normal-appearing pituitary; absence of a mass does not exclude central DI, so confirm with copeptin/DDAVP testing.</li><li><b>Lithium (most common acquired)</b> — WRONG: demeclocycline is the most common cause of nephrogenic DI. Discriminator — lithium is by far the leading acquired cause; demeclocycline also causes nephrogenic DI but is uncommon and is in fact used THERAPEUTICALLY in SIADH to induce a controlled nephrogenic DI.</li><li><b>Hypercalcemia</b> — WRONG: hypoCALCEMIA causes nephrogenic DI. Discriminator — it is hyperCALCEMIA (and hypoKALEMIA) that impair urinary concentration; correcting the calcium reverses the polyuria, which is itself a useful diagnostic clue.</li><li><b>Hypokalemia</b> — WRONG: hyperKALEMIA causes nephrogenic DI. Discriminator — the offending electrolyte derangements are hypoKALEMIA and hyperCALCEMIA (mnemonic: 'low K, high Ca' break the kidney's concentrating power); correcting them reverses the DI.</li><li><b>Hereditary nephrogenic</b> — WRONG: hereditary nephrogenic DI is caused by an AVP (vasopressin) gene defect. Discriminator — an AVP-gene mutation causes hereditary CENTRAL DI (deficiency); hereditary nephrogenic DI is a RECEPTOR (AVPR2, X-linked) or channel (AQP2) defect — resistance, not deficiency.</li><li><b>Renal disease / sickle cell</b> — WRONG: sickle cell disease causes central DI. Discriminator — sickling damages the renal medulla → impaired concentrating ability = NEPHROGENIC DI (hyposthenuria), with normal/high AVP. Central DI is the hypothalamic-pituitary deficiency state.</li><li><b>Gestational DI</b> — WRONG: gestational DI is treated with a thiazide. Discriminator — thiazides treat nephrogenic DI; gestational DI is an AVP-degradation problem and responds to vasopressinase-resistant DDAVP. (Note: associate it with pre-eclampsia/HELLP, which raise vasopressinase.)</li><li><b>Polydipsia psychogenic/iatrogenic</b> — WRONG: primary polydipsia has HIGH serum osmolality at baseline. Discriminator — overdrinking dilutes the plasma, so baseline serum osm/Na is LOW-normal in primary polydipsia, whereas true DI (water loss) gives high-normal/high serum osm. This single value helps separate the two before formal testing.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. AVP deficiency wing (central)</div><div class="rte">Central DI (new name: AVP DEFICIENCY) is failure of the hypothalamus/posterior pituitary to synthesize or release ADH, so urine cannot be concentrated. Labs show dilute urine (Uosm low) with rising serum Na/osm; the defining feature is that it RESPONDS to desmopressin — urine osmolality climbs &gt;50% after DDAVP. Posterior-pituitary bright spot is typically absent on MRI.</div><div class="rtt">⚠️ WRONG: central DI is renal resistance to ADH. Discriminator — central DI is a PRODUCTION/secretion deficit (low endogenous AVP, low copeptin) that corrects with exogenous DDAVP; renal resistance with high endogenous AVP is nephrogenic DI.</div></div><div class="rt"><div class="rtl">2. AVP resistance wing (nephrogenic)</div><div class="rte">Nephrogenic DI (new name: AVP RESISTANCE) is failure of the collecting duct to respond to ADH despite normal or HIGH circulating AVP (and high baseline copeptin &gt;21.4 pmol/L). The defect is at the V2 receptor or downstream AQP2. Hallmark: little or NO rise in urine osmolality (&lt;50%) after a desmopressin challenge.</div><div class="rtt">⚠️ WRONG: nephrogenic DI is due to low ADH production. Discriminator — AVP production is intact (often elevated) in nephrogenic DI; the problem is end-organ resistance, so DDAVP fails to concentrate the urine — the opposite of central DI.</div></div><div class="rt"><div class="rtl">3. Primary polydipsia wing</div><div class="rte">Primary polydipsia is excessive water intake that APPROPRIATELY suppresses AVP, so it is not true DI. Chronic overdrinking washes out the medullary concentration gradient, so maximal urine concentrating ability is blunted and can mimic DI. Baseline serum Na/osm is LOW-normal (the patient is overloaded with water), the opposite of true DI.</div><div class="rtt">⚠️ WRONG: primary polydipsia is treated with desmopressin. Discriminator — giving DDAVP to someone who keeps drinking causes dangerous water intoxication/hyponatremia; treatment is fluid restriction and behavioral measures. Key clue: low baseline serum osm in polydipsia vs high in true DI.</div></div><div class="rt"><div class="rtl">4. Trauma / surgery</div><div class="rte">Central DI causes — head trauma and pituitary/hypothalamic surgery (e.g., transsphenoidal adenoma resection). Post-surgical/post-traumatic central DI is classically TRANSIENT or follows a triphasic pattern: initial DI (axon shock) → transient SIADH (release of stored AVP from dying neurons) → permanent DI if enough neurons are destroyed.</div><div class="rtt">⚠️ WRONG: head trauma causes nephrogenic DI. Discriminator — trauma/surgery damages the hypothalamic-stalk-posterior pituitary axis, producing AVP-deficient CENTRAL DI that responds to DDAVP; nephrogenic causes are renal/drug/metabolic.</div></div><div class="rt"><div class="rtl">5. Tumor</div><div class="rte">Central DI causes — mass lesions of the hypothalamic-pituitary region: craniopharyngioma, germinoma, pituitary macroadenoma compressing the stalk, and metastases (classically breast and lung). Suprasellar/stalk tumors are more likely to cause DI than purely intrasellar ones.</div><div class="rtt">⚠️ WRONG: pituitary/hypothalamic tumors affect only the anterior pituitary. Discriminator — stalk and suprasellar lesions readily disrupt the posterior pituitary/hypothalamic AVP neurons, producing central DI; new-onset polyuria after a sellar mass should prompt a DI workup.</div></div><div class="rt"><div class="rtl">6. Infiltrative / infectious</div><div class="rte">Central DI causes — infiltrative and inflammatory disease: sarcoidosis, Langerhans cell histiocytosis, granulomatosis with polyangiitis, IgG4 disease; infections (meningitis, encephalitis, TB); and lymphocytic (autoimmune) hypophysitis. These often produce stalk thickening on MRI.</div><div class="rtt">⚠️ WRONG: sarcoidosis causes nephrogenic DI. Discriminator — sarcoid/histiocytosis infiltrate the hypothalamus/stalk and destroy AVP-producing neurons → CENTRAL DI (DDAVP-responsive). Nephrogenic DI's metabolic culprits are lithium, hypercalcemia, and hypokalemia.</div></div><div class="rt"><div class="rtl">7. Idiopathic / autoimmune</div><div class="rte">A large fraction (~30–50%) of central DI is idiopathic, many of these autoimmune (anti-AVP-cell antibodies). Familial central DI also exists (autosomal-dominant mutation in the AVP-neurophysin II gene on chromosome 20), as does Wolfram/DIDMOAD syndrome (DI, DM, optic atrophy, deafness).</div><div class="rtt">⚠️ WRONG: central DI is always due to a visible structural lesion. Discriminator — a substantial share is idiopathic/autoimmune or genetic with a normal-appearing pituitary; absence of a mass does not exclude central DI, so confirm with copeptin/DDAVP testing.</div></div><div class="rt"><div class="rtl">8. Lithium (most common acquired)</div><div class="rte">Lithium is the MOST COMMON acquired cause of nephrogenic DI. It enters collecting-duct principal cells through the apical ENaC channel and downregulates AQP2 expression, impairing the water-reabsorption response to AVP. ~20–40% of chronic lithium users develop some concentrating defect; effect may persist even after stopping the drug. Amiloride (ENaC blocker) is first-line because it blocks lithium entry.</div><div class="rtt">⚠️ WRONG: demeclocycline is the most common cause of nephrogenic DI. Discriminator — lithium is by far the leading acquired cause; demeclocycline also causes nephrogenic DI but is uncommon and is in fact used THERAPEUTICALLY in SIADH to induce a controlled nephrogenic DI.</div></div><div class="rt"><div class="rtl">9. Hypercalcemia</div><div class="rte">Hypercalcemia (typically Ca &gt;11 mg/dL) causes acquired nephrogenic DI by activating the basolateral calcium-sensing receptor in the thick ascending limb/collecting duct, which downregulates AQP2 and impairs the countercurrent gradient. This is reversible when calcium normalizes and is a classic mechanism behind polyuria in hyperparathyroidism or malignancy.</div><div class="rtt">⚠️ WRONG: hypoCALCEMIA causes nephrogenic DI. Discriminator — it is hyperCALCEMIA (and hypoKALEMIA) that impair urinary concentration; correcting the calcium reverses the polyuria, which is itself a useful diagnostic clue.</div></div><div class="rt"><div class="rtl">10. Hypokalemia</div><div class="rte">Chronic hypokalemia (K &lt;3 mEq/L) impairs the medullary countercurrent concentrating mechanism and downregulates AQP2, producing reversible nephrogenic DI. Think of it in laxative/diuretic abuse, primary hyperaldosteronism, and prolonged vomiting. Concentrating ability recovers once potassium is repleted.</div><div class="rtt">⚠️ WRONG: hyperKALEMIA causes nephrogenic DI. Discriminator — the offending electrolyte derangements are hypoKALEMIA and hyperCALCEMIA (mnemonic: 'low K, high Ca' break the kidney's concentrating power); correcting them reverses the DI.</div></div><div class="rt"><div class="rtl">11. Hereditary nephrogenic</div><div class="rte">Hereditary nephrogenic DI: ~90% is X-linked recessive due to V2 receptor (AVPR2) gene mutations (affects males, presents in infancy with hypernatremic dehydration, failure to thrive, vomiting). The remainder is autosomal (recessive or dominant) from aquaporin-2 (AQP2) gene mutations. Both leave the collecting duct unable to respond to AVP from birth.</div><div class="rtt">⚠️ WRONG: hereditary nephrogenic DI is caused by an AVP (vasopressin) gene defect. Discriminator — an AVP-gene mutation causes hereditary CENTRAL DI (deficiency); hereditary nephrogenic DI is a RECEPTOR (AVPR2, X-linked) or channel (AQP2) defect — resistance, not deficiency.</div></div><div class="rt"><div class="rtl">12. Renal disease / sickle cell</div><div class="rte">Other nephrogenic DI causes — sickle cell disease/trait (vaso-occlusion damages the hypoxic renal medulla, blunting concentration even before overt CKD), post-obstructive uropathy (after relief of obstruction), and chronic tubulointerstitial/medullary kidney disease (e.g., medullary cystic disease, amyloid, Sjögren).</div><div class="rtt">⚠️ WRONG: sickle cell disease causes central DI. Discriminator — sickling damages the renal medulla → impaired concentrating ability = NEPHROGENIC DI (hyposthenuria), with normal/high AVP. Central DI is the hypothalamic-pituitary deficiency state.</div></div><div class="rt"><div class="rtl">13. Gestational DI</div><div class="rte">Gestational DI is a transient third-trimester DI caused by placental vasopressinase (cysteine aminopeptidase) degrading endogenous AVP, increasing its clearance 3–4-fold and outpacing supply. It is treated with DESMOPRESSIN because DDAVP is resistant to vasopressinase, and it resolves within weeks postpartum once the placenta is gone.</div><div class="rtt">⚠️ WRONG: gestational DI is treated with a thiazide. Discriminator — thiazides treat nephrogenic DI; gestational DI is an AVP-degradation problem and responds to vasopressinase-resistant DDAVP. (Note: associate it with pre-eclampsia/HELLP, which raise vasopressinase.)</div></div><div class="rt"><div class="rtl">14. Polydipsia psychogenic/iatrogenic</div><div class="rte">Primary polydipsia subtypes: psychogenic (compulsive water drinking, often in schizophrenia or with anticholinergic dry mouth), dipsogenic (a low/abnormal thirst threshold so AVP is suppressed prematurely), and iatrogenic (over-recommended or excessive prescribed fluids). All feature excess intake with appropriately suppressed AVP.</div><div class="rtt">⚠️ WRONG: primary polydipsia has HIGH serum osmolality at baseline. Discriminator — overdrinking dilutes the plasma, so baseline serum osm/Na is LOW-normal in primary polydipsia, whereas true DI (water loss) gives high-normal/high serum osm. This single value helps separate the two before formal testing.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="neuro_avp.html" title="Pituitary/DI/SIADH — AVP/ADH physiology (posterior pituitary)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="neuro_di_tx.html" title="Pituitary/DI/SIADH — Diabetes insipidus treatment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

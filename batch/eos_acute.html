@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Eosinophilic Pneumonia — Acute (AEP)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>16</em></summary><ol class="traps"><li><b>BAL eos &gt;25% = key</b> — WRONG answer: 'order a peripheral eosinophil count to diagnose' — early AEP has a NORMAL blood eosinophil count, so a normal CBC differential does not exclude it. The discriminator is BAL eosinophilia &gt;25%, which you only get by doing the lavage.</li><li><b>Acute fever &lt;1 month</b> — WRONG answer: diagnosing CEP in a patient sick for only 10 days. Duration is the discriminator — &lt;1 month of acute febrile illness with respiratory failure = AEP; weeks-to-months of subacute cough/weight loss/night sweats = CEP.</li><li><b>Males 20-40, new smoking</b> — WRONG answer: picking a long-standing asthmatic woman as the typical AEP patient — that is the CEP profile. AEP = young male, recent new smoker, no atopy.</li><li><b>New smoker / vaping</b> — WRONG answer: attributing the picture to chronic heavy smoking. It is the NEW onset of smoking/vaping (often within the prior month), not cumulative pack-years, that triggers AEP.</li><li><b>Indoor dust trigger</b> — WRONG answer: calling dust-exposure respiratory failure an occupational pneumoconiosis or hypersensitivity pneumonitis. Pneumoconiosis is chronic/fibrotic; HP shows BAL lymphocytosis — AEP after dust shows BAL eosinophilia &gt;25% and resolves with steroids.</li><li><b>ARDS-pattern infiltrates</b> — WRONG answer: managing as pure ARDS with lung-protective ventilation alone and never doing BAL. Unlike idiopathic ARDS, AEP reverses dramatically with corticosteroids — missing it means missing a curable diagnosis.</li><li><b>Not ARDS — wait for BAL</b> — WRONG answer: diagnosing ARDS in a young new-smoker with bilateral infiltrates and effusions without BAL. AEP mimics ARDS but responds dramatically to steroids — the discriminator is BAL eosinophilia and the dramatic steroid response.</li><li><b>No peripheral eos early</b> — WRONG answer: 'normal eosinophil count rules out eosinophilic pneumonia.' In AEP a normal blood eosinophil count is the rule, not the exception — relying on the CBC will falsely exclude the diagnosis. Get the BAL.</li><li><b>Eos develop later (~1700)</b> — WRONG answer: waiting for the blood eosinophil count to rise before treating. Peripheral eosinophilia is a late phenomenon; waiting for it delays steroids in a patient who can deteriorate to respiratory failure.</li><li><b>7-30 days onset</b> — WRONG answer: dismissing AEP because the patient 'only just started smoking.' The 7-30 day latency after a NEW exposure is exactly the expected timing for AEP — recent onset supports, not refutes, the diagnosis.</li><li><b>No infection / no cause</b> — WRONG answer: treating empirically for pneumonia and stopping there. Antibiotics do nothing for AEP; if infection workup is negative and BAL is eosinophilic, the answer is corticosteroids, not escalating antibiotics.</li><li><b>Steroids = dramatic response</b> — WRONG answer: expecting a slow taper-dependent course like CEP. AEP recovers completely and does not relapse, so a short steroid course (often ~2-4 weeks) suffices — no prolonged maintenance is needed.</li><li><b>Systemic corticosteroids</b> — WRONG answer: choosing antibiotics or antifungals as definitive therapy. After excluding infection, corticosteroids are the treatment; the only other essential step is removing the trigger.</li><li><b>No relapse</b> — WRONG answer: planning long-term maintenance steroids for AEP because you confused it with CEP. CEP relapses on taper; AEP does not recur (unless the patient resumes smoking/vaping).</li><li><b>Acute HP comparison</b> — WRONG answer: calling an acute post-exposure pneumonitis 'HP' when BAL shows eosinophils. HP BAL is lymphocytic; AEP BAL is eosinophilic (&gt;25%) — the cell type in the lavage is the discriminator.</li><li><b>EGPA / COP mimics</b> — WRONG answer: diagnosing EGPA in an isolated acute lung presentation. EGPA is multisystem (asthma + eosinophilia + neuropathy/sinus/cardiac, often ANCA+); pure acute eosinophilic lung disease in a young new-smoker with no vasculitis is AEP. COP, by contrast, lacks BAL eosinophilia entirely.</li></ol></details><details class="panel"><summary>📖 Read-through — all 16 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. BAL eos &gt;25% = key</div><div class="rte">Diagnosis hinges on bronchoalveolar lavage (BAL) eosinophils &gt;25% — the single most important confirmatory test in AEP. Because peripheral blood eosinophilia is typically absent at presentation, BAL is what clinches the diagnosis. Bronchoscopy with BAL also excludes infection (the major mimic). Mnemonic: 'Acute Eosinophilic = Airway sample (BAL) &gt;25%, not blood.'</div><div class="rtt">⚠️ WRONG answer: 'order a peripheral eosinophil count to diagnose' — early AEP has a NORMAL blood eosinophil count, so a normal CBC differential does not exclude it. The discriminator is BAL eosinophilia &gt;25%, which you only get by doing the lavage.</div></div><div class="rt"><div class="rtl">2. Acute fever &lt;1 month</div><div class="rte">AEP is an acute febrile illness with symptoms for &lt;1 month (usually days to 2 weeks) — fever, cough, dyspnea, pleuritic chest pain, and often progression to hypoxemic respiratory failure. The short, acute time course is the defining clinical clue separating it from chronic eosinophilic pneumonia (CEP), which runs for weeks to months.</div><div class="rtt">⚠️ WRONG answer: diagnosing CEP in a patient sick for only 10 days. Duration is the discriminator — &lt;1 month of acute febrile illness with respiratory failure = AEP; weeks-to-months of subacute cough/weight loss/night sweats = CEP.</div></div><div class="rt"><div class="rtl">3. Males 20-40, new smoking</div><div class="rte">Classic AEP demographic: a young man (20-40) with NO asthma history who has recently started smoking or vaping. Contrast sharply with CEP, which favors middle-aged women WITH asthma/atopy. The 'no asthma' detail is high-yield — atopy points away from AEP and toward CEP or EGPA.</div><div class="rtt">⚠️ WRONG answer: picking a long-standing asthmatic woman as the typical AEP patient — that is the CEP profile. AEP = young male, recent new smoker, no atopy.</div></div><div class="rt"><div class="rtl">4. New smoker / vaping</div><div class="rte">Newly initiated cigarette smoking or vaping is the classic AEP trigger — the temporal link to a recent change in smoking habit is a board favorite. The mechanism is an acute hypersensitivity-type alveolar eosinophilic response to a new inhaled antigen, which is why removal of the exposure plus steroids gives such rapid recovery.</div><div class="rtt">⚠️ WRONG answer: attributing the picture to chronic heavy smoking. It is the NEW onset of smoking/vaping (often within the prior month), not cumulative pack-years, that triggers AEP.</div></div><div class="rt"><div class="rtl">5. Indoor dust trigger</div><div class="rte">Inhaled dust and particulate exposures — military deployment to dusty regions, building renovation, sand/cave dust — are recognized AEP triggers in addition to new smoking. The unifying theme is a recent, intense inhalational exposure in a previously healthy young person.</div><div class="rtt">⚠️ WRONG answer: calling dust-exposure respiratory failure an occupational pneumoconiosis or hypersensitivity pneumonitis. Pneumoconiosis is chronic/fibrotic; HP shows BAL lymphocytosis — AEP after dust shows BAL eosinophilia &gt;25% and resolves with steroids.</div></div><div class="rt"><div class="rtl">6. ARDS-pattern infiltrates</div><div class="rte">AEP presents looking exactly like ARDS: diffuse bilateral alveolar/interstitial infiltrates on imaging plus acute hypoxemic respiratory failure that may require mechanical ventilation. CT often shows bilateral ground-glass opacities, septal thickening, and pleural effusions. The key teaching point is that a steroid-responsive disease is hiding inside an ARDS-looking presentation.</div><div class="rtt">⚠️ WRONG answer: managing as pure ARDS with lung-protective ventilation alone and never doing BAL. Unlike idiopathic ARDS, AEP reverses dramatically with corticosteroids — missing it means missing a curable diagnosis.</div></div><div class="rt"><div class="rtl">7. Not ARDS — wait for BAL</div><div class="rte">Although it mimics ARDS, AEP is not true ARDS — it is steroid-responsive. The action step is to obtain BAL before locking in an ARDS label, because finding &gt;25% eosinophils flips management from supportive-only to high-dose corticosteroids with expected near-complete recovery. Pleural effusions (often eosinophilic) further favor AEP over ARDS.</div><div class="rtt">⚠️ WRONG answer: diagnosing ARDS in a young new-smoker with bilateral infiltrates and effusions without BAL. AEP mimics ARDS but responds dramatically to steroids — the discriminator is BAL eosinophilia and the dramatic steroid response.</div></div><div class="rt"><div class="rtl">8. No peripheral eos early</div><div class="rte">Peripheral blood eosinophilia is characteristically ABSENT early in AEP — at presentation the CBC differential is often normal or even shows neutrophilia. This is the opposite of CEP, where &gt;90% of patients have peripheral eosinophilia. The eosinophils are compartmentalized in the lung (hence the diagnostic value of BAL).</div><div class="rtt">⚠️ WRONG answer: 'normal eosinophil count rules out eosinophilic pneumonia.' In AEP a normal blood eosinophil count is the rule, not the exception — relying on the CBC will falsely exclude the diagnosis. Get the BAL.</div></div><div class="rt"><div class="rtl">9. Eos develop later (~1700)</div><div class="rte">Blood eosinophilia in AEP tends to appear LATER in the course (mean peripheral eosinophil count around ~1700 cells/µL during recovery), not at presentation. So a delayed or convalescent CBC may show eosinophilia even when the initial one did not — useful retrospective supporting evidence but never the early diagnostic test.</div><div class="rtt">⚠️ WRONG answer: waiting for the blood eosinophil count to rise before treating. Peripheral eosinophilia is a late phenomenon; waiting for it delays steroids in a patient who can deteriorate to respiratory failure.</div></div><div class="rt"><div class="rtl">10. 7-30 days onset</div><div class="rte">Symptom onset is typically 7-30 days after starting the trigger (e.g., first cigarettes or vaping, or a dusty deployment). This tight temporal window between a new inhalational exposure and acute febrile respiratory illness is a strong diagnostic clue on exam vignettes.</div><div class="rtt">⚠️ WRONG answer: dismissing AEP because the patient 'only just started smoking.' The 7-30 day latency after a NEW exposure is exactly the expected timing for AEP — recent onset supports, not refutes, the diagnosis.</div></div><div class="rt"><div class="rtl">11. No infection / no cause</div><div class="rte">Workup must exclude infection (bacterial, fungal, parasitic, viral) — AEP is a non-infectious, idiopathic eosinophilic process. BAL cultures and stains are negative; there is no identifiable infectious or systemic cause. This exclusion is built into the diagnostic criteria along with acute onset, hypoxemia, diffuse infiltrates, and BAL eosinophils &gt;25%.</div><div class="rtt">⚠️ WRONG answer: treating empirically for pneumonia and stopping there. Antibiotics do nothing for AEP; if infection workup is negative and BAL is eosinophilic, the answer is corticosteroids, not escalating antibiotics.</div></div><div class="rt"><div class="rtl">12. Steroids = dramatic response</div><div class="rte">AEP shows a dramatic, rapid response to systemic corticosteroids — clinical improvement often within 24-48 hours and complete radiographic recovery. This brisk reversibility is a hallmark and a defining feature distinguishing AEP from true ARDS and from fibrotic lung disease.</div><div class="rtt">⚠️ WRONG answer: expecting a slow taper-dependent course like CEP. AEP recovers completely and does not relapse, so a short steroid course (often ~2-4 weeks) suffices — no prolonged maintenance is needed.</div></div><div class="rt"><div class="rtl">13. Systemic corticosteroids</div><div class="rte">Treatment is systemic corticosteroids (e.g., methylprednisolone IV ~60-125 mg every 6 hours for severe respiratory failure, transitioning to oral prednisone ~40-60 mg/day, then a 2-4 week taper). Improvement is rapid; because AEP does not relapse, prolonged courses are unnecessary. Also stop the trigger (smoking/vaping).</div><div class="rtt">⚠️ WRONG answer: choosing antibiotics or antifungals as definitive therapy. After excluding infection, corticosteroids are the treatment; the only other essential step is removing the trigger.</div></div><div class="rt"><div class="rtl">14. No relapse</div><div class="rte">AEP does NOT relapse after treatment provided the trigger is removed — a single short steroid course is curative. This is the single best discriminator from CEP, which relapses in &gt;50% of patients on steroid taper and often needs maintenance therapy. 'Acute and one-and-done' vs 'Chronic and comes back.'</div><div class="rtt">⚠️ WRONG answer: planning long-term maintenance steroids for AEP because you confused it with CEP. CEP relapses on taper; AEP does not recur (unless the patient resumes smoking/vaping).</div></div><div class="rt"><div class="rtl">15. Acute HP comparison</div><div class="rte">Differential: acute hypersensitivity pneumonitis (HP) also follows an inhaled antigen exposure but shows BAL LYMPHOCYTOSIS (often CD8-predominant), not eosinophilia. Both can present acutely after exposure, so the BAL differential is the decisive test that separates them.</div><div class="rtt">⚠️ WRONG answer: calling an acute post-exposure pneumonitis 'HP' when BAL shows eosinophils. HP BAL is lymphocytic; AEP BAL is eosinophilic (&gt;25%) — the cell type in the lavage is the discriminator.</div></div><div class="rt"><div class="rtl">16. EGPA / COP mimics</div><div class="rte">Other mimics: EGPA (eosinophilic granulomatosis with polyangiitis) — an eosinophilic ANCA-associated vasculitis with asthma, sinus disease, neuropathy, and multiorgan involvement; and COP (cryptogenic organizing pneumonia) — organizing pneumonia with migratory consolidations but WITHOUT eosinophilia. AEP is lung-limited, acute, and eosinophilic without vasculitis.</div><div class="rtt">⚠️ WRONG answer: diagnosing EGPA in an isolated acute lung presentation. EGPA is multisystem (asthma + eosinophilia + neuropathy/sinus/cardiac, often ANCA+); pure acute eosinophilic lung disease in a young new-smoker with no vasculitis is AEP. COP, by contrast, lacks BAL eosinophilia entirely.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="bronchiectasis_management.html" title="Bronchiectasis — Management, Exacerbations &amp; Hemoptysis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="eos_chronic.html" title="Eosinophilic Pneumonia — Chronic (CEP)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

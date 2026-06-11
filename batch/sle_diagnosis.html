@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">SLE — Diagnosis &amp; Monitoring</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>ANA ≥1:80 entry gate</b> — WRONG: continuing to score SLE criteria or diagnosing lupus in an ANA-negative patient. Discriminator: ANA-negative SLE is exceedingly rare; a persistently negative ANA (by immunofluorescence/HEp-2) makes SLE highly unlikely and should redirect you to alternative diagnoses (e.g., fibromyalgia, other CTD, or drug effect).</li><li><b>ANA sensitive, NOT specific</b> — WRONG: diagnosing SLE because a patient with vague fatigue/arthralgias has a positive ANA. Discriminator: a positive ANA alone — particularly low titer — is common in healthy people and many other conditions; you need accompanying clinical features plus specific antibodies (anti-dsDNA or anti-Sm) and the ≥10-point threshold to classify SLE.</li><li><b>Other ANA+ conditions</b> — WRONG: assuming a positive ANA points to SLE in a patient whose picture actually fits another CTD. Discriminator: match the pattern and specific antibodies to the disease — anti-centromere/anti-Scl-70 = scleroderma, anti-Ro/La = Sjögren, anti-mitochondrial = PBC — rather than defaulting to lupus.</li><li><b>≥10 points to classify</b> — WRONG: adding up multiple items within the same domain or counting a feature better explained by infection/drug. Discriminator: score only the single highest item per domain, exclude criteria with a better alternative explanation, and remember these are CLASSIFICATION (not strictly diagnostic) criteria — clinical judgment still governs.</li><li><b>Anti-dsDNA (specific)</b> — WRONG: treating a stable anti-dsDNA titer as proof of a flare, or ignoring a rising titer. Discriminator: it is the TREND that matters — rising anti-dsDNA with falling C3/C4 signals active disease/nephritis, whereas anti-Sm and anti-Ro do NOT track activity. A single positive value classifies but does not, by itself, indicate a flare.</li><li><b>Anti-Sm (most specific)</b> — WRONG: monitoring anti-Sm titers to gauge a flare, or excluding SLE because anti-Sm is negative. Discriminator: anti-Sm is highly specific but insensitive and activity-INDEPENDENT — its absence never rules out lupus, and its level is not used for disease monitoring (use anti-dsDNA and complement for that).</li><li><b>Anti-Ro / SSA</b> — WRONG: ignoring anti-Ro status in a pregnant lupus patient. Discriminator: anti-Ro/SSA positivity requires counseling and serial fetal echocardiography for congenital heart block and neonatal lupus risk — and clinically, the sun (UV light) icon flags photosensitivity and SCLE.</li><li><b>Anti-U1 RNP</b> — WRONG: calling high-titer isolated anti-U1 RNP plain SLE. Discriminator: high-titer anti-U1 RNP with Raynaud, puffy hands, and overlap features points to MCTD; in MCTD anti-Sm and anti-dsDNA are characteristically ABSENT, and pulmonary hypertension (not nephritis) is the leading cause of death.</li><li><b>Antiphospholipid antibodies</b> — WRONG: interpreting a prolonged aPTT in a lupus patient as a bleeding risk. Discriminator: the lupus anticoagulant prolongs aPTT in the lab but is PROTHROMBOTIC clinically (no correction on 1:1 mixing study) — these patients clot, not bleed, and need anticoagulation after thrombosis, typically lifelong warfarin (DOACs are inferior, especially in triple-positive/arterial APS).</li><li><b>Anti-histone — drug-induced</b> — WRONG: assuming anti-histone positivity proves drug-induced lupus, or expecting nephritis in DILE. Discriminator: anti-histone also occurs in ~50–80% of idiopathic SLE so it is not 100% specific; the discriminators for DILE are a temporal drug link, sparing of kidney/CNS, NEGATIVE anti-dsDNA/anti-Sm (except TNF-inhibitor cases), and resolution after withdrawal.</li><li><b>Low complement C3/C4</b> — WRONG: concluding disease is active when complement is normal, or ignoring an isolated chronically low C4. Discriminator: low C3/C4 PLUS high anti-dsDNA = active immunologic disease/flare; normal complement argues against active lupus nephritis. A fixed low C4 with normal C3, however, may signal an inherited complement deficiency rather than ongoing consumption.</li><li><b>SLEDAI activity score</b> — WRONG: using SLEDAI to capture permanent organ damage or confusing it with the damage index. Discriminator: SLEDAI measures ACTIVE, reversible disease (it can go up and down); irreversible accrued damage is measured by the SLICC/ACR Damage Index. The two are complementary, not interchangeable.</li><li><b>SLICC damage index</b> — WRONG: treating a high SLICC score as a sign of a current flare warranting more immunosuppression. Discriminator: SLICC = permanent DAMAGE (irreversible, only increases); SLEDAI = current ACTIVITY (reversible). Worsening SLICC may reflect treatment toxicity, not active lupus — escalate immunosuppression based on activity, not damage.</li><li><b>Renal monitoring / biopsy trigger</b> — WRONG: starting empiric immunosuppression for presumed lupus nephritis without a biopsy, or attributing proteinuria to something else. Discriminator: the biopsy defines the histologic class (I–VI) that determines treatment — proliferative III/IV needs aggressive induction, whereas pure class V is managed differently — so new proteinuria/active sediment should prompt biopsy before committing to therapy.</li><li><b>Malar rash &amp; photosensitivity</b> — WRONG: confusing the malar rash with rosacea or seborrheic dermatitis. Discriminator: lupus malar rash SPARES the nasolabial folds and is photosensitive, whereas rosacea involves them with papules/pustules and telangiectasias, and seborrheic dermatitis favors the nasolabial folds and scalp. Also distinguish discoid lupus, which scars, from non-scarring acute lupus rash.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ANA ≥1:80 entry gate</div><div class="rte">A positive ANA at a titer ≥1:80 on HEp-2 cells is the obligatory ENTRY criterion for the 2019 ACR/EULAR classification: if ANA is negative, you cannot proceed to scoring and SLE is essentially excluded. ANA is the most sensitive screening test for lupus (&gt;97–99% sensitive). The glowing gate is the mnemonic — no entry without a positive ANA. Only after the gate do you accumulate weighted clinical and immunologic points.</div><div class="rtt">⚠️ WRONG: continuing to score SLE criteria or diagnosing lupus in an ANA-negative patient. Discriminator: ANA-negative SLE is exceedingly rare; a persistently negative ANA (by immunofluorescence/HEp-2) makes SLE highly unlikely and should redirect you to alternative diagnoses (e.g., fibromyalgia, other CTD, or drug effect).</div></div><div class="rt"><div class="rtl">2. ANA sensitive, NOT specific</div><div class="rte">ANA is highly SENSITIVE but poorly SPECIFIC: it functions as a screening test that rules disease OUT when negative but cannot rule it IN when positive. Up to 10–15% of healthy people (especially older women) have a low-titer positive ANA, and titers ≥1:160 are more meaningful than 1:40. Specificity comes from the downstream antibodies (anti-dsDNA, anti-Sm).</div><div class="rtt">⚠️ WRONG: diagnosing SLE because a patient with vague fatigue/arthralgias has a positive ANA. Discriminator: a positive ANA alone — particularly low titer — is common in healthy people and many other conditions; you need accompanying clinical features plus specific antibodies (anti-dsDNA or anti-Sm) and the ≥10-point threshold to classify SLE.</div></div><div class="rt"><div class="rtl">3. Other ANA+ conditions</div><div class="rte">ANA is positive across many autoimmune and even non-autoimmune states: Sjögren, RA, systemic sclerosis (often nucleolar/centromere pattern), Hashimoto thyroiditis, primary biliary cholangitis, autoimmune hepatitis, and drug-induced lupus — plus aging and some infections. The IF pattern offers clues (homogeneous → dsDNA/histone; speckled → Sm/RNP/Ro/La; centromere → limited scleroderma; nucleolar → diffuse scleroderma).</div><div class="rtt">⚠️ WRONG: assuming a positive ANA points to SLE in a patient whose picture actually fits another CTD. Discriminator: match the pattern and specific antibodies to the disease — anti-centromere/anti-Scl-70 = scleroderma, anti-Ro/La = Sjögren, anti-mitochondrial = PBC — rather than defaulting to lupus.</div></div><div class="rt"><div class="rtl">4. ≥10 points to classify</div><div class="rte">The 2019 EULAR/ACR criteria require the ANA entry gate PLUS ≥10 weighted points drawn from 7 clinical domains (constitutional, hematologic, neuropsychiatric, mucocutaneous, serosal, musculoskeletal, renal) and 3 immunologic domains (antiphospholipid, complement, SLE-specific antibodies). Only the highest-weighted item in each domain counts, and a criterion counts only if not better explained by another diagnosis. Renal biopsy (class III/IV LN) alone scores 10 points.</div><div class="rtt">⚠️ WRONG: adding up multiple items within the same domain or counting a feature better explained by infection/drug. Discriminator: score only the single highest item per domain, exclude criteria with a better alternative explanation, and remember these are CLASSIFICATION (not strictly diagnostic) criteria — clinical judgment still governs.</div></div><div class="rt"><div class="rtl">5. Anti-dsDNA (specific)</div><div class="rte">Anti–double-stranded DNA is relatively SPECIFIC for SLE (~95–99%) though only ~60–70% sensitive, and it is one of the few lupus antibodies that TRACKS disease activity. Rising titers correlate with flares and especially with lupus nephritis (deposits drive immune-complex glomerulonephritis). It pairs inversely with complement: as dsDNA rises, C3/C4 fall during active disease.</div><div class="rtt">⚠️ WRONG: treating a stable anti-dsDNA titer as proof of a flare, or ignoring a rising titer. Discriminator: it is the TREND that matters — rising anti-dsDNA with falling C3/C4 signals active disease/nephritis, whereas anti-Sm and anti-Ro do NOT track activity. A single positive value classifies but does not, by itself, indicate a flare.</div></div><div class="rt"><div class="rtl">6. Anti-Sm (most specific)</div><div class="rte">Anti-Smith is the MOST SPECIFIC antibody for SLE (~99%) but has low sensitivity (~20–30%), so it confirms when present but rarely appears. Unlike anti-dsDNA, it does NOT correlate with disease activity and should not be trended. Mnemonic: 'Sm = Specific but Scarce.'</div><div class="rtt">⚠️ WRONG: monitoring anti-Sm titers to gauge a flare, or excluding SLE because anti-Sm is negative. Discriminator: anti-Sm is highly specific but insensitive and activity-INDEPENDENT — its absence never rules out lupus, and its level is not used for disease monitoring (use anti-dsDNA and complement for that).</div></div><div class="rt"><div class="rtl">7. Anti-Ro / SSA</div><div class="rte">Anti-Ro/SSA links lupus to several syndromes: subacute cutaneous lupus erythematosus (photosensitive annular/papulosquamous rash on sun-exposed areas), neonatal lupus, and congenital complete heart block (anti-Ro crosses the placenta at ~18–24 weeks and damages the fetal AV node). It also marks Sjögren overlap and a subset of 'ANA-negative' lupus (when only Ro is present).</div><div class="rtt">⚠️ WRONG: ignoring anti-Ro status in a pregnant lupus patient. Discriminator: anti-Ro/SSA positivity requires counseling and serial fetal echocardiography for congenital heart block and neonatal lupus risk — and clinically, the sun (UV light) icon flags photosensitivity and SCLE.</div></div><div class="rt"><div class="rtl">8. Anti-U1 RNP</div><div class="rte">Anti-U1 RNP at VERY HIGH titer, in the absence of anti-Sm/anti-dsDNA, defines mixed connective tissue disease (MCTD) — overlap of SLE, systemic sclerosis, and polymyositis, classically with Raynaud, swollen 'sausage' fingers, and a high risk of pulmonary hypertension. Lower-titer anti-RNP can occur in SLE itself.</div><div class="rtt">⚠️ WRONG: calling high-titer isolated anti-U1 RNP plain SLE. Discriminator: high-titer anti-U1 RNP with Raynaud, puffy hands, and overlap features points to MCTD; in MCTD anti-Sm and anti-dsDNA are characteristically ABSENT, and pulmonary hypertension (not nephritis) is the leading cause of death.</div></div><div class="rt"><div class="rtl">9. Antiphospholipid antibodies</div><div class="rte">Antiphospholipid antibodies — lupus anticoagulant, anti-cardiolipin (IgG/IgM), and anti-β2-glycoprotein-I — predispose to arterial/venous THROMBOSIS and pregnancy morbidity (recurrent loss). The lupus anticoagulant paradoxically prolongs the aPTT in vitro (that fails to correct on mixing study) yet causes clotting in vivo. Diagnosis of APS requires a clinical event plus a persistently positive test ≥12 weeks apart. Catastrophic APS is a multi-organ thrombotic emergency.</div><div class="rtt">⚠️ WRONG: interpreting a prolonged aPTT in a lupus patient as a bleeding risk. Discriminator: the lupus anticoagulant prolongs aPTT in the lab but is PROTHROMBOTIC clinically (no correction on 1:1 mixing study) — these patients clot, not bleed, and need anticoagulation after thrombosis, typically lifelong warfarin (DOACs are inferior, especially in triple-positive/arterial APS).</div></div><div class="rt"><div class="rtl">10. Anti-histone — drug-induced</div><div class="rte">Anti-histone antibodies appear in ~95% of drug-induced lupus and give a homogeneous ANA pattern. Classic culprits (mnemonic SHIPP-M): Sulfasalazine, Hydralazine, Isoniazid, Procainamide, Phenytoin, Methyldopa/Minocycline (also anti-TNF agents → with anti-dsDNA). DILE typically spares the kidneys and CNS, features arthralgias/serositis, and RESOLVES on stopping the drug. Anti-histone is usually positive while anti-dsDNA and anti-Sm are negative (TNF-inhibitor DILE is the exception, with anti-dsDNA).</div><div class="rtt">⚠️ WRONG: assuming anti-histone positivity proves drug-induced lupus, or expecting nephritis in DILE. Discriminator: anti-histone also occurs in ~50–80% of idiopathic SLE so it is not 100% specific; the discriminators for DILE are a temporal drug link, sparing of kidney/CNS, NEGATIVE anti-dsDNA/anti-Sm (except TNF-inhibitor cases), and resolution after withdrawal.</div></div><div class="rt"><div class="rtl">11. Low complement C3/C4</div><div class="rte">Active SLE consumes complement via immune-complex formation, so C3 and C4 FALL during flares — particularly active lupus nephritis — and recover with control. The hallmark monitoring pattern is FALLING C3/C4 moving OPPOSITE to RISING anti-dsDNA. A persistently low C4 may also reflect a hereditary complement deficiency (C1q, C2, C4) that itself predisposes to lupus.</div><div class="rtt">⚠️ WRONG: concluding disease is active when complement is normal, or ignoring an isolated chronically low C4. Discriminator: low C3/C4 PLUS high anti-dsDNA = active immunologic disease/flare; normal complement argues against active lupus nephritis. A fixed low C4 with normal C3, however, may signal an inherited complement deficiency rather than ongoing consumption.</div></div><div class="rt"><div class="rtl">12. SLEDAI activity score</div><div class="rte">SLEDAI (SLE Disease Activity Index) quantifies CURRENT, reversible disease activity, weighting major organ involvement most heavily — CNS and renal items score highest (8 each), then vasculitis/serositis, arthritis, rash, and fever. It guides whether to escalate therapy and helps define flares. It is the activity counterpart to the SLICC damage index.</div><div class="rtt">⚠️ WRONG: using SLEDAI to capture permanent organ damage or confusing it with the damage index. Discriminator: SLEDAI measures ACTIVE, reversible disease (it can go up and down); irreversible accrued damage is measured by the SLICC/ACR Damage Index. The two are complementary, not interchangeable.</div></div><div class="rt"><div class="rtl">13. SLICC damage index</div><div class="rte">The SLICC/ACR Damage Index records IRREVERSIBLE, accumulated organ damage present ≥6 months — from disease or its treatment (e.g., steroid-induced cataracts, avascular necrosis, CKD). Damage only accrues; it never decreases. Treatment targets are defined separately: LLDAS (Lupus Low Disease Activity State) and DORIS remission aim to minimize both activity and future damage, partly by limiting glucocorticoids.</div><div class="rtt">⚠️ WRONG: treating a high SLICC score as a sign of a current flare warranting more immunosuppression. Discriminator: SLICC = permanent DAMAGE (irreversible, only increases); SLEDAI = current ACTIVITY (reversible). Worsening SLICC may reflect treatment toxicity, not active lupus — escalate immunosuppression based on activity, not damage.</div></div><div class="rt"><div class="rtl">14. Renal monitoring / biopsy trigger</div><div class="rte">All SLE patients need routine renal surveillance — urinalysis with sediment, urine protein-to-creatinine ratio, and serum creatinine — because lupus nephritis is often silent early. New proteinuria (UPCr &gt;0.5 g/g), an active urinary sediment (RBC casts, dysmorphic RBCs), or unexplained creatinine rise triggers RENAL BIOPSY, which establishes the ISN/RPS class and directs therapy. Anti-dsDNA and complement are tracked alongside as activity markers.</div><div class="rtt">⚠️ WRONG: starting empiric immunosuppression for presumed lupus nephritis without a biopsy, or attributing proteinuria to something else. Discriminator: the biopsy defines the histologic class (I–VI) that determines treatment — proliferative III/IV needs aggressive induction, whereas pure class V is managed differently — so new proteinuria/active sediment should prompt biopsy before committing to therapy.</div></div><div class="rt"><div class="rtl">15. Malar rash &amp; photosensitivity</div><div class="rte">Acute cutaneous lupus presents as the malar 'butterfly' rash: an erythematous, often photosensitive eruption across the cheeks and nasal bridge that SPARES the nasolabial folds. UV light triggers/worsens lupus skin disease (photosensitivity), reinforcing strict sun avoidance and sunscreen. Discoid lupus (scarring, hyperpigmented plaques) and SCLE (anti-Ro) are other mucocutaneous forms scored in the criteria.</div><div class="rtt">⚠️ WRONG: confusing the malar rash with rosacea or seborrheic dermatitis. Discriminator: lupus malar rash SPARES the nasolabial folds and is photosensitive, whereas rosacea involves them with papules/pustules and telangiectasias, and seborrheic dermatitis favors the nasolabial folds and scalp. Also distinguish discoid lupus, which scars, from non-scarring acute lupus rash.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="sle_pregnancy.html" title="SLE — APS, Pregnancy, Neonatal &amp; Drug-Induced">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="sle_nephritis.html" title="SLE — Lupus Nephritis &amp; Other Organs">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

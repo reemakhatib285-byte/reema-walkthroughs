@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Fatty Liver — MASLD natural history &amp; histology museum</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Healthy island</b> — WRONG: requiring zero alcohol to diagnose MASLD. Discriminator: the new framework allows modest alcohol; significant alcohol intake with steatosis is reclassified as MetALD (overlap) or ALD — the defining feature of MASLD is a cardiometabolic risk factor, not abstinence.</li><li><b>Steatosis</b> — WRONG: assuming all fatty liver inevitably progresses to cirrhosis. Discriminator: the majority with simple steatosis never progress; it is the inflammatory MASH subset (with ballooning) that drives fibrosis — so risk-stratify fibrosis (FIB-4) rather than treating steatosis as uniformly dangerous.</li><li><b>MASH</b> — WRONG: thinking ALT level reliably distinguishes MASH from simple steatosis. Discriminator: transaminases correlate poorly with histology — MASH can exist with normal ALT; ballooning + inflammation on biopsy (or non-invasive fibrosis testing) defines progression, and fibrosis stage, not ALT, predicts outcome.</li><li><b>Cirrhosis</b> — WRONG: labeling cirrhosis without obvious cause as truly idiopathic. Discriminator: much 'cryptogenic cirrhosis' is end-stage MASH (steatosis vanishes as fibrosis advances) in a patient with metabolic syndrome — recognize the metabolic phenotype rather than calling it unexplained.</li><li><b>HCC crab</b> — WRONG: assuming MASLD-related HCC risk is negligible compared with viral hepatitis. Discriminator: given MASLD's huge prevalence, it is now a top cause of HCC; cirrhotic MASLD patients need 6-monthly surveillance, and HCC can even arise pre-cirrhosis (see next node).</li><li><b>HCC without cirrhosis</b> — WRONG answer: 'HCC only occurs in cirrhotic MASLD livers.' Discriminator: MASLD (like HBV) can produce HCC in the absence of cirrhosis, so a non-cirrhotic MASH patient with a new liver mass is still consistent with primary HCC — don't exclude it just because there's no cirrhosis.</li><li><b>1-2% per year</b> — WRONG: over-treating or rushing every MASLD patient to biopsy given the slow progression. Discriminator: most patients progress at only ~1-2%/year, so the strategy is fibrosis risk-stratification and metabolic control; reserve biopsy/pharmacotherapy for those with intermediate/high non-invasive scores.</li><li><b>Recurs post-transplant</b> — WRONG: assuming transplantation cures MASLD. Discriminator: because the metabolic milieu remains, steatohepatitis frequently recurs in the graft — ongoing weight management and metabolic control are essential even after transplant.</li><li><b>Biopsy cannot distinguish</b> — WRONG: ordering a liver biopsy to differentiate MASLD from alcoholic liver disease. Discriminator: the two are histologically indistinguishable; rely on the drinking history and supporting labs (AST:ALT ratio, GGT, metabolic profile) — biopsy won't make the call.</li><li><b>Macrovesicular fat</b> — WRONG: equating any hepatic fat with MASLD regardless of droplet type. Discriminator: MASLD/ALD = MACROvesicular (large droplet, peripheral nucleus); a MICROvesicular pattern points instead to mitochondrial/toxic causes (Reye, valproate, AFLP) — a different and often acutely dangerous differential.</li><li><b>Mallory hyaline</b> — WRONG: treating Mallory-Denk bodies as pathognomonic for alcoholic hepatitis. Discriminator: they appear in BOTH MASH and ALD (and other conditions like Wilson disease/PBC), so they confirm steatohepatitis but cannot establish the cause — history does that.</li><li><b>Microvesicular = mito</b> — WRONG answer: calling microvesicular steatosis the typical MASLD pattern. Discriminator: micro vesicular fat = mitochondrial toxicity (Reye, valproate, tetracycline, AFLP), which is acute and dangerous; MASLD is MACROvesicular — choosing 'microvesicular' for MASLD is a classic trap.</li><li><b>Histology triad</b> — WRONG: diagnosing MASH from steatosis and inflammation alone, without ballooning. Discriminator: hepatocyte BALLOONING is the defining feature that upgrades simple steatosis to steatohepatitis (MASH); its absence means the lesion is not yet MASH.</li><li><b>Not autoimmune hepatitis</b> — WRONG: diagnosing autoimmune hepatitis (and starting steroids) in a patient whose biopsy shows fat and ballooning. Discriminator: MASH lacks the interface hepatitis, plasma cells, high IgG, and autoantibodies of AIH; treat MASH metabolically, not with immunosuppression.</li><li><b>Statin not the cause</b> — WRONG: stopping or withholding a statin in a MASLD patient with mildly elevated liver enzymes. Discriminator: statins are safe and beneficial in MASLD (cardiovascular disease is the #1 killer); mild transaminase elevation is not a reason to stop them — they neither cause nor worsen the steatosis.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Healthy island</div><div class="rte">Baseline normal liver — the starting point before fat accumulates. MASLD (metabolic dysfunction-associated steatotic liver disease, the 2023 rename of NAFLD) is now defined as hepatic steatosis PLUS at least one cardiometabolic risk factor (overweight/obesity, type 2 diabetes/prediabetes, hypertension, or dyslipidemia). It is the most common chronic liver disease worldwide, affecting ~25-30% of adults. The terminology change emphasizes the metabolic driver and removes the stigmatizing 'non-alcoholic.'</div><div class="rtt">⚠️ WRONG: requiring zero alcohol to diagnose MASLD. Discriminator: the new framework allows modest alcohol; significant alcohol intake with steatosis is reclassified as MetALD (overlap) or ALD — the defining feature of MASLD is a cardiometabolic risk factor, not abstinence.</div></div><div class="rt"><div class="rtl">2. Steatosis</div><div class="rte">MASLD begins as simple steatosis: &gt;5% of hepatocytes contain fat (macrovesicular), driven by insulin resistance, increased de novo lipogenesis, and free fatty acid flux from adipose tissue. Most patients are asymptomatic with normal or mildly elevated ALT. Simple steatosis alone is largely benign with slow, often non-progressive course — only a subset advance to MASH. This is the first and most common stage.</div><div class="rtt">⚠️ WRONG: assuming all fatty liver inevitably progresses to cirrhosis. Discriminator: the majority with simple steatosis never progress; it is the inflammatory MASH subset (with ballooning) that drives fibrosis — so risk-stratify fibrosis (FIB-4) rather than treating steatosis as uniformly dangerous.</div></div><div class="rt"><div class="rtl">3. MASH</div><div class="rte">MASH (metabolic dysfunction-associated steatohepatitis, formerly NASH) = steatosis + lobular inflammation + hepatocyte ballooning. It is the aggressive, progressive form that drives fibrosis and accounts for the rising rate of cirrhosis and liver transplantation. Lipotoxicity, oxidative stress, and inflammatory cytokines distinguish it from bland steatosis. Fibrosis STAGE is the strongest predictor of liver-related and overall mortality in MASH.</div><div class="rtt">⚠️ WRONG: thinking ALT level reliably distinguishes MASH from simple steatosis. Discriminator: transaminases correlate poorly with histology — MASH can exist with normal ALT; ballooning + inflammation on biopsy (or non-invasive fibrosis testing) defines progression, and fibrosis stage, not ALT, predicts outcome.</div></div><div class="rt"><div class="rtl">4. Cirrhosis</div><div class="rte">Repeated injury drives MASH → bridging fibrosis (F3) → cirrhosis (F4). MASLD/MASH is now a leading and fastest-growing cause of cirrhosis and liver transplantation, and is overtaking hepatitis C in many regions. Once cirrhotic, patients need HCC surveillance (ultrasound ± AFP every 6 months) and variceal screening. So-called 'cryptogenic cirrhosis' is frequently burned-out MASH where the fat has disappeared.</div><div class="rtt">⚠️ WRONG: labeling cirrhosis without obvious cause as truly idiopathic. Discriminator: much 'cryptogenic cirrhosis' is end-stage MASH (steatosis vanishes as fibrosis advances) in a patient with metabolic syndrome — recognize the metabolic phenotype rather than calling it unexplained.</div></div><div class="rt"><div class="rtl">5. HCC crab</div><div class="rte">MASLD/MASH carries a meaningful hepatocellular carcinoma risk, and because MASLD is so prevalent it is becoming a leading cause of HCC overall. The risk is highest in cirrhosis but is not confined to it. The crab (cancer) emerging from the river signals that malignancy can surface along the disease course, driving the need for surveillance in advanced disease.</div><div class="rtt">⚠️ WRONG: assuming MASLD-related HCC risk is negligible compared with viral hepatitis. Discriminator: given MASLD's huge prevalence, it is now a top cause of HCC; cirrhotic MASLD patients need 6-monthly surveillance, and HCC can even arise pre-cirrhosis (see next node).</div></div><div class="rt"><div class="rtl">6. HCC without cirrhosis</div><div class="rte">A distinctive board point: MASLD/MASH can cause hepatocellular carcinoma even WITHOUT established cirrhosis — a feature it shares with hepatitis B but not most other etiologies, where cirrhosis is a near-prerequisite. This complicates surveillance because routine screening targets cirrhotics, yet a fraction of MASLD-HCC arises in non-cirrhotic livers. Mechanism involves chronic metabolic/inflammatory carcinogenesis.</div><div class="rtt">⚠️ WRONG answer: 'HCC only occurs in cirrhotic MASLD livers.' Discriminator: MASLD (like HBV) can produce HCC in the absence of cirrhosis, so a non-cirrhotic MASH patient with a new liver mass is still consistent with primary HCC — don't exclude it just because there's no cirrhosis.</div></div><div class="rt"><div class="rtl">7. 1-2% per year</div><div class="rte">Progression is slow and affects only a minority: roughly 1-2% per year develop advanced fibrosis or liver-related complications, with fibrosis typically advancing about one stage per several years (faster in MASH than bland steatosis). This indolent pace is why non-invasive monitoring over time (serial FIB-4/elastography) is appropriate rather than aggressive intervention in everyone. Diabetes accelerates progression.</div><div class="rtt">⚠️ WRONG: over-treating or rushing every MASLD patient to biopsy given the slow progression. Discriminator: most patients progress at only ~1-2%/year, so the strategy is fibrosis risk-stratification and metabolic control; reserve biopsy/pharmacotherapy for those with intermediate/high non-invasive scores.</div></div><div class="rt"><div class="rtl">8. Recurs post-transplant</div><div class="rte">MASLD/MASH can RECUR in the allograft after liver transplant because the underlying metabolic drivers (obesity, insulin resistance, dyslipidemia) persist — and immunosuppression (steroids, calcineurin inhibitors) can worsen metabolic syndrome. Recurrent or de novo steatosis is common post-transplant. This underscores that transplant treats the organ, not the systemic metabolic disease.</div><div class="rtt">⚠️ WRONG: assuming transplantation cures MASLD. Discriminator: because the metabolic milieu remains, steatohepatitis frequently recurs in the graft — ongoing weight management and metabolic control are essential even after transplant.</div></div><div class="rt"><div class="rtl">9. Biopsy cannot distinguish</div><div class="rte">MASH and alcoholic steatohepatitis are histologically IDENTICAL — both show macrovesicular steatosis, ballooning, Mallory-Denk hyaline, and inflammation — so biopsy CANNOT reliably separate them. The distinction is made by the alcohol HISTORY (and corroborating clues: AST:ALT &gt;2:1 and high GGT favor alcohol; ALT ≥ AST plus metabolic syndrome favors MASLD). This is a frequently tested teaching point.</div><div class="rtt">⚠️ WRONG: ordering a liver biopsy to differentiate MASLD from alcoholic liver disease. Discriminator: the two are histologically indistinguishable; rely on the drinking history and supporting labs (AST:ALT ratio, GGT, metabolic profile) — biopsy won't make the call.</div></div><div class="rt"><div class="rtl">10. Macrovesicular fat</div><div class="rte">MASLD and ALD show MACROvesicular steatosis: a single large fat droplet that fills the hepatocyte and displaces the nucleus to the periphery (the 'signet-ring' appearance). This is the hallmark pattern of metabolic and alcoholic fatty liver. Contrast it with microvesicular fat (next node), which signals a different, more emergent pathophysiology.</div><div class="rtt">⚠️ WRONG: equating any hepatic fat with MASLD regardless of droplet type. Discriminator: MASLD/ALD = MACROvesicular (large droplet, peripheral nucleus); a MICROvesicular pattern points instead to mitochondrial/toxic causes (Reye, valproate, AFLP) — a different and often acutely dangerous differential.</div></div><div class="rt"><div class="rtl">11. Mallory hyaline</div><div class="rte">Mallory-Denk bodies (eosinophilic intracytoplasmic hyaline aggregates of damaged keratin) and hepatocyte ballooning are seen in steatohepatitis — both MASH and alcoholic. They are characteristic of steatohepatitis but NOT specific to it (also seen in Wilson disease, primary biliary cholangitis, etc.). Their presence alongside macrovesicular fat marks the inflammatory (steatohepatitis) end of the spectrum.</div><div class="rtt">⚠️ WRONG: treating Mallory-Denk bodies as pathognomonic for alcoholic hepatitis. Discriminator: they appear in BOTH MASH and ALD (and other conditions like Wilson disease/PBC), so they confirm steatohepatitis but cannot establish the cause — history does that.</div></div><div class="rt"><div class="rtl">12. Microvesicular = mito</div><div class="rte">MICROvesicular steatosis (many tiny fat droplets with a CENTRALLY retained nucleus) signals impaired mitochondrial beta-oxidation, not typical MASLD. Classic causes: Reye syndrome (aspirin in viral-illness children), valproate, tetracyclines, nucleoside analogs, and acute fatty liver of pregnancy (AFLP). These are often acute and life-threatening, unlike the indolent macrovesicular MASLD. Recognizing this pattern redirects the workup toward toxins/metabolic emergencies.</div><div class="rtt">⚠️ WRONG answer: calling microvesicular steatosis the typical MASLD pattern. Discriminator: micro vesicular fat = mitochondrial toxicity (Reye, valproate, tetracycline, AFLP), which is acute and dangerous; MASLD is MACROvesicular — choosing 'microvesicular' for MASLD is a classic trap.</div></div><div class="rt"><div class="rtl">13. Histology triad</div><div class="rte">The MASH histologic triad is steatosis + lobular inflammation + hepatocyte ballooning (± pericellular/'chicken-wire' fibrosis). Ballooning degeneration is the key feature that separates MASH from bland steatosis. The NAFLD/MASLD Activity Score (NAS) grades these components, but it is fibrosis STAGE — not the activity grade — that drives prognosis. Memorize the triad: fat, inflammation, ballooning.</div><div class="rtt">⚠️ WRONG: diagnosing MASH from steatosis and inflammation alone, without ballooning. Discriminator: hepatocyte BALLOONING is the defining feature that upgrades simple steatosis to steatohepatitis (MASH); its absence means the lesion is not yet MASH.</div></div><div class="rt"><div class="rtl">14. Not autoimmune hepatitis</div><div class="rte">Steatohepatitis is distinct from autoimmune hepatitis (AIH). AIH shows interface hepatitis with dense plasma-cell-rich portal infiltrates, elevated IgG, and positive autoantibodies (ANA, anti-smooth muscle/anti-LKM-1) — and lacks the fat/ballooning of MASH. Mistaking one for the other matters: AIH is treated with immunosuppression (steroids/azathioprine), whereas MASLD is managed metabolically. Plasma cells and interface hepatitis flag AIH, not steatosis.</div><div class="rtt">⚠️ WRONG: diagnosing autoimmune hepatitis (and starting steroids) in a patient whose biopsy shows fat and ballooning. Discriminator: MASH lacks the interface hepatitis, plasma cells, high IgG, and autoantibodies of AIH; treat MASH metabolically, not with immunosuppression.</div></div><div class="rt"><div class="rtl">15. Statin not the cause</div><div class="rte">Statins do NOT cause MASLD/steatosis and are SAFE to continue in fatty liver disease, including with mildly elevated transaminases and in compensated cirrhosis. They actually reduce cardiovascular events — the leading cause of death in MASLD patients — and may lower portal pressure and HCC risk. Stopping a statin over a modestly elevated ALT in MASLD is a common error. Statins are part of good MASLD care, not a cause of harm.</div><div class="rtt">⚠️ WRONG: stopping or withholding a statin in a MASLD patient with mildly elevated liver enzymes. Discriminator: statins are safe and beneficial in MASLD (cardiovascular disease is the #1 killer); mild transaminase elevation is not a reason to stop them — they neither cause nor worsen the steatosis.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="fld_masld_treatment.html" title="Fatty Liver — MASLD diagnosis &amp; treatment apothecary">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext disabled">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

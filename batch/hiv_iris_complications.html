@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">HIV — IRIS, EBV/OHL, Lymphomas &amp; Drug Side Effects</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>IRIS storm station</b> — Wrong answer: 'a patient who worsens 3 weeks after starting ART has failed ART / has a resistant virus.' Discriminator: worsening WITH a falling viral load and rising CD4 is IRIS, not treatment failure. Check that VL is dropping — if it is, the deterioration is immune reconstitution, and ART is continued.</li><li><b>Timing 1wk-2yr</b> — Wrong answer: 'IRIS risk is highest in patients with high baseline CD4 counts.' Discriminator: it's the opposite — the lowest baseline CD4 (advanced immunosuppression) with the most dramatic VL fall carries the GREATEST IRIS risk, because there is more residual antigen and a bigger immune rebound.</li><li><b>Paradoxical IRIS</b> — Wrong answer: 'enlarging lymph nodes in a TB patient after starting ART means the TB regimen is failing — escalate/change anti-TB drugs.' Discriminator: in a treatment-adherent patient with declining VL, this is paradoxical IRIS — continue both TB therapy and ART, add steroids if severe; don't assume drug resistance/failure.</li><li><b>Unmasking IRIS</b> — Wrong answer: 'a new opportunistic infection appearing after ART proves the patient acquired it on ART / that ART is ineffective.' Discriminator: this is unmasking IRIS revealing a pre-existing occult infection, not a newly acquired one or ART failure — the diagnostic clue is the temporal link to immune recovery.</li><li><b>Continue ART (don't stop)</b> — Wrong answer: 'stop ART until the IRIS reaction resolves.' Discriminator: for the great majority of IRIS, you continue ART and treat the OI (± steroids if severe). Discontinuing ART is the wrong move and is reserved for rare life-threatening, uncontrollable cases.</li><li><b>Severe IRIS → steroids</b> — Wrong answer: 'IRIS always requires high-dose steroids.' Discriminator: most IRIS is mild and self-limited needing only supportive care + continued ART/OI treatment; steroids are reserved for SEVERE/organ-threatening disease (notably CNS or respiratory).</li><li><b>Dangerous CNS IRIS</b> — Wrong answer: 'start ART immediately in a patient newly diagnosed with cryptococcal meningitis.' Discriminator: in cryptococcal (and to some extent TB) meningitis, ART should be DEFERRED a few weeks after antifungal/anti-TB therapy because immediate ART increases lethal CNS IRIS — a key exception to the 'treat everyone immediately' rule.</li><li><b>Oral hairy leukoplakia</b> — Wrong answer: 'a non-scrapeable white tongue plaque is leukoplakia that is premalignant and needs biopsy/excision.' Discriminator: OHL is EBV-related, benign, and NON-premalignant — distinct from true (dysplastic) oral leukoplakia. It does not scrape off (unlike candida) and resolves with ART; aggressive intervention is unnecessary.</li><li><b>Candida (scrapes off)</b> — Wrong answer: 'a white oral plaque that scrapes off easily is oral hairy leukoplakia.' Discriminator: SCRAPES OFF = Candida (thrush); does NOT scrape off and on lateral tongue = OHL (EBV). The scrape test is the classic bedside differentiator, and thrush flags likely CD4 &lt;200.</li><li><b>EBV lymphoma box</b> — Wrong answer: 'a solitary enhancing brain lesion in advanced HIV is most likely toxoplasmosis — treat empirically and never biopsy.' Discriminator: a SINGLE periventricular lesion with positive CSF EBV PCR (and/or thallium/PET uptake) favors primary CNS LYMPHOMA over toxoplasmosis (which is usually multiple). Lack of response to empiric anti-toxo therapy → biopsy for lymphoma.</li><li><b>Chronic complications</b> — Wrong answer: 'most deaths in well-controlled HIV patients today are from opportunistic infections.' Discriminator: with effective ART, the leading causes of death shifted to NON-AIDS chronic complications (cardiovascular disease, renal, hepatic, malignancy) — OIs are now the minority of deaths.</li><li><b>HIVAN</b> — Wrong answer: 'treat HIVAN primarily with immunosuppressants/cyclophosphamide.' Discriminator: the cornerstone of HIVAN treatment is ART (viral suppression), plus RAAS blockade for proteinuria — not aggressive cytotoxic immunosuppression. Note the paradox of LARGE echogenic kidneys despite renal failure.</li><li><b>TMP-SMX side effect</b> — Wrong answer: 'a creatinine bump on TMP-SMX means acute kidney injury — stop the drug.' Discriminator: trimethoprim blocks tubular CREATININE secretion, raising serum creatinine WITHOUT reducing true GFR (pseudo-AKI). Combined with its hyperkalemia effect, this is expected and not necessarily nephrotoxicity. (True hyperkalemia, though, can be dangerous and needs monitoring.)</li><li><b>Abacavir HLA-B*5701</b> — Wrong answer: 'rechallenge with abacavir after the hypersensitivity symptoms resolve.' Discriminator: NEVER rechallenge abacavir after a hypersensitivity reaction — re-exposure can cause fatal reactions. And the drug must not be started at all without prior HLA-B*5701 testing (positive = absolute contraindication).</li><li><b>Tenofovir renal/bone</b> — Wrong answer: 'TDF and TAF have equivalent renal and bone safety.' Discriminator: TAF causes markedly LESS renal (proximal tubulopathy/Fanconi) and bone toxicity than TDF and is preferred when kidney or bone disease is a concern (TDF, however, has a more favorable lipid profile).</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. IRIS storm station</div><div class="rte">IRIS (immune reconstitution inflammatory syndrome) is a PARADOXICAL clinical worsening that occurs after starting ART: as the recovering immune system regains the ability to mount inflammation, it overreacts to antigens of a pre-existing (often subclinical or partially treated) opportunistic infection. The patient gets sicker even though the virus is being suppressed and CD4 is rising — an immune-driven, not infection-progression, deterioration.</div><div class="rtt">⚠️ Wrong answer: 'a patient who worsens 3 weeks after starting ART has failed ART / has a resistant virus.' Discriminator: worsening WITH a falling viral load and rising CD4 is IRIS, not treatment failure. Check that VL is dropping — if it is, the deterioration is immune reconstitution, and ART is continued.</div></div><div class="rt"><div class="rtl">2. Timing 1wk-2yr</div><div class="rte">IRIS typically appears weeks to a few months after ART initiation (range ~1 week to 2 years). The biggest risk factors are a very LOW baseline CD4 (especially &lt;50), a high baseline viral load, a large/rapid drop in viral load, and a recently/concurrently diagnosed opportunistic infection. The lower the starting CD4 and the steeper the rebound, the higher the IRIS risk.</div><div class="rtt">⚠️ Wrong answer: 'IRIS risk is highest in patients with high baseline CD4 counts.' Discriminator: it's the opposite — the lowest baseline CD4 (advanced immunosuppression) with the most dramatic VL fall carries the GREATEST IRIS risk, because there is more residual antigen and a bigger immune rebound.</div></div><div class="rt"><div class="rtl">3. Paradoxical IRIS</div><div class="rte">Paradoxical IRIS = clinical flare/worsening of an ALREADY-DIAGNOSED and treated opportunistic infection after ART-driven immune recovery (e.g., enlarging TB lymph nodes or new fevers in a patient already on TB therapy, or worsening cryptococcal meningitis). The pathogen is being treated; the deterioration is from the reconstituted inflammatory response to residual antigen.</div><div class="rtt">⚠️ Wrong answer: 'enlarging lymph nodes in a TB patient after starting ART means the TB regimen is failing — escalate/change anti-TB drugs.' Discriminator: in a treatment-adherent patient with declining VL, this is paradoxical IRIS — continue both TB therapy and ART, add steroids if severe; don't assume drug resistance/failure.</div></div><div class="rt"><div class="rtl">4. Unmasking IRIS</div><div class="rte">Unmasking IRIS = a previously latent/subclinical, undiagnosed infection becomes clinically apparent for the first time after ART because the recovering immune system suddenly reacts to it (e.g., new florid MAC lymphadenitis or cryptococcal disease appearing shortly after ART start in someone with no prior diagnosis). It 'unmasks' occult infection.</div><div class="rtt">⚠️ Wrong answer: 'a new opportunistic infection appearing after ART proves the patient acquired it on ART / that ART is ineffective.' Discriminator: this is unmasking IRIS revealing a pre-existing occult infection, not a newly acquired one or ART failure — the diagnostic clue is the temporal link to immune recovery.</div></div><div class="rt"><div class="rtl">5. Continue ART (don't stop)</div><div class="rte">Core management of IRIS: CONTINUE ART and treat/optimize therapy for the underlying opportunistic infection. Most IRIS is self-limited. Stopping ART risks viral rebound, resistance, and further immunosuppression, and is reserved only for truly life-threatening situations that cannot be controlled otherwise.</div><div class="rtt">⚠️ Wrong answer: 'stop ART until the IRIS reaction resolves.' Discriminator: for the great majority of IRIS, you continue ART and treat the OI (± steroids if severe). Discontinuing ART is the wrong move and is reserved for rare life-threatening, uncontrollable cases.</div></div><div class="rt"><div class="rtl">6. Severe IRIS → steroids</div><div class="rte">Severe or organ-threatening IRIS (especially CNS involvement, severe respiratory compromise) is treated with systemic CORTICOSTEROIDS to dampen the excessive inflammatory response while ART is continued and the OI is treated. Steroids reduce inflammation/edema (e.g., paradoxical TB-IRIS) without needing to interrupt antiretrovirals.</div><div class="rtt">⚠️ Wrong answer: 'IRIS always requires high-dose steroids.' Discriminator: most IRIS is mild and self-limited needing only supportive care + continued ART/OI treatment; steroids are reserved for SEVERE/organ-threatening disease (notably CNS or respiratory).</div></div><div class="rt"><div class="rtl">7. Dangerous CNS IRIS</div><div class="rte">CNS IRIS — particularly from tuberculous meningitis and cryptococcal meningitis — is the most dangerous form because inflammation in the closed cranial space causes raised ICP, edema, and herniation risk. This is precisely why ART is DELAYED in cryptococcal meningitis (start anti-fungal induction first, then begin ART after ~4–6 weeks) to avoid catastrophic CNS IRIS.</div><div class="rtt">⚠️ Wrong answer: 'start ART immediately in a patient newly diagnosed with cryptococcal meningitis.' Discriminator: in cryptococcal (and to some extent TB) meningitis, ART should be DEFERRED a few weeks after antifungal/anti-TB therapy because immediate ART increases lethal CNS IRIS — a key exception to the 'treat everyone immediately' rule.</div></div><div class="rt"><div class="rtl">8. Oral hairy leukoplakia</div><div class="rte">Oral hairy leukoplakia (OHL) is an EBV-driven white, corrugated/'hairy' plaque on the LATERAL borders of the tongue that does NOT scrape off. It is a marker of immunosuppression (HIV or other), is benign and NON-premalignant, and often needs no specific treatment (responds to ART; antivirals only if symptomatic). It is not caused by Candida.</div><div class="rtt">⚠️ Wrong answer: 'a non-scrapeable white tongue plaque is leukoplakia that is premalignant and needs biopsy/excision.' Discriminator: OHL is EBV-related, benign, and NON-premalignant — distinct from true (dysplastic) oral leukoplakia. It does not scrape off (unlike candida) and resolves with ART; aggressive intervention is unnecessary.</div></div><div class="rt"><div class="rtl">9. Candida (scrapes off)</div><div class="rte">Oral candidiasis (thrush): creamy white plaques that DO scrape off leaving an erythematous, sometimes bleeding base; KOH/smear shows pseudohyphae. It signals CD4 &lt;200 (or other immunosuppression) and warrants checking CD4 and starting PCP prophylaxis if indicated. Treat with topical (nystatin/clotrimazole) or oral fluconazole for extensive/esophageal disease.</div><div class="rtt">⚠️ Wrong answer: 'a white oral plaque that scrapes off easily is oral hairy leukoplakia.' Discriminator: SCRAPES OFF = Candida (thrush); does NOT scrape off and on lateral tongue = OHL (EBV). The scrape test is the classic bedside differentiator, and thrush flags likely CD4 &lt;200.</div></div><div class="rt"><div class="rtl">10. EBV lymphoma box</div><div class="rte">EBV drives several HIV-associated lymphomas: primary CNS lymphoma (nearly 100% EBV-positive, typically CD4 &lt;50), Burkitt lymphoma (EBV-associated, 't(8;14)' c-MYC, 'starry-sky'), and immunoblastic/diffuse large B-cell lymphoma. CSF EBV PCR positivity supports primary CNS lymphoma in the workup of a brain mass.</div><div class="rtt">⚠️ Wrong answer: 'a solitary enhancing brain lesion in advanced HIV is most likely toxoplasmosis — treat empirically and never biopsy.' Discriminator: a SINGLE periventricular lesion with positive CSF EBV PCR (and/or thallium/PET uptake) favors primary CNS LYMPHOMA over toxoplasmosis (which is usually multiple). Lack of response to empiric anti-toxo therapy → biopsy for lymphoma.</div></div><div class="rt"><div class="rtl">11. Chronic complications</div><div class="rte">Even with virologic suppression, persistent chronic immune activation/inflammation drives non-AIDS morbidity: accelerated cardiovascular disease, HIV-associated nephropathy (HIVAN), HIV-associated neurocognitive disorder (HAND), and metabolic complications/lipodystrophy. In the ART era, the MAJORITY (&gt;75%) of deaths in treated HIV are from these non-AIDS chronic conditions rather than opportunistic infections.</div><div class="rtt">⚠️ Wrong answer: 'most deaths in well-controlled HIV patients today are from opportunistic infections.' Discriminator: with effective ART, the leading causes of death shifted to NON-AIDS chronic complications (cardiovascular disease, renal, hepatic, malignancy) — OIs are now the minority of deaths.</div></div><div class="rt"><div class="rtl">12. HIVAN</div><div class="rte">HIV-associated nephropathy (HIVAN) is classically COLLAPSING focal segmental glomerulosclerosis with heavy (often nephrotic-range) proteinuria, rapidly declining renal function, and large echogenic kidneys on ultrasound (kidneys not shrunken despite renal failure). It is strongly associated with Black patients (APOL1 risk alleles) and uncontrolled HIV. The primary treatment is ART (± ACE inhibitor/ARB and sometimes steroids).</div><div class="rtt">⚠️ Wrong answer: 'treat HIVAN primarily with immunosuppressants/cyclophosphamide.' Discriminator: the cornerstone of HIVAN treatment is ART (viral suppression), plus RAAS blockade for proteinuria — not aggressive cytotoxic immunosuppression. Note the paradox of LARGE echogenic kidneys despite renal failure.</div></div><div class="rt"><div class="rtl">13. TMP-SMX side effect</div><div class="rte">Trimethoprim-sulfamethoxazole (used for PCP/toxo prophylaxis and treatment) adverse effects: HYPERKALEMIA (trimethoprim blocks the distal tubule ENaC channel, amiloride-like), a rise in creatinine (blocks tubular creatinine secretion without true GFR loss), rash/photosensitivity up to Stevens-Johnson syndrome, bone marrow suppression/cytopenias, and hemolysis in G6PD deficiency.</div><div class="rtt">⚠️ Wrong answer: 'a creatinine bump on TMP-SMX means acute kidney injury — stop the drug.' Discriminator: trimethoprim blocks tubular CREATININE secretion, raising serum creatinine WITHOUT reducing true GFR (pseudo-AKI). Combined with its hyperkalemia effect, this is expected and not necessarily nephrotoxicity. (True hyperkalemia, though, can be dangerous and needs monitoring.)</div></div><div class="rt"><div class="rtl">14. Abacavir HLA-B*5701</div><div class="rte">Abacavir (NRTI) can cause a potentially fatal hypersensitivity reaction (fever, rash, GI and constitutional/respiratory symptoms, worsening on rechallenge) tightly linked to the HLA-B*5701 allele. Screen for HLA-B*5701 BEFORE prescribing; if positive, abacavir is contraindicated. Abacavir has also been associated in some studies with increased cardiovascular risk.</div><div class="rtt">⚠️ Wrong answer: 'rechallenge with abacavir after the hypersensitivity symptoms resolve.' Discriminator: NEVER rechallenge abacavir after a hypersensitivity reaction — re-exposure can cause fatal reactions. And the drug must not be started at all without prior HLA-B*5701 testing (positive = absolute contraindication).</div></div><div class="rt"><div class="rtl">15. Tenofovir renal/bone</div><div class="rte">Tenofovir disoproxil fumarate (TDF) causes nephrotoxicity via PROXIMAL renal tubulopathy (Fanconi syndrome: phosphaturia, glucosuria with normal glucose, proteinuria, acidosis) and reduced bone mineral density. Tenofovir alafenamide (TAF) delivers the active drug with much lower plasma tenofovir levels and therefore significantly LESS renal and bone toxicity, preferred in patients with renal/bone risk.</div><div class="rtt">⚠️ Wrong answer: 'TDF and TAF have equivalent renal and bone safety.' Discriminator: TAF causes markedly LESS renal (proximal tubulopathy/Fanconi) and bone toxicity than TDF and is preferred when kidney or bone disease is a concern (TDF, however, has a more favorable lipid profile).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hiv_acute_natural_history.html" title="HIV — Acute Retroviral Syndrome, Diagnosis &amp; Viral Set Point">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hiv_prophylaxis_thresholds.html" title="HIV — OI Prophylaxis CD4 Thresholds &amp; ART Timing">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

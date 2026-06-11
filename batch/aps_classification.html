@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">APS — 2023 ACR/EULAR Classification (Phospholipid Courthouse)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Entry criterion</b> — WRONG to classify APS from a single weak or transient antibody alone — the entry gate only opens scoring; the patient must still reach the weighted point thresholds in both clinical and lab domains.</li><li><b>Scoring rule</b> — WRONG to apply old Sapporo thinking ('one clinical event + one positive lab = APS'). Under 2023 criteria a single clinical event plus a single low-titer IgM may not reach 3 points in either column, so it does NOT classify.</li><li><b>VTE domain</b> — WRONG to award full APS points for a provoked DVT in a patient with a major risk factor (recent surgery, immobilization, active cancer, estrogen) — provoked VTE scores fewer points so you don't over-call APS in a patient whose clot has an obvious alternative cause.</li><li><b>Microvascular events</b> — Suspected-only microvascular findings (e.g., livedo without biopsy) score far less than biopsy-proven disease — don't treat a clinical skin finding as equivalent to histologically confirmed microvascular thrombosis.</li><li><b>Cardiac valve disease</b> — WRONG to treat APS/Libman-Sacks valve vegetations as infective endocarditis with antibiotics — they are STERILE (culture-negative). The discriminator is negative blood cultures plus the APS/SLE context; management is anticoagulation/immunosuppression, not antimicrobials.</li><li><b>Obstetric complications</b> — WRONG to call APS from one or two sporadic first-trimester miscarriages — these are common in the general population and do NOT meet the obstetric criterion, which requires ≥3 early losses or a ≥10-week fetal death.</li><li><b>Arterial thrombosis</b> — WRONG to award full points for an MI/stroke in a 70-year-old smoker/diabetic/hyperlipidemic — heavy atherosclerotic risk lowers the APS score because the event likely reflects conventional CVD, not APS.</li><li><b>Hematologic / thrombocytopenia</b> — WRONG to count platelets &lt;20,000 here — counts that low fall outside the defined band and should redirect you to other causes (ITP, TTP, DIC, drug-induced). The defined window (20–130k) excludes the very severe thrombocytopenia of those mimics.</li><li><b>Lupus anticoagulant</b> — WRONG to interpret an LA assay in a patient on heparin or a DOAC — both cause FALSE-positive lupus anticoagulant results. Always check that the patient is off interfering anticoagulants (or use DOAC-neutralizing steps) before drawing conclusions; this is the classic LA pitfall.</li><li><b>aCL/anti-β2GPI IgM</b> — WRONG to overweight an isolated IgM antibody — on the exam, isolated IgM aCL/anti-β2GPI is much weaker evidence for APS than IgG, and a positive IgM alone rarely classifies. Look for IgG and lupus anticoagulant.</li><li><b>aCL/anti-β2GPI IgG</b> — WRONG to treat all titers equally — low/borderline titers contribute little and may not reach the lab threshold. Titer HEIGHT and isotype (IgG &gt; IgM) both drive the score, so a borderline IgG is not the same as a high-titer IgG.</li><li><b>IgG both high (triple-positive zone)</b> — WRONG to anticoagulate a triple-positive APS patient with a DOAC — the TRAPS and other trials showed rivaroxaban/DOACs are INFERIOR to warfarin and increase arterial events in triple-positive APS. The right answer is warfarin titrated to INR 2–3 (target 3.0–4.0 or add antiplatelet after arterial events).</li><li><b>12-week persistence gate</b> — WRONG to classify APS from a single positive test, or from two positives drawn less than 12 weeks apart — a transient post-infectious or post-thrombotic antibody does not qualify. You must repeat and confirm at ≥12 weeks.</li><li><b>Catastrophic APS warning</b> — WRONG to manage CAPS with anticoagulation alone — the rapidly progressive multi-organ failure requires the FULL bundle (anticoagulation + steroids + plasma exchange/IVIG). Failing to add immunomodulation is a fatal error given the high mortality.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Entry criterion</div><div class="rte">The 2023 ACR/EULAR criteria are gated: you may only begin scoring if there is at least one positive antiphospholipid antibody test (lupus anticoagulant, anticardiolipin, or anti-β2-glycoprotein-I) within 3 years of an identified clinical criterion. This entry gate raises specificity by excluding purely clinical or purely serologic patients before weighted scoring. These are CLASSIFICATION (research/cohort) criteria, not diagnostic criteria — a clinician can still diagnose APS in a patient who falls short of the threshold.</div><div class="rtt">⚠️ WRONG to classify APS from a single weak or transient antibody alone — the entry gate only opens scoring; the patient must still reach the weighted point thresholds in both clinical and lab domains.</div></div><div class="rt"><div class="rtl">2. Scoring rule</div><div class="rte">Unlike the old binary Sapporo/Sydney rule, the 2023 criteria use WEIGHTED points across six clinical domains and two lab domains. Classification requires at least 3 points from the clinical domains AND at least 3 points from the laboratory domains — both thresholds must be met independently. This weighting lets high-specificity items (proven microvascular thrombosis, persistent lupus anticoagulant) count more than low-specificity ones.</div><div class="rtt">⚠️ WRONG to apply old Sapporo thinking ('one clinical event + one positive lab = APS'). Under 2023 criteria a single clinical event plus a single low-titer IgM may not reach 3 points in either column, so it does NOT classify.</div></div><div class="rt"><div class="rtl">3. VTE domain</div><div class="rte">Venous thromboembolism (DVT, PE) is a clinical domain weighted by whether a major VTE risk factor is present. UNPROVOKED VTE (no high VTE risk profile) scores higher (3 points) than VTE occurring with a strong provoking risk factor (1 point), because an unprovoked clot is more likely attributable to APS. This mirrors the clinical logic that idiopathic thrombosis in a young patient warrants aPL testing.</div><div class="rtt">⚠️ WRONG to award full APS points for a provoked DVT in a patient with a major risk factor (recent surgery, immobilization, active cancer, estrogen) — provoked VTE scores fewer points so you don't over-call APS in a patient whose clot has an obvious alternative cause.</div></div><div class="rt"><div class="rtl">4. Microvascular events</div><div class="rte">Microvascular disease (livedo racemosa, aPL-nephropathy, pulmonary hemorrhage, microvascular thrombosis on biopsy) is split by certainty. ESTABLISHED (pathology/biopsy-proven) microvascular thrombosis is the single highest-weighted CLINICAL item at 5 points, whereas suspected (clinical-only) microvascular findings score lower (2 points). This rewards objective tissue confirmation over clinical impression.</div><div class="rtt">⚠️ Suspected-only microvascular findings (e.g., livedo without biopsy) score far less than biopsy-proven disease — don't treat a clinical skin finding as equivalent to histologically confirmed microvascular thrombosis.</div></div><div class="rt"><div class="rtl">5. Cardiac valve disease</div><div class="rte">Cardiac valve disease — Libman-Sacks-type sterile valve thickening or non-bacterial (verrucous) vegetations, most often on the mitral and aortic valves — is a recognized clinical domain. These vegetations are non-infective immune-complex/thrombotic deposits associated with APS and SLE and can embolize, contributing to arterial stroke.</div><div class="rtt">⚠️ WRONG to treat APS/Libman-Sacks valve vegetations as infective endocarditis with antibiotics — they are STERILE (culture-negative). The discriminator is negative blood cultures plus the APS/SLE context; management is anticoagulation/immunosuppression, not antimicrobials.</div></div><div class="rt"><div class="rtl">6. Obstetric complications</div><div class="rte">The obstetric domain counts: ≥3 consecutive early (&lt;10-week) pregnancy losses, one or more fetal deaths at ≥10 weeks, or severe pre-eclampsia/placental insufficiency delivering before 34 weeks. Weighting is higher when pre-eclampsia and placental insufficiency coexist. Mechanism is placental thrombosis and complement-mediated trophoblast injury.</div><div class="rtt">⚠️ WRONG to call APS from one or two sporadic first-trimester miscarriages — these are common in the general population and do NOT meet the obstetric criterion, which requires ≥3 early losses or a ≥10-week fetal death.</div></div><div class="rt"><div class="rtl">7. Arterial thrombosis</div><div class="rte">Arterial thrombosis (ischemic stroke, MI, limb/visceral arterial occlusion) is weighted by cardiovascular risk. An arterial event WITHOUT a high cardiovascular disease risk profile scores more (4 points) than the same event in a patient with heavy atherosclerotic risk (2 points), because in a young low-risk patient the event is more attributable to APS. Stroke in a young patient is the classic arterial APS presentation.</div><div class="rtt">⚠️ WRONG to award full points for an MI/stroke in a 70-year-old smoker/diabetic/hyperlipidemic — heavy atherosclerotic risk lowers the APS score because the event likely reflects conventional CVD, not APS.</div></div><div class="rt"><div class="rtl">8. Hematologic / thrombocytopenia</div><div class="rte">Thrombocytopenia with a platelet count of 20,000–130,000/µL is the hematologic clinical domain. APS thrombocytopenia is usually mild-to-moderate and, importantly, does not protect against thrombosis — patients clot despite low platelets. It overlaps with SLE and with immune thrombocytopenia.</div><div class="rtt">⚠️ WRONG to count platelets &lt;20,000 here — counts that low fall outside the defined band and should redirect you to other causes (ITP, TTP, DIC, drug-induced). The defined window (20–130k) excludes the very severe thrombocytopenia of those mimics.</div></div><div class="rt"><div class="rtl">9. Lupus anticoagulant</div><div class="rte">Lupus anticoagulant is detected by functional clotting assays (dRVVT and/or aPTT-based) showing phospholipid-dependent inhibition that fails to correct with mixing studies but corrects with excess phospholipid. PERSISTENT LA is the single highest-weighted LAB item (5 points); a one-time positive scores only 1. Persistence (confirmed ≥12 weeks apart) is required for the high score.</div><div class="rtt">⚠️ WRONG to interpret an LA assay in a patient on heparin or a DOAC — both cause FALSE-positive lupus anticoagulant results. Always check that the patient is off interfering anticoagulants (or use DOAC-neutralizing steps) before drawing conclusions; this is the classic LA pitfall.</div></div><div class="rt"><div class="rtl">10. aCL/anti-β2GPI IgM</div><div class="rte">Anticardiolipin and anti-β2-glycoprotein-I of the IgM isotype are the LOWEST-weighted serologic items: moderate titer scores 1 point and high titer scores 3 points. IgM is less specific for thrombosis than IgG and is more often transient or associated with infection, so the criteria deliberately give it little weight.</div><div class="rtt">⚠️ WRONG to overweight an isolated IgM antibody — on the exam, isolated IgM aCL/anti-β2GPI is much weaker evidence for APS than IgG, and a positive IgM alone rarely classifies. Look for IgG and lupus anticoagulant.</div></div><div class="rt"><div class="rtl">11. aCL/anti-β2GPI IgG</div><div class="rte">IgG anticardiolipin and anti-β2-glycoprotein-I carry MORE weight than IgM at equivalent titers, because IgG aPL correlate best with thrombotic risk. A single high-titer IgG antibody scores more than a moderate one, and combinations of IgG antibodies score highest. Anti-β2GPI is the most pathogenic specificity (β2GPI is the true antigen the antibodies recognize on phospholipid).</div><div class="rtt">⚠️ WRONG to treat all titers equally — low/borderline titers contribute little and may not reach the lab threshold. Titer HEIGHT and isotype (IgG &gt; IgM) both drive the score, so a borderline IgG is not the same as a high-titer IgG.</div></div><div class="rt"><div class="rtl">12. IgG both high (triple-positive zone)</div><div class="rte">When both IgG antibodies (anticardiolipin AND anti-β2GPI) are high-titer — and especially with a persistent lupus anticoagulant — the patient is TRIPLE-POSITIVE, carrying the highest thrombotic and recurrence risk. This profile drives the maximal lab score and identifies patients who need indefinite anticoagulation.</div><div class="rtt">⚠️ WRONG to anticoagulate a triple-positive APS patient with a DOAC — the TRAPS and other trials showed rivaroxaban/DOACs are INFERIOR to warfarin and increase arterial events in triple-positive APS. The right answer is warfarin titrated to INR 2–3 (target 3.0–4.0 or add antiplatelet after arterial events).</div></div><div class="rt"><div class="rtl">13. 12-week persistence gate</div><div class="rte">All antiphospholipid antibodies must be confirmed POSITIVE ON TWO OCCASIONS AT LEAST 12 WEEKS APART to count toward classification. This requirement filters out transient antibodies that appear after acute infection, inflammation, or thrombosis itself, which can transiently elevate aPL.</div><div class="rtt">⚠️ WRONG to classify APS from a single positive test, or from two positives drawn less than 12 weeks apart — a transient post-infectious or post-thrombotic antibody does not qualify. You must repeat and confirm at ≥12 weeks.</div></div><div class="rt"><div class="rtl">14. Catastrophic APS warning</div><div class="rte">Catastrophic antiphospholipid syndrome (CAPS) is the most severe, rapidly fatal form: multi-organ small-vessel thrombosis affecting ≥3 organs/systems within ONE WEEK, with histopathologic small-vessel occlusion and aPL positivity. It is rare (~1% of APS) but carries ~30–50% mortality. Triggers include infection, surgery, anticoagulation withdrawal, and pregnancy. Treatment is triple therapy: anticoagulation + high-dose corticosteroids + plasma exchange and/or IVIG (add rituximab/eculizumab in refractory cases).</div><div class="rtt">⚠️ WRONG to manage CAPS with anticoagulation alone — the rapidly progressive multi-organ failure requires the FULL bundle (anticoagulation + steroids + plasma exchange/IVIG). Failing to add immunomodulation is a fatal error given the high mortality.</div></div><div class="rt"><div class="rtl">15. Highest-yield summary banner</div><div class="rte">Memory anchor: the two highest single items in the 2023 criteria are both worth 5 points — biopsy-ESTABLISHED microvascular thrombosis (the top clinical item) and PERSISTENT lupus anticoagulant (the top lab item). Mnemonic: 'the two fives are proven micro-thrombosis and persistent LA.' These are the highest-specificity findings in each column.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="vte_wells_ddimer.html" title="VTE — Wells Score &amp; D-dimer Pretest Probability">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aps_definition_dx.html" title="APS — Definition, Antibodies, Clinical &amp; Diagnosis (Pirate Ship &amp; Harbors)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

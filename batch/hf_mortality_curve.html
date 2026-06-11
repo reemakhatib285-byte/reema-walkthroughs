@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — SCENE 5 — HFrEF MORTALITY U-CURVE</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>High mortality end (placebo)</b> — WRONG answer: 'HFrEF prognosis is benign once the patient is on a diuretic.' Discriminator: diuretics relieve congestion but do NOT reduce mortality; only the four pillars (ARNI, β-blocker, MRA, SGLT2i) move a patient down from the placebo/high-mortality end.</li><li><b>ACEi / ARB step</b> — WRONG answer: 'switch directly from an ACE inhibitor to an ARNI with no washout.' Discriminator: sacubitril/valsartan requires a ≥36-hour ACEi-free washout to avoid overlapping bradykinin effects and angioedema; ARBs need no washout but ACEi does.</li><li><b>Beta-blocker step</b> — WRONG answer: 'use metoprolol TARTRATE (or atenolol) for HFrEF mortality benefit.' Discriminator: only carvedilol, bisoprolol, and metoprolol SUCCINATE are proven; tartrate and other β-blockers lack mortality evidence and should not be substituted.</li><li><b>MRA step</b> — WRONG answer: 'start an MRA in a patient with K+ 5.6 and eGFR 25.' Discriminator: MRAs are contraindicated when K+ ≥5.0 or eGFR &lt;30 due to life-threatening hyperkalemia; the discriminating step is checking potassium and renal function before initiating.</li><li><b>ARNI &gt; ACEi (PARADIGM-HF)</b> — WRONG answer: 'add sacubitril/valsartan on top of the patient's lisinopril.' Discriminator: ARNI must REPLACE the ACEi (with a ≥36-h washout), never be combined with it — concurrent use causes dangerous angioedema risk.</li><li><b>SGLT2i step (DAPA/EMPEROR)</b> — WRONG answer: 'SGLT2 inhibitors only help heart failure in patients who have diabetes.' Discriminator: DAPA-HF and EMPEROR-Reduced proved benefit independent of diabetes; withholding an SGLT2i because the patient is non-diabetic is the trap.</li><li><b>Best survival (four pillars)</b> — WRONG answer: 'fully up-titrate one drug class to maximum before introducing the next pillar.' Discriminator: current evidence favors getting all four pillars on board early at low doses, then titrating; sequential full-dose loading delays mortality benefit.</li><li><b>Vericiguat / omecamtiv</b> — WRONG answer: 'add vericiguat or omecamtiv to strongly reduce mortality.' Discriminator: their proven benefit is on hospitalization/composite endpoints, not a substantial mortality reduction — don't pick them as primary mortality-lowering agents over the four pillars.</li><li><b>Ivabandine (HR ≥70, sinus)</b> — WRONG answer: 'start ivabradine to control rate in an HFrEF patient who is in atrial fibrillation.' Discriminator: ivabradine works ONLY in sinus rhythm (it acts on the SA node); it is ineffective in AF and is indicated only when HR ≥70 persists despite optimal β-blockade.</li><li><b>Ineffective: EPO, warfarin, SSRI, statin, ASV</b> — WRONG answer: 'start a statin to improve survival in this HFrEF patient,' or 'use ASV for his central sleep apnea.' Discriminator: statins are neutral for HF itself (treat ASCVD, not HF), and ASV is HARMFUL (increases mortality) in HFrEF with central sleep apnea — actively contraindicated.</li><li><b>Oral inotropes ✗ (harmful)</b> — WRONG answer: 'prescribe a chronic oral inotrope to improve contractility and survival in stable HFrEF.' Discriminator: long-term oral inotropes increase mortality; their only legitimate roles are short-term IV support in shock or palliation/bridging — not chronic outpatient use.</li><li><b>Xamoterol / moxonidine ✗</b> — WRONG answer: 'a partial β-agonist like xamoterol can provide gentle inotropic support without the harm of full agonists.' Discriminator: xamoterol (and moxonidine) increased mortality in trials; partial β-agonism is harmful in HFrEF, the opposite of evidence-based β-blockade.</li><li><b>Endothelin antagonist ✗</b> — WRONG answer: 'block the elevated endothelin levels in HFrEF with bosentan to improve outcomes.' Discriminator: endothelin antagonists worsen HF (fluid retention) with no survival benefit; they belong in PAH management, not HFrEF.</li><li><b>Potentially effective: n-3 PUFA, IV iron</b> — WRONG answer: 'treat this iron-deficient HF patient with oral ferrous sulfate.' Discriminator: in HFrEF, IV iron (ferric carboxymaltose) is the evidence-based route — oral iron (IRONOUT-HF) failed to replete stores or improve outcomes; and iron repletion is indicated even when hemoglobin is normal.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. High mortality end (placebo)</div><div class="rte">Untreated HFrEF (placebo, the grim reaper) sits at the top of the curve — the highest-mortality reference point. Symptomatic HFrEF left untreated carries roughly 50% mortality at 5 years, comparable to many aggressive cancers, with the two dominant modes of death being sudden cardiac death (VT/VF) and progressive pump failure. Every proven drug class steps the patient DOWN this curve toward better survival.</div><div class="rtt">⚠️ WRONG answer: 'HFrEF prognosis is benign once the patient is on a diuretic.' Discriminator: diuretics relieve congestion but do NOT reduce mortality; only the four pillars (ARNI, β-blocker, MRA, SGLT2i) move a patient down from the placebo/high-mortality end.</div></div><div class="rt"><div class="rtl">2. ACEi / ARB step</div><div class="rte">ACE inhibitors (e.g., enalapril target 10–20 mg BID, lisinopril) are the foundational RAAS-blocking step and the first historic mortality reducer in HFrEF (CONSENSUS, SOLVD). ARBs (candesartan, valsartan) are the alternative for ACEi-intolerant patients (cough, angioedema). They block angiotensin II–mediated vasoconstriction and remodeling. In modern algorithms this rung is superseded by ARNI when tolerated.</div><div class="rtt">⚠️ WRONG answer: 'switch directly from an ACE inhibitor to an ARNI with no washout.' Discriminator: sacubitril/valsartan requires a ≥36-hour ACEi-free washout to avoid overlapping bradykinin effects and angioedema; ARBs need no washout but ACEi does.</div></div><div class="rt"><div class="rtl">3. Beta-blocker step</div><div class="rte">Only three evidence-based β-blockers reduce mortality in HFrEF: carvedilol (target 25–50 mg BID), bisoprolol (target 10 mg daily), and metoprolol SUCCINATE (extended-release, target 200 mg daily). They blunt chronic sympathetic toxicity and reverse remodeling (COPERNICUS, CIBIS-II, MERIT-HF). Start low, go slow, and only when euvolemic — never initiate during acute decompensation. Mnemonic: the knight 'Carv/Bis/Succ.'</div><div class="rtt">⚠️ WRONG answer: 'use metoprolol TARTRATE (or atenolol) for HFrEF mortality benefit.' Discriminator: only carvedilol, bisoprolol, and metoprolol SUCCINATE are proven; tartrate and other β-blockers lack mortality evidence and should not be substituted.</div></div><div class="rt"><div class="rtl">4. MRA step</div><div class="rte">Mineralocorticoid receptor antagonists — spironolactone (RALES, target 25–50 mg) and eplerenone (EPHESUS/EMPHASIS, target 50 mg) — add incremental mortality reduction by blocking aldosterone-driven fibrosis and remodeling. Indicated for NYHA II–IV with EF ≤35%. Require eGFR &gt;30 and K+ &lt;5.0; monitor potassium and creatinine. Eplerenone avoids spironolactone's gynecomastia.</div><div class="rtt">⚠️ WRONG answer: 'start an MRA in a patient with K+ 5.6 and eGFR 25.' Discriminator: MRAs are contraindicated when K+ ≥5.0 or eGFR &lt;30 due to life-threatening hyperkalemia; the discriminating step is checking potassium and renal function before initiating.</div></div><div class="rt"><div class="rtl">5. ARNI &gt; ACEi (PARADIGM-HF)</div><div class="rte">ARNI = sacubitril/valsartan, an angiotensin-receptor–neprilysin inhibitor. PARADIGM-HF showed it was SUPERIOR to enalapril, cutting cardiovascular death and HF hospitalization by ~20%, so it REPLACES the ACEi/ARB rung rather than adding to it (target 97/103 mg BID). Neprilysin inhibition raises natriuretic peptides; this is why BNP becomes unreliable for monitoring while NT-proBNP stays valid.</div><div class="rtt">⚠️ WRONG answer: 'add sacubitril/valsartan on top of the patient's lisinopril.' Discriminator: ARNI must REPLACE the ACEi (with a ≥36-h washout), never be combined with it — concurrent use causes dangerous angioedema risk.</div></div><div class="rt"><div class="rtl">6. SGLT2i step (DAPA/EMPEROR)</div><div class="rte">SGLT2 inhibitors — dapagliflozin (DAPA-HF, 10 mg) and empagliflozin (EMPEROR-Reduced, 10 mg) — are the 4th pillar, reducing CV death and HF hospitalization REGARDLESS of diabetes status. They sit at the lowest part of the curve and act via natriuresis, improved cardiac energetics, and reduced preload/afterload. Watch for genital mycotic infections and euglycemic DKA.</div><div class="rtt">⚠️ WRONG answer: 'SGLT2 inhibitors only help heart failure in patients who have diabetes.' Discriminator: DAPA-HF and EMPEROR-Reduced proved benefit independent of diabetes; withholding an SGLT2i because the patient is non-diabetic is the trap.</div></div><div class="rt"><div class="rtl">7. Best survival (four pillars)</div><div class="rte">Combined four-pillar GDMT — ARNI + evidence-based β-blocker + MRA + SGLT2i — produces the LOWEST mortality and best survival, and the gains are additive across pillars. Modern practice favors rapid SEQUENTIAL or simultaneous initiation of all four (low doses first, then titrate) rather than the old slow stepwise approach, because each pillar independently saves lives within weeks. This is the 'best survival' strongman at the curve's bottom.</div><div class="rtt">⚠️ WRONG answer: 'fully up-titrate one drug class to maximum before introducing the next pillar.' Discriminator: current evidence favors getting all four pillars on board early at low doses, then titrating; sequential full-dose loading delays mortality benefit.</div></div><div class="rt"><div class="rtl">8. Vericiguat / omecamtiv</div><div class="rte">Newer adjuncts beyond the four pillars: vericiguat (soluble guanylate cyclase stimulator, VICTORIA) and omecamtiv mecarbil (selective cardiac myosin activator, GALACTIC-HF). Both modestly reduce HF HOSPITALIZATION or the composite endpoint in advanced/worsening HFrEF but do NOT substantially reduce all-cause mortality. They are add-ons for high-risk patients already on GDMT, not replacements for the pillars.</div><div class="rtt">⚠️ WRONG answer: 'add vericiguat or omecamtiv to strongly reduce mortality.' Discriminator: their proven benefit is on hospitalization/composite endpoints, not a substantial mortality reduction — don't pick them as primary mortality-lowering agents over the four pillars.</div></div><div class="rt"><div class="rtl">9. Ivabandine (HR ≥70, sinus)</div><div class="rte">Special-population add-ons. Ivabradine (SHIFT trial) inhibits the SA-node funny (If) current, lowering heart rate with no effect on contractility; add it when the patient is in SINUS rhythm with resting HR ≥70 despite a maximally tolerated β-blocker. Hydralazine + isosorbide dinitrate (A-HeFT) reduces mortality, particularly in self-identified African-American patients on GDMT, and is the go-to vasodilator when ACEi/ARB/ARNI are contraindicated (renal failure, hyperkalemia).</div><div class="rtt">⚠️ WRONG answer: 'start ivabradine to control rate in an HFrEF patient who is in atrial fibrillation.' Discriminator: ivabradine works ONLY in sinus rhythm (it acts on the SA node); it is ineffective in AF and is indicated only when HR ≥70 persists despite optimal β-blockade.</div></div><div class="rt"><div class="rtl">10. Ineffective: EPO, warfarin, SSRI, statin, ASV</div><div class="rte">The 'ineffective adjuncts' ghosts: erythropoietin for HF-related anemia (RED-HF — no benefit, raised thromboembolism), routine warfarin/low-dose anticoagulation in sinus rhythm without another indication (WARCEF — no net benefit), SSRIs for depression in HF (no outcome benefit), and statins for HF itself (CORONA/GISSI-HF — neutral, though still indicated for coexisting ASCVD). Adaptive servo-ventilation (ASV) is worse than useless — SERVE-HF showed it INCREASES mortality in HFrEF with central sleep apnea.</div><div class="rtt">⚠️ WRONG answer: 'start a statin to improve survival in this HFrEF patient,' or 'use ASV for his central sleep apnea.' Discriminator: statins are neutral for HF itself (treat ASCVD, not HF), and ASV is HARMFUL (increases mortality) in HFrEF with central sleep apnea — actively contraindicated.</div></div><div class="rt"><div class="rtl">11. Oral inotropes ✗ (harmful)</div><div class="rte">Chronic ORAL inotropes are on the harm (rising) limb of the curve: vesnarinone, flosequinan, and long-term oral milrinone (PROMISE) all INCREASE mortality by driving arrhythmias and myocardial oxygen demand. IV inotropes (dobutamine, milrinone) are reserved for short-term use in cardiogenic shock or as a palliative bridge — never as chronic oral therapy in ambulatory HFrEF.</div><div class="rtt">⚠️ WRONG answer: 'prescribe a chronic oral inotrope to improve contractility and survival in stable HFrEF.' Discriminator: long-term oral inotropes increase mortality; their only legitimate roles are short-term IV support in shock or palliation/bridging — not chronic outpatient use.</div></div><div class="rt"><div class="rtl">12. Xamoterol / moxonidine ✗</div><div class="rte">Two more harm-limb drugs. Moxonidine, a centrally-acting imidazoline/sympatholytic, INCREASED mortality in MOXCON. Xamoterol, a partial β-agonist, also increased mortality. Both illustrate that the wrong kind of neurohormonal manipulation (partial agonism or central sympatholysis) is dangerous — contrast with the proven mortality benefit of full β-blockade and RAAS inhibition.</div><div class="rtt">⚠️ WRONG answer: 'a partial β-agonist like xamoterol can provide gentle inotropic support without the harm of full agonists.' Discriminator: xamoterol (and moxonidine) increased mortality in trials; partial β-agonism is harmful in HFrEF, the opposite of evidence-based β-blockade.</div></div><div class="rt"><div class="rtl">13. Endothelin antagonist ✗</div><div class="rte">Endothelin receptor antagonists (bosentan, darusentan), despite endothelin's potent vasoconstrictor role in HF, FAILED to improve outcomes and caused fluid retention and worsening HF in trials. They have no role in HFrEF (the snake on the harm side). Reserve endothelin antagonists for pulmonary arterial hypertension, not left-heart failure.</div><div class="rtt">⚠️ WRONG answer: 'block the elevated endothelin levels in HFrEF with bosentan to improve outcomes.' Discriminator: endothelin antagonists worsen HF (fluid retention) with no survival benefit; they belong in PAH management, not HFrEF.</div></div><div class="rt"><div class="rtl">14. Potentially effective: n-3 PUFA, IV iron</div><div class="rte">Modestly/potentially effective adjuncts: n-3 PUFA (omega-3 fish oil, GISSI-HF) gives a small reduction in death/hospitalization. IV iron — ferric carboxymaltose (FAIR-HF, AFFIRM-AHF) — corrects iron deficiency (ferritin &lt;100, or 100–300 with TSAT &lt;20%) to improve symptoms, exercise capacity, and QOL and reduce hospitalizations, even WITHOUT anemia. Use IV iron, not oral, in HF (poor GI absorption).</div><div class="rtt">⚠️ WRONG answer: 'treat this iron-deficient HF patient with oral ferrous sulfate.' Discriminator: in HFrEF, IV iron (ferric carboxymaltose) is the evidence-based route — oral iron (IRONOUT-HF) failed to replete stores or improve outcomes; and iron repletion is indicated even when hemoglobin is normal.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_gdmt_pillars.html" title="Heart Failure — SCENE 4 — HFrEF GDMT: The Four-Pillar Apothecary">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_hall_of_shame.html" title="Heart Failure — SCENE 6: HF Hall of Shame &amp; Comorbidities">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

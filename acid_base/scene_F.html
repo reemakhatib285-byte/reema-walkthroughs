@@ -10,6 +10,27 @@
     --yellow:#ffd166; --body:#d1d5db; --muted:#9ca3af; --green:#4ade80;
   }
   *{box-sizing:border-box}
+  /* PDF-style study panels below the interactive scene */
+  .panels{max-width:1000px;margin:0 auto;padding:8px 18px 60px}
+  details.panel{background:var(--panel);border:1px solid #1f2a3a;border-radius:12px;margin:12px 0;overflow:hidden}
+  details.panel>summary{cursor:pointer;list-style:none;padding:14px 18px;font-size:15px;font-weight:700;
+    color:var(--white);background:#16223a;border-left:4px solid var(--accent);display:flex;align-items:center;gap:10px}
+  details.panel>summary::-webkit-details-marker{display:none}
+  details.panel>summary em{font-style:normal;font-size:12px;font-weight:700;color:#fff;
+    background:var(--accent);border-radius:20px;padding:2px 9px}
+  ol.traps{margin:0;padding:14px 18px 16px 38px;color:var(--body);font-size:14px;line-height:1.55}
+  ol.traps li{margin:0 0 9px}
+  ol.traps b{color:var(--yellow)}
+  .rtwrap{padding:8px 18px 14px}
+  .rt{padding:12px 0;border-bottom:1px solid #1f2a3a}
+  .rt:last-child{border-bottom:none}
+  .rtl{color:var(--white);font-weight:700;font-size:14px;margin-bottom:4px}
+  .rte{color:var(--body);font-size:14px;line-height:1.55}
+  .rtt{color:#fca5a5;font-size:13px;line-height:1.5;margin-top:5px}
+  table.drug{width:calc(100% - 36px);margin:8px 18px 16px;border-collapse:collapse;font-size:13px}
+  table.drug th{background:#16223a;color:var(--white);text-align:left;padding:8px 10px;border:1px solid #2a3a52}
+  table.drug td{padding:8px 10px;border:1px solid #1f2a3a;color:var(--body);vertical-align:top;line-height:1.45}
+  table.drug tr:nth-child(even) td{background:#0f1827}
   html,body{margin:0;height:100%;background:var(--bg);
     font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--body)}
   .wrap{display:flex;height:100vh;gap:0}
@@ -61,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -119,6 +153,8 @@
     <h1 class="scene-title">Acid–Base F — Respiratory Acidosis &amp; Alkalosis (Wind Tunnel Lab)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -127,9 +163,15 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
+<div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Resp ACIDOSIS = CO2 retention</b> — Respiratory acidosis is a VENTILATION problem — fix ventilation, not just oxygen.</li><li><b>Acute resp acidosis: HCO3 +1 / 10</b> — If HCO3 has risen much more than +1/10, it's chronic (or a mixed metabolic alkalosis).</li><li><b>Chronic resp acidosis: HCO3 +4 / 10</b> — Chronic compensators (COPD) tolerate high PCO2 — don't over-ventilate to a ‘normal’ PCO2.</li><li><b>Max renal compensation (HCO3 ≤ 38)</b> — An HCO3 well above the expected range signals a SECOND, metabolic alkalosis.</li><li><b>Cause — airway / ventilation failure</b> — Rising PCO2 in a tiring asthmatic is an ominous sign — support ventilation.</li><li><b>Cause — opioid/sedative hypoventilation</b> — Sleepy + slow breathing + high PCO2 → think drug-induced hypoventilation.</li><li><b>Cause — obesity hypoventilation</b> — Daytime hypercapnia in an obese patient = OHS, not just OSA.</li><li><b>Cause — COPD / OSA (chronic)</b> — Their baseline high HCO3 reflects chronic compensation — don't mistake it for primary alkalosis.</li><li><b>Resp ALKALOSIS = hyperventilation</b> — Tachypnea isn't always anxiety — rule out hypoxia, PE, and sepsis first.</li><li><b>Acute resp alkalosis: HCO3 −2 / 10</b> — A bigger HCO3 fall than −2/10 means chronicity or a coexisting metabolic acidosis.</li><li><b>Chronic resp alkalosis: HCO3 −4 to −5 / 10</b> — Pregnancy is a normal CHRONIC respiratory alkalosis — don't over-investigate it.</li><li><b>Causes — anxiety, pain, fever, pregnancy</b> — Hyperventilation + hypoxia = consider PE before settling on anxiety.</li><li><b>Salicylate toxicity (mixed)</b> — Don't call salicylate poisoning a pure respiratory alkalosis — look for the coexisting high-AG acidosis.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Resp ACIDOSIS = CO2 retention</div><div class="rte">Hypoventilation → ↑PCO2 → ↓pH. The kidney compensates by retaining HCO3.</div><div class="rtt">⚠️ Respiratory acidosis is a VENTILATION problem — fix ventilation, not just oxygen.</div></div><div class="rt"><div class="rtl">2. Acute resp acidosis: HCO3 +1 / 10</div><div class="rte">Acute respiratory acidosis: HCO3 rises ~1 mEq/L for every 10 mmHg rise in PCO2.</div><div class="rtt">⚠️ If HCO3 has risen much more than +1/10, it's chronic (or a mixed metabolic alkalosis).</div></div><div class="rt"><div class="rtl">3. Chronic resp acidosis: HCO3 +4 / 10</div><div class="rte">Chronic respiratory acidosis: HCO3 rises ~3.5–4 mEq/L per 10 mmHg PCO2 (full renal compensation over days).</div><div class="rtt">⚠️ Chronic compensators (COPD) tolerate high PCO2 — don't over-ventilate to a ‘normal’ PCO2.</div></div><div class="rt"><div class="rtl">4. Max renal compensation (HCO3 ≤ 38)</div><div class="rte">Renal compensation has a ceiling — HCO3 doesn't rise indefinitely.</div><div class="rtt">⚠️ An HCO3 well above the expected range signals a SECOND, metabolic alkalosis.</div></div><div class="rt"><div class="rtl">5. Cause — airway / ventilation failure</div><div class="rte">Upper-airway obstruction, severe asthma/COPD, or inadequate ventilation cause CO2 retention.</div><div class="rtt">⚠️ Rising PCO2 in a tiring asthmatic is an ominous sign — support ventilation.</div></div><div class="rt"><div class="rtl">6. Cause — opioid/sedative hypoventilation</div><div class="rte">CNS depressants (opioids, benzodiazepines) blunt respiratory drive → respiratory acidosis. Reverse opioids with naloxone.</div><div class="rtt">⚠️ Sleepy + slow breathing + high PCO2 → think drug-induced hypoventilation.</div></div><div class="rt"><div class="rtl">7. Cause — obesity hypoventilation</div><div class="rte">Obesity hypoventilation syndrome → chronic CO2 retention and compensated respiratory acidosis.</div><div class="rtt">⚠️ Daytime hypercapnia in an obese patient = OHS, not just OSA.</div></div><div class="rt"><div class="rtl">8. Cause — COPD / OSA (chronic)</div><div class="rte">COPD and obstructive sleep apnea are classic chronic CO2 retainers with elevated baseline HCO3.</div><div class="rtt">⚠️ Their baseline high HCO3 reflects chronic compensation — don't mistake it for primary alkalosis.</div></div><div class="rt"><div class="rtl">9. Resp ALKALOSIS = hyperventilation</div><div class="rte">Hyperventilation → ↓PCO2 → ↑pH. The kidney compensates by excreting HCO3.</div><div class="rtt">⚠️ Tachypnea isn't always anxiety — rule out hypoxia, PE, and sepsis first.</div></div><div class="rt"><div class="rtl">10. Acute resp alkalosis: HCO3 −2 / 10</div><div class="rte">Acute respiratory alkalosis: HCO3 falls ~2 mEq/L per 10 mmHg drop in PCO2.</div><div class="rtt">⚠️ A bigger HCO3 fall than −2/10 means chronicity or a coexisting metabolic acidosis.</div></div><div class="rt"><div class="rtl">11. Chronic resp alkalosis: HCO3 −4 to −5 / 10</div><div class="rte">Chronic respiratory alkalosis: HCO3 falls ~4–5 mEq/L per 10 mmHg PCO2 (e.g. high altitude, pregnancy).</div><div class="rtt">⚠️ Pregnancy is a normal CHRONIC respiratory alkalosis — don't over-investigate it.</div></div><div class="rt"><div class="rtl">12. Causes — anxiety, pain, fever, pregnancy</div><div class="rte">Anxiety/panic, pain, fever, early sepsis, hypoxia/PE, pregnancy and liver failure all drive hyperventilation.</div><div class="rtt">⚠️ Hyperventilation + hypoxia = consider PE before settling on anxiety.</div></div><div class="rt"><div class="rtl">13. Salicylate toxicity (mixed)</div><div class="rte">Salicylates cause an EARLY respiratory alkalosis PLUS a high anion-gap metabolic acidosis — a classic mixed disorder. Treat with urine alkalinization ± dialysis.</div><div class="rtt">⚠️ Don't call salicylate poisoning a pure respiratory alkalosis — look for the coexisting high-AG acidosis.</div></div></div></details></div>
 <script>
 const DATA = [{"label": "Full scene", "x": 50, "y": 50, "z": 1.0, "see": "The whole scene at once.", "encodes": "Use this to orient, then arrow through each symbol.", "trap": ""}, {"label": "Resp ACIDOSIS = CO2 retention", "x": 57, "y": 47, "z": 3, "see": "The smoky left half with ‘PCO2 HIGH’ gauges and CO2 clouds.", "encodes": "Hypoventilation → ↑PCO2 → ↓pH. The kidney compensates by retaining HCO3.", "trap": "Respiratory acidosis is a VENTILATION problem — fix ventilation, not just oxygen."}, {"label": "Acute resp acidosis: HCO3 +1 / 10", "x": 17, "y": 29, "z": 3, "see": "The hourglass gauge: ‘+1 per +10 PCO2’.", "encodes": "Acute respiratory acidosis: HCO3 rises ~1 mEq/L for every 10 mmHg rise in PCO2.", "trap": "If HCO3 has risen much more than +1/10, it's chronic (or a mixed metabolic alkalosis)."}, {"label": "Chronic resp acidosis: HCO3 +4 / 10", "x": 40, "y": 29, "z": 3, "see": "The calendar gauge: ‘+4 per +10 PCO2’.", "encodes": "Chronic respiratory acidosis: HCO3 rises ~3.5–4 mEq/L per 10 mmHg PCO2 (full renal compensation over days).", "trap": "Chronic compensators (COPD) tolerate high PCO2 — don't over-ventilate to a ‘normal’ PCO2."}, {"label": "Max renal compensation (HCO3 ≤ 38)", "x": 28, "y": 21, "z": 3, "see": "The ‘HCO3 ≤ 38’ banner.", "encodes": "Renal compensation has a ceiling — HCO3 doesn't rise indefinitely.", "trap": "An HCO3 well above the expected range signals a SECOND, metabolic alkalosis."}, {"label": "Cause — airway / ventilation failure", "x": 7, "y": 40, "z": 3, "see": "The ventilator, naloxone vial and inhaler on the far left.", "encodes": "Upper-airway obstruction, severe asthma/COPD, or inadequate ventilation cause CO2 retention.", "trap": "Rising PCO2 in a tiring asthmatic is an ominous sign — support ventilation."}, {"label": "Cause — opioid/sedative hypoventilation", "x": 22, "y": 50, "z": 3, "see": "The sedated, snoring man (‘ZZZ’) with a naloxone syringe.", "encodes": "CNS depressants (opioids, benzodiazepines) blunt respiratory drive → respiratory acidosis. Reverse opioids with naloxone.", "trap": "Sleepy + slow breathing + high PCO2 → think drug-induced hypoventilation."}, {"label": "Cause — obesity hypoventilation", "x": 37, "y": 56, "z": 3, "see": "The large-bellied man with a CO2 tank.", "encodes": "Obesity hypoventilation syndrome → chronic CO2 retention and compensated respiratory acidosis.", "trap": "Daytime hypercapnia in an obese patient = OHS, not just OSA."}, {"label": "Cause — COPD / OSA (chronic)", "x": 47, "y": 70, "z": 3, "see": "The man asleep in the armchair with a CO2 tank and a sleep-apnea mask.", "encodes": "COPD and obstructive sleep apnea are classic chronic CO2 retainers with elevated baseline HCO3.", "trap": "Their baseline high HCO3 reflects chronic compensation — don't mistake it for primary alkalosis."}, {"label": "Resp ALKALOSIS = hyperventilation", "x": 92, "y": 24, "z": 3, "see": "The fan on the right blowing CO2 out of the tunnel.", "encodes": "Hyperventilation → ↓PCO2 → ↑pH. The kidney compensates by excreting HCO3.", "trap": "Tachypnea isn't always anxiety — rule out hypoxia, PE, and sepsis first."}, {"label": "Acute resp alkalosis: HCO3 −2 / 10", "x": 62, "y": 29, "z": 3, "see": "The hourglass: ‘−2 per +10 PCO2’.", "encodes": "Acute respiratory alkalosis: HCO3 falls ~2 mEq/L per 10 mmHg drop in PCO2.", "trap": "A bigger HCO3 fall than −2/10 means chronicity or a coexisting metabolic acidosis."}, {"label": "Chronic resp alkalosis: HCO3 −4 to −5 / 10", "x": 73, "y": 29, "z": 3, "see": "The calendar: ‘−4 to −5 per +10 PCO2’ with a ‘CHRONIC’ pH gauge.", "encodes": "Chronic respiratory alkalosis: HCO3 falls ~4–5 mEq/L per 10 mmHg PCO2 (e.g. high altitude, pregnancy).", "trap": "Pregnancy is a normal CHRONIC respiratory alkalosis — don't over-investigate it."}, {"label": "Causes — anxiety, pain, fever, pregnancy", "x": 72, "y": 56, "z": 3, "see": "The panicking man, the febrile patient (‘EARLY’), and the pregnant woman.", "encodes": "Anxiety/panic, pain, fever, early sepsis, hypoxia/PE, pregnancy and liver failure all drive hyperventilation.", "trap": "Hyperventilation + hypoxia = consider PE before settling on anxiety."}, {"label": "Salicylate toxicity (mixed)", "x": 88, "y": 55, "z": 3, "see": "The man with a pill bottle being pointed at on the right.", "encodes": "Salicylates cause an EARLY respiratory alkalosis PLUS a high anion-gap metabolic acidosis — a classic mixed disorder. Treat with urine alkalinization ± dialysis.", "trap": "Don't call salicylate poisoning a pure respiratory alkalosis — look for the coexisting high-AG acidosis."}];
 const META = {"title": "Acid–Base F — Respiratory Acidosis & Alkalosis (Wind Tunnel Lab)", "image": "/Users/rimakhatib/Desktop/skts/electrolytes /acid_base/SCENE F — Respiratory Acidosis & Alkalosis  Setting- The Wind Tunnel Laboratory.jpeg"};
@@ -147,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -217,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -231,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -249,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -283,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="scene_E.html" title="Acid–Base E — Metabolic Alkalosis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="../batch/ckd_anemia.html" title="CKD — Anemia, Bleeding/Clotting &amp; Systemic Complications">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

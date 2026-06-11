@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Meningitis — Meningococcal Prophylaxis &amp; Viral Causes</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Close-contact definition</b> — WRONG: giving prophylaxis to the entire classroom, office, or all hospital staff who saw the patient. CASUAL contact (sharing a room, riding the same bus, brief bedside care with droplet precautions) does NOT qualify — over-prescribing wastes resources and adds resistance/side-effect risk.</li><li><b>Index case treated too</b> — WRONG: assuming a patient who recovered on IV penicillin is no longer a carrier. Penicillin does not eradicate nasopharyngeal carriage — without a dedicated eradication agent (or having been treated with a 3rd-gen cephalosporin), the index case can still transmit meningococcus on discharge.</li><li><b>Rifampin</b> — WRONG: prescribing rifampin to a pregnant contact or relying on it for someone on oral contraceptives without backup. Rifampin is avoided in pregnancy (use ceftriaxone) and its CYP450 induction can cause OCP failure — ignoring these makes it the wrong choice for those patients.</li><li><b>Ceftriaxone (pregnancy)</b> — WRONG: choosing rifampin or ciprofloxacin for a pregnant close contact. Rifampin is avoided in pregnancy and fluoroquinolones are generally avoided too — the correct prophylactic agent in pregnancy is single-dose IM ceftriaxone.</li><li><b>Ciprofloxacin</b> — WRONG: defaulting to single-dose ciprofloxacin in a region with documented ciprofloxacin-resistant N. meningitidis, or in a pregnant/pediatric contact. In resistant areas use azithromycin or ceftriaxone, and in pregnancy use ceftriaxone — blanket cipro can fail.</li><li><b>Penicillin trap</b> — WRONG: selecting oral penicillin or amoxicillin for contact prophylaxis. Even though penicillin treats invasive meningococcal disease, it leaves carriage intact — choosing it for prophylaxis is a classic distractor; pick rifampin, cipro, or ceftriaxone instead.</li><li><b>Prophylaxis timing</b> — WRONG: declining prophylaxis to an eligible close contact because more than 24 hours have passed. Prophylaxis still reduces secondary cases when given within ~2 weeks — withholding it past the first day misapplies the timing rule.</li><li><b>Enteroviruses #1 viral cause</b> — WRONG: starting antibiotics or acyclovir for a well-appearing patient with a summertime lymphocytic, normal-glucose CSF and positive enterovirus PCR. Enteroviral meningitis is self-limited and supportive care suffices — over-treating is unnecessary, though empiric antibiotics are reasonable until bacterial disease is excluded.</li><li><b>HSV-2 meningitis vs HSV-1</b> — WRONG: pinning meningitis on HSV-1 and encephalitis on HSV-2. The boards test the reverse: HSV-2 → meningitis (recurrent/Mollaret), HSV-1 → temporal-lobe encephalitis — swapping them is the intended error.</li><li><b>VZV meningitis</b> — WRONG: excluding VZV CNS disease simply because there is no vesicular rash. Zoster sine herpete means VZV meningitis/encephalitis can present with no rash at all — absence of skin lesions does not rule it out, so send CSF VZV PCR.</li><li><b>West Nile virus</b> — WRONG: ordering CSF viral PCR alone to diagnose West Nile. WNV PCR has LOW CSF sensitivity because viremia clears before neuroinvasion — CSF (and serum) IgM antibody is the diagnostic test of choice; relying on PCR misses cases.</li><li><b>Acyclovir vs Ganciclovir</b> — WRONG: prescribing acyclovir for CMV meningoencephalitis (or ganciclovir for HSV). Acyclovir has no meaningful CMV activity because CMV lacks the thymidine kinase it depends on — match the drug to the virus: acyclovir for HSV/VZV, ganciclovir for CMV.</li><li><b>CMV in immunocompromised</b> — WRONG: putting CMV high on the differential for an immunocompetent patient with meningitis. CMV CNS disease is essentially a disease of severe immunosuppression — in a healthy host, enterovirus or HSV-2 is far more likely, and CMV testing is low-yield.</li><li><b>Encephalitis = altered mental status</b> — WRONG: continuing to call it 'viral meningitis' and withholding acyclovir when the patient has altered mentation, seizures, or focal deficits. Those features mean ENCEPHALITIS — start empiric acyclovir immediately; waiting for HSV PCR before treating risks irreversible temporal-lobe damage.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Close-contact definition</div><div class="rte">Meningococcal chemoprophylaxis is offered ONLY to CLOSE contacts: household members, intimate/kissing contacts, those sharing food/drink/utensils, dormitory roommates, military barracks-mates, and healthcare workers with unprotected exposure to respiratory secretions (e.g., intubation/suctioning without a mask) in the 7 days before symptom onset. The goal is to eradicate nasopharyngeal carriage and prevent secondary cases.</div><div class="rtt">⚠️ WRONG: giving prophylaxis to the entire classroom, office, or all hospital staff who saw the patient. CASUAL contact (sharing a room, riding the same bus, brief bedside care with droplet precautions) does NOT qualify — over-prescribing wastes resources and adds resistance/side-effect risk.</div></div><div class="rt"><div class="rtl">2. Index case treated too</div><div class="rte">The index patient also needs an eradication agent (rifampin, cipro, or ceftriaxone) before hospital discharge, UNLESS they were already treated with ceftriaxone or cefotaxime (which clear carriage). IV penicillin or ampicillin treats invasive disease but does NOT reliably eliminate nasopharyngeal carriage, so the patient could re-seed contacts.</div><div class="rtt">⚠️ WRONG: assuming a patient who recovered on IV penicillin is no longer a carrier. Penicillin does not eradicate nasopharyngeal carriage — without a dedicated eradication agent (or having been treated with a 3rd-gen cephalosporin), the index case can still transmit meningococcus on discharge.</div></div><div class="rt"><div class="rtl">3. Rifampin</div><div class="rte">Rifampin is a first-line meningococcal prophylaxis option: adults 600 mg PO q12h for 2 days (4 doses); children ≥1 month 10 mg/kg q12h x2 days. Counsel patients about orange-red discoloration of urine/tears/sweat (and contact lens staining) and that it induces CYP450 — reducing efficacy of oral contraceptives, warfarin, and many other drugs.</div><div class="rtt">⚠️ WRONG: prescribing rifampin to a pregnant contact or relying on it for someone on oral contraceptives without backup. Rifampin is avoided in pregnancy (use ceftriaxone) and its CYP450 induction can cause OCP failure — ignoring these makes it the wrong choice for those patients.</div></div><div class="rt"><div class="rtl">4. Ceftriaxone (pregnancy)</div><div class="rte">Ceftriaxone 250 mg IM as a single dose (125 mg for children &lt;15) is the PREFERRED prophylaxis in PREGNANCY and a reliable single-dose option for anyone. As a 3rd-generation cephalosporin it both treats and eradicates carriage, making it useful when rifampin or fluoroquinolones are contraindicated.</div><div class="rtt">⚠️ WRONG: choosing rifampin or ciprofloxacin for a pregnant close contact. Rifampin is avoided in pregnancy and fluoroquinolones are generally avoided too — the correct prophylactic agent in pregnancy is single-dose IM ceftriaxone.</div></div><div class="rt"><div class="rtl">5. Ciprofloxacin</div><div class="rte">Ciprofloxacin 500 mg PO as a single dose is a convenient adult prophylaxis (no multi-dose course needed); azithromycin is an alternative where fluoroquinolone-resistant meningococcus circulates. Avoid fluoroquinolones in pregnancy and generally in young children due to cartilage/tendon concerns.</div><div class="rtt">⚠️ WRONG: defaulting to single-dose ciprofloxacin in a region with documented ciprofloxacin-resistant N. meningitidis, or in a pregnant/pediatric contact. In resistant areas use azithromycin or ceftriaxone, and in pregnancy use ceftriaxone — blanket cipro can fail.</div></div><div class="rt"><div class="rtl">6. Penicillin trap</div><div class="rte">Penicillin and amoxicillin do NOT reliably eradicate meningococcal nasopharyngeal carriage because they achieve poor secretion levels, so they are not used for chemoprophylaxis. Acceptable prophylactic agents are rifampin, ciprofloxacin, ceftriaxone (and azithromycin as alternative).</div><div class="rtt">⚠️ WRONG: selecting oral penicillin or amoxicillin for contact prophylaxis. Even though penicillin treats invasive meningococcal disease, it leaves carriage intact — choosing it for prophylaxis is a classic distractor; pick rifampin, cipro, or ceftriaxone instead.</div></div><div class="rt"><div class="rtl">7. Prophylaxis timing</div><div class="rte">Prophylaxis should be given as soon as possible, ideally within 24 hours of index-case identification, but it remains worthwhile for close contacts when given up to ~14 days after exposure. The benefit is not confined to the first 24 hours, so a slightly delayed presentation still warrants prophylaxis.</div><div class="rtt">⚠️ WRONG: declining prophylaxis to an eligible close contact because more than 24 hours have passed. Prophylaxis still reduces secondary cases when given within ~2 weeks — withholding it past the first day misapplies the timing rule.</div></div><div class="rt"><div class="rtl">8. Enteroviruses #1 viral cause</div><div class="rte">Enteroviruses (coxsackievirus, echovirus) cause &gt;85% of viral (aseptic) meningitis, peaking in SUMMER and FALL via fecal-oral spread, and may accompany hand-foot-mouth disease, herpangina, or myopericarditis. CSF is lymphocytic with normal glucose; diagnosis is by CSF RT-PCR (rapid, sensitive). Management is supportive — no specific antiviral is required.</div><div class="rtt">⚠️ WRONG: starting antibiotics or acyclovir for a well-appearing patient with a summertime lymphocytic, normal-glucose CSF and positive enterovirus PCR. Enteroviral meningitis is self-limited and supportive care suffices — over-treating is unnecessary, though empiric antibiotics are reasonable until bacterial disease is excluded.</div></div><div class="rt"><div class="rtl">9. HSV-2 meningitis vs HSV-1</div><div class="rte">HSV-2 typically causes (often recurrent) aseptic MENINGITIS — recurrent lymphocytic 'Mollaret' meningitis is the classic association, frequently with genital herpes. HSV-1 typically causes ENCEPHALITIS with temporal-lobe involvement (hemorrhagic, MRI/EEG temporal changes, RBCs in CSF). Both are diagnosed by CSF HSV PCR and treated with IV acyclovir.</div><div class="rtt">⚠️ WRONG: pinning meningitis on HSV-1 and encephalitis on HSV-2. The boards test the reverse: HSV-2 → meningitis (recurrent/Mollaret), HSV-1 → temporal-lobe encephalitis — swapping them is the intended error.</div></div><div class="rt"><div class="rtl">10. VZV meningitis</div><div class="rte">Varicella-zoster virus can cause meningitis, encephalitis, vasculitis/stroke, and myelitis, and crucially may occur WITHOUT a skin rash (zoster sine herpete), particularly in older or immunocompromised patients. Diagnose by CSF VZV PCR and/or CSF VZV IgM; treat with IV acyclovir.</div><div class="rtt">⚠️ WRONG: excluding VZV CNS disease simply because there is no vesicular rash. Zoster sine herpete means VZV meningitis/encephalitis can present with no rash at all — absence of skin lesions does not rule it out, so send CSF VZV PCR.</div></div><div class="rt"><div class="rtl">11. West Nile virus</div><div class="rte">West Nile virus is mosquito-borne (Culex) with birds as reservoir, peaks in late summer, and predominantly affects OLDER adults. Beyond meningitis/encephalitis it classically causes acute asymmetric FLACCID paralysis (anterior horn cell, polio-like). CSF is lymphocytic with normal glucose; diagnose by CSF IgM (serum IgM also supportive).</div><div class="rtt">⚠️ WRONG: ordering CSF viral PCR alone to diagnose West Nile. WNV PCR has LOW CSF sensitivity because viremia clears before neuroinvasion — CSF (and serum) IgM antibody is the diagnostic test of choice; relying on PCR misses cases.</div></div><div class="rt"><div class="rtl">12. Acyclovir vs Ganciclovir</div><div class="rte">Acyclovir treats HSV-1, HSV-2, and VZV; CMV requires ganciclovir (or foscarnet/cidofovir) — the agents are NOT interchangeable. Acyclovir requires viral thymidine kinase for activation (which CMV lacks), explaining its inactivity against CMV. Hydrate well with IV acyclovir to prevent crystalline nephropathy.</div><div class="rtt">⚠️ WRONG: prescribing acyclovir for CMV meningoencephalitis (or ganciclovir for HSV). Acyclovir has no meaningful CMV activity because CMV lacks the thymidine kinase it depends on — match the drug to the virus: acyclovir for HSV/VZV, ganciclovir for CMV.</div></div><div class="rt"><div class="rtl">13. CMV in immunocompromised</div><div class="rte">CMV meningoencephalitis (and ventriculoencephalitis, polyradiculopathy, retinitis) occurs almost exclusively in the IMMUNOSUPPRESSED — advanced HIV/AIDS (CD4 &lt;50), transplant recipients, and others on potent immunosuppression. Diagnose by CSF CMV PCR; treat with ganciclovir (often with foscarnet) plus immune reconstitution.</div><div class="rtt">⚠️ WRONG: putting CMV high on the differential for an immunocompetent patient with meningitis. CMV CNS disease is essentially a disease of severe immunosuppression — in a healthy host, enterovirus or HSV-2 is far more likely, and CMV testing is low-yield.</div></div><div class="rt"><div class="rtl">14. Encephalitis = altered mental status</div><div class="rte">The key meningitis-vs-encephalitis distinction is MENTATION: meningitis preserves normal consciousness (headache, fever, neck stiffness), while ENCEPHALITIS involves altered mental status (confusion, stupor, coma), seizures, or focal neurologic deficits from brain parenchymal inflammation. Any viral picture with AMS or focal signs warrants empiric IV acyclovir to cover HSV encephalitis pending PCR.</div><div class="rtt">⚠️ WRONG: continuing to call it 'viral meningitis' and withholding acyclovir when the patient has altered mentation, seizures, or focal deficits. Those features mean ENCEPHALITIS — start empiric acyclovir immediately; waiting for HSV PCR before treating risks irreversible temporal-lobe damage.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="mening_management.html" title="Meningitis — Management Order, Empiric Antibiotics &amp; Dexamethasone">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="uti_classification_dx.html" title="UTI — Classification &amp; Diagnosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

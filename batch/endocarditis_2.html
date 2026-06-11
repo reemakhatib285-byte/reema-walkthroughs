@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Infective Endocarditis — Duke Criteria Diagnosis &amp; Treatment Apothecary</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Major evidence chute — Micro (positive cultures)</b> — A single positive culture, especially of a skin contaminant like coagulase-negative staph or diphtheroids, tempts an IE diagnosis. The discriminator: one isolated positive set of a common contaminant does NOT meet the major criterion — you need typical organisms in 2 separate sets or persistently positive cultures.</li><li><b>Major evidence — Coxiella / Q-fever serology</b> — Culture-negative IE tempts the answer 'cannot diagnose without positive cultures.' The discriminator: Coxiella phase I IgG &gt;1:800 is itself a MAJOR Duke criterion — serology can clinch culture-negative endocarditis.</li><li><b>Major evidence — Imaging (echo vegetation/abscess)</b> — Ordering PET/CT early after valve surgery tempts over-reading inflammation as infection. The discriminator: 18F-FDG PET/CT is UNRELIABLE within ~3 months of prosthetic valve implantation because of post-surgical inflammation, yielding false positives; it becomes a useful major-criterion tool only beyond that window.</li><li><b>Minor — Predisposition (heart condition / IVDU)</b> — Mitral valve prolapse is over-feared as a strong IE risk and is sometimes flagged for prophylaxis. The discriminator: MVP raises baseline risk only modestly and is NOT a high-risk lesion warranting antibiotic prophylaxis; only the highest-risk lesions (prosthetic valve, prior IE, certain congenital disease) qualify for prophylaxis.</li><li><b>Minor — Fever ≥38°C</b> — An afebrile patient tempts you to exclude IE. The discriminator: fever may be ABSENT or blunted in the elderly, those with renal/heart failure, immunocompromise, or after recent antibiotics — absence of fever does not rule out endocarditis.</li><li><b>Minor — Vascular &amp; immunologic phenomena</b> — Janeway and Osler are easily lumped together. The discriminator: Janeway lesions are a VASCULAR (embolic, painless) minor criterion, whereas Osler nodes are an IMMUNOLOGIC (immune-complex, painful) minor criterion — they fall in different criterion categories, not the same one.</li><li><b>Balance scale — Definite vs Possible vs Reject</b> — The thresholds are deliberately swappable on exams (e.g., calling 1 major + 1 minor 'definite'). The discriminator: lock in 2/1+3/5 for DEFINITE and 1+1/3 for POSSIBLE — transposing the counts is the single most common Duke-criteria trap.</li><li><b>Echo station — TTE misses, escalate to TEE</b> — A negative TTE tempts the answer 'endocarditis excluded.' The discriminator: a negative TTE does NOT exclude IE — escalate to TEE (and repeat TEE if still negative but clinically suspected), especially with prosthetic valves or possible abscess.</li><li><b>Native valve short-course aminoglycoside</b> — Adding gentamicin to a staph native-valve regimen 'for synergy' is the trap. The discriminator: routine aminoglycoside is NOT recommended for native-valve S. aureus IE; its value is in strep dose-shortening and in enterococcal synergy, where the cell wall must be breached for the drug to enter.</li><li><b>Streptococcus — Penicillin/Ceftriaxone arrow</b> — Because gentamicin is mentioned for synergy, the trap is using an aminoglycoside as the backbone. The discriminator: aminoglycosides are NOT bactericidal as monotherapy against strep — they only work synergistically alongside a cell-wall agent; the backbone must be a beta-lactam (or vancomycin).</li><li><b>MSSA native valve — Nafcillin</b> — After empiric vancomycin, the trap is continuing vancomycin even after MSSA is confirmed. The discriminator: for MSSA, DE-ESCALATE to nafcillin/oxacillin/cefazolin — vancomycin has slower kill and higher failure rates against MSSA; cefazolin is the alternative if beta-lactam allergy is mild.</li><li><b>MRSA native valve — Vancomycin + dart</b> — If vancomycin fails or the MIC creeps up, the trap is simply pushing higher vancomycin doses. The discriminator: switch to daptomycin (or consider ceftaroline-based salvage) for vancomycin MIC ≥2 or persistent MRSA bacteremia — and remember daptomycin is useless for pneumonia (surfactant inactivation).</li><li><b>Prosthetic valve — Nafcillin/Vancomycin + Rifampin + Gentamicin</b> — Starting rifampin first or alone, or using it for native-valve staph, is the trap. The discriminator: rifampin is reserved for PROSTHETIC/foreign-material (biofilm) infection, must be added AFTER the bacteremia is controlled by the backbone (to avoid selecting rifampin resistance), and has no role in routine native-valve staph IE.</li><li><b>Early surgery STOP sign</b> — The trap is delaying surgery to 'finish the antibiotic course' before operating on complicated IE. The discriminator: in complicated IE (HF, abscess, persistent infection, large embolizing vegetation), surgery should NOT wait for antibiotic completion — early operation improves survival; remaining antibiotics are given postoperatively.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Major evidence chute — Micro (positive cultures)</div><div class="rte">The microbiologic MAJOR criterion: (1) a TYPICAL IE organism from two SEPARATE blood cultures — viridans strep, S. gallolyticus, HACEK, S. aureus, or community-acquired enterococcus without a primary focus; OR (2) PERSISTENTLY positive cultures with any organism (≥2 sets drawn &gt;12 h apart, or 3 of 3 / majority of ≥4 sets). Obtain 3 sets from separate venipunctures BEFORE antibiotics; the bacteremia of IE is continuous, so the timing relative to fever does not matter.</div><div class="rtt">⚠️ A single positive culture, especially of a skin contaminant like coagulase-negative staph or diphtheroids, tempts an IE diagnosis. The discriminator: one isolated positive set of a common contaminant does NOT meet the major criterion — you need typical organisms in 2 separate sets or persistently positive cultures.</div></div><div class="rt"><div class="rtl">2. Major evidence — Coxiella / Q-fever serology</div><div class="rte">A serologic MAJOR criterion exists for the classic culture-negative cause: a single positive blood culture for Coxiella burnetii OR a phase I IgG antibody titer &gt;1:800 counts as a stand-alone major criterion. This is why Q fever is singled out among fastidious organisms. Bartonella and other zoonotic causes are pursued with serology/PCR but are weighed within the overall clinical picture.</div><div class="rtt">⚠️ Culture-negative IE tempts the answer 'cannot diagnose without positive cultures.' The discriminator: Coxiella phase I IgG &gt;1:800 is itself a MAJOR Duke criterion — serology can clinch culture-negative endocarditis.</div></div><div class="rt"><div class="rtl">3. Major evidence — Imaging (echo vegetation/abscess)</div><div class="rte">The imaging MAJOR criterion: echocardiographic evidence of endocardial involvement — a VEGETATION, ABSCESS, or NEW partial dehiscence of a prosthetic valve (or a new valvular regurgitant murmur). The 2023 Duke-ISCVID update added abnormal activity around a prosthetic valve on PET/CT (&gt;3 months post-op) and paravalvular lesions on cardiac CT as major criteria.</div><div class="rtt">⚠️ Ordering PET/CT early after valve surgery tempts over-reading inflammation as infection. The discriminator: 18F-FDG PET/CT is UNRELIABLE within ~3 months of prosthetic valve implantation because of post-surgical inflammation, yielding false positives; it becomes a useful major-criterion tool only beyond that window.</div></div><div class="rt"><div class="rtl">4. Minor — Predisposition (heart condition / IVDU)</div><div class="rte">MINOR criterion #1 — predisposition: either a predisposing cardiac condition (prior IE, prosthetic valve, unrepaired cyanotic congenital disease, significant regurgitation/stenosis, prior valve repair) OR injection drug use. This identifies the at-risk host.</div><div class="rtt">⚠️ Mitral valve prolapse is over-feared as a strong IE risk and is sometimes flagged for prophylaxis. The discriminator: MVP raises baseline risk only modestly and is NOT a high-risk lesion warranting antibiotic prophylaxis; only the highest-risk lesions (prosthetic valve, prior IE, certain congenital disease) qualify for prophylaxis.</div></div><div class="rt"><div class="rtl">5. Minor — Fever ≥38°C</div><div class="rte">MINOR criterion #2 — fever, defined as temperature ≥38.0°C (100.4°F). It is the most common presenting symptom of IE (present in ~90%) but, as a single minor criterion, is far from diagnostic on its own.</div><div class="rtt">⚠️ An afebrile patient tempts you to exclude IE. The discriminator: fever may be ABSENT or blunted in the elderly, those with renal/heart failure, immunocompromise, or after recent antibiotics — absence of fever does not rule out endocarditis.</div></div><div class="rt"><div class="rtl">6. Minor — Vascular &amp; immunologic phenomena</div><div class="rte">Two SEPARATE minor criteria. VASCULAR phenomena: arterial emboli, septic pulmonary infarcts, mycotic aneurysm, intracranial/conjunctival hemorrhage, JANEWAY lesions. IMMUNOLOGIC phenomena: glomerulonephritis, OSLER nodes, ROTH spots, rheumatoid factor. (A sixth minor criterion is microbiologic evidence not meeting a major criterion.)</div><div class="rtt">⚠️ Janeway and Osler are easily lumped together. The discriminator: Janeway lesions are a VASCULAR (embolic, painless) minor criterion, whereas Osler nodes are an IMMUNOLOGIC (immune-complex, painful) minor criterion — they fall in different criterion categories, not the same one.</div></div><div class="rt"><div class="rtl">7. Balance scale — Definite vs Possible vs Reject</div><div class="rte">The Duke tally. CLINICALLY DEFINITE IE = 2 major, OR 1 major + 3 minor, OR 5 minor (pathologic definite = organisms/active endocarditis on the valve specimen). POSSIBLE IE = 1 major + 1 minor, OR 3 minor. REJECTED = firm alternative diagnosis, resolution with ≤4 days of antibiotics, or criteria not met.</div><div class="rtt">⚠️ The thresholds are deliberately swappable on exams (e.g., calling 1 major + 1 minor 'definite'). The discriminator: lock in 2/1+3/5 for DEFINITE and 1+1/3 for POSSIBLE — transposing the counts is the single most common Duke-criteria trap.</div></div><div class="rt"><div class="rtl">8. Echo station — TTE misses, escalate to TEE</div><div class="rte">TTE is the first-line, noninvasive test but has limited sensitivity (~60–70% for native valves, far lower for prosthetic valves and small vegetations). TEE sensitivity is ~90–96% and is the test of choice when suspicion is high, when TTE is negative/nondiagnostic, and for prosthetic valves, suspected perivalvular abscess, or device leads. A negative TEE in a still-suspicious patient should be repeated in 5–7 days.</div><div class="rtt">⚠️ A negative TTE tempts the answer 'endocarditis excluded.' The discriminator: a negative TTE does NOT exclude IE — escalate to TEE (and repeat TEE if still negative but clinically suspected), especially with prosthetic valves or possible abscess.</div></div><div class="rt"><div class="rtl">9. Native valve short-course aminoglycoside</div><div class="rte">Aminoglycosides (gentamicin) are used only for synergy, never as monotherapy. For susceptible viridans strep, low-dose gentamicin added to penicillin/ceftriaxone can SHORTEN therapy to 2 weeks. For S. aureus native-valve disease, routine gentamicin is NO LONGER recommended (added nephrotoxicity without clear benefit). For enterococcal IE, dual cell-wall + aminoglycoside (or ampicillin + ceftriaxone) synergy IS required for cure.</div><div class="rtt">⚠️ Adding gentamicin to a staph native-valve regimen 'for synergy' is the trap. The discriminator: routine aminoglycoside is NOT recommended for native-valve S. aureus IE; its value is in strep dose-shortening and in enterococcal synergy, where the cell wall must be breached for the drug to enter.</div></div><div class="rt"><div class="rtl">10. Streptococcus — Penicillin/Ceftriaxone arrow</div><div class="rte">Penicillin-susceptible viridans strep / S. gallolyticus IE is treated with penicillin G or ceftriaxone (2 g IV daily) for 4 weeks, or a 2-week course with added gentamicin synergy for uncomplicated native-valve disease. Ceftriaxone's once-daily dosing makes it ideal for outpatient parenteral therapy. Penicillin allergy → vancomycin.</div><div class="rtt">⚠️ Because gentamicin is mentioned for synergy, the trap is using an aminoglycoside as the backbone. The discriminator: aminoglycosides are NOT bactericidal as monotherapy against strep — they only work synergistically alongside a cell-wall agent; the backbone must be a beta-lactam (or vancomycin).</div></div><div class="rt"><div class="rtl">11. MSSA native valve — Nafcillin</div><div class="rte">Methicillin-SUSCEPTIBLE S. aureus on a native valve is treated with an antistaphylococcal beta-lactam — nafcillin or oxacillin 2 g IV every 4 h (or cefazolin 2 g IV every 8 h) for 6 weeks. Beta-lactams are bactericidal and clinically SUPERIOR to vancomycin for MSSA (faster clearance, lower relapse), so empiric vancomycin should be narrowed to nafcillin/cefazolin once susceptibility returns.</div><div class="rtt">⚠️ After empiric vancomycin, the trap is continuing vancomycin even after MSSA is confirmed. The discriminator: for MSSA, DE-ESCALATE to nafcillin/oxacillin/cefazolin — vancomycin has slower kill and higher failure rates against MSSA; cefazolin is the alternative if beta-lactam allergy is mild.</div></div><div class="rt"><div class="rtl">12. MRSA native valve — Vancomycin + dart</div><div class="rte">Methicillin-RESISTANT S. aureus native-valve IE is treated with vancomycin (target trough 15–20 mg/L or AUC/MIC ≥400) OR daptomycin (≥8–10 mg/kg IV daily) for 6 weeks. Daptomycin is preferred when the vancomycin MIC is high (≥2) or the patient is failing; it is inactivated by surfactant in the lung, so do NOT use it for pneumonia, but it is fine for right-sided IE with pulmonary emboli.</div><div class="rtt">⚠️ If vancomycin fails or the MIC creeps up, the trap is simply pushing higher vancomycin doses. The discriminator: switch to daptomycin (or consider ceftaroline-based salvage) for vancomycin MIC ≥2 or persistent MRSA bacteremia — and remember daptomycin is useless for pneumonia (surfactant inactivation).</div></div><div class="rt"><div class="rtl">13. Prosthetic valve — Nafcillin/Vancomycin + Rifampin + Gentamicin</div><div class="rte">Staphylococcal PROSTHETIC-valve endocarditis requires triple therapy: the backbone (nafcillin/cefazolin for MSSA, or vancomycin for MRSA) PLUS rifampin (penetrates and sterilizes biofilm on foreign material) PLUS gentamicin for the first 2 weeks (added bactericidal synergy), with the backbone + rifampin continued for ≥6 weeks. PVE within 1 year of surgery is usually staphylococcal/nosocomial.</div><div class="rtt">⚠️ Starting rifampin first or alone, or using it for native-valve staph, is the trap. The discriminator: rifampin is reserved for PROSTHETIC/foreign-material (biofilm) infection, must be added AFTER the bacteremia is controlled by the backbone (to avoid selecting rifampin resistance), and has no role in routine native-valve staph IE.</div></div><div class="rt"><div class="rtl">14. Early surgery STOP sign</div><div class="rte">Antibiotics alone fail in complicated IE; EARLY surgery (during the index hospitalization, often within days) is indicated for: refractory heart failure from valve dysfunction (the leading indication), perivalvular abscess/fistula/new heart block, large mobile vegetations (&gt;10 mm) with recurrent emboli, persistent bacteremia/fever despite ≥5–7 days of appropriate antibiotics, prosthetic valve dehiscence, and fungal or highly resistant organisms.</div><div class="rtt">⚠️ The trap is delaying surgery to 'finish the antibiotic course' before operating on complicated IE. The discriminator: in complicated IE (HF, abscess, persistent infection, large embolizing vegetation), surgery should NOT wait for antibiotic completion — early operation improves survival; remaining antibiotics are given postoperatively.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="endocarditis_card_duke.html" title="Infective Endocarditis — Duke Criteria">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="endocarditis_card_organisms.html" title="Infective Endocarditis — Organisms">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

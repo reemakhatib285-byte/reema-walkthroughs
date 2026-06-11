@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Liver Approach — Transplant Court</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>17</em></summary><ol class="traps"><li><b>Child-Pugh vs MELD board</b> — WRONG answer: using Child-Pugh to prioritize the transplant waiting list. Discriminator: organ allocation uses the objective MELD-Na (creatinine, bilirubin, INR, sodium); Child-Pugh's subjective ascites/encephalopathy make it unsuitable for ranking candidates fairly.</li><li><b>Child-Pugh subjective items</b> — WRONG answer: thinking MELD includes ascites or encephalopathy. Discriminator: ascites and encephalopathy belong to CHILD-PUGH only; MELD uses creatinine, bilirubin, INR (+Na for MELD-Na) — no clinical/subjective variables.</li><li><b>MELD objective items</b> — WRONG answer: omitting sodium or adding albumin to MELD. Discriminator: modern allocation uses MELD-Na (Cr, bilirubin, INR, Na); albumin is a Child-Pugh component, NOT a MELD variable.</li><li><b>Child classes A/B/C</b> — WRONG answer: assuming a Child-Pugh A patient is safe for major elective abdominal/hepatic surgery without further thought. Discriminator: even Child A carries elevated perioperative mortality, and Child C is often a contraindication to elective surgery — use the class to assess operative risk, and MELD for waitlist priority.</li><li><b>Transplant criterion ≥7</b> — WRONG answer: treating Child-Pugh &gt;=7 as the score that determines actual list priority/timing. Discriminator: &gt;=7 triggers referral for evaluation, but listing and ranking are by MELD-Na — once referred, the objective MELD score (esp. &gt;=15) drives timing.</li><li><b>Left judge: Child-Pugh</b> — WRONG answer: leaving out bilirubin or albumin when listing Child-Pugh components. Discriminator: remember all five via PABASE (PT, Albumin, Bilirubin, Ascites, Encephalopathy); dropping bilirubin/albumin is the common partial-recall error.</li><li><b>PABASE mnemonic</b> — WRONG answer: adding creatinine or sodium to PABASE. Discriminator: creatinine and sodium are MELD-Na variables, NOT Child-Pugh — Child-Pugh has no renal term, which is one reason MELD (with creatinine) better captures the sickest, often hepatorenal, patients.</li><li><b>Center judge: MELD-Na</b> — WRONG answer: thinking the patient with the worst symptoms (massive ascites, encephalopathy) automatically gets priority. Discriminator: allocation is by MELD-Na numbers, not symptom burden; some severely symptomatic Child-Pugh patients can still have a relatively low MELD, and 'exception points' (e.g., for HCC) are added separately.</li><li><b>MELD predicts mortality</b> — WRONG answer: listing/transplanting a low-MELD (&lt;15) patient on the assumption that earlier transplant is always better. Discriminator: below MELD 15 the surgical/immunosuppression risk exceeds the benefit — these patients do better waiting; benefit accrues above 15.</li><li><b>MELD &lt;15 = WAIT</b> — WRONG answer: placing a MELD &lt;15 patient on the active transplant list based on the score alone. Discriminator: a low MELD argues for waiting; the exception is HCC or other 'MELD exception' indications, where standardized exception points override the raw lab MELD.</li><li><b>MELD 12 example</b> — WRONG answer: prioritizing the MELD-12 patient over someone with a higher MELD or an HCC exception. Discriminator: 12 is below the benefit threshold — they wait; a MELD-12 with no exception does not outrank higher-MELD or exception-point candidates.</li><li><b>Encephalopathy crossed (MELD)</b> — WRONG answer: expecting a patient's encephalopathy/ascites to raise their MELD score. Discriminator: those are Child-Pugh-only; to capture sickness MELD instead uses creatinine, bilirubin, INR and sodium — clinical decompensation may not move the MELD number.</li><li><b>Right judge: Factor V</b> — WRONG answer: using albumin or even raw PT/INR as the best acute synthetic marker. Discriminator: albumin is too slow (~20-day half-life) and PT/INR is confounded by vitamin K/transfusion — Factor V is the cleanest real-time readout of acute hepatic synthesis.</li><li><b>Factor V chained</b> — WRONG answer: attributing a low Factor V to vitamin K deficiency. Discriminator: Factor V does NOT depend on vitamin K and will NOT correct with it — a low Factor V means genuine hepatic synthetic failure, the key distinction from cholestatic vitamin-K malabsorption.</li><li><b>PT/INR useless acute</b> — WRONG answer: trusting a 'corrected' INR after FFP/vitamin K as evidence the liver is recovering. Discriminator: FFP and vitamin K artificially normalize INR without improving hepatic synthesis — follow Factor V instead to judge true recovery in acute failure.</li><li><b>Albumin too slow</b> — WRONG answer: using albumin to assess or trend acute/fulminant liver failure. Discriminator: albumin's ~20-day half-life makes it useless acutely (and it is also lowered by nephrotic syndrome, malnutrition, inflammation) — use Factor V or PT/INR-context for acute synthetic assessment, reserve albumin for chronic.</li><li><b>Child-Pugh juror cards</b> — WRONG answer: confusing the indications — applying Child-Pugh/MELD logic to acute liver failure or Factor V/King's College logic to chronic cirrhosis. Discriminator: chronic decompensated cirrhosis is staged/referred by Child-Pugh and listed by MELD-Na; ACUTE liver failure is assessed by Factor V and King's College criteria — and recall transplant indications (decompensated cirrhosis, acute liver failure, HCC within Milan criteria: single tumor &lt;=5 cm or up to 3 tumors each &lt;=3 cm, no vascular invasion) versus contraindications (active extrahepatic malignancy, uncontrolled sepsis, severe cardiopulmonary disease, active substance use).</li></ol></details><details class="panel"><summary>📖 Read-through — all 17 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Child-Pugh vs MELD board</div><div class="rte">The two cirrhosis severity scores are Child-Pugh (CTP) and MELD. Child-Pugh ranges 5-15 points and contains SUBJECTIVE clinical items (ascites, encephalopathy graded by the clinician). MELD is fully OBJECTIVE (laboratory-only) and ranges ~6-40, which is why it (as MELD-Na) is used for organ ALLOCATION/waitlist prioritization, while Child-Pugh is a bedside prognostic estimate.</div><div class="rtt">⚠️ WRONG answer: using Child-Pugh to prioritize the transplant waiting list. Discriminator: organ allocation uses the objective MELD-Na (creatinine, bilirubin, INR, sodium); Child-Pugh's subjective ascites/encephalopathy make it unsuitable for ranking candidates fairly.</div></div><div class="rt"><div class="rtl">2. Child-Pugh subjective items</div><div class="rte">Child-Pugh's two SUBJECTIVE components are ascites and hepatic encephalopathy, each graded none/mild/moderate-severe. These clinician-dependent items are precisely what MELD deliberately leaves out to keep allocation objective.</div><div class="rtt">⚠️ WRONG answer: thinking MELD includes ascites or encephalopathy. Discriminator: ascites and encephalopathy belong to CHILD-PUGH only; MELD uses creatinine, bilirubin, INR (+Na for MELD-Na) — no clinical/subjective variables.</div></div><div class="rt"><div class="rtl">3. MELD objective items</div><div class="rte">MELD is calculated from three objective labs — creatinine (renal function), total bilirubin, and INR — and MELD-Na adds serum sodium because hyponatremia independently predicts mortality in cirrhosis. The inclusion of creatinine is why hepatorenal syndrome sharply raises the MELD score.</div><div class="rtt">⚠️ WRONG answer: omitting sodium or adding albumin to MELD. Discriminator: modern allocation uses MELD-Na (Cr, bilirubin, INR, Na); albumin is a Child-Pugh component, NOT a MELD variable.</div></div><div class="rt"><div class="rtl">4. Child classes A/B/C</div><div class="rte">Child-Pugh classes: A = 5-6 points (well-compensated, ~1-year survival ~100%), B = 7-9 (significant compromise, ~80%), C = 10-15 (decompensated, ~45%). The class guides surgical risk and broad prognosis.</div><div class="rtt">⚠️ WRONG answer: assuming a Child-Pugh A patient is safe for major elective abdominal/hepatic surgery without further thought. Discriminator: even Child A carries elevated perioperative mortality, and Child C is often a contraindication to elective surgery — use the class to assess operative risk, and MELD for waitlist priority.</div></div><div class="rt"><div class="rtl">5. Transplant criterion ≥7</div><div class="rte">A Child-Pugh score &gt;=7 (class B) is the traditional threshold to begin transplant EVALUATION/referral, marking the transition from compensated to clinically significant disease. It flags who should be referred, not who is immediately listed.</div><div class="rtt">⚠️ WRONG answer: treating Child-Pugh &gt;=7 as the score that determines actual list priority/timing. Discriminator: &gt;=7 triggers referral for evaluation, but listing and ranking are by MELD-Na — once referred, the objective MELD score (esp. &gt;=15) drives timing.</div></div><div class="rt"><div class="rtl">6. Left judge: Child-Pugh</div><div class="rte">The Child-Pugh 'judge' combines five components: prothrombin time/INR, albumin, bilirubin, ascites, and encephalopathy. Two are objective labs (PT, albumin, bilirubin) and two are subjective (ascites, encephalopathy) — the blend is why it is a prognostic, not an allocation, tool.</div><div class="rtt">⚠️ WRONG answer: leaving out bilirubin or albumin when listing Child-Pugh components. Discriminator: remember all five via PABASE (PT, Albumin, Bilirubin, Ascites, Encephalopathy); dropping bilirubin/albumin is the common partial-recall error.</div></div><div class="rt"><div class="rtl">7. PABASE mnemonic</div><div class="rte">PABASE = PT (INR), Albumin, Bilirubin, Ascites, Encephalopathy — the five Child-Pugh components. Note bilirubin and INR are SHARED with MELD, while albumin/ascites/encephalopathy are unique to Child-Pugh.</div><div class="rtt">⚠️ WRONG answer: adding creatinine or sodium to PABASE. Discriminator: creatinine and sodium are MELD-Na variables, NOT Child-Pugh — Child-Pugh has no renal term, which is one reason MELD (with creatinine) better captures the sickest, often hepatorenal, patients.</div></div><div class="rt"><div class="rtl">8. Center judge: MELD-Na</div><div class="rte">The MELD-Na 'judge' prioritizes deceased-donor organ ALLOCATION using objective labs (creatinine, bilirubin, INR, sodium). Because it is purely quantitative it is harder to game and ranks candidates by predicted short-term mortality — the sickest objective scores go first.</div><div class="rtt">⚠️ WRONG answer: thinking the patient with the worst symptoms (massive ascites, encephalopathy) automatically gets priority. Discriminator: allocation is by MELD-Na numbers, not symptom burden; some severely symptomatic Child-Pugh patients can still have a relatively low MELD, and 'exception points' (e.g., for HCC) are added separately.</div></div><div class="rt"><div class="rtl">9. MELD predicts mortality</div><div class="rte">MELD predicts 90-day mortality on the waitlist and is the basis for the transplant-benefit threshold: survival benefit from transplantation generally emerges when MELD &gt;15, whereas transplanting at MELD &lt;15 tends to incur EXCESS mortality compared with waiting (the operative/immunosuppression risk outweighs the disease risk).</div><div class="rtt">⚠️ WRONG answer: listing/transplanting a low-MELD (&lt;15) patient on the assumption that earlier transplant is always better. Discriminator: below MELD 15 the surgical/immunosuppression risk exceeds the benefit — these patients do better waiting; benefit accrues above 15.</div></div><div class="rt"><div class="rtl">10. MELD &lt;15 = WAIT</div><div class="rte">A MELD &lt;15 means outcomes are better by continuing to WAIT and monitor rather than transplanting now — the predicted post-transplant risk outweighs the benefit. These patients are managed medically with ongoing surveillance and re-scoring.</div><div class="rtt">⚠️ WRONG answer: placing a MELD &lt;15 patient on the active transplant list based on the score alone. Discriminator: a low MELD argues for waiting; the exception is HCC or other 'MELD exception' indications, where standardized exception points override the raw lab MELD.</div></div><div class="rt"><div class="rtl">11. MELD 12 example</div><div class="rte">Worked example: a MELD of 12 is below the 15 threshold, so the disposition is to continue to wait, optimize medically, and re-score periodically rather than transplant.</div><div class="rtt">⚠️ WRONG answer: prioritizing the MELD-12 patient over someone with a higher MELD or an HCC exception. Discriminator: 12 is below the benefit threshold — they wait; a MELD-12 with no exception does not outrank higher-MELD or exception-point candidates.</div></div><div class="rt"><div class="rtl">12. Encephalopathy crossed (MELD)</div><div class="rte">This crossed-out item reinforces that MELD deliberately EXCLUDES the subjective encephalopathy and ascites that Child-Pugh relies on, keeping allocation objective and reproducible across centers.</div><div class="rtt">⚠️ WRONG answer: expecting a patient's encephalopathy/ascites to raise their MELD score. Discriminator: those are Child-Pugh-only; to capture sickness MELD instead uses creatinine, bilirubin, INR and sodium — clinical decompensation may not move the MELD number.</div></div><div class="rt"><div class="rtl">13. Right judge: Factor V</div><div class="rte">Factor V is the BEST marker of synthetic function in ACUTE liver failure: it is liver-synthesized, has a short half-life (~12-36 h) so it tracks rapid changes, and is NOT vitamin-K-dependent so it isn't confounded by vitamin K status. In fulminant failure a very low Factor V predicts poor prognosis (a component of the King's College / Clichy criteria).</div><div class="rtt">⚠️ WRONG answer: using albumin or even raw PT/INR as the best acute synthetic marker. Discriminator: albumin is too slow (~20-day half-life) and PT/INR is confounded by vitamin K/transfusion — Factor V is the cleanest real-time readout of acute hepatic synthesis.</div></div><div class="rt"><div class="rtl">14. Factor V chained</div><div class="rte">Factor V reflects TRUE liver synthesis and is independent of vitamin K — unlike the vitamin-K-dependent factors (II, VII, IX, X) that prolong PT/INR. So if a prolonged PT corrects after vitamin K, the problem was deficiency/malabsorption; if Factor V is low, the liver itself is failing to synthesize.</div><div class="rtt">⚠️ WRONG answer: attributing a low Factor V to vitamin K deficiency. Discriminator: Factor V does NOT depend on vitamin K and will NOT correct with it — a low Factor V means genuine hepatic synthetic failure, the key distinction from cholestatic vitamin-K malabsorption.</div></div><div class="rt"><div class="rtl">15. PT/INR useless acute</div><div class="rte">In ACUTE liver failure, PT/INR is confounded — vitamin K administration, fresh frozen plasma/transfusion, and concurrent coagulopathy all distort it — so it is unreliable for tracking synthetic function moment-to-moment. Factor V is preferred in that setting.</div><div class="rtt">⚠️ WRONG answer: trusting a 'corrected' INR after FFP/vitamin K as evidence the liver is recovering. Discriminator: FFP and vitamin K artificially normalize INR without improving hepatic synthesis — follow Factor V instead to judge true recovery in acute failure.</div></div><div class="rt"><div class="rtl">16. Albumin too slow</div><div class="rte">Albumin has a long serum half-life (~18-21 days), so it changes too slowly to reflect ACUTE liver failure — it is a useful marker of CHRONIC synthetic function (and a Child-Pugh component) but lags behind acute events by weeks.</div><div class="rtt">⚠️ WRONG answer: using albumin to assess or trend acute/fulminant liver failure. Discriminator: albumin's ~20-day half-life makes it useless acutely (and it is also lowered by nephrotic syndrome, malnutrition, inflammation) — use Factor V or PT/INR-context for acute synthetic assessment, reserve albumin for chronic.</div></div><div class="rt"><div class="rtl">17. Child-Pugh juror cards</div><div class="rte">The jurors holding 'Child-Pugh 7' represent class B (&gt;=7), the chronic-disease threshold that prompts transplant EVALUATION/referral. It anchors the chronic side of the court (Child-Pugh for chronic decompensated cirrhosis) against the acute side (Factor V for acute liver failure).</div><div class="rtt">⚠️ WRONG answer: confusing the indications — applying Child-Pugh/MELD logic to acute liver failure or Factor V/King's College logic to chronic cirrhosis. Discriminator: chronic decompensated cirrhosis is staged/referred by Child-Pugh and listed by MELD-Na; ACUTE liver failure is assessed by Factor V and King's College criteria — and recall transplant indications (decompensated cirrhosis, acute liver failure, HCC within Milan criteria: single tumor &lt;=5 cm or up to 3 tumors each &lt;=3 cm, no vascular invasion) versus contraindications (active extrahepatic malignancy, uncontrolled sepsis, severe cardiopulmonary disease, active substance use).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="livapp_cholestasis.html" title="Liver Approach — Mechanic&#x27;s Workshop">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="vhep_acute_course.html" title="Viral Hepatitis — Acute Clinical Course &amp; ALF">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

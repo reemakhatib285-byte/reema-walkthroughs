@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD — Revascularization: PCI vs CABG &amp; Medical Therapy</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Medical therapy first</b> — WRONG answer: rushing a stable-angina patient with normal EF straight to catheterization/PCI before a trial of optimal medical therapy. Discriminator — ISCHEMIA/COURAGE proved upfront PCI has no mortality/MI advantage over OMT in stable CAD; revascularization is for refractory symptoms or high-risk anatomy.</li><li><b>Revasc relieves ischemia, not mortality</b> — WRONG answer: telling a stable-angina patient that PCI will help them 'live longer.' Discriminator — PCI in stable IHD improves quality of life/angina only; the survival-benefit settings are CABG in high-risk anatomy and emergent reperfusion in ACS. ISCHEMIA confirmed no mortality benefit of routine invasive strategy.</li><li><b>1–2 vessel disease → PCI</b> — WRONG answer: applying PCI to complex, diffuse, or high-SYNTAX multivessel anatomy just because it is non-surgical. Discriminator — SYNTAX score quantifies complexity; high scores predict PCI failure/restenosis and favor CABG. PCI's sweet spot is discrete, low-complexity 1–2 vessel disease.</li><li><b>Dual antiplatelet after PCI</b> — WRONG answer: stopping the P2Y12 inhibitor early (e.g., for elective non-cardiac surgery) within the mandatory DAPT window. Discriminator — early DAPT discontinuation after DES causes acute stent thrombosis (often a fatal STEMI); elective surgery should be deferred past the DAPT period or aspirin continued perioperatively.</li><li><b>DES restenosis vs shorter DAPT</b> — WRONG answer: assuming bare-metal stents are 'safer' because they need shorter DAPT. Discriminator — modern DES have both lower restenosis AND now allow short DAPT; BMS are largely obsolete. The reason to ever shorten DAPT is high bleeding risk, not stent superiority.</li><li><b>Diabetic + multivessel → NOT PCI</b> — WRONG answer: choosing multivessel PCI for a diabetic to avoid surgery. Discriminator — FREEDOM is the landmark proof that CABG is superior for hard outcomes in diabetics with multivessel disease; PCI is reserved for single-vessel/focal disease or prohibitive surgical risk.</li><li><b>PCI: ↓stroke but ↓survival</b> — WRONG answer: citing PCI's lower stroke risk to justify it over CABG in high-risk anatomy. Discriminator — the lower stroke risk is real but is outweighed by CABG's survival benefit and durability in left main/3-vessel/diabetic disease; stroke risk only tips the scale in borderline or high-surgical-risk cases.</li><li><b>CABG + IMA → better survival</b> — WRONG answer: treating saphenous vein grafts as equivalent to the IMA. Discriminator — the survival advantage of CABG is driven by the arterial IMA→LAD graft; vein grafts fail ~50% by 10 yr. A CABG without an IMA graft loses much of its long-term edge.</li><li><b>3-vessel disease → CABG</b> — WRONG answer: medical-therapy-alone or multivessel PCI for 3-vessel disease with EF &lt;35%. Discriminator — STICH extended follow-up favored CABG for survival in ischemic cardiomyopathy; this is one of the few settings where revascularization (surgical) truly prolongs life.</li><li><b>Vein graft hourglass (fails sooner)</b> — WRONG answer: attributing recurrent angina years after CABG to a 'new problem' rather than graft failure. Discriminator — late post-CABG angina classically reflects saphenous vein-graft attrition/atherosclerosis; the IMA graft is usually still patent. Arterial grafts are the durable solution.</li><li><b>Hibernating myocardium = viable</b> — WRONG answer: dismissing akinetic, low-EF segments as scar/dead myocardium and withholding revascularization. Discriminator — viable hibernating tissue (positive viability study) recovers contractility after CABG/PCI; only non-viable transmural scar (delayed enhancement &gt;50% on MRI) will not benefit.</li><li><b>Max statin (step 1)</b> — WRONG answer: starting a low/moderate-intensity statin (or no statin) in a patient with established CAD. Discriminator — secondary prevention mandates high-intensity statin for ≥50% LDL lowering and target LDL &lt;70 (often &lt;55); under-dosing the statin is a common board error.</li><li><b>Add ezetimibe (step 2)</b> — WRONG answer: jumping to an expensive PCSK9 inhibitor before maximizing statin and trying ezetimibe. Discriminator — guideline-directed escalation is statin → ezetimibe → PCSK9 inhibitor; ezetimibe is the cheaper, oral step 2 with proven event reduction (IMPROVE-IT).</li><li><b>PCSK9 inhibitor (step 3) / LDL &lt;70</b> — WRONG answer: aiming only for LDL &lt;100 in a patient with established CAD, or skipping further therapy once &lt;100 is reached. Discriminator — established ASCVD targets LDL &lt;70 (often &lt;55 in very-high-risk); PCSK9 inhibitors exist precisely to reach these aggressive goals when statin + ezetimibe fall short.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Medical therapy first</div><div class="rte">Optimal medical therapy (OMT) is the foundation for ALL chronic IHD — high-intensity statin, aspirin, antianginals (beta-blocker/CCB/nitrate/ranolazine), and risk-factor control (BP, glucose, smoking). Revascularization is added on top of OMT for persistent symptoms despite therapy or for specific high-risk anatomy (left main, 3-vessel + low EF, diabetic multivessel). COURAGE and ISCHEMIA showed that for stable CAD, an initial invasive strategy did not reduce death/MI vs OMT. Mnemonic: 'medicate before you dilate.'</div><div class="rtt">⚠️ WRONG answer: rushing a stable-angina patient with normal EF straight to catheterization/PCI before a trial of optimal medical therapy. Discriminator — ISCHEMIA/COURAGE proved upfront PCI has no mortality/MI advantage over OMT in stable CAD; revascularization is for refractory symptoms or high-risk anatomy.</div></div><div class="rt"><div class="rtl">2. Revasc relieves ischemia, not mortality</div><div class="rte">In STABLE CAD, revascularization (especially PCI) relieves angina and ischemia but does NOT reduce mortality or MI compared with optimal medical therapy — proven by COURAGE (2007) and ISCHEMIA (2020). The exceptions where revascularization DOES improve survival are left main, 3-vessel disease with reduced EF, and diabetic multivessel disease (and of course ACS/STEMI, where emergent reperfusion saves lives). Mnemonic: 'in stable disease, stents soothe symptoms, not survival.'</div><div class="rtt">⚠️ WRONG answer: telling a stable-angina patient that PCI will help them 'live longer.' Discriminator — PCI in stable IHD improves quality of life/angina only; the survival-benefit settings are CABG in high-risk anatomy and emergent reperfusion in ACS. ISCHEMIA confirmed no mortality benefit of routine invasive strategy.</div></div><div class="rt"><div class="rtl">3. 1–2 vessel disease → PCI</div><div class="rte">PCI is best suited to 1–2 vessel disease with discrete, focal, symmetrical lesions, preserved LV function, and a low SYNTAX score — these are technically straightforward to stent with good durability. PCI is less invasive, has lower periprocedural stroke risk than CABG, and allows rapid recovery. Long, calcified, ostial, bifurcation, or chronic-total-occlusion lesions (high SYNTAX) favor CABG instead. Mnemonic: 'few vessels + focal lesions = percutaneous.'</div><div class="rtt">⚠️ WRONG answer: applying PCI to complex, diffuse, or high-SYNTAX multivessel anatomy just because it is non-surgical. Discriminator — SYNTAX score quantifies complexity; high scores predict PCI failure/restenosis and favor CABG. PCI's sweet spot is discrete, low-complexity 1–2 vessel disease.</div></div><div class="rt"><div class="rtl">4. Dual antiplatelet after PCI</div><div class="rte">After PCI with a drug-eluting stent, dual antiplatelet therapy = aspirin 81 mg daily (lifelong) PLUS a P2Y12 inhibitor (clopidogrel 75 mg, or ticagrelor 90 mg BID / prasugrel in ACS). Standard DAPT duration is ~6 months for stable CAD and ~12 months after ACS, to prevent stent thrombosis while the stent endothelializes. Premature DAPT cessation is the leading cause of catastrophic stent thrombosis. Mnemonic: 'Aspirin Always + P2Y12 for a year.'</div><div class="rtt">⚠️ WRONG answer: stopping the P2Y12 inhibitor early (e.g., for elective non-cardiac surgery) within the mandatory DAPT window. Discriminator — early DAPT discontinuation after DES causes acute stent thrombosis (often a fatal STEMI); elective surgery should be deferred past the DAPT period or aspirin continued perioperatively.</div></div><div class="rt"><div class="rtl">5. DES restenosis vs shorter DAPT</div><div class="rte">Drug-eluting stents (DES) elute antiproliferative drugs (e.g., everolimus, sirolimus) that suppress neointimal hyperplasia, dramatically reducing in-stent restenosis vs bare-metal stents (BMS). Newer-generation DES also re-endothelialize faster, permitting SHORTER DAPT (as little as 1–3 months in high-bleeding-risk patients). Stent type and bleeding risk together determine DAPT duration. Mnemonic: 'DES = Drug stops rE-Stenosis.'</div><div class="rtt">⚠️ WRONG answer: assuming bare-metal stents are 'safer' because they need shorter DAPT. Discriminator — modern DES have both lower restenosis AND now allow short DAPT; BMS are largely obsolete. The reason to ever shorten DAPT is high bleeding risk, not stent superiority.</div></div><div class="rt"><div class="rtl">6. Diabetic + multivessel → NOT PCI</div><div class="rte">Diabetics with multivessel CAD do better with CABG than PCI — the FREEDOM trial showed CABG reduced death/MI vs DES-PCI (NNT ~12 at 5 yr). Diabetic coronary disease is diffuse, distal, and progresses fast with high in-stent restenosis, so segmental stenting fails to keep pace; arterial grafts bypass the whole diseased territory. Mnemonic: 'Diabetic Diffuse Disease → Detour with CABG.'</div><div class="rtt">⚠️ WRONG answer: choosing multivessel PCI for a diabetic to avoid surgery. Discriminator — FREEDOM is the landmark proof that CABG is superior for hard outcomes in diabetics with multivessel disease; PCI is reserved for single-vessel/focal disease or prohibitive surgical risk.</div></div><div class="rt"><div class="rtl">7. PCI: ↓stroke but ↓survival</div><div class="rte">Compared with CABG, PCI has a LOWER periprocedural stroke risk (no aortic cannulation/cross-clamp, no cardiopulmonary bypass) but LOWER long-term survival in complex/multivessel disease and a higher need for repeat revascularization. This is the central trade-off the boards test: CABG buys durability/survival at the cost of upfront stroke and surgical morbidity. Mnemonic: 'PCI dodges the stroke today but loses the war over years.'</div><div class="rtt">⚠️ WRONG answer: citing PCI's lower stroke risk to justify it over CABG in high-risk anatomy. Discriminator — the lower stroke risk is real but is outweighed by CABG's survival benefit and durability in left main/3-vessel/diabetic disease; stroke risk only tips the scale in borderline or high-surgical-risk cases.</div></div><div class="rt"><div class="rtl">8. CABG + IMA → better survival</div><div class="rte">CABG using the internal mammary artery grafted to the LAD (IMA→LAD) is the cornerstone of surgical revascularization: arterial conduits resist atherosclerosis (&gt;90% patency at 10 yr) and provide an independent survival benefit in left main and multivessel disease. The IMA stays attached to the subclavian (in-situ graft), adapting flow to demand. Mnemonic: 'IMA is immortal — the artery that grants survival.'</div><div class="rtt">⚠️ WRONG answer: treating saphenous vein grafts as equivalent to the IMA. Discriminator — the survival advantage of CABG is driven by the arterial IMA→LAD graft; vein grafts fail ~50% by 10 yr. A CABG without an IMA graft loses much of its long-term edge.</div></div><div class="rt"><div class="rtl">9. 3-vessel disease → CABG</div><div class="rte">Three-vessel disease (and left main) favors CABG, with the GREATEST survival benefit when EF is reduced (STICH: CABG improved long-term survival in ischemic cardiomyopathy with EF &lt;35%). CABG completely revascularizes all territories with durable grafts, whereas multivessel PCI leaves higher restenosis and incomplete revascularization. Higher SYNTAX score → stronger case for surgery. Mnemonic: '3 vessels + weak pump = surgeon's strongest indication.'</div><div class="rtt">⚠️ WRONG answer: medical-therapy-alone or multivessel PCI for 3-vessel disease with EF &lt;35%. Discriminator — STICH extended follow-up favored CABG for survival in ischemic cardiomyopathy; this is one of the few settings where revascularization (surgical) truly prolongs life.</div></div><div class="rt"><div class="rtl">10. Vein graft hourglass (fails sooner)</div><div class="rte">Saphenous vein grafts occlude far sooner than arterial grafts: ~10–20% in year 1, ~2%/yr thereafter, accelerating after year 7 (~50% patent at 10 yr) due to endothelial injury, intimal hyperplasia, and vein-graft atherosclerosis. Arterial conduits (IMA, radial) have superior patency, so surgeons maximize arterial grafting. Aggressive statin + aspirin therapy slows vein-graft disease. Mnemonic: 'the hourglass runs out on vein grafts — arteries endure.'</div><div class="rtt">⚠️ WRONG answer: attributing recurrent angina years after CABG to a 'new problem' rather than graft failure. Discriminator — late post-CABG angina classically reflects saphenous vein-graft attrition/atherosclerosis; the IMA graft is usually still patent. Arterial grafts are the durable solution.</div></div><div class="rt"><div class="rtl">11. Hibernating myocardium = viable</div><div class="rte">Hibernating myocardium is chronically underperfused but VIABLE tissue that has down-regulated contraction to survive — it appears akinetic/hypocontractile (low EF) but RECOVERS function after revascularization. Viability is confirmed by dobutamine stress echo (contractile reserve), PET, or cardiac MRI (delayed enhancement &lt;50% wall thickness). Identifying it justifies revascularizing a low-EF heart. Mnemonic: 'hibernating = sleeping, not dead — wake it with blood flow.'</div><div class="rtt">⚠️ WRONG answer: dismissing akinetic, low-EF segments as scar/dead myocardium and withholding revascularization. Discriminator — viable hibernating tissue (positive viability study) recovers contractility after CABG/PCI; only non-viable transmural scar (delayed enhancement &gt;50% on MRI) will not benefit.</div></div><div class="rt"><div class="rtl">12. Max statin (step 1)</div><div class="rte">Lipid-lowering step 1 for established ASCVD is a maximally-tolerated HIGH-intensity statin — atorvastatin 40–80 mg or rosuvastatin 20–40 mg — aiming for ≥50% LDL reduction. Statins inhibit HMG-CoA reductase and have pleiotropic plaque-stabilizing effects. Every CAD patient needs one unless truly intolerant. Mnemonic: 'statin is step one and forever.'</div><div class="rtt">⚠️ WRONG answer: starting a low/moderate-intensity statin (or no statin) in a patient with established CAD. Discriminator — secondary prevention mandates high-intensity statin for ≥50% LDL lowering and target LDL &lt;70 (often &lt;55); under-dosing the statin is a common board error.</div></div><div class="rt"><div class="rtl">13. Add ezetimibe (step 2)</div><div class="rte">If LDL remains above goal (&lt;70, often &lt;55 mg/dL) on maximally-tolerated high-intensity statin, step 2 is to ADD ezetimibe 10 mg daily — it blocks intestinal cholesterol absorption (NPC1L1 transporter) and lowers LDL a further ~15–25%. IMPROVE-IT showed adding ezetimibe to statin reduced cardiovascular events post-ACS. Mnemonic: 'Ezetimibe Eats up gut cholesterol — step 2.'</div><div class="rtt">⚠️ WRONG answer: jumping to an expensive PCSK9 inhibitor before maximizing statin and trying ezetimibe. Discriminator — guideline-directed escalation is statin → ezetimibe → PCSK9 inhibitor; ezetimibe is the cheaper, oral step 2 with proven event reduction (IMPROVE-IT).</div></div><div class="rt"><div class="rtl">14. PCSK9 inhibitor (step 3) / LDL &lt;70</div><div class="rte">Step 3 for persistently high LDL despite max statin + ezetimibe is a PCSK9 inhibitor (evolocumab or alirocumab, subcutaneous q2–4 wk) — these monoclonal antibodies block PCSK9 so more LDL receptors recycle to the hepatocyte surface, lowering LDL ~50–60% further. FOURIER/ODYSSEY showed event reduction in high-risk ASCVD. Secondary-prevention LDL target is &lt;70 mg/dL, and &lt;55 in very-high-risk patients. Mnemonic: 'PCSK9 inhibitor = more LDL receptors recycled, LDL plummets.'</div><div class="rtt">⚠️ WRONG answer: aiming only for LDL &lt;100 in a patient with established CAD, or skipping further therapy once &lt;100 is reached. Discriminator — established ASCVD targets LDL &lt;70 (often &lt;55 in very-high-risk); PCSK9 inhibitors exist precisely to reach these aggressive goals when statin + ezetimibe fall short.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_revasc_anatomy.html" title="IHD — Revascularization Anatomy: Which Vessel, Which Procedure">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_stable_angina.html" title="IHD — Stable Angina: Chest Pain Features">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Arrhythmias — Structural VT Substrates (ARVC, NICM, Sarcoid, Chagas)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>ICD across all structural VT</b> — WRONG: 'An antiarrhythmic drug (amiodarone) alone is adequate therapy for sustained structural VT.' Drugs and ablation only SUPPRESS episodes and reduce ICD shocks — they do not abort VF or prevent SCD. The discriminator is that no antiarrhythmic has shown a mortality benefit comparable to the ICD in structural heart disease; amiodarone is an adjunct layered on top of, not instead of, the defibrillator.</li><li><b>Ischemic scar (most common)</b> — WRONG: 'Monomorphic VT in a post-MI patient is most likely SVT with aberrancy.' A wide-complex tachycardia in someone with prior infarction is VT until proven otherwise (&gt;95% likelihood). The discriminator is the history of structural disease itself — capture/fusion beats and AV dissociation confirm VT, and giving a nodal blocker for presumed SVT can cause hemodynamic collapse.</li><li><b>NICM</b> — WRONG: 'A patient with LMNA mutation, first-degree AV block, and NSVT can be managed with a pacemaker for the conduction disease.' A pacemaker treats bradycardia but offers zero protection from the VT/VF that kills LMNA patients — the discriminator is that LMNA mandates an ICD (not a plain pacemaker) even at relatively preserved EF because of its high arrhythmic SCD rate.</li><li><b>Harder to ablate (NICM)</b> — WRONG: 'A successful VT ablation in an NICM patient means the ICD can be removed.' Ablation reduces the VT burden but cannot guarantee freedom from VF/SCD; the discriminator is that the ICD stays in place because the underlying diseased myocardium continues to generate new circuits over time.</li><li><b>ARVC — fibrofatty RV</b> — WRONG: 'A young athlete with exertional syncope and LBBB-pattern VT has benign idiopathic RVOT VT — reassure and clear for sport.' Exertional syncope plus a family history flips this toward ARVC (or catecholaminergic VT), which is lethal. The discriminator: idiopathic RVOT VT has a normal RV on MRI with no epsilon waves/T-wave inversions in V1–V3, whereas ARVC shows RV dysfunction, fibrofatty infiltration, and those ECG markers — ARVC must be excluded before calling it benign.</li><li><b>Epsilon wave</b> — WRONG: 'A terminal QRS notch in V1 is just an incomplete RBBB and is a normal variant.' The discriminator is the clinical context plus associated repolarization changes — an epsilon wave with anterior T-wave inversions and ventricular ectopy of LBBB morphology in a young patient points to ARVC, not a benign conduction quirk.</li><li><b>ARVC mimics RVOT — exclude</b> — WRONG: 'Because the VT has LBBB morphology with an inferior axis, it must be benign RVOT VT.' Morphology alone does not exclude ARVC — the discriminator is cardiac MRI/echo showing RV dysfunction or aneurysms and ECG T-wave inversions/epsilon waves; only a normal RV with no ARVC features confirms benign RVOT VT.</li><li><b>Exercise restriction (ARVC)</b> — WRONG: 'An ARVC patient with a well-functioning ICD can safely return to competitive endurance sport because the ICD will rescue any arrhythmia.' The discriminator is that exercise itself drives disease progression and provokes VT — the ICD treats events but does not stop the substrate from worsening, so exercise restriction is still mandatory.</li><li><b>Cardiac sarcoidosis</b> — WRONG: 'A 45-year-old with new complete heart block just needs a permanent pacemaker.' The discriminator is age and etiology — unexplained AV block in a younger adult should trigger a workup for cardiac sarcoid (MRI/PET), because these patients also have lethal VT, so the correct device is frequently an ICD (or CRT-D), not a plain pacemaker, plus steroids.</li><li><b>Chagas</b> — WRONG: 'A Brazilian immigrant with VT, RBBB+LAFB, and an LV apical aneurysm has ischemic cardiomyopathy.' The discriminator is geography and the apical aneurysm with otherwise non-coronary distribution scar — serologic testing for T. cruzi confirms Chagas, which is managed with antiarrhythmics/ICD (and antitrypanosomal therapy in selected cases), not coronary revascularization.</li><li><b>LGE guides ablation</b> — WRONG: 'A normal echo and normal coronary angiogram rule out a structural VT substrate.' The discriminator is that echo and angiography can miss intramural/epicardial scar that cardiac MRI LGE readily reveals (e.g., sarcoid, NICM, ARVC) — a normal echo does NOT exclude a fibrotic substrate.</li><li><b>Other VTs coexist</b> — WRONG: 'Ablating the single clinical VT morphology cures a patient with advanced cardiomyopathy.' The discriminator is substrate heterogeneity — eliminating one circuit leaves others (and allows new ones), so the ICD remains, and antiarrhythmics are added to reduce overall burden.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ICD across all structural VT</div><div class="rte">Sustained monomorphic VT arising from ANY structural substrate (ischemic scar, NICM, ARVC, sarcoid, Chagas) is a marker of high sudden-cardiac-death risk, so the ICD is the unifying secondary-prevention therapy across every wing of this castle. Mechanism is scar-related re-entry: surviving myocyte bundles within fibrosis create slow-conduction zones and a fixed re-entrant circuit. Primary-prevention ICD is also indicated when EF ≤35% with NYHA II–III despite ≥3 months of guideline-directed medical therapy. Think 'substrate doesn't matter — the shock box does.'</div><div class="rtt">⚠️ WRONG: 'An antiarrhythmic drug (amiodarone) alone is adequate therapy for sustained structural VT.' Drugs and ablation only SUPPRESS episodes and reduce ICD shocks — they do not abort VF or prevent SCD. The discriminator is that no antiarrhythmic has shown a mortality benefit comparable to the ICD in structural heart disease; amiodarone is an adjunct layered on top of, not instead of, the defibrillator.</div></div><div class="rt"><div class="rtl">2. Ischemic scar (most common)</div><div class="rte">Prior-MI scar is the single most common structural substrate for sustained monomorphic VT — old infarct leaves a subendocardial scar with channels of viable tissue that sustain re-entry. Because the scar is subendocardial, endocardial catheter ablation has its highest success here. Suspect ischemic VT in any older patient with prior MI, reduced EF, and a regular wide-complex tachycardia.</div><div class="rtt">⚠️ WRONG: 'Monomorphic VT in a post-MI patient is most likely SVT with aberrancy.' A wide-complex tachycardia in someone with prior infarction is VT until proven otherwise (&gt;95% likelihood). The discriminator is the history of structural disease itself — capture/fusion beats and AV dissociation confirm VT, and giving a nodal blocker for presumed SVT can cause hemodynamic collapse.</div></div><div class="rt"><div class="rtl">3. NICM</div><div class="rte">Non-ischemic cardiomyopathy VT typically arises from mid-myocardial or epicardial (not subendocardial) scar, classically basal/perivalvular. Lamin A/C (LMNA) cardiomyopathy is a high-risk genetic NICM with conduction disease plus malignant VT — it lowers the ICD threshold and is a board favorite. Because the circuit is deep in the wall, surface endocardial ablation often fails.</div><div class="rtt">⚠️ WRONG: 'A patient with LMNA mutation, first-degree AV block, and NSVT can be managed with a pacemaker for the conduction disease.' A pacemaker treats bradycardia but offers zero protection from the VT/VF that kills LMNA patients — the discriminator is that LMNA mandates an ICD (not a plain pacemaker) even at relatively preserved EF because of its high arrhythmic SCD rate.</div></div><div class="rt"><div class="rtl">4. Harder to ablate (NICM)</div><div class="rte">NICM scar is intramural/epicardial, so endocardial-only ablation is less successful than in ischemic VT and frequently requires an epicardial (percutaneous subxiphoid) approach. This is the key contrast: ischemic = subendocardial = endocardial ablation works well; NICM = deep/epicardial = harder, higher recurrence. Ablation in either case prevents recurrence and reduces shocks but does not replace the ICD.</div><div class="rtt">⚠️ WRONG: 'A successful VT ablation in an NICM patient means the ICD can be removed.' Ablation reduces the VT burden but cannot guarantee freedom from VF/SCD; the discriminator is that the ICD stays in place because the underlying diseased myocardium continues to generate new circuits over time.</div></div><div class="rt"><div class="rtl">5. ARVC — fibrofatty RV</div><div class="rte">Arrhythmogenic RV cardiomyopathy is a desmosomal (autosomal dominant, e.g., plakophilin-2) disease causing fibrofatty replacement of the RV free wall, producing VT and SCD classically in young athletes. The RV origin gives an LBBB-morphology VT (because activation starts in the RV and spreads late to the LV). Diagnosis uses Task Force criteria combining imaging, ECG, arrhythmia, and family/genetic data.</div><div class="rtt">⚠️ WRONG: 'A young athlete with exertional syncope and LBBB-pattern VT has benign idiopathic RVOT VT — reassure and clear for sport.' Exertional syncope plus a family history flips this toward ARVC (or catecholaminergic VT), which is lethal. The discriminator: idiopathic RVOT VT has a normal RV on MRI with no epsilon waves/T-wave inversions in V1–V3, whereas ARVC shows RV dysfunction, fibrofatty infiltration, and those ECG markers — ARVC must be excluded before calling it benign.</div></div><div class="rt"><div class="rtl">6. Epsilon wave</div><div class="rte">The epsilon wave is a small terminal positive deflection at the end of the QRS in V1–V3, reflecting delayed RV activation through fibrofatty tissue — it is the pathognomonic ARVC ECG sign. Accompanying findings are T-wave inversions in V1–V3 (beyond age 14, no RBBB) and prolonged terminal activation duration. Mnemonic: 'Epsilon = End-of-QRS notch = ARVC.'</div><div class="rtt">⚠️ WRONG: 'A terminal QRS notch in V1 is just an incomplete RBBB and is a normal variant.' The discriminator is the clinical context plus associated repolarization changes — an epsilon wave with anterior T-wave inversions and ventricular ectopy of LBBB morphology in a young patient points to ARVC, not a benign conduction quirk.</div></div><div class="rt"><div class="rtl">7. ARVC mimics RVOT — exclude</div><div class="rte">ARVC produces LBBB-pattern (RV-origin) VT that mimics benign idiopathic RVOT VT, so ARVC MUST be excluded before labeling any LBBB-morphology VT as idiopathic. RVOT VT classically has an inferior axis (tall R waves II/III/aVF) and a structurally normal heart, responds to verapamil/beta-blockers, and is ablation-curable with excellent prognosis. ARVC has a diseased RV, multiple VT morphologies, and SCD risk.</div><div class="rtt">⚠️ WRONG: 'Because the VT has LBBB morphology with an inferior axis, it must be benign RVOT VT.' Morphology alone does not exclude ARVC — the discriminator is cardiac MRI/echo showing RV dysfunction or aneurysms and ECG T-wave inversions/epsilon waves; only a normal RV with no ARVC features confirms benign RVOT VT.</div></div><div class="rt"><div class="rtl">8. Exercise restriction (ARVC)</div><div class="rte">Endurance/competitive exercise mechanically stretches and accelerates fibrofatty progression of the RV, so exercise restriction (avoiding competitive and high-intensity endurance sport) is a core part of ARVC management alongside beta-blockers and ICD for high-risk patients. This is the 'detrain the athlete' rule.</div><div class="rtt">⚠️ WRONG: 'An ARVC patient with a well-functioning ICD can safely return to competitive endurance sport because the ICD will rescue any arrhythmia.' The discriminator is that exercise itself drives disease progression and provokes VT — the ICD treats events but does not stop the substrate from worsening, so exercise restriction is still mandatory.</div></div><div class="rt"><div class="rtl">9. Cardiac sarcoidosis</div><div class="rte">Cardiac sarcoid causes patchy non-caseating granulomatous scar with a hallmark combination of VT plus AV/conduction block, classically in a younger patient. Suspect it whenever there is unexplained high-grade AV block under age ~60, or VT with patchy late gadolinium enhancement on MRI; FDG-PET shows active inflammation. Treatment combines immunosuppression (corticosteroids) for active inflammation with an ICD for arrhythmic risk.</div><div class="rtt">⚠️ WRONG: 'A 45-year-old with new complete heart block just needs a permanent pacemaker.' The discriminator is age and etiology — unexplained AV block in a younger adult should trigger a workup for cardiac sarcoid (MRI/PET), because these patients also have lethal VT, so the correct device is frequently an ICD (or CRT-D), not a plain pacemaker, plus steroids.</div></div><div class="rt"><div class="rtl">10. Chagas</div><div class="rte">Chagas cardiomyopathy (chronic Trypanosoma cruzi infection) is a leading VT and heart-block cause in Latin American immigrants, classically producing a left-ventricular apical aneurysm and RBBB with left anterior fascicular block. The apical aneurysm is a re-entry nidus for VT and a source of mural thrombus/embolism. Test clue: VT plus conduction disease in a patient from Central/South America.</div><div class="rtt">⚠️ WRONG: 'A Brazilian immigrant with VT, RBBB+LAFB, and an LV apical aneurysm has ischemic cardiomyopathy.' The discriminator is geography and the apical aneurysm with otherwise non-coronary distribution scar — serologic testing for T. cruzi confirms Chagas, which is managed with antiarrhythmics/ICD (and antitrypanosomal therapy in selected cases), not coronary revascularization.</div></div><div class="rt"><div class="rtl">11. LGE guides ablation</div><div class="rte">Cardiac MRI with late gadolinium enhancement (LGE) maps the location and transmurality of scar, distinguishing ischemic (subendocardial/transmural in a coronary territory) from non-ischemic (mid-wall/epicardial) patterns and identifying the arrhythmogenic substrate to plan ablation. The LGE pattern predicts whether an endocardial or epicardial ablation approach is needed and carries prognostic weight (scar burden tracks with arrhythmic risk).</div><div class="rtt">⚠️ WRONG: 'A normal echo and normal coronary angiogram rule out a structural VT substrate.' The discriminator is that echo and angiography can miss intramural/epicardial scar that cardiac MRI LGE readily reveals (e.g., sarcoid, NICM, ARVC) — a normal echo does NOT exclude a fibrotic substrate.</div></div><div class="rt"><div class="rtl">12. Other VTs coexist</div><div class="rte">In severely diseased hearts the scar is heterogeneous, so multiple distinct VT morphologies and circuits coexist in the same patient, and new circuits emerge over time. This is why suppression strategies (drugs, ablation of the clinical VT) cannot guarantee protection and why the ICD anchors therapy regardless of the dominant mechanism. The sicker the myocardium, the more the defibrillator earns its place.</div><div class="rtt">⚠️ WRONG: 'Ablating the single clinical VT morphology cures a patient with advanced cardiomyopathy.' The discriminator is substrate heterogeneity — eliminating one circuit leaves others (and allows new ones), so the ICD remains, and antiarrhythmics are added to reduce overall burden.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="arr_sinus_tachy.html" title="Arrhythmias — Sinus Tachycardia">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="arr_vf_storm.html" title="Arrhythmias — VF &amp; Electrical Storm">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

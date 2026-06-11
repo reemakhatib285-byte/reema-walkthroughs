@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Vasculitis — Classification &amp; Pathology</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Immune Complex Factory</b> — Immune-complex vasculitides are ANCA-NEGATIVE with LOW complement and granular IF. Lumping them with ANCA-associated vasculitis (which is ANCA-positive, normal complement, pauci-immune) is the trap. The complement level and IF pattern are the discriminators: low C3/C4 + granular = immune-complex; normal C3/C4 + pauci-immune = AAV.</li><li><b>C5a / complement</b> — Don't assume complement is consumed in every vasculitis. In ANCA-associated vasculitis serum complement is typically NORMAL despite the alternative-pathway C5a contribution to pathology; low complement instead points to immune-complex disease (cryoglobulinemia, lupus, post-strep).</li><li><b>ANCA Factory</b> — 'Pauci-immune' means scant/absent immune-complex deposition — the diagnostic opposite of immune-complex vasculitis. Expecting heavy granular deposits or low complement in AAV is wrong; their absence is what defines AAV histologically.</li><li><b>PR3 vs MPO</b> — p-ANCA is not specific for vasculitis — it can be positive in IBD, autoimmune hepatitis, and drug effects (often as atypical/x-ANCA without MPO). A positive p-ANCA without anti-MPO on ELISA in a patient with colitis is not vasculitis. Confirm with the antigen-specific assay before diagnosing AAV.</li><li><b>T-Cell Granuloma Factory</b> — Granulomatous vasculitis spans vessel sizes (large: GCA/Takayasu; small: GPA/EGPA), so 'granuloma' alone doesn't pin the diagnosis. PAN and MPA are NON-granulomatous — selecting PAN/MPA when biopsy shows granulomas is the trap.</li><li><b>Large vessel road / car</b> — Large-vessel vasculitis is diagnosed largely by IMAGING (temporal artery US/biopsy for GCA; CTA/MRA/PET for both), not by renal/skin biopsy. Expecting palpable purpura or glomerulonephritis (small-vessel features) in GCA/Takayasu is the trap — large-vessel disease causes ischemia/claudication, not purpura.</li><li><b>Takayasu cyclist</b> — Age is the key discriminator from GCA: under ~40-50 think Takayasu; over 50 think GCA. Diagnosing GCA in a 28-year-old woman with subclavian stenosis is wrong — GCA essentially never occurs under 50.</li><li><b>Medium vessel jeep</b> — Medium-vessel disease (PAN) gives microaneurysms/infarcts, NOT glomerulonephritis and NOT pulmonary capillaritis — those are small-vessel/ANCA features. A 'vasculitis with RPGN or alveolar hemorrhage' is not PAN; that's MPA/GPA. Also, PAN is ANCA-negative, so a positive ANCA argues against PAN.</li><li><b>Kawasaki child</b> — The danger is delayed treatment: IVIG given after day 10 is far less protective against coronary aneurysms. Withholding IVIG to 'observe' a child meeting Kawasaki criteria is the trap. Incomplete Kawasaki (fewer criteria but high inflammatory markers + coronary changes) still warrants treatment.</li><li><b>Small vessel kids row</b> — Palpable purpura + glomerulonephritis is the shared small-vessel phenotype — the wrong move is stopping at 'small-vessel vasculitis.' You must subtype with ANCA, complement, cryoglobulins, and IF (pauci-immune vs granular) because induction therapy and treating the underlying cause (HCV, drug) differ.</li><li><b>Gold: Biopsy banner</b> — Biopsy is gold standard for MOST vasculitides, but key exceptions are diagnosed by imaging instead (PAN, Takayasu, primary CNS vasculitis — see next). Insisting on renal/visceral biopsy in PAN (risking bleeding from microaneurysms) is the trap; use angiography there.</li><li><b>PAN/Tak/PCNS: Angio</b> — Choosing renal biopsy for suspected PAN is the classic trap — it risks hemorrhage from microaneurysms and shows non-specific changes; mesenteric/renal angiography is the diagnostic test. For Takayasu, biopsy is rarely needed at all.</li><li><b>Treat Early banner</b> — The trap is delaying steroids in GCA to await biopsy results — vision loss is often sudden and irreversible, and the contralateral eye is at risk. Steroids first do not 'ruin' the biopsy within the first 1-2 weeks.</li><li><b>Mimics Warehouse — Exclude First</b> — Treating a mimic as vasculitis is dangerous: giving steroids/cyclophosphamide to a patient who actually has infective endocarditis (which can be ANCA-positive) can be lethal. The discriminator is to draw blood cultures and get an echo BEFORE immunosuppression in any ANCA-positive patient with fever and a new murmur.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Immune Complex Factory</div><div class="rte">Immune-complex small-vessel vasculitis is a type III hypersensitivity reaction: circulating antigen-antibody complexes deposit in vessel walls, fix complement, and recruit neutrophils. Serum complement (C3/C4) is therefore consumed and LOW. This group includes IgA vasculitis (HSP), cryoglobulinemic vasculitis, hypocomplementemic urticarial vasculitis, and anti-GBM disease. Immunofluorescence shows granular ('lumpy-bumpy') immune deposits — the opposite of pauci-immune AAV.</div><div class="rtt">⚠️ Immune-complex vasculitides are ANCA-NEGATIVE with LOW complement and granular IF. Lumping them with ANCA-associated vasculitis (which is ANCA-positive, normal complement, pauci-immune) is the trap. The complement level and IF pattern are the discriminators: low C3/C4 + granular = immune-complex; normal C3/C4 + pauci-immune = AAV.</div></div><div class="rt"><div class="rtl">2. C5a / complement</div><div class="rte">Complement activation generates C5a, a potent anaphylatoxin/chemoattractant that primes and recruits neutrophils, amplifying vessel-wall inflammation. In immune-complex disease this consumes serum complement (low C3/C4). The C5a axis is also a therapeutic target in ANCA vasculitis — avacopan is an oral C5a-receptor antagonist used as a steroid-sparing agent.</div><div class="rtt">⚠️ Don't assume complement is consumed in every vasculitis. In ANCA-associated vasculitis serum complement is typically NORMAL despite the alternative-pathway C5a contribution to pathology; low complement instead points to immune-complex disease (cryoglobulinemia, lupus, post-strep).</div></div><div class="rt"><div class="rtl">3. ANCA Factory</div><div class="rte">ANCA-associated vasculitis (GPA, MPA, EGPA) is pauci-immune: cytokine-primed neutrophils express PR3/MPO on their surface, ANCA antibodies bind and trigger a respiratory burst with degranulation, directly injuring small vessels (necrotizing capillaritis). Because injury is antibody/neutrophil-mediated rather than complex-mediated, there are few/no immune deposits on IF. Serum complement is usually normal.</div><div class="rtt">⚠️ 'Pauci-immune' means scant/absent immune-complex deposition — the diagnostic opposite of immune-complex vasculitis. Expecting heavy granular deposits or low complement in AAV is wrong; their absence is what defines AAV histologically.</div></div><div class="rt"><div class="rtl">4. PR3 vs MPO</div><div class="rte">PR3-ANCA produces a cytoplasmic (c-ANCA) immunofluorescence pattern and predominates in GPA. MPO-ANCA produces a perinuclear (p-ANCA) pattern and predominates in MPA and EGPA. Serotype increasingly guides prognosis better than clinical label: PR3-disease relapses more and responds especially well to rituximab; MPO-disease relapses less but carries more chronic renal damage. Always confirm IIF patterns with antigen-specific PR3/MPO ELISA.</div><div class="rtt">⚠️ p-ANCA is not specific for vasculitis — it can be positive in IBD, autoimmune hepatitis, and drug effects (often as atypical/x-ANCA without MPO). A positive p-ANCA without anti-MPO on ELISA in a patient with colitis is not vasculitis. Confirm with the antigen-specific assay before diagnosing AAV.</div></div><div class="rt"><div class="rtl">5. T-Cell Granuloma Factory</div><div class="rte">Granulomatous vasculitis is driven by CD4 T-cell/macrophage responses forming granulomas in vessel walls. Large-vessel granulomatous disease (GCA, Takayasu) features giant cells and disrupted internal elastic lamina; GPA and EGPA add necrotizing granulomas in small/medium vessels. This Th1/Th17 mechanism is why IL-6 blockade (tocilizumab) works in GCA.</div><div class="rtt">⚠️ Granulomatous vasculitis spans vessel sizes (large: GCA/Takayasu; small: GPA/EGPA), so 'granuloma' alone doesn't pin the diagnosis. PAN and MPA are NON-granulomatous — selecting PAN/MPA when biopsy shows granulomas is the trap.</div></div><div class="rt"><div class="rtl">6. Large vessel road / car</div><div class="rte">Large-vessel vasculitis = giant cell (temporal) arteritis and Takayasu arteritis; both involve the aorta and its major branches. GCA: age &gt;50, headache, jaw claudication, vision loss, PMR overlap, very high ESR, treated with urgent steroids. Both raise the long-term risk of aortic aneurysm/dissection, warranting imaging surveillance.</div><div class="rtt">⚠️ Large-vessel vasculitis is diagnosed largely by IMAGING (temporal artery US/biopsy for GCA; CTA/MRA/PET for both), not by renal/skin biopsy. Expecting palpable purpura or glomerulonephritis (small-vessel features) in GCA/Takayasu is the trap — large-vessel disease causes ischemia/claudication, not purpura.</div></div><div class="rt"><div class="rtl">7. Takayasu cyclist</div><div class="rte">Takayasu arteritis is large-vessel granulomatous aortitis of YOUNG patients (typically &lt;40-50), with a strong female and Asian predominance. 'Pulseless disease': arm blood-pressure discrepancies, diminished pulses, bruits, and limb claudication from aortic-arch branch stenoses. Diagnosed by CTA/MRA/PET; treated with glucocorticoids ± steroid-sparing agents.</div><div class="rtt">⚠️ Age is the key discriminator from GCA: under ~40-50 think Takayasu; over 50 think GCA. Diagnosing GCA in a 28-year-old woman with subclavian stenosis is wrong — GCA essentially never occurs under 50.</div></div><div class="rt"><div class="rtl">8. Medium vessel jeep</div><div class="rte">Medium-vessel vasculitis = polyarteritis nodosa (PAN) and Kawasaki disease. PAN: necrotizing arteritis of muscular arteries, often hepatitis-B-associated, causing renal microaneurysms ('beads on a string'), mononeuritis multiplex, GI ischemia, skin nodules/livedo, and renovascular HTN. PAN is ANCA-NEGATIVE and spares the lungs and glomeruli.</div><div class="rtt">⚠️ Medium-vessel disease (PAN) gives microaneurysms/infarcts, NOT glomerulonephritis and NOT pulmonary capillaritis — those are small-vessel/ANCA features. A 'vasculitis with RPGN or alveolar hemorrhage' is not PAN; that's MPA/GPA. Also, PAN is ANCA-negative, so a positive ANCA argues against PAN.</div></div><div class="rt"><div class="rtl">9. Kawasaki child</div><div class="rte">Kawasaki disease is a medium-vessel vasculitis of children &lt;5 yr: fever ≥5 days plus conjunctivitis (non-exudative), oral changes (strawberry tongue/cracked lips), polymorphous rash, extremity changes (edema/desquamation), and cervical lymphadenopathy. Untreated, ~25% develop coronary artery aneurysms. Treat early (within 10 days) with IVIG 2 g/kg + aspirin.</div><div class="rtt">⚠️ The danger is delayed treatment: IVIG given after day 10 is far less protective against coronary aneurysms. Withholding IVIG to 'observe' a child meeting Kawasaki criteria is the trap. Incomplete Kawasaki (fewer criteria but high inflammatory markers + coronary changes) still warrants treatment.</div></div><div class="rt"><div class="rtl">10. Small vessel kids row</div><div class="rte">Small-vessel vasculitis splits into two mechanisms: (1) ANCA-associated/pauci-immune — GPA, MPA, EGPA (normal complement, ANCA+); and (2) immune-complex — IgA vasculitis (HSP), cryoglobulinemic, hypocomplementemic urticarial, anti-GBM (low complement, ANCA−, granular IF). Both can cause palpable purpura and glomerulonephritis, but the serologic/IF signatures separate them.</div><div class="rtt">⚠️ Palpable purpura + glomerulonephritis is the shared small-vessel phenotype — the wrong move is stopping at 'small-vessel vasculitis.' You must subtype with ANCA, complement, cryoglobulins, and IF (pauci-immune vs granular) because induction therapy and treating the underlying cause (HCV, drug) differ.</div></div><div class="rt"><div class="rtl">11. Gold: Biopsy banner</div><div class="rte">Tissue biopsy is the gold-standard confirmation for most vasculitides (skin, kidney, lung, nerve, temporal artery), establishing the histologic pattern — pauci-immune vs granular IF, granulomatous vs not, vessel size. Biopsy the most accessible involved organ. It also excludes mimics (infection, malignancy, calciphylaxis) before committing to immunosuppression.</div><div class="rtt">⚠️ Biopsy is gold standard for MOST vasculitides, but key exceptions are diagnosed by imaging instead (PAN, Takayasu, primary CNS vasculitis — see next). Insisting on renal/visceral biopsy in PAN (risking bleeding from microaneurysms) is the trap; use angiography there.</div></div><div class="rt"><div class="rtl">12. PAN/Tak/PCNS: Angio</div><div class="rte">For three vasculitides angiography is preferred over biopsy: PAN (renal/mesenteric catheter angiography shows microaneurysms and beading), Takayasu (CTA/MRA/PET shows wall thickening and stenoses of the aorta/branches), and primary CNS vasculitis (where brain biopsy is high-risk and patchy, though it remains the true gold standard when feasible). Tissue in these vessels is hard or hazardous to obtain.</div><div class="rtt">⚠️ Choosing renal biopsy for suspected PAN is the classic trap — it risks hemorrhage from microaneurysms and shows non-specific changes; mesenteric/renal angiography is the diagnostic test. For Takayasu, biopsy is rarely needed at all.</div></div><div class="rt"><div class="rtl">13. Treat Early banner</div><div class="rte">Early treatment prevents irreversible organ/vessel damage. The paradigm example is GCA: start high-dose glucocorticoids IMMEDIATELY on clinical suspicion, BEFORE temporal artery biopsy, to protect vision — the biopsy stays positive for ~1-2 weeks after steroids begin. Similarly, early IVIG protects coronaries in Kawasaki, and prompt induction limits renal loss in AAV.</div><div class="rtt">⚠️ The trap is delaying steroids in GCA to await biopsy results — vision loss is often sudden and irreversible, and the contralateral eye is at risk. Steroids first do not 'ruin' the biopsy within the first 1-2 weeks.</div></div><div class="rt"><div class="rtl">14. Mimics Warehouse — Exclude First</div><div class="rte">Before immunosuppressing, exclude vasculitis mimics: infective endocarditis (can cause purpura, GN, and even ANCA positivity), other infections (HCV/HBV, HIV), drugs (cocaine/levamisole, hydralazine, PTU, minocycline causing drug-induced ANCA), atrial myxoma/cholesterol emboli, calciphylaxis, and malignancy (lymphoma, intravascular lymphoma). Blood cultures, echocardiography, and a drug history are essential.</div><div class="rtt">⚠️ Treating a mimic as vasculitis is dangerous: giving steroids/cyclophosphamide to a patient who actually has infective endocarditis (which can be ANCA-positive) can be lethal. The discriminator is to draw blood cultures and get an echo BEFORE immunosuppression in any ANCA-positive patient with fever and a new murmur.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="vasc_anca.html" title="Vasculitis — ANCA Triplets: GPA, MPA, EGPA">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="vasc_large_vessel.html" title="Vasculitis — Large-Vessel: GCA &amp; Takayasu">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

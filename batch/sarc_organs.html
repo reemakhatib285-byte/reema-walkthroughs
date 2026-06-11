@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Sarcoidosis — Organ Involvement</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Neuro (base of brain)</b> — Calling isolated bilateral facial palsy 'idiopathic Bell palsy' — bilateral CN VII palsy is a red flag for neurosarcoidosis (and Lyme, GBS), NOT idiopathic Bell palsy. Work it up with MRI/CSF rather than just steroids-and-discharge.</li><li><b>Löfgren = LUCKY</b> — Aggressively immunosuppressing Löfgren with chronic steroids — it usually self-resolves, so first-line is just NSAIDs (and colchicine for the arthritis). Reaching for prednisone or methotrexate here is the wrong answer; reserve those for symptomatic or organ-threatening chronic disease.</li><li><b>Löfgren remits ~10%? checkmark</b> — Assuming acute, dramatic onset (high fever, painful nodules, swollen ankles) means worse disease — in sarcoid the opposite is true: acute Löfgren-type presentation predicts remission, while insidious/chronic onset predicts persistent fibrotic disease.</li><li><b>Eye emergency / uveitis</b> — Treating a red eye in sarcoid as simple conjunctivitis — sarcoid causes UVEITIS (ciliary flush, pain, photophobia, hypopyon), not the painless discharge of conjunctivitis. Missing it risks permanent vision loss. Also remember uveitis + parotitis + fever + facial palsy = Heerfordt syndrome.</li><li><b>Heerfordt syndrome</b> — Attributing parotid swelling + dry eyes/mouth to Sjögren syndrome — Heerfordt's parotid enlargement plus uveitis and facial palsy points to sarcoid; biopsy shows non-caseating granulomas (Sjögren shows lymphocytic infiltrate, positive anti-Ro/La). They can look alike on the surface but the histology and serology differ.</li><li><b>Cardiac sarcoid</b> — Relying on a normal resting ECG to exclude cardiac sarcoid — a normal ECG does NOT rule it out. Unexplained high-grade AV block or VT in a young patient should trigger cardiac MRI/PET. Also a wrong move: giving only an antiarrhythmic without an ICD when arrhythmic sudden-death risk is present.</li><li><b>Lupus pernio</b> — Confusing lupus pernio with systemic lupus erythematosus (SLE) — despite the name, lupus pernio is a SARCOID lesion with NO relation to SLE. It is also distinct from erythema nodosum: lupus pernio = bad prognosis/chronic, erythema nodosum = good prognosis/acute. Mixing those two prognostic implications is a classic trap.</li><li><b>Hypercalcemia 10-20%</b> — Working up sarcoid hypercalcemia as primary hyperparathyroidism — in sarcoid the PTH is SUPPRESSED (low), driven by granuloma-made calcitriol, whereas primary hyperparathyroidism has HIGH PTH. Another trap: 'correcting' the low 25-OH vitamin D with supplements or recommending sun exposure — that worsens the hypercalcemia.</li><li><b>Liver (ALK PHOS)</b> — Assuming an elevated alkaline phosphatase in sarcoid is from bone disease — fractionate it or check GGT to confirm the hepatic source. Also do not anchor on infection: granulomatous hepatitis has a broad differential (TB, fungal, PBC, drugs), so a liver biopsy showing non-caseating granulomas still requires excluding these mimics.</li><li><b>Erythema nodosum</b> — Biopsying the erythema nodosum nodule to diagnose sarcoid — EN itself shows only a nonspecific panniculitis, NOT granulomas. Biopsy a more specific site (skin granuloma, lymph node) instead. Treat EN supportively with NSAIDs.</li><li><b>Fatigue persists</b> — Escalating immunosuppression solely because of persistent fatigue — fatigue often does NOT track with active granulomatous inflammation, so more steroids/biologics may not help and add toxicity. Evaluate for small-fiber neuropathy, hypothyroidism, depression, and sleep apnea instead.</li><li><b>Pulmonary center</b> — Expecting an obstructive PFT pattern — sarcoid is classically RESTRICTIVE with reduced DLCO (although endobronchial disease can cause an obstructive overlay). Also, don't equate Stage I (just adenopathy) with severe disease: Stage I is asymptomatic and observed, while Stage IV fibrosis is the bad one.</li><li><b>Endocrine / pituitary</b> — Mislabeling sarcoid polyuria as nephrogenic DI or osmotic diuresis from hypercalcemia — central DI from pituitary granulomas responds to desmopressin (urine concentrates), whereas nephrogenic DI does not. Note hypercalcemia in sarcoid can independently cause nephrogenic DI, so check the calcium too.</li><li><b>Sudden blackout / optic emergency</b> — Managing acute monocular vision loss in a sarcoid patient with a routine outpatient referral — optic neuritis here is an emergency: give urgent high-dose steroids and obtain MRI. Delay risks permanent blindness. Don't confuse it with the (also urgent) anterior uveitis — both threaten vision but the optic neuritis is a CNS/neurosarcoid lesion.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Neuro (base of brain)</div><div class="rte">Neurosarcoidosis affects ~5-10% of patients but is organ-threatening and demands aggressive therapy. Granulomatous infiltration favors the basilar meninges → the cranial nerve VII (facial) palsy is the single most common manifestation (often bilateral, a classic board clue), followed by optic neuritis (CN II). Basilar/hypothalamic involvement causes pituitary dysfunction. Diagnosis: gadolinium-enhanced brain MRI shows leptomeningeal enhancement; CSF shows lymphocytic pleocytosis and high CSF ACE. Treat with high-dose steroids ± infliximab.</div><div class="rtt">⚠️ Calling isolated bilateral facial palsy 'idiopathic Bell palsy' — bilateral CN VII palsy is a red flag for neurosarcoidosis (and Lyme, GBS), NOT idiopathic Bell palsy. Work it up with MRI/CSF rather than just steroids-and-discharge.</div></div><div class="rt"><div class="rtl">2. Löfgren = LUCKY</div><div class="rte">Löfgren syndrome = the classic triad of erythema nodosum + bilateral hilar lymphadenopathy + migratory polyarthritis (often ankles), ± fever. It is the acute, self-limited form with an EXCELLENT prognosis — spontaneous remission in ~80-90% within 1-2 years. Strongly associated with HLA-DRB1*0301. Because the clinical picture is so characteristic, Löfgren is one of the few sarcoid presentations that can be diagnosed WITHOUT a confirmatory biopsy.</div><div class="rtt">⚠️ Aggressively immunosuppressing Löfgren with chronic steroids — it usually self-resolves, so first-line is just NSAIDs (and colchicine for the arthritis). Reaching for prednisone or methotrexate here is the wrong answer; reserve those for symptomatic or organ-threatening chronic disease.</div></div><div class="rt"><div class="rtl">3. Löfgren remits ~10%? checkmark</div><div class="rte">Löfgren is the good-prognosis acute phenotype that largely remits spontaneously (~80-90% within 1-2 years). The presence of erythema nodosum in general is a marker of GOOD prognosis in sarcoid, in contrast to lupus pernio which marks chronic/poor-prognosis disease.</div><div class="rtt">⚠️ Assuming acute, dramatic onset (high fever, painful nodules, swollen ankles) means worse disease — in sarcoid the opposite is true: acute Löfgren-type presentation predicts remission, while insidious/chronic onset predicts persistent fibrotic disease.</div></div><div class="rt"><div class="rtl">4. Eye emergency / uveitis</div><div class="rte">Ocular involvement occurs in ~25-50% of patients; anterior uveitis is the most common form and can be the presenting feature. Symptoms: red painful eye, photophobia, blurred vision; chronic uveitis causes synechiae, glaucoma, and blindness if untreated. All new sarcoid patients need a baseline slit-lamp exam. Treat with topical/systemic steroids; refractory disease gets methotrexate or anti-TNF.</div><div class="rtt">⚠️ Treating a red eye in sarcoid as simple conjunctivitis — sarcoid causes UVEITIS (ciliary flush, pain, photophobia, hypopyon), not the painless discharge of conjunctivitis. Missing it risks permanent vision loss. Also remember uveitis + parotitis + fever + facial palsy = Heerfordt syndrome.</div></div><div class="rt"><div class="rtl">5. Heerfordt syndrome</div><div class="rte">Heerfordt syndrome (uveoparotid fever) = anterior uveitis + parotid gland enlargement + facial nerve (CN VII) palsy + fever. It is a pathognomonic constellation that essentially clinches a sarcoid diagnosis when present. The facial palsy results from CN VII compression as it passes through the inflamed parotid.</div><div class="rtt">⚠️ Attributing parotid swelling + dry eyes/mouth to Sjögren syndrome — Heerfordt's parotid enlargement plus uveitis and facial palsy points to sarcoid; biopsy shows non-caseating granulomas (Sjögren shows lymphocytic infiltrate, positive anti-Ro/La). They can look alike on the surface but the histology and serology differ.</div></div><div class="rt"><div class="rtl">6. Cardiac sarcoid</div><div class="rte">Cardiac sarcoid is a leading cause of sarcoid death. Granulomas infiltrate the conduction system and myocardium → high-grade AV block (classic in a young patient), ventricular arrhythmias, dilated/restrictive cardiomyopathy, and sudden cardiac death. Cardiac MRI (late gadolinium enhancement) and FDG-PET are the key tests. Treat with steroids ± immunosuppression; many need an ICD for arrhythmia/sudden-death prevention.</div><div class="rtt">⚠️ Relying on a normal resting ECG to exclude cardiac sarcoid — a normal ECG does NOT rule it out. Unexplained high-grade AV block or VT in a young patient should trigger cardiac MRI/PET. Also a wrong move: giving only an antiarrhythmic without an ICD when arrhythmic sudden-death risk is present.</div></div><div class="rt"><div class="rtl">7. Lupus pernio</div><div class="rte">Lupus pernio = chronic violaceous, indurated plaques on the nose, cheeks, ears, and lips. It is the most SPECIFIC cutaneous sign of sarcoidosis and marks chronic, treatment-resistant, poor-prognosis disease, often with associated upper-respiratory tract and pulmonary fibrosis. Frequently needs anti-TNF therapy (infliximab) because it responds poorly to steroids alone.</div><div class="rtt">⚠️ Confusing lupus pernio with systemic lupus erythematosus (SLE) — despite the name, lupus pernio is a SARCOID lesion with NO relation to SLE. It is also distinct from erythema nodosum: lupus pernio = bad prognosis/chronic, erythema nodosum = good prognosis/acute. Mixing those two prognostic implications is a classic trap.</div></div><div class="rt"><div class="rtl">8. Hypercalcemia 10-20%</div><div class="rte">In ~10-20% of patients, activated macrophages within granulomas express 1-alpha-hydroxylase, which converts 25-OH vitamin D to active 1,25-(OH)2 vitamin D (calcitriol) INDEPENDENT of PTH. This drives gut calcium absorption → hypercalcemia and hypercalciuria (nephrolithiasis, nephrocalcinosis, AKI). Labs: high Ca, high 1,25-vit D, LOW PTH, LOW 25-OH vit D. Treat with steroids (block 1-alpha-hydroxylase), hydroxychloroquine, hydration, and AVOID sunlight/vitamin D/calcium.</div><div class="rtt">⚠️ Working up sarcoid hypercalcemia as primary hyperparathyroidism — in sarcoid the PTH is SUPPRESSED (low), driven by granuloma-made calcitriol, whereas primary hyperparathyroidism has HIGH PTH. Another trap: 'correcting' the low 25-OH vitamin D with supplements or recommending sun exposure — that worsens the hypercalcemia.</div></div><div class="rt"><div class="rtl">9. Liver (ALK PHOS)</div><div class="rte">Hepatic granulomas are found in up to ~80% at autopsy/biopsy but are clinically symptomatic in only ~15%. The biochemical clue is an isolated, cholestatic-pattern elevated alkaline phosphatase (± GGT). Most cases need no specific therapy; symptomatic cholestasis is treated with steroids or ursodeoxycholic acid.</div><div class="rtt">⚠️ Assuming an elevated alkaline phosphatase in sarcoid is from bone disease — fractionate it or check GGT to confirm the hepatic source. Also do not anchor on infection: granulomatous hepatitis has a broad differential (TB, fungal, PBC, drugs), so a liver biopsy showing non-caseating granulomas still requires excluding these mimics.</div></div><div class="rt"><div class="rtl">10. Erythema nodosum</div><div class="rte">Erythema nodosum = tender, erythematous, ill-defined nodules on the anterior shins; it is a reactive panniculitis (septal, no vasculitis) and a component of Löfgren syndrome. In sarcoid it is a GOOD-prognosis marker. It is non-specific overall (also seen with strep, IBD, TB, drugs, pregnancy), so context matters.</div><div class="rtt">⚠️ Biopsying the erythema nodosum nodule to diagnose sarcoid — EN itself shows only a nonspecific panniculitis, NOT granulomas. Biopsy a more specific site (skin granuloma, lymph node) instead. Treat EN supportively with NSAIDs.</div></div><div class="rt"><div class="rtl">11. Fatigue persists</div><div class="rte">Fatigue is one of the most common and disabling symptoms of sarcoidosis and can persist even after measurable organ inflammation has resolved or been treated. Contributors include the inflammatory burden itself, small-fiber neuropathy, sleep disturbance, depression, and steroid side effects.</div><div class="rtt">⚠️ Escalating immunosuppression solely because of persistent fatigue — fatigue often does NOT track with active granulomatous inflammation, so more steroids/biologics may not help and add toxicity. Evaluate for small-fiber neuropathy, hypothyroidism, depression, and sleep apnea instead.</div></div><div class="rt"><div class="rtl">12. Pulmonary center</div><div class="rte">The lung is the dominant organ, involved in &gt;90% of patients. Pathophysiology: granulomas in the interstitium and bronchovascular bundles cause a RESTRICTIVE pattern on PFTs (low DLCO, low FVC). Chest staging: Stage 0 = normal; Stage I = bilateral hilar adenopathy alone; Stage II = adenopathy + infiltrates; Stage III = infiltrates without adenopathy; Stage IV = fibrosis. Higher stage = worse prognosis.</div><div class="rtt">⚠️ Expecting an obstructive PFT pattern — sarcoid is classically RESTRICTIVE with reduced DLCO (although endobronchial disease can cause an obstructive overlay). Also, don't equate Stage I (just adenopathy) with severe disease: Stage I is asymptomatic and observed, while Stage IV fibrosis is the bad one.</div></div><div class="rt"><div class="rtl">13. Endocrine / pituitary</div><div class="rte">Neurosarcoid favoring the hypothalamic-pituitary axis causes central (cranial) diabetes insipidus — polyuria/polydipsia from low ADH — plus possible anterior pituitary failure (hypogonadism, hypothyroidism, adrenal insufficiency). DI is confirmed by the water-deprivation test and responds to desmopressin.</div><div class="rtt">⚠️ Mislabeling sarcoid polyuria as nephrogenic DI or osmotic diuresis from hypercalcemia — central DI from pituitary granulomas responds to desmopressin (urine concentrates), whereas nephrogenic DI does not. Note hypercalcemia in sarcoid can independently cause nephrogenic DI, so check the calcium too.</div></div><div class="rt"><div class="rtl">14. Sudden blackout / optic emergency</div><div class="rte">Acute visual loss from optic nerve sarcoidosis (granulomatous optic neuritis) is a sight-threatening ophthalmologic emergency requiring urgent high-dose IV corticosteroids to preserve vision. It is a manifestation of neurosarcoidosis (CN II).</div><div class="rtt">⚠️ Managing acute monocular vision loss in a sarcoid patient with a routine outpatient referral — optic neuritis here is an emergency: give urgent high-dose steroids and obtain MRI. Delay risks permanent blindness. Don't confuse it with the (also urgent) anterior uveitis — both threaten vision but the optic neuritis is a CNS/neurosarcoid lesion.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="myop_workup.html" title="Inflammatory Myopathy — Workup &amp; Treatment">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="sarc_overview.html" title="Sarcoidosis — Pathology &amp; Overview">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

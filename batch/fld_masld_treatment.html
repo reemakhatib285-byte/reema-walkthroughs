@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Fatty Liver — MASLD diagnosis &amp; treatment apothecary</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>16</em></summary><ol class="traps"><li><b>7-10% weight loss</b> — WRONG: expecting fibrosis regression from minimal (e.g., 3%) weight loss. Discriminator: ≥7-10% is required to improve fibrosis and resolve MASH; lesser losses help only steatosis — so the threshold for the meaningful (fibrosis) endpoint is 7-10%, not just 'some' weight loss.</li><li><b>3-5% loss = steatosis</b> — WRONG: telling a MASH-with-fibrosis patient that 3-5% weight loss will reverse their fibrosis. Discriminator: 3-5% only reduces steatosis; resolving MASH needs ~7% and improving fibrosis needs ~10% — match the weight-loss target to the histologic goal.</li><li><b>Exercise</b> — WRONG: dismissing exercise as useless if a patient isn't losing weight. Discriminator: exercise lowers liver fat and improves metabolic health independent of weight change — recommend it regardless of whether the patient is achieving weight loss.</li><li><b>Mediterranean diet</b> — WRONG: recommending a generic low-fat diet over the Mediterranean pattern. Discriminator: the Mediterranean diet (not low-fat) has the best MASLD evidence; cutting fructose/sugar-sweetened beverages and refined carbs is more important than simply lowering total fat.</li><li><b>Coffee 3 cups/day</b> — WRONG: advising MASLD patients to avoid coffee to 'protect the liver.' Discriminator: coffee is hepatoprotective — ≥3 cups/day is associated with less fibrosis and lower HCC risk, so it should be encouraged, not restricted (the harmful beverages are sugar-sweetened/fructose drinks).</li><li><b>Pioglitazone</b> — WRONG: prescribing pioglitazone to a MASH patient with heart failure or osteoporosis. Discriminator: pioglitazone causes fluid retention (avoid in NYHA III-IV heart failure) and fracture risk — it improves MASH histology but is contraindicated/cautioned in those comorbidities; best suited to MASH + type 2 diabetes without HF.</li><li><b>Resmetirom</b> — WRONG: naming an older agent as the 'first FDA-approved MASH drug.' Discriminator: resmetirom (THR-β agonist, 2024) is the first FDA-approved therapy for MASH; vitamin E, pioglitazone, and GLP-1 agonists are used off-label/for comorbidities — only resmetirom carries the specific MASH-F2/F3 approval.</li><li><b>MASH F2-F3 target</b> — WRONG: starting resmetirom in bland steatosis or in decompensated cirrhosis. Discriminator: the approved/indicated population is non-cirrhotic MASH with F2-F3 fibrosis; F0-F1 gets lifestyle only, and decompensated F4 was excluded — drug selection is fibrosis-stage-driven.</li><li><b>FIB-4 formula</b> — WRONG: jumping to liver biopsy as the first step to assess fibrosis. Discriminator: the first-line tool is the noninvasive FIB-4 (then elastography for intermediate/high scores); biopsy is reserved for diagnostic uncertainty — start with FIB-4, not biopsy.</li><li><b>FIB-4 &lt;1.3 low risk</b> — WRONG: ordering elastography or biopsy in a MASLD patient with FIB-4 &lt;1.3. Discriminator: &lt;1.3 rules out advanced fibrosis (high NPV) — manage risk factors and recheck periodically; no biopsy or hepatology referral is needed for these low-risk patients.</li><li><b>FIB-4 &gt;2.67 advanced</b> — WRONG: reassuring or discharging a patient with FIB-4 &gt;2.67. Discriminator: &gt;2.67 flags likely advanced fibrosis needing elastography and hepatology referral; the indeterminate 1.3-2.67 zone is NOT low-risk either and also requires further (elastography) testing.</li><li><b>Metformin no benefit</b> — WRONG answer: selecting metformin to treat MASH/fibrosis. Discriminator: metformin has no proven histologic liver benefit — the histology-modifying options are pioglitazone, vitamin E (non-diabetic), GLP-1 agonists, and resmetirom; metformin only addresses concurrent diabetes.</li><li><b>Statins safe</b> — WRONG: stopping a statin in a MASLD patient with modestly elevated liver enzymes. Discriminator: statins are safe and indicated in MASLD (CVD is the #1 killer); mild transaminase elevation is not a contraindication — continue the statin rather than stopping it 'to protect the liver.'</li><li><b>Vit E / not proven</b> — WRONG: prescribing vitamin E broadly to diabetic MASH patients or expecting it to reverse fibrosis. Discriminator: vitamin E's evidence is limited to NON-diabetic biopsy-proven MASH and to inflammation/steatosis (not fibrosis); it's not first-line for everyone and is avoided in diabetics — other supplements remain unproven.</li><li><b>Bariatric surgery</b> — WRONG: offering bariatric surgery to a patient with decompensated cirrhosis/portal hypertension. Discriminator: bariatric surgery markedly improves MASH/fibrosis in obese patients but is high-risk and generally contraindicated in decompensated cirrhosis — reserve it for those meeting BMI criteria without advanced decompensation.</li><li><b>BMI thresholds</b> — WRONG: requiring BMI ≥40 for every bariatric candidate. Discriminator: BMI ≥35 WITH a comorbidity (and MASH counts) also qualifies — and contemporary criteria reach down to BMI ≥30 with uncontrolled diabetes; the ≥40 cutoff is not the only entry point.</li></ol></details><details class="panel"><summary>📖 Read-through — all 16 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. 7-10% weight loss</div><div class="rte">Sustained weight loss of 7-10% of body weight is the cornerstone of MASLD therapy and the single highest-yield intervention. At this magnitude it not only clears steatosis and resolves steatohepatitis but can REGRESS fibrosis — the outcome that matters for survival. The dose-response is steep: more weight loss yields more histologic benefit. Achieved via diet, exercise, and increasingly GLP-1 agonists or bariatric surgery.</div><div class="rtt">⚠️ WRONG: expecting fibrosis regression from minimal (e.g., 3%) weight loss. Discriminator: ≥7-10% is required to improve fibrosis and resolve MASH; lesser losses help only steatosis — so the threshold for the meaningful (fibrosis) endpoint is 7-10%, not just 'some' weight loss.</div></div><div class="rt"><div class="rtl">2. 3-5% loss = steatosis</div><div class="rte">A smaller weight loss of 3-5% improves hepatic STEATOSIS (fat content) but is generally insufficient to resolve steatohepatitis or reverse fibrosis. This stepwise dose-response is testable: 3-5% targets fat, ≥7% targets inflammation/MASH resolution, and ≥10% maximizes fibrosis regression. It frames realistic, graded goals for patients.</div><div class="rtt">⚠️ WRONG: telling a MASH-with-fibrosis patient that 3-5% weight loss will reverse their fibrosis. Discriminator: 3-5% only reduces steatosis; resolving MASH needs ~7% and improving fibrosis needs ~10% — match the weight-loss target to the histologic goal.</div></div><div class="rt"><div class="rtl">3. Exercise</div><div class="rte">Exercise reduces hepatic fat and improves insulin sensitivity INDEPENDENT of weight loss — even without scale change, regular aerobic/resistance activity lowers liver fat. Guidelines suggest ~150-300 min/week of moderate activity. It complements dietary weight loss and is a low-risk, universally recommended pillar of MASLD care.</div><div class="rtt">⚠️ WRONG: dismissing exercise as useless if a patient isn't losing weight. Discriminator: exercise lowers liver fat and improves metabolic health independent of weight change — recommend it regardless of whether the patient is achieving weight loss.</div></div><div class="rt"><div class="rtl">4. Mediterranean diet</div><div class="rte">The Mediterranean diet (high in olive oil, fish, nuts, vegetables, whole grains; low in refined carbohydrates, red meat, and especially fructose/sugar-sweetened beverages) has the strongest evidence base in MASLD. It reduces liver fat and improves insulin resistance and cardiovascular risk even independent of weight loss. Limiting fructose and sugary drinks is a specific, testable dietary point.</div><div class="rtt">⚠️ WRONG: recommending a generic low-fat diet over the Mediterranean pattern. Discriminator: the Mediterranean diet (not low-fat) has the best MASLD evidence; cutting fructose/sugar-sweetened beverages and refined carbs is more important than simply lowering total fat.</div></div><div class="rt"><div class="rtl">5. Coffee 3 cups/day</div><div class="rte">Coffee consumption (≥3 cups/day, caffeinated) is associated with reduced fibrosis progression and lower hepatocellular carcinoma risk across chronic liver diseases, including MASLD. The hepatoprotective effect is observational but consistent and is a favorable lifestyle point. It is a recognized 'safe to encourage' adjunct.</div><div class="rtt">⚠️ WRONG: advising MASLD patients to avoid coffee to 'protect the liver.' Discriminator: coffee is hepatoprotective — ≥3 cups/day is associated with less fibrosis and lower HCC risk, so it should be encouraged, not restricted (the harmful beverages are sugar-sweetened/fructose drinks).</div></div><div class="rt"><div class="rtl">6. Pioglitazone</div><div class="rte">Pioglitazone, a PPAR-γ agonist (thiazolidinedione) that improves insulin sensitivity, improves NASH/MASH histology including some fibrosis benefit and is favored when the patient has concurrent type 2 diabetes. Key adverse effects to counsel: weight gain, fluid retention/heart failure exacerbation, increased fracture risk, and possible bladder-cancer signal. It is an established off-label option for biopsy-proven MASH.</div><div class="rtt">⚠️ WRONG: prescribing pioglitazone to a MASH patient with heart failure or osteoporosis. Discriminator: pioglitazone causes fluid retention (avoid in NYHA III-IV heart failure) and fracture risk — it improves MASH histology but is contraindicated/cautioned in those comorbidities; best suited to MASH + type 2 diabetes without HF.</div></div><div class="rt"><div class="rtl">7. Resmetirom</div><div class="rte">Resmetirom is a liver-directed thyroid hormone receptor-beta (THR-β) agonist that increases hepatic fat metabolism, and in March 2024 it became the FIRST FDA-approved drug specifically for MASH. It is indicated for noninvasively or biopsy-confirmed MASH with moderate-to-advanced fibrosis (F2-F3), alongside diet and exercise, and showed both MASH resolution and fibrosis improvement in the MAESTRO trial. It is the marquee new-drug answer for this topic.</div><div class="rtt">⚠️ WRONG: naming an older agent as the 'first FDA-approved MASH drug.' Discriminator: resmetirom (THR-β agonist, 2024) is the first FDA-approved therapy for MASH; vitamin E, pioglitazone, and GLP-1 agonists are used off-label/for comorbidities — only resmetirom carries the specific MASH-F2/F3 approval.</div></div><div class="rt"><div class="rtl">8. MASH F2-F3 target</div><div class="rte">Pharmacologic therapy with resmetirom targets confirmed MASH with MODERATE-to-ADVANCED fibrosis (stage F2-F3) — the population at meaningful risk of progression where drug benefit outweighs risk. Patients with simple steatosis or minimal fibrosis (F0-F1) are managed with lifestyle alone, and decompensated cirrhosis (F4 with decompensation) was excluded from approval. Match the drug to the F2-F3 'at-risk MASH' niche.</div><div class="rtt">⚠️ WRONG: starting resmetirom in bland steatosis or in decompensated cirrhosis. Discriminator: the approved/indicated population is non-cirrhotic MASH with F2-F3 fibrosis; F0-F1 gets lifestyle only, and decompensated F4 was excluded — drug selection is fibrosis-stage-driven.</div></div><div class="rt"><div class="rtl">9. FIB-4 formula</div><div class="rte">FIB-4 = (Age × AST) / (Platelets × √ALT) is the recommended FIRST-LINE noninvasive test to risk-stratify fibrosis in MASLD, using only routine labs. It exploits the facts that fibrosis raises AST and lowers platelets (from portal hypertension/splenic sequestration). A normal FIB-4 has a high negative predictive value, letting clinicians avoid biopsy in most patients. It is the gateway to the staged diagnostic pathway.</div><div class="rtt">⚠️ WRONG: jumping to liver biopsy as the first step to assess fibrosis. Discriminator: the first-line tool is the noninvasive FIB-4 (then elastography for intermediate/high scores); biopsy is reserved for diagnostic uncertainty — start with FIB-4, not biopsy.</div></div><div class="rt"><div class="rtl">10. FIB-4 &lt;1.3 low risk</div><div class="rte">A FIB-4 &lt;1.3 has a high negative predictive value for advanced fibrosis, effectively ruling it out — these low-risk patients need NO biopsy and no specialist referral, just metabolic management and periodic reassessment (e.g., every 1-3 years). This is the high-volume primary-care triage cutoff. (Use a higher threshold ~2.0 in patients over 65 to avoid false positives.)</div><div class="rtt">⚠️ WRONG: ordering elastography or biopsy in a MASLD patient with FIB-4 &lt;1.3. Discriminator: &lt;1.3 rules out advanced fibrosis (high NPV) — manage risk factors and recheck periodically; no biopsy or hepatology referral is needed for these low-risk patients.</div></div><div class="rt"><div class="rtl">11. FIB-4 &gt;2.67 advanced</div><div class="rte">A FIB-4 &gt;2.67 suggests a high probability of advanced fibrosis and warrants referral to hepatology and confirmatory vibration-controlled transient elastography (FibroScan) or MR elastography. Scores between 1.3 and 2.67 are indeterminate and also proceed to elastography. This tiered approach (FIB-4 → elastography → selective biopsy) minimizes unnecessary biopsies.</div><div class="rtt">⚠️ WRONG: reassuring or discharging a patient with FIB-4 &gt;2.67. Discriminator: &gt;2.67 flags likely advanced fibrosis needing elastography and hepatology referral; the indeterminate 1.3-2.67 zone is NOT low-risk either and also requires further (elastography) testing.</div></div><div class="rt"><div class="rtl">12. Metformin no benefit</div><div class="rte">Metformin does NOT improve MASH/NASH histology or fibrosis and is not a MASLD-specific treatment, despite being first-line for the diabetes these patients often have. Use it to manage type 2 diabetes if indicated, but do not credit it with treating the liver disease. It is a classic distractor because patients are frequently already on it.</div><div class="rtt">⚠️ WRONG answer: selecting metformin to treat MASH/fibrosis. Discriminator: metformin has no proven histologic liver benefit — the histology-modifying options are pioglitazone, vitamin E (non-diabetic), GLP-1 agonists, and resmetirom; metformin only addresses concurrent diabetes.</div></div><div class="rt"><div class="rtl">13. Statins safe</div><div class="rte">Statins do NOT directly treat MASH but are SAFE in MASLD — including with mildly elevated transaminases and in compensated cirrhosis — and are strongly indicated because cardiovascular disease is the LEADING cause of death in MASLD patients. They reduce CV events and may lower portal pressure and HCC risk. Withholding a statin over mild ALT elevation is a frequent and tested error.</div><div class="rtt">⚠️ WRONG: stopping a statin in a MASLD patient with modestly elevated liver enzymes. Discriminator: statins are safe and indicated in MASLD (CVD is the #1 killer); mild transaminase elevation is not a contraindication — continue the statin rather than stopping it 'to protect the liver.'</div></div><div class="rt"><div class="rtl">14. Vit E / not proven</div><div class="rte">Vitamin E (alpha-tocopherol, ~800 IU/day) can improve steatohepatitis histology in NON-diabetic adults with biopsy-proven MASH (PIVENS trial) and is an option in that specific group; however, it lacks proven fibrosis benefit and is not recommended in diabetics or as universal therapy. High-dose vitamin E carries possible risks (hemorrhagic stroke, prostate cancer signal). Most other 'supplements' depicted here are unproven and not standard.</div><div class="rtt">⚠️ WRONG: prescribing vitamin E broadly to diabetic MASH patients or expecting it to reverse fibrosis. Discriminator: vitamin E's evidence is limited to NON-diabetic biopsy-proven MASH and to inflammation/steatosis (not fibrosis); it's not first-line for everyone and is avoided in diabetics — other supplements remain unproven.</div></div><div class="rt"><div class="rtl">15. Bariatric surgery</div><div class="rte">Bariatric (metabolic) surgery produces the most dramatic and durable results in eligible obese MASLD patients — roughly 60-80% achieve fibrosis improvement and high rates of MASH resolution within about a year, by driving large sustained weight loss and metabolic correction. It is an option for those meeting BMI criteria, and is generally avoided in decompensated cirrhosis. It outperforms current pharmacotherapy on histologic endpoints.</div><div class="rtt">⚠️ WRONG: offering bariatric surgery to a patient with decompensated cirrhosis/portal hypertension. Discriminator: bariatric surgery markedly improves MASH/fibrosis in obese patients but is high-risk and generally contraindicated in decompensated cirrhosis — reserve it for those meeting BMI criteria without advanced decompensation.</div></div><div class="rt"><div class="rtl">16. BMI thresholds</div><div class="rte">Traditional bariatric-surgery criteria are BMI ≥40, OR BMI ≥35 with an obesity-related comorbidity (type 2 diabetes, hypertension, obstructive sleep apnea, MASLD) — and newer guidelines extend consideration to BMI ≥30 with poorly controlled diabetes. MASLD/MASH itself counts as a qualifying comorbidity at the ≥35 threshold. Know the ≥40 / ≥35-plus-comorbidity numbers.</div><div class="rtt">⚠️ WRONG: requiring BMI ≥40 for every bariatric candidate. Discriminator: BMI ≥35 WITH a comorbidity (and MASH counts) also qualifies — and contemporary criteria reach down to BMI ≥30 with uncontrolled diabetes; the ≥40 cutoff is not the only entry point.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="fld_ald_diagnosis.html" title="Fatty Liver — Alcoholic liver disease labs &amp; steroid contraindications">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="fld_masld_natural_history.html" title="Fatty Liver — MASLD natural history &amp; histology museum">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD — Pretest Probability &amp; Triage</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Low PTP → no test / CTA</b> — WRONG answer: ordering an exercise/stress test in a very-low-PTP patient. Discriminator — by Bayes' theorem, a positive result in a low-prevalence population is far more likely a FALSE positive than true disease, leading to unnecessary catheterization. Low PTP calls for CTA (rule-out) or no test, not provocative functional testing.</li><li><b>Intermediate PTP → functional</b> — WRONG answer: relying on a plain exercise treadmill ECG when the resting ECG is uninterpretable (LBBB/paced/WPW/LVH-strain) or the patient cannot exercise. Discriminator — those baselines make ST changes unreadable, so you need an IMAGING modality, and non-ambulatory patients need a PHARMACOLOGIC stress (regadenoson/adenosine/dipyridamole for perfusion, dobutamine for echo).</li><li><b>High PTP → angiography</b> — WRONG answer: insisting on a stress test before cath in a high-PTP patient with limiting typical angina. Discriminator — at high prevalence a negative non-invasive test is most likely a FALSE negative and only delays definitive care; the post-test probability barely moves. Go straight to angiography (and define anatomy/revascularization).</li><li><b>&lt;2 hours: emergency</b> — WRONG answer: applying the stable-chest-pain PTP/stress-testing algorithm to a patient in the &lt;2h emergent lane. Discriminator — pretest-probability triage is for STABLE, undifferentiated chest pain; an unstable/very-high-risk ACS patient bypasses risk scoring and goes straight to the cath lab.</li><li><b>Cardiogenic shock / arrest</b> — WRONG answer: sending an unstable/shocked patient for an elective stress test or CTA. Discriminator — provocative testing is contraindicated and dangerous in instability; these patients need emergent revascularization. Stress testing is for STABLE patients only.</li><li><b>&lt;24 hours pathway</b> — WRONG answer: deferring a high-risk NSTEMI (GRACE &gt;140, dynamic troponin) to an outpatient/elective workup. Discriminator — high-risk NSTE-ACS belongs in the &lt;24h early-invasive lane, not the green selective lane; conversely it does NOT need the &lt;2h emergent pathway unless instability is present.</li><li><b>Troponin + dynamic ECG</b> — WRONG answer: discharging or down-triaging a patient whose troponin is rising and ECG is evolving. Discriminator — dynamic biomarker plus ECG change is a high-risk signature requiring admission and early angiography; a static single value or a normal resting ECG alone does not provide reassurance here.</li><li><b>Repeat troponin in 6h</b> — WRONG answer: defaulting to a single repeat troponin at 6 hours when a validated rapid 0/1h or 0/2h hs-troponin algorithm is available. Discriminator — rapid serial protocols rule in/out faster and more accurately; the red X in the scene flags the rigid 6h-only approach as outdated. (Also wrong: ruling out MI off one negative early draw without any serial value.)</li><li><b>Selective green lane</b> — WRONG answer: placing a troponin-positive NSTEMI or unstable patient in the green selective lane. Discriminator — the selective/ischemia-guided strategy is ONLY for the genuinely low-risk, ruled-out patient; any positive troponin or instability mandates the amber (&lt;24h) or red (&lt;2h) lane instead.</li><li><b>Criteria already met</b> — WRONG answer: ordering a stress test or CTA to 'confirm' an already-diagnosed NSTEMI before treating. Discriminator — once MI criteria are met, further diagnostic testing wastes time and adds risk; the next step is antithrombotic therapy plus risk-stratified angiography, not more diagnostics.</li><li><b>Send home</b> — WRONG answer: discharging a chest-pain patient before completing serial troponins and risk stratification, especially if the first ECG was normal. Discriminator — premature discharge of an under-worked-up ACS is the classic 'missed MI' error; a single normal ECG or single negative troponin does NOT clear a patient for home.</li><li><b>CTA in active ACS</b> — WRONG answer: choosing CTA to evaluate an actively ischemic, troponin-positive, or unstable patient. Discriminator — CTA shows anatomy but cannot revascularize, is degraded by tachycardia/arrhythmia common in ACS, and delays definitive care; high-risk active ACS needs INVASIVE angiography, not CTA.</li><li><b>Wait for more labs</b> — WRONG answer: delaying treatment to 'wait for more labs' in a patient who already meets criteria for an escalated tier. Discriminator — once instability or a positive dynamic troponin is present, the next step is to ACT (escalate, give antithrombotics, arrange angiography); waiting passively delays time-critical care and is a tested distractor.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Low PTP → no test / CTA</div><div class="rte">For stable chest pain, pretest probability (PTP) of obstructive CAD is estimated from age, sex, and symptom type (typical vs atypical vs non-anginal) per Diamond-Forrester / updated ESC tables. In LOW PTP (e.g. &lt;5–15%), the high negative predictive value of coronary CT angiography makes CTA the best rule-OUT tool, or often no testing at all because disease is so unlikely.</div><div class="rtt">⚠️ WRONG answer: ordering an exercise/stress test in a very-low-PTP patient. Discriminator — by Bayes' theorem, a positive result in a low-prevalence population is far more likely a FALSE positive than true disease, leading to unnecessary catheterization. Low PTP calls for CTA (rule-out) or no test, not provocative functional testing.</div></div><div class="rt"><div class="rtl">2. Intermediate PTP → functional</div><div class="rte">INTERMEDIATE PTP (roughly 15–65–85%) is the sweet spot where non-invasive testing changes the post-test probability most. Use functional stress imaging (stress echo, SPECT/PET MPI, or stress cardiac MRI) to detect inducible ischemia, or coronary CTA to assess anatomy. Choose imaging-based stress (not plain exercise ECG) when the baseline ECG is uninterpretable (LBBB, paced, LVH with strain, digoxin, pre-excitation).</div><div class="rtt">⚠️ WRONG answer: relying on a plain exercise treadmill ECG when the resting ECG is uninterpretable (LBBB/paced/WPW/LVH-strain) or the patient cannot exercise. Discriminator — those baselines make ST changes unreadable, so you need an IMAGING modality, and non-ambulatory patients need a PHARMACOLOGIC stress (regadenoson/adenosine/dipyridamole for perfusion, dobutamine for echo).</div></div><div class="rt"><div class="rtl">3. High PTP → angiography</div><div class="rte">With HIGH PTP (e.g. &gt;85%, or limiting typical angina with clear high-risk features), proceed directly to invasive coronary angiography — non-invasive testing adds little because a negative result cannot reliably exclude disease at high prevalence, and angiography offers diagnosis plus the option of revascularization in one step.</div><div class="rtt">⚠️ WRONG answer: insisting on a stress test before cath in a high-PTP patient with limiting typical angina. Discriminator — at high prevalence a negative non-invasive test is most likely a FALSE negative and only delays definitive care; the post-test probability barely moves. Go straight to angiography (and define anatomy/revascularization).</div></div><div class="rt"><div class="rtl">4. &lt;2 hours: emergency</div><div class="rte">The triage clock separates ACS acuity tiers. The RED &lt;2-hour lane is the very-high-risk, emergent pathway: hemodynamic instability, refractory ischemia, life-threatening arrhythmia, acute HF, or arrest — these require immediate invasive management, distinct from the elective PTP-based outpatient workup of STABLE chest pain.</div><div class="rtt">⚠️ WRONG answer: applying the stable-chest-pain PTP/stress-testing algorithm to a patient in the &lt;2h emergent lane. Discriminator — pretest-probability triage is for STABLE, undifferentiated chest pain; an unstable/very-high-risk ACS patient bypasses risk scoring and goes straight to the cath lab.</div></div><div class="rt"><div class="rtl">5. Cardiogenic shock / arrest</div><div class="rte">Hemodynamic instability (cardiogenic shock, SBP &lt;90 with hypoperfusion) or cardiac arrest is a very-high-risk feature mandating IMMEDIATE invasive coronary angiography (&lt;2h) plus resuscitation, vasopressors/inotropes, and consideration of mechanical circulatory support (IABP, Impella). This is emergent management, never outpatient risk stratification.</div><div class="rtt">⚠️ WRONG answer: sending an unstable/shocked patient for an elective stress test or CTA. Discriminator — provocative testing is contraindicated and dangerous in instability; these patients need emergent revascularization. Stress testing is for STABLE patients only.</div></div><div class="rt"><div class="rtl">6. &lt;24 hours pathway</div><div class="rte">The AMBER/&lt;24-hour lane is the high-risk-but-not-arresting NSTE-ACS pathway: confirmed NSTEMI (positive troponin), dynamic ECG changes, or GRACE &gt;140 warrant an EARLY invasive strategy with angiography within 24 hours, but without the minute-to-minute urgency of the red &lt;2h tier.</div><div class="rtt">⚠️ WRONG answer: deferring a high-risk NSTEMI (GRACE &gt;140, dynamic troponin) to an outpatient/elective workup. Discriminator — high-risk NSTE-ACS belongs in the &lt;24h early-invasive lane, not the green selective lane; conversely it does NOT need the &lt;2h emergent pathway unless instability is present.</div></div><div class="rt"><div class="rtl">7. Troponin + dynamic ECG</div><div class="rte">A rising/falling troponin together with dynamic ECG changes (new ST depression or T-wave inversion) defines higher-risk NSTE-ACS and escalates the patient into the early-invasive (&lt;24h) tier. The DYNAMIC change — not a single absolute value — is what confirms acute myocardial injury and drives escalation.</div><div class="rtt">⚠️ WRONG answer: discharging or down-triaging a patient whose troponin is rising and ECG is evolving. Discriminator — dynamic biomarker plus ECG change is a high-risk signature requiring admission and early angiography; a static single value or a normal resting ECG alone does not provide reassurance here.</div></div><div class="rt"><div class="rtl">8. Repeat troponin in 6h</div><div class="rte">Serial high-sensitivity troponins (0 and 1h, 0 and 2h, or 0 and 3h depending on assay protocol) are used to rule in or rule out MI when the first value is non-diagnostic; the absolute delta between draws confirms or excludes acute injury. Modern hs-cTn algorithms make the old fixed 6-hour repeat unnecessary in most pathways.</div><div class="rtt">⚠️ WRONG answer: defaulting to a single repeat troponin at 6 hours when a validated rapid 0/1h or 0/2h hs-troponin algorithm is available. Discriminator — rapid serial protocols rule in/out faster and more accurately; the red X in the scene flags the rigid 6h-only approach as outdated. (Also wrong: ruling out MI off one negative early draw without any serial value.)</div></div><div class="rt"><div class="rtl">9. Selective green lane</div><div class="rte">The GREEN selective lane is the lowest-acuity, ischemia-guided pathway for STABLE patients with negative serial troponins, no dynamic ECG changes, and low risk scores. These patients undergo selective/elective evaluation — non-invasive stress testing or CTA — rather than urgent invasive angiography.</div><div class="rtt">⚠️ WRONG answer: placing a troponin-positive NSTEMI or unstable patient in the green selective lane. Discriminator — the selective/ischemia-guided strategy is ONLY for the genuinely low-risk, ruled-out patient; any positive troponin or instability mandates the amber (&lt;24h) or red (&lt;2h) lane instead.</div></div><div class="rt"><div class="rtl">10. Criteria already met</div><div class="rte">When diagnostic criteria for ACS/MI are ALREADY satisfied (e.g. unequivocal dynamic troponin rise with ischemic symptoms/ECG), additional confirmatory non-invasive testing is unnecessary and only delays treatment — proceed directly to the appropriate invasive pathway.</div><div class="rtt">⚠️ WRONG answer: ordering a stress test or CTA to 'confirm' an already-diagnosed NSTEMI before treating. Discriminator — once MI criteria are met, further diagnostic testing wastes time and adds risk; the next step is antithrombotic therapy plus risk-stratified angiography, not more diagnostics.</div></div><div class="rt"><div class="rtl">11. Send home</div><div class="rte">Discharge home is appropriate ONLY for truly low-risk patients who have been formally ruled out (negative serial hs-troponins, non-ischemic ECG, low HEART/GRACE score) — and even then with timely outpatient follow-up and any indicated functional/anatomic testing arranged.</div><div class="rtt">⚠️ WRONG answer: discharging a chest-pain patient before completing serial troponins and risk stratification, especially if the first ECG was normal. Discriminator — premature discharge of an under-worked-up ACS is the classic 'missed MI' error; a single normal ECG or single negative troponin does NOT clear a patient for home.</div></div><div class="rt"><div class="rtl">12. CTA in active ACS</div><div class="rte">Coronary CT angiography is best suited to STABLE, low-to-intermediate-risk patients as a rule-OUT tool given its excellent negative predictive value; it is the WRONG tool in active, high-risk ACS, where dynamic disease, the need for revascularization, and the superior diagnostic/therapeutic capability of invasive angiography make CTA inadequate.</div><div class="rtt">⚠️ WRONG answer: choosing CTA to evaluate an actively ischemic, troponin-positive, or unstable patient. Discriminator — CTA shows anatomy but cannot revascularize, is degraded by tachycardia/arrhythmia common in ACS, and delays definitive care; high-risk active ACS needs INVASIVE angiography, not CTA.</div></div><div class="rt"><div class="rtl">13. Wait for more labs</div><div class="rte">Passive 'wait and see' is the wrong response for a higher-risk or unstable patient — management should be driven by the triage tier (red &lt;2h, amber &lt;24h, green selective), not by indefinitely awaiting more data when the clinical picture already warrants action.</div><div class="rtt">⚠️ WRONG answer: delaying treatment to 'wait for more labs' in a patient who already meets criteria for an escalated tier. Discriminator — once instability or a positive dynamic troponin is present, the next step is to ACT (escalate, give antithrombotics, arrange angiography); waiting passively delays time-critical care and is a tested distractor.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_stress_interpretation.html" title="IHD — Exercise Stress Test: Interpretation &amp; High-Risk Findings">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_revasc_anatomy.html" title="IHD — Revascularization Anatomy: Which Vessel, Which Procedure">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

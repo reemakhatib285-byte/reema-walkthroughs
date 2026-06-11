@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Viral Hepatitis — Acute Clinical Course &amp; ALF</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Prodrome / pre-icteric</b> — Constitutional symptoms classically PEAK in the prodrome and then improve as jaundice appears — a stem saying the patient feels worst once jaundiced is the trap. Also, a patient is most contagious before jaundice, not after.</li><li><b>Serum-sickness prodrome (HBV)</b> — An arthralgia + urticaria prodrome before hepatitis points to HBV specifically (immune complexes), not HAV. If the stem also describes necrotizing vasculitis/renal involvement, think HBV-associated polyarteritis nodosa.</li><li><b>Anorexia / aversion</b> — Nonspecific anorexia/nausea is easy to attribute to gastroenteritis or pregnancy — in the right exposure context (travel, IVDU, new partner) check hepatitis labs rather than dismissing it.</li><li><b>Icteric phase — jaundice</b> — Many adults (and most acute HCV) are ANICTERIC — absence of jaundice does not exclude acute hepatitis. And constitutional symptoms usually improve once jaundice begins, not worsen.</li><li><b>Pruritus / cholestasis</b> — Pruritus + conjugated hyperbilirubinemia can mimic biliary obstruction; in acute viral hepatitis the ducts are normal on ultrasound, so don't order ERCP — image first to exclude stones, then recognize the hepatocellular pattern.</li><li><b>Convalescent recovery</b> — Recovery speed and chronicity diverge by virus: HAV fast/complete, HBV slower (~5% adult chronicity), HCV mostly chronic. Don't assume normalizing ALT means cure in HCV — confirm with HCV RNA.</li><li><b>ALT/AST &gt;1000</b> — AST:ALT ratio &gt;2:1 with only modestly elevated values (typically &lt;300-400) suggests ALCOHOLIC hepatitis, not viral. Very high ALT &gt; AST = viral/toxic/ischemic. Don't read 'AST &gt; ALT' as viral hepatitis.</li><li><b>Bilirubin ↑ jaundice</b> — Don't use jaundice/bilirubin level to gauge severity or decide transplant — a deeply jaundiced patient with normal INR and no encephalopathy is not in liver failure. Severity is judged by INR and mental status.</li><li><b>PT/INR is the key prognostic</b> — The dangerous pattern is FALLING transaminases with RISING INR and worsening mental status — this means hepatocytes are dying out (less enzyme to release), not recovery. Don't be reassured by a dropping ALT if the INR is climbing.</li><li><b>ALF danger room</b> — Encephalopathy is REQUIRED to call it ALF — coagulopathy alone (acute hepatitis with high INR but normal mentation) is not ALF. Also, pre-existing cirrhosis disqualifies the 'acute liver failure' label (that's acute-on-chronic).</li><li><b>Hypoglycemia</b> — In an encephalopathic ALF patient, don't assume worsening mental status is purely hepatic — rule out reversible HYPOGLYCEMIA (and infection) first. Treat glucose before escalating.</li><li><b>Rising bili + creatinine</b> — Transplant referral is driven by validated criteria (King's College / INR + creatinine + encephalopathy + etiology), NOT by how sick the patient subjectively looks or how high the transaminases are.</li><li><b>Urgent transplant eval</b> — Do NOT wait for the patient to 'declare' or for transaminases to fall — refer to a transplant center as soon as ALF criteria are met. Delayed referral is the wrong-answer trap; also don't forget NAC even when the cause isn't clearly acetaminophen.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Prodrome / pre-icteric</div><div class="rte">Prodromal (pre-icteric) phase: 1-2 weeks of flu-like malaise, fatigue, anorexia, nausea/vomiting, low-grade fever, and RUQ discomfort before any jaundice appears. Viral shedding and infectivity (especially HAV) are often HIGHEST during this phase, before the patient even looks ill.</div><div class="rtt">⚠️ Constitutional symptoms classically PEAK in the prodrome and then improve as jaundice appears — a stem saying the patient feels worst once jaundiced is the trap. Also, a patient is most contagious before jaundice, not after.</div></div><div class="rt"><div class="rtl">2. Serum-sickness prodrome (HBV)</div><div class="rte">HBV can produce a serum-sickness-like prodrome from circulating immune complexes: symmetric arthralgias/arthritis, urticaria or maculopapular rash, and occasionally fever and proteinuria. Other immune-complex phenomena tied to HBV include polyarteritis nodosa (PAN) and membranous glomerulonephritis.</div><div class="rtt">⚠️ An arthralgia + urticaria prodrome before hepatitis points to HBV specifically (immune complexes), not HAV. If the stem also describes necrotizing vasculitis/renal involvement, think HBV-associated polyarteritis nodosa.</div></div><div class="rt"><div class="rtl">3. Anorexia / aversion</div><div class="rte">Profound anorexia, nausea, and the classic distaste/aversion to cigarettes and fatty foods characterize the prodrome of acute viral hepatitis. These nonspecific symptoms often precede any lab or jaundice clue.</div><div class="rtt">⚠️ Nonspecific anorexia/nausea is easy to attribute to gastroenteritis or pregnancy — in the right exposure context (travel, IVDU, new partner) check hepatitis labs rather than dismissing it.</div></div><div class="rt"><div class="rtl">4. Icteric phase — jaundice</div><div class="rte">Icteric phase: clinically apparent jaundice/scleral icterus, dark (tea-colored) urine from conjugated bilirubinuria, pale clay-colored stools, pruritus, and tender hepatomegaly. Jaundice becomes visible once total bilirubin exceeds ~2.5-3 mg/dL.</div><div class="rtt">⚠️ Many adults (and most acute HCV) are ANICTERIC — absence of jaundice does not exclude acute hepatitis. And constitutional symptoms usually improve once jaundice begins, not worsen.</div></div><div class="rt"><div class="rtl">5. Pruritus / cholestasis</div><div class="rte">Cholestatic features — pruritus, clay stools, dark urine, and conjugated (direct) hyperbilirubinemia — dominate the icteric phase. A prolonged cholestatic variant of HAV can last weeks with marked itching but still resolves fully.</div><div class="rtt">⚠️ Pruritus + conjugated hyperbilirubinemia can mimic biliary obstruction; in acute viral hepatitis the ducts are normal on ultrasound, so don't order ERCP — image first to exclude stones, then recognize the hepatocellular pattern.</div></div><div class="rt"><div class="rtl">6. Convalescent recovery</div><div class="rte">Convalescent phase: appetite returns, jaundice fades, and aminotransferases trend back toward normal over weeks. HAV recovers fastest and completely; HBV is slower; HCV often smolders into chronic infection rather than truly convalescing.</div><div class="rtt">⚠️ Recovery speed and chronicity diverge by virus: HAV fast/complete, HBV slower (~5% adult chronicity), HCV mostly chronic. Don't assume normalizing ALT means cure in HCV — confirm with HCV RNA.</div></div><div class="rt"><div class="rtl">7. ALT/AST &gt;1000</div><div class="rte">Acute viral hepatitis causes marked aminotransferase elevation, frequently into the hundreds-to-thousands, with ALT &gt; AST (hepatocellular pattern). The degree of transaminitis does NOT correlate with prognosis — synthetic function (INR) does.</div><div class="rtt">⚠️ AST:ALT ratio &gt;2:1 with only modestly elevated values (typically &lt;300-400) suggests ALCOHOLIC hepatitis, not viral. Very high ALT &gt; AST = viral/toxic/ischemic. Don't read 'AST &gt; ALT' as viral hepatitis.</div></div><div class="rt"><div class="rtl">8. Bilirubin ↑ jaundice</div><div class="rte">Total (and conjugated) bilirubin rises during the icteric phase, producing jaundice, dark urine, and pale stools. Bilirubin level reflects disease activity but not severity — a high bilirubin alone does not mean liver failure.</div><div class="rtt">⚠️ Don't use jaundice/bilirubin level to gauge severity or decide transplant — a deeply jaundiced patient with normal INR and no encephalopathy is not in liver failure. Severity is judged by INR and mental status.</div></div><div class="rt"><div class="rtl">9. PT/INR is the key prognostic</div><div class="rte">Prothrombin time / INR is the single most important prognostic marker in acute hepatitis because clotting factors (II, VII, IX, X) have short half-lives and reflect real-time hepatic synthetic function. A rising INR signals impending liver failure. Factor VII falls earliest.</div><div class="rtt">⚠️ The dangerous pattern is FALLING transaminases with RISING INR and worsening mental status — this means hepatocytes are dying out (less enzyme to release), not recovery. Don't be reassured by a dropping ALT if the INR is climbing.</div></div><div class="rt"><div class="rtl">10. ALF danger room</div><div class="rte">Acute liver failure (ALF) = hepatic ENCEPHALOPATHY + COAGULOPATHY (INR ≥1.5) developing within ~26 weeks (often days-weeks) in a patient WITHOUT pre-existing chronic liver disease. Leading causes: acetaminophen (#1 in US), viral (HAV/HBV±HDV/HEV), drug reactions, ischemia.</div><div class="rtt">⚠️ Encephalopathy is REQUIRED to call it ALF — coagulopathy alone (acute hepatitis with high INR but normal mentation) is not ALF. Also, pre-existing cirrhosis disqualifies the 'acute liver failure' label (that's acute-on-chronic).</div></div><div class="rt"><div class="rtl">11. Hypoglycemia</div><div class="rte">Hypoglycemia is a key danger sign in ALF because the failing liver loses gluconeogenesis and glycogen stores — check glucose frequently and give IV dextrose. Other ALF complications: cerebral edema/raised ICP, infection, AKI/hepatorenal, lactic acidosis.</div><div class="rtt">⚠️ In an encephalopathic ALF patient, don't assume worsening mental status is purely hepatic — rule out reversible HYPOGLYCEMIA (and infection) first. Treat glucose before escalating.</div></div><div class="rt"><div class="rtl">12. Rising bili + creatinine</div><div class="rte">Worsening total bilirubin, rising creatinine (hepatorenal syndrome/AKI), and deepening encephalopathy together signal poor prognosis and trigger urgent transplant evaluation. These map onto King's College Criteria (e.g., for non-acetaminophen ALF: INR &gt;6.5, or any 3 of age, etiology, jaundice-to-encephalopathy interval, bilirubin, INR).</div><div class="rtt">⚠️ Transplant referral is driven by validated criteria (King's College / INR + creatinine + encephalopathy + etiology), NOT by how sick the patient subjectively looks or how high the transaminases are.</div></div><div class="rt"><div class="rtl">13. Urgent transplant eval</div><div class="rte">ALF management = ICU-level supportive care (glucose, treat cerebral edema, manage coagulopathy/infection) PLUS early referral to a transplant center, because survival without transplant in severe cases is poor. For acetaminophen-induced ALF, give N-acetylcysteine; NAC may also benefit non-acetaminophen ALF.</div><div class="rtt">⚠️ Do NOT wait for the patient to 'declare' or for transaminases to fall — refer to a transplant center as soon as ALF criteria are met. Delayed referral is the wrong-answer trap; also don't forget NAC even when the cause isn't clearly acetaminophen.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="livapp_transplant.html" title="Liver Approach — Transplant Court">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="vhep_hbv_serology.html" title="Viral Hepatitis — HBV Serology Interpretation">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

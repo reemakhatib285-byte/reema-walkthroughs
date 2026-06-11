@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Thyroid — Bethesda Cytology &amp; FNA</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>FNA = cytology</b> — Expecting FNA to diagnose or exclude follicular carcinoma — wrong because malignancy in follicular tumors is defined by capsular/vascular invasion seen only on histology, which cytology cannot assess.</li><li><b>I — Nondiagnostic</b> — Calling a nondiagnostic specimen 'benign' and stopping — wrong; an inadequate sample tells you nothing and must be repeated.</li><li><b>II — Benign</b> — Operating on or over-working-up a benign nodule — wrong; the ~4% risk warrants follow-up US, not resection.</li><li><b>III — AUS/FLUS</b> — Jumping straight to total thyroidectomy for indeterminate cytology — wrong; first refine with repeat FNA/molecular testing, then lobectomy if still indeterminate.</li><li><b>IV — Follicular neoplasm</b> — Reporting 'follicular carcinoma' off the FNA — wrong; FNA cannot make that call, so the diagnostic step is lobectomy for histology (or molecular testing to triage).</li><li><b>V — Suspicious for malignancy</b> — Treating 'suspicious' as a benign deferral — wrong; with ~74% malignancy risk this category proceeds to surgery.</li><li><b>VI — Malignant</b> — Repeating the FNA on a frankly malignant result instead of referring for surgery.</li><li><b>Follicular paradox</b> — Believing a 'benign' or 'follicular neoplasm' FNA rules out cancer — wrong; up to ~15–30% of follicular neoplasms are carcinoma, only provable on histology.</li><li><b>Capsular/vascular invasion</b> — Assuming nuclear atypia on FNA equals follicular carcinoma — invasion (not atypia) defines follicular malignancy, and invasion needs histology.</li><li><b>Adenoma vs carcinoma identical on FNA</b> — Distinguishing adenoma from carcinoma on cytology grounds — impossible; only the histology of the capsule/vessels separates them.</li><li><b>PTC nuclear features on FNA</b> — Saying papillary carcinoma needs histology like follicular does — wrong; PTC is defined by nuclear features, so FNA can diagnose it directly (Bethesda VI).</li><li><b>Molecular testing for III/IV</b> — Using molecular testing on already-benign (II) or already-malignant (VI) nodules — wrong; its value is specifically in the indeterminate III/IV gray zone to triage who needs surgery.</li><li><b>US-guided FNA</b> — FNA-ing every nodule regardless of sonographic risk — wrong; small purely-cystic/spongiform nodules below size cutoffs are followed, not aspirated.</li><li><b>NIFTP / MTC / anaplastic notes</b> — Treating NIFTP as aggressive papillary cancer (over-treatment) or, conversely, delaying work-up of an anaplastic/medullary cytology result — each has a distinct, time-sensitive pathway.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. FNA = cytology</div><div class="rte">Fine-needle aspiration samples loose CELLS (cytology), not tissue architecture — it sees nuclear features but cannot show whether a tumor has broken through its capsule or invaded vessels. This is the single concept that unlocks the whole scene: FNA brilliantly diagnoses papillary cancer (a nuclear diagnosis) but is blind to follicular carcinoma (an architectural diagnosis). FNA is the first-line test for any sonographically suspicious nodule.</div><div class="rtt">⚠️ Expecting FNA to diagnose or exclude follicular carcinoma — wrong because malignancy in follicular tumors is defined by capsular/vascular invasion seen only on histology, which cytology cannot assess.</div></div><div class="rt"><div class="rtl">2. I — Nondiagnostic</div><div class="rte">Bethesda I = nondiagnostic/unsatisfactory (cyst fluid only or too few follicular cells). Risk of malignancy is low but not zero (~5–13%). Action: REPEAT FNA under ultrasound guidance, ideally with on-site adequacy assessment; persistently nondiagnostic + suspicious sonography → consider surgery.</div><div class="rtt">⚠️ Calling a nondiagnostic specimen 'benign' and stopping — wrong; an inadequate sample tells you nothing and must be repeated.</div></div><div class="rt"><div class="rtl">3. II — Benign</div><div class="rte">Bethesda II = benign (colloid nodule, lymphocytic/Hashimoto thyroiditis). Malignancy risk is the lowest at ~0–4%. Action: no surgery — ultrasound surveillance. This category covers the majority of FNAs.</div><div class="rtt">⚠️ Operating on or over-working-up a benign nodule — wrong; the ~4% risk warrants follow-up US, not resection.</div></div><div class="rt"><div class="rtl">4. III — AUS/FLUS</div><div class="rte">Bethesda III = atypia/follicular lesion of undetermined significance — the gray zone (~6–18%, often quoted ~22%). Action: repeat FNA, OR molecular testing to refine risk, OR diagnostic lobectomy. Molecular testing is most useful here to avoid unnecessary surgery.</div><div class="rtt">⚠️ Jumping straight to total thyroidectomy for indeterminate cytology — wrong; first refine with repeat FNA/molecular testing, then lobectomy if still indeterminate.</div></div><div class="rt"><div class="rtl">5. IV — Follicular neoplasm</div><div class="rte">Bethesda IV = follicular neoplasm / suspicious for follicular neoplasm (~10–40%, often quoted ~30%). This IS the follicular paradox category — cytology cannot separate adenoma from carcinoma. Action: molecular testing OR diagnostic (hemi-)lobectomy to obtain histology and look for capsular/vascular invasion.</div><div class="rtt">⚠️ Reporting 'follicular carcinoma' off the FNA — wrong; FNA cannot make that call, so the diagnostic step is lobectomy for histology (or molecular testing to triage).</div></div><div class="rt"><div class="rtl">6. V — Suspicious for malignancy</div><div class="rte">Bethesda V = suspicious for malignancy (features present but not definitive, usually suspicious for papillary). Malignancy risk ~60–75%. Action: surgery — lobectomy or total thyroidectomy depending on size/risk.</div><div class="rtt">⚠️ Treating 'suspicious' as a benign deferral — wrong; with ~74% malignancy risk this category proceeds to surgery.</div></div><div class="rt"><div class="rtl">7. VI — Malignant</div><div class="rte">Bethesda VI = malignant (diagnostic cytology, almost always papillary). Malignancy risk ~97–99%. Action: definitive surgery (total thyroidectomy for most; lobectomy for small low-risk PTC).</div><div class="rtt">⚠️ Repeating the FNA on a frankly malignant result instead of referring for surgery.</div></div><div class="rt"><div class="rtl">8. Follicular paradox</div><div class="rte">The follicular paradox: follicular adenoma and follicular carcinoma have IDENTICAL cytology — the only difference is capsular and/or vascular (angioinvasion) invasion, which is a tissue-architecture feature invisible to a cytology smear. Therefore the diagnosis of follicular carcinoma can only be made on the resected specimen (lobectomy), never on FNA. The same logic applies to the follicular variant of Hürthle cell carcinoma.</div><div class="rtt">⚠️ Believing a 'benign' or 'follicular neoplasm' FNA rules out cancer — wrong; up to ~15–30% of follicular neoplasms are carcinoma, only provable on histology.</div></div><div class="rt"><div class="rtl">9. Capsular/vascular invasion</div><div class="rte">Malignancy in a follicular-patterned tumor is DEFINED histologically by capsular invasion (tumor through the full thickness of the capsule) and/or vascular invasion (tumor in capsular/extracapsular vessels). These criteria require an intact resected capsule — impossible to judge on aspirated cells — which is exactly why FNA cannot diagnose FTC.</div><div class="rtt">⚠️ Assuming nuclear atypia on FNA equals follicular carcinoma — invasion (not atypia) defines follicular malignancy, and invasion needs histology.</div></div><div class="rt"><div class="rtl">10. Adenoma vs carcinoma identical on FNA</div><div class="rte">Follicular adenoma and follicular carcinoma are cytologically indistinguishable because both are uniform microfollicular proliferations; the malignant one simply has invasion you cannot see on a smear. This is the mechanistic reason Bethesda IV exists as 'neoplasm' rather than a benign/malignant call.</div><div class="rtt">⚠️ Distinguishing adenoma from carcinoma on cytology grounds — impossible; only the histology of the capsule/vessels separates them.</div></div><div class="rt"><div class="rtl">11. PTC nuclear features on FNA</div><div class="rte">Papillary thyroid carcinoma IS a cytologic (nuclear) diagnosis — FNA reliably catches it via Orphan-Annie-eye nuclei (empty/clear with intranuclear pseudoinclusions), nuclear grooves, powdery/finely dispersed chromatin, and psammoma bodies (laminated calcifications). Mnemonic 'PAPILLARY = nuclear PAPER': Pseudoinclusions, Annie eyes, Psammoma, grooves. This is the deliberate contrast with the architecture-dependent follicular cancer.</div><div class="rtt">⚠️ Saying papillary carcinoma needs histology like follicular does — wrong; PTC is defined by nuclear features, so FNA can diagnose it directly (Bethesda VI).</div></div><div class="rt"><div class="rtl">12. Molecular testing for III/IV</div><div class="rte">Molecular testing (e.g., Afirma GSC, ThyroSeq) is applied to indeterminate cytology (Bethesda III and IV) to reclassify nodules: a 'rule-out' (high negative predictive value) panel lets benign-behaving nodules avoid surgery, while detected high-risk mutations (BRAF V600E, RAS, RET/PTC, PAX8/PPARγ, TERT promoter) raise concern and favor resection. BRAF V600E in particular is highly specific for papillary carcinoma.</div><div class="rtt">⚠️ Using molecular testing on already-benign (II) or already-malignant (VI) nodules — wrong; its value is specifically in the indeterminate III/IV gray zone to triage who needs surgery.</div></div><div class="rt"><div class="rtl">13. US-guided FNA</div><div class="rte">FNA is performed under real-time ultrasound guidance to sample the most suspicious portion of the nodule (microcalcifications, irregular margins, taller-than-wide, hypoechoic, increased vascularity), which maximizes adequacy and minimizes nondiagnostic (Bethesda I) results. Nodule selection for FNA is risk-stratified by sonographic pattern and size (e.g., TI-RADS / ATA categories).</div><div class="rtt">⚠️ FNA-ing every nodule regardless of sonographic risk — wrong; small purely-cystic/spongiform nodules below size cutoffs are followed, not aspirated.</div></div><div class="rt"><div class="rtl">14. NIFTP / MTC / anaplastic notes</div><div class="rte">Special cases on cytology: NIFTP (non-invasive follicular thyroid neoplasm with papillary-like nuclear features) is an indolent, reclassified-as-non-cancer entity treated by lobectomy alone. Medullary carcinoma cytology should prompt serum calcitonin (and CEA) plus RET/MEN2 evaluation. Anaplastic carcinoma on FNA (older patient, rapidly enlarging mass) is an oncologic emergency needing urgent multidisciplinary referral.</div><div class="rtt">⚠️ Treating NIFTP as aggressive papillary cancer (over-treatment) or, conversely, delaying work-up of an anaplastic/medullary cytology result — each has a distinct, time-sensitive pathway.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_cx_cvd.html" title="DM — Scene 4B — Diabetic Complications: The CVD Battlefield &amp; Skin Mural (REBUILD - SPLIT)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="thy_algorithm.html" title="Thyroid — Diagnostic Algorithm">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">SIADH — Diagnosis, Causes &amp; Treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>20</em></summary><ol class="traps"><li><b>Triad: Uosm&gt;100 + low urate + euvolemic = SIADH</b> — Don't call it SIADH before excluding hypothyroidism and adrenal insufficiency — both cause euvolemic hyponatremia that looks identical, and cortisol replacement (not fluid restriction) fixes adrenal cases.</li><li><b>SIAD Hospital (setting)</b> — SIADH is a water problem, not a salt-deficit problem — giving salt alone or normal saline can paradoxically worsen the Na if urine osm is high (desalination).</li><li><b>Urine osm &gt;100 (often &gt;300)</b> — If urine osm is &lt;100, ADH is appropriately suppressed — that's primary polydipsia or low-solute (beer potomania / tea-and-toast), NOT SIADH.</li><li><b>Urine Na &gt;30–40</b> — A low urine Na (&lt;20) means the kidney is avidly retaining sodium → think true volume depletion, not SIADH (unless the patient is also salt-restricted).</li><li><b>Low uric acid (&lt;4) &amp; low BUN</b> — A HIGH uric acid / high BUN points to volume depletion (hypovolemic hyponatremia), not SIADH — don't ignore the urate.</li><li><b>Euvolemic — normal volume</b> — Edema/ascites = HYPERvolemic hyponatremia (HF, cirrhosis, nephrotic); dry/orthostatic = HYPOvolemic — both are managed differently from SIADH, so always assess volume first.</li><li><b>Copeptin/AVP NOT for diagnosis</b> — Ordering an AVP or copeptin level to 'prove' SIADH is the wrong move — the diagnosis is made from serum osm, urine osm, urine Na, volume status, and normal thyroid/adrenal/renal function.</li><li><b>SCLC — #1 malignancy cause</b> — SQUAMOUS cell lung cancer causes hypercalcemia via PTHrP — not SIADH; don't swap the two paraneoplastic syndromes.</li><li><b>Pulmonary — PNA, TB, abscess</b> — Hyponatremia with a 'pneumonia' that also has diarrhea and high fever + relative bradycardia points to Legionella — don't treat with a beta-lactam alone (needs a macrolide/fluoroquinolone).</li><li><b>CNS — meningitis, SAH, trauma</b> — In SAH/CNS injury, distinguish SIADH (euvolemic/hypervolemic → fluid-restrict) from cerebral salt wasting (HYPOvolemic → give salt + saline) — the treatments are opposite, and over-restricting a CSW patient worsens cerebral ischemia.</li><li><b>Post-op, pain, nausea</b> — Running D5W or half-normal saline in a post-op/nauseated patient is a classic cause of iatrogenic hyponatremia — use isotonic (0.9% saline/LR) for maintenance instead.</li><li><b>SSRIs</b> — Attributing an elderly patient's confusion/hyponatremia to 'old age' instead of a recently started SSRI misses a reversible cause — stop the drug.</li><li><b>Carbamazepine — thirst + AVP</b> — MDMA (ecstasy) hyponatremia is a double hit — SIADH plus large free-water intake; treat the acute severe symptomatic case with hypertonic saline, not just fluid restriction.</li><li><b>Chemo — cyclophosphamide</b> — Pushing extra free water to 'protect the bladder' during IV cyclophosphamide can worsen SIADH hyponatremia — use isotonic fluids and watch the sodium.</li><li><b>Step 1: fluid restriction &lt;1 L/day</b> — Fluid restriction FAILS when urine osm is very high (&gt;500) or when urine (Na+K) exceeds serum Na (negative electrolyte-free water clearance) — recognize this and escalate rather than restricting harder.</li><li><b>Urea (osmotic free-water loss)</b> — Don't dismiss urea as obsolete — guidelines favor it (and salt + loop) over demeclocycline, which is nephrotoxic and slow.</li><li><b>Tolvaptan / vaptans (V2 antagonist)</b> — Combining a vaptan with fluid restriction, or using it for chronic mild SIADH, risks rapid OVERcorrection → osmotic demyelination; reserve it and monitor Na closely.</li><li><b>Demeclocycline — NOT recommended</b> — Picking demeclocycline as a go-to SIADH drug is the wrong answer on modern exams — choose fluid restriction → salt/urea → vaptan instead.</li><li><b>Severe/symptomatic → 3% saline</b> — Correcting chronic hyponatremia too fast (&gt;8 mEq/L/24h) causes osmotic demyelination syndrome (central pontine myelinolysis) — if you overshoot, re-lower with D5W ± desmopressin.</li><li><b>SGLT2 inhibitor (emerging)</b> — It's adjunctive/emerging, not first-line — fluid restriction (± salt/urea) remains the initial chronic-SIADH treatment.</li></ol></details><details class="panel"><summary>📖 Read-through — all 20 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Triad: Uosm&gt;100 + low urate + euvolemic = SIADH</div><div class="rte">SIADH is euvolemic HYPOtonic hyponatremia from inappropriate ADH: serum osm &lt;275, urine osm &gt;100 (usually &gt;300), urine Na &gt;30–40, clinically euvolemic, with low uric acid (&lt;4) and low BUN from dilution + urate washout. Normal thyroid and adrenal function are required — it's a diagnosis of exclusion. Mnemonic: euvolemic + concentrated urine + low urate = SIADH.</div><div class="rtt">⚠️ Don't call it SIADH before excluding hypothyroidism and adrenal insufficiency — both cause euvolemic hyponatremia that looks identical, and cortisol replacement (not fluid restriction) fixes adrenal cases.</div></div><div class="rt"><div class="rtl">2. SIAD Hospital (setting)</div><div class="rte">ADH (vasopressin) is released independent of osmolality, so the kidney retains free water, dilutes the serum, and produces concentrated urine. Water is retained but Na is not — total body water rises slightly while the patient stays clinically euvolemic. The result is dilutional hyponatremia, the most common cause of hyponatremia in hospitalized patients.</div><div class="rtt">⚠️ SIADH is a water problem, not a salt-deficit problem — giving salt alone or normal saline can paradoxically worsen the Na if urine osm is high (desalination).</div></div><div class="rt"><div class="rtl">3. Urine osm &gt;100 (often &gt;300)</div><div class="rte">In SIADH the kidney can't dilute urine despite a hypotonic serum, so urine osm is inappropriately &gt;100 mOsm/kg (commonly &gt;300). This is the single key lab proving ADH is active when it shouldn't be.</div><div class="rtt">⚠️ If urine osm is &lt;100, ADH is appropriately suppressed — that's primary polydipsia or low-solute (beer potomania / tea-and-toast), NOT SIADH.</div></div><div class="rt"><div class="rtl">4. Urine Na &gt;30–40</div><div class="rte">Because the patient is euvolemic (even mildly volume-expanded), the kidney excretes sodium normally, giving urine Na &gt;30–40 mEq/L. This separates SIADH from hypovolemic hyponatremia.</div><div class="rtt">⚠️ A low urine Na (&lt;20) means the kidney is avidly retaining sodium → think true volume depletion, not SIADH (unless the patient is also salt-restricted).</div></div><div class="rt"><div class="rtl">5. Low uric acid (&lt;4) &amp; low BUN</div><div class="rte">Mild volume expansion increases urate and urea clearance, so SIADH classically shows hypouricemia (&lt;4 mg/dL) and a low BUN — supportive dilutional markers.</div><div class="rtt">⚠️ A HIGH uric acid / high BUN points to volume depletion (hypovolemic hyponatremia), not SIADH — don't ignore the urate.</div></div><div class="rt"><div class="rtl">6. Euvolemic — normal volume</div><div class="rte">No edema, no ascites, no orthostasis or dry mucosa — the exam is normal. AVP retains water but ongoing natriuresis prevents frank volume overload, so the patient is clinically euvolemic.</div><div class="rtt">⚠️ Edema/ascites = HYPERvolemic hyponatremia (HF, cirrhosis, nephrotic); dry/orthostatic = HYPOvolemic — both are managed differently from SIADH, so always assess volume first.</div></div><div class="rt"><div class="rtl">7. Copeptin/AVP NOT for diagnosis</div><div class="rte">SIADH is confirmed by the osmolality/urine/volume pattern, not by measuring AVP. Plasma AVP and copeptin overlap too much with other states to be diagnostic and aren't part of the routine criteria.</div><div class="rtt">⚠️ Ordering an AVP or copeptin level to 'prove' SIADH is the wrong move — the diagnosis is made from serum osm, urine osm, urine Na, volume status, and normal thyroid/adrenal/renal function.</div></div><div class="rt"><div class="rtl">8. SCLC — #1 malignancy cause</div><div class="rte">Small cell lung cancer is the classic ectopic ADH producer and the most common malignant cause of SIADH (paraneoplastic). New SIADH in a smoker should prompt a chest CT.</div><div class="rtt">⚠️ SQUAMOUS cell lung cancer causes hypercalcemia via PTHrP — not SIADH; don't swap the two paraneoplastic syndromes.</div></div><div class="rt"><div class="rtl">9. Pulmonary — PNA, TB, abscess</div><div class="rte">Lung infections (pneumonia, TB, lung abscess) and positive-pressure ventilation are common pulmonary triggers of SIADH. Legionella pneumonia in particular is associated with hyponatremia.</div><div class="rtt">⚠️ Hyponatremia with a 'pneumonia' that also has diarrhea and high fever + relative bradycardia points to Legionella — don't treat with a beta-lactam alone (needs a macrolide/fluoroquinolone).</div></div><div class="rt"><div class="rtl">10. CNS — meningitis, SAH, trauma</div><div class="rte">CNS disease (meningitis, subarachnoid hemorrhage, head trauma, stroke, tumors) is a major SIADH cause. SIADH is treated with fluid restriction.</div><div class="rtt">⚠️ In SAH/CNS injury, distinguish SIADH (euvolemic/hypervolemic → fluid-restrict) from cerebral salt wasting (HYPOvolemic → give salt + saline) — the treatments are opposite, and over-restricting a CSW patient worsens cerebral ischemia.</div></div><div class="rt"><div class="rtl">11. Post-op, pain, nausea</div><div class="rte">Pain, nausea, and the post-operative state are powerful NON-osmotic stimuli for ADH release. Combined with hypotonic IV fluids, they drive hospital-acquired hyponatremia.</div><div class="rtt">⚠️ Running D5W or half-normal saline in a post-op/nauseated patient is a classic cause of iatrogenic hyponatremia — use isotonic (0.9% saline/LR) for maintenance instead.</div></div><div class="rt"><div class="rtl">12. SSRIs</div><div class="rte">SSRIs (and SNRIs) are among the most common drug causes of SIADH, especially in the elderly within the first weeks of starting. Check a sodium a few weeks after initiation in older patients.</div><div class="rtt">⚠️ Attributing an elderly patient's confusion/hyponatremia to 'old age' instead of a recently started SSRI misses a reversible cause — stop the drug.</div></div><div class="rt"><div class="rtl">13. Carbamazepine — thirst + AVP</div><div class="rte">Carbamazepine and oxcarbazepine potentiate ADH action and stimulate thirst, a frequent drug cause of SIADH. Other culprits: antipsychotics, MDMA/ecstasy, and desmopressin.</div><div class="rtt">⚠️ MDMA (ecstasy) hyponatremia is a double hit — SIADH plus large free-water intake; treat the acute severe symptomatic case with hypertonic saline, not just fluid restriction.</div></div><div class="rt"><div class="rtl">14. Chemo — cyclophosphamide</div><div class="rte">Cyclophosphamide (especially high-dose IV), vincristine, and cisplatin cause SIADH. With IV cyclophosphamide the standard pre-hydration can precipitate dangerous hyponatremia.</div><div class="rtt">⚠️ Pushing extra free water to 'protect the bladder' during IV cyclophosphamide can worsen SIADH hyponatremia — use isotonic fluids and watch the sodium.</div></div><div class="rt"><div class="rtl">15. Step 1: fluid restriction &lt;1 L/day</div><div class="rte">First-line for chronic, mildly symptomatic SIADH is fluid restriction to &lt;800–1000 mL/day. Add oral salt tabs ± a loop diuretic to raise free-water excretion if restriction alone is insufficient.</div><div class="rtt">⚠️ Fluid restriction FAILS when urine osm is very high (&gt;500) or when urine (Na+K) exceeds serum Na (negative electrolyte-free water clearance) — recognize this and escalate rather than restricting harder.</div></div><div class="rt"><div class="rtl">16. Urea (osmotic free-water loss)</div><div class="rte">Oral urea 15–30 g/day induces an osmotic diuresis that excretes free water and raises sodium; it's effective, cheap, and low-risk for overcorrection (palatability is the main limit).</div><div class="rtt">⚠️ Don't dismiss urea as obsolete — guidelines favor it (and salt + loop) over demeclocycline, which is nephrotoxic and slow.</div></div><div class="rt"><div class="rtl">17. Tolvaptan / vaptans (V2 antagonist)</div><div class="rte">Vaptans block the V2 receptor → pure aquaresis (free water out, Na retained), raising serum Na. Start in hospital, do NOT fluid-restrict during initiation, limit tolvaptan to &lt;30 days (hepatotoxicity), and it's expensive.</div><div class="rtt">⚠️ Combining a vaptan with fluid restriction, or using it for chronic mild SIADH, risks rapid OVERcorrection → osmotic demyelination; reserve it and monitor Na closely.</div></div><div class="rt"><div class="rtl">18. Demeclocycline — NOT recommended</div><div class="rte">Demeclocycline induces nephrogenic DI (blocks ADH at the collecting duct) but is now discouraged: slow onset, nephrotoxic, and unpredictable. Largely replaced by urea and vaptans.</div><div class="rtt">⚠️ Picking demeclocycline as a go-to SIADH drug is the wrong answer on modern exams — choose fluid restriction → salt/urea → vaptan instead.</div></div><div class="rt"><div class="rtl">19. Severe/symptomatic → 3% saline</div><div class="rte">For severe SYMPTOMATIC hyponatremia (seizures, obtundation, coma), give 3% hypertonic saline 100–150 mL boluses to raise Na ~4–6 mEq/L over the first few hours, then stop. Total correction must stay &lt;8 mEq/L in 24 h.</div><div class="rtt">⚠️ Correcting chronic hyponatremia too fast (&gt;8 mEq/L/24h) causes osmotic demyelination syndrome (central pontine myelinolysis) — if you overshoot, re-lower with D5W ± desmopressin.</div></div><div class="rt"><div class="rtl">20. SGLT2 inhibitor (emerging)</div><div class="rte">Empagliflozin causes glucosuria and an osmotic diuresis that excretes free water, raising serum Na — an emerging adjunct for SIADH in trials. Watch for euglycemic DKA and genital infections.</div><div class="rtt">⚠️ It's adjunctive/emerging, not first-line — fluid restriction (± salt/urea) remains the initial chronic-SIADH treatment.</div></div></div></details><details class="panel"><summary>💊 Drug / biologic reference <em>6</em></summary><table class="drug"><tr><th>Agent</th><th>Target / class</th><th>Mechanism</th><th>Key dose / eligibility</th><th>Board distinction</th></tr><tr><td>Fluid restriction</td><td>Free water intake</td><td>Limits water input below output to raise Na</td><td>&lt;800–1000 mL/day</td><td>First-line chronic; fails if Uosm &gt;500 or urine(Na+K) &gt; serum Na</td></tr><tr><td>Salt tabs + loop diuretic</td><td>Solute + free-water clearance</td><td>Loop lowers urine osm; salt adds excretable solute</td><td>NaCl tabs + e.g. furosemide</td><td>Adjunct when restriction alone insufficient</td></tr><tr><td>Urea</td><td>Osmotic diuresis</td><td>Adds osmoles → free-water excretion</td><td>15–30 g/day PO</td><td>Low overcorrection risk; preferred over demeclocycline</td></tr><tr><td>Tolvaptan (vaptans)</td><td>V2 receptor antagonist</td><td>Aquaresis — free water out, Na retained</td><td>Start in hospital; &lt;30 days</td><td>No fluid restriction during start; overcorrection + hepatotoxicity risk</td></tr><tr><td>Demeclocycline</td><td>Collecting-duct ADH effect</td><td>Induces nephrogenic DI</td><td>—</td><td>NOT recommended — nephrotoxic, slow, unpredictable</td></tr><tr><td>3% hypertonic saline</td><td>Serum tonicity</td><td>Directly raises serum Na</td><td>100–150 mL bolus, raise 4–6 mEq/L then stop</td><td>ONLY for severe symptoms; cap &lt;8 mEq/L/24h to avoid ODS</td></tr></table></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hypona_volume_status.html" title="Hyponatremia — Volume Status Crossroads">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperna_causes_di.html" title="Hypernatremia — Causes &amp; DI Overview">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

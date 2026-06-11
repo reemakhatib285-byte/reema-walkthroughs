@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypernatremia — Treatment Calculation</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Total water needed</b> — WRONG on both sides: replacing only the deficit and forgetting ongoing losses (undertreats — Na keeps climbing, classic in DI), OR aiming to normalize Na in 24h (overcorrects → cerebral edema). Discriminator — deficit + ongoing losses, corrected ≤10 mEq/L/day.</li><li><b>TBW factor</b> — WRONG: using 0.6 for an elderly woman (true factor 0.45). Discriminator — women and the elderly hold proportionally less water (more adipose), so lower fractions; using 0.6 universally overestimates TBW and the deficit.</li><li><b>≤10 mM/day</b> — WRONG: applying a 'fast is fine' rule to chronic hypernatremia. Discriminator — only documented ACUTE hypernatremia tolerates rapid correction; assume chronic and cap at ≤10 mEq/L/24h unless onset &lt;48h is proven.</li><li><b>Osmolytes (chronic)</b> — WRONG: assuming the brain re-equilibrates instantly so rapid correction is safe. Discriminator — adaptive osmolytes are why chronic hypernatremia must be corrected slowly; their slow clearance is the mechanism of correction-induced cerebral edema.</li><li><b>Correct over 48–72h</b> — WRONG: front-loading the entire deficit on day 1. Discriminator — the deficit is a 48–72h target; day-1 infusion is sized to drop Na ≤10 mEq/L, not to erase the whole deficit at once.</li><li><b>Rapid → edema</b> — WRONG: blaming new neuro decline during correction on 'worsening hypernatremia' and speeding up fluids. Discriminator — neuro deterioration WHILE the Na is falling fast = iatrogenic cerebral edema; the fix is to SLOW correction, not accelerate it.</li><li><b>Free water deficit</b> — WRONG: plugging the final target of 140 into the day-1 calculation. Discriminator — day-1 math uses an intermediate target (~150) to keep the drop ≤10 mEq/L; 140 is the eventual goal over several days, not the first 24h.</li><li><b>Day 1 target 150</b> — WRONG ANSWER: 'calculate the deficit to reach Na 140 today.' Why wrong — from a starting Na of 160–170 that exceeds the safe 10 mEq/L/24h drop. Discriminator — set day-1 target = starting Na − 10 (≈150), then continue toward 140 on subsequent days.</li><li><b>Worked example</b> — WRONG: infusing the full 5 L (the to-140 deficit) on day 1. Discriminator — 5 L is the multi-day deficit; only ~2.3 L (the to-150 portion) plus ongoing losses belongs in day 1 to honor the ≤10 mEq/L cap.</li><li><b>EFWC station</b> — WRONG: ignoring renal free-water losses and treating only the static deficit. Discriminator — in polyuric states EFWC quantifies the ongoing loss you must replace on top of the deficit; omitting it explains 'why won't the Na come down?'</li><li><b>DI = huge losses</b> — WRONG: calculating a fixed deficit for a DI patient and stopping there. Discriminator — DI is dominated by ENORMOUS ongoing renal free-water losses; without replacing them plus giving DDAVP (central) the Na won't normalize regardless of the deficit math.</li><li><b>Don't aim 140 in 24h</b> — WRONG: prescribing fluids to hit 140 by tomorrow. Discriminator — full normalization in 24h breaches the ≤10 mEq/L/day limit and risks cerebral edema; normalize over 48–72h.</li><li><b>Don't forget ongoing</b> — WRONG: replacing the deficit alone and being puzzled when Na stays high. Discriminator — total day-1 water = deficit + ongoing losses; the missing ongoing-loss term is the usual culprit for stalled correction.</li><li><b>Overcorrected → don't re-induce</b> — WRONG: aggressively re-raising Na with hypertonic saline after an adult overshoots downward. Discriminator — adults: pause free water and observe; the child-specific concern about cerebral edema does not mandate re-inducing hypernatremia in adults.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Total water needed</div><div class="rte">The total daily water prescription has TWO components: the calculated baseline free-water deficit PLUS ongoing free-water losses (urine, insensible ~10 mL/kg/day, GI). Correction rate must stay ≤10 mEq/L drop in serum Na per 24h. Plan: replace the deficit over 48–72h, add the day's ongoing losses, and recheck Na q4–6h to titrate.</div><div class="rtt">⚠️ WRONG on both sides: replacing only the deficit and forgetting ongoing losses (undertreats — Na keeps climbing, classic in DI), OR aiming to normalize Na in 24h (overcorrects → cerebral edema). Discriminator — deficit + ongoing losses, corrected ≤10 mEq/L/day.</div></div><div class="rt"><div class="rtl">2. TBW factor</div><div class="rte">Total body water (TBW) = weight(kg) × a fraction that falls with age and female sex due to lower muscle/higher fat: young men 0.6, young women and elderly men 0.5, elderly women 0.45. TBW is the denominator of the deficit formula, so picking the wrong fraction skews the volume to give.</div><div class="rtt">⚠️ WRONG: using 0.6 for an elderly woman (true factor 0.45). Discriminator — women and the elderly hold proportionally less water (more adipose), so lower fractions; using 0.6 universally overestimates TBW and the deficit.</div></div><div class="rt"><div class="rtl">3. ≤10 mM/day</div><div class="rte">The hard safety ceiling: lower serum Na by no more than ~10 mEq/L per 24h (some sources say up to 12; ~0.5 mEq/L/h). In acute hypernatremia (&lt;48h, e.g. salt poisoning) faster correction up to ~1 mEq/L/h is tolerated, but for the typical chronic case stay at ≤10/day to protect adapted brain cells.</div><div class="rtt">⚠️ WRONG: applying a 'fast is fine' rule to chronic hypernatremia. Discriminator — only documented ACUTE hypernatremia tolerates rapid correction; assume chronic and cap at ≤10 mEq/L/24h unless onset &lt;48h is proven.</div></div><div class="rt"><div class="rtl">4. Osmolytes (chronic)</div><div class="rte">In chronic hypernatremia, neurons generate idiogenic osmolytes (taurine, myo-inositol, glutamine/glutamate) over ~48h to match serum tonicity and prevent cell shrinkage. These osmolytes clear slowly, so if you drop serum Na faster than the brain can offload them, water rushes into the still-hyperosmolar neurons → cerebral edema.</div><div class="rtt">⚠️ WRONG: assuming the brain re-equilibrates instantly so rapid correction is safe. Discriminator — adaptive osmolytes are why chronic hypernatremia must be corrected slowly; their slow clearance is the mechanism of correction-induced cerebral edema.</div></div><div class="rt"><div class="rtl">5. Correct over 48–72h</div><div class="rte">Replace the total free-water DEFICIT gradually over 48–72 hours, not in a single day. Spreading it out keeps the per-day Na fall within the ≤10 mEq/L limit. Combine with frequent Na monitoring (q4–6h) so you can slow or speed the infusion as the trajectory dictates.</div><div class="rtt">⚠️ WRONG: front-loading the entire deficit on day 1. Discriminator — the deficit is a 48–72h target; day-1 infusion is sized to drop Na ≤10 mEq/L, not to erase the whole deficit at once.</div></div><div class="rt"><div class="rtl">6. Rapid → edema</div><div class="rte">Overly rapid lowering of a chronically elevated Na drives free water into osmolyte-loaded neurons → cerebral edema, seizures, coma, and death. This is the mirror image of osmotic demyelination in hyponatremia. It is the central safety rule that the whole calculation exists to enforce.</div><div class="rtt">⚠️ WRONG: blaming new neuro decline during correction on 'worsening hypernatremia' and speeding up fluids. Discriminator — neuro deterioration WHILE the Na is falling fast = iatrogenic cerebral edema; the fix is to SLOW correction, not accelerate it.</div></div><div class="rt"><div class="rtl">7. Free water deficit</div><div class="rte">Free-water deficit (L) = TBW × (current Na / target Na − 1), with TBW = weight × factor. Target Na is ultimately 140, but for day-1 pacing you often calculate toward 145–150 so the planned fall respects ≤10 mEq/L. This gives the volume of electrolyte-free water (delivered as D5W or oral water) needed to reach the target.</div><div class="rtt">⚠️ WRONG: plugging the final target of 140 into the day-1 calculation. Discriminator — day-1 math uses an intermediate target (~150) to keep the drop ≤10 mEq/L; 140 is the eventual goal over several days, not the first 24h.</div></div><div class="rt"><div class="rtl">8. Day 1 target 150</div><div class="rte">For the first day, calculate toward a Na of ~150 (or current Na minus 10), NOT straight to 140. Example: Na 160 → day-1 target 150 = a 10 mEq/L drop, exactly at the ceiling. This staged targeting is how the formula is operationalized safely.</div><div class="rtt">⚠️ WRONG ANSWER: 'calculate the deficit to reach Na 140 today.' Why wrong — from a starting Na of 160–170 that exceeds the safe 10 mEq/L/24h drop. Discriminator — set day-1 target = starting Na − 10 (≈150), then continue toward 140 on subsequent days.</div></div><div class="rt"><div class="rtl">9. Worked example</div><div class="rte">Worked case: 70 kg patient, Na 160. TBW = 70 × 0.5 = 35 L. Total deficit to 140 = 35 × (160/140 − 1) = 5 L. But for day 1 target 150: 35 × (160/150 − 1) ≈ 2.3 L, given as D5W over 24h ≈ 95 mL/h, PLUS ongoing/insensible losses. Recheck Na to confirm the ~10 mEq/L fall.</div><div class="rtt">⚠️ WRONG: infusing the full 5 L (the to-140 deficit) on day 1. Discriminator — 5 L is the multi-day deficit; only ~2.3 L (the to-150 portion) plus ongoing losses belongs in day 1 to honor the ≤10 mEq/L cap.</div></div><div class="rt"><div class="rtl">10. EFWC station</div><div class="rte">Electrolyte-free water clearance (EFWC) = urine volume × [1 − (UNa + UK)/serum Na] estimates how much pure water the kidney is losing per day. A positive EFWC means ongoing renal free-water loss that must be ADDED to the replacement, or the serum Na will keep rising despite deficit correction.</div><div class="rtt">⚠️ WRONG: ignoring renal free-water losses and treating only the static deficit. Discriminator — in polyuric states EFWC quantifies the ongoing loss you must replace on top of the deficit; omitting it explains 'why won't the Na come down?'</div></div><div class="rt"><div class="rtl">11. DI = huge losses</div><div class="rte">In diabetes insipidus, dilute urine output is massive (can exceed 3–10 L/day of nearly free water), so ongoing losses dwarf the baseline deficit. You must replace these losses AND treat the cause — desmopressin (DDAVP) for central DI; remove offending drug / thiazide + low-solute diet for nephrogenic DI — or the Na keeps climbing.</div><div class="rtt">⚠️ WRONG: calculating a fixed deficit for a DI patient and stopping there. Discriminator — DI is dominated by ENORMOUS ongoing renal free-water losses; without replacing them plus giving DDAVP (central) the Na won't normalize regardless of the deficit math.</div></div><div class="rt"><div class="rtl">12. Don't aim 140 in 24h</div><div class="rte">Pacing trap #1: do NOT try to normalize Na to 140 within 24h from a high baseline. The per-day fall must stay ≤10 mEq/L, so reaching 140 from 160–170 takes 2–3 days. Set staged daily targets instead of one-shot normalization.</div><div class="rtt">⚠️ WRONG: prescribing fluids to hit 140 by tomorrow. Discriminator — full normalization in 24h breaches the ≤10 mEq/L/day limit and risks cerebral edema; normalize over 48–72h.</div></div><div class="rt"><div class="rtl">13. Don't forget ongoing</div><div class="rte">Pacing trap #2: the calculated deficit is only half the prescription — add ongoing free-water losses (insensible ~10 mL/kg/day, urine via EFWC, GI/diarrhea, fever). Omitting them is the classic reason serum Na fails to fall despite 'correct' deficit replacement.</div><div class="rtt">⚠️ WRONG: replacing the deficit alone and being puzzled when Na stays high. Discriminator — total day-1 water = deficit + ongoing losses; the missing ongoing-loss term is the usual culprit for stalled correction.</div></div><div class="rt"><div class="rtl">14. Overcorrected → don't re-induce</div><div class="rte">Pacing trap #3: if Na is overcorrected (dropped too fast) in ADULTS, generally do NOT actively re-raise the sodium — just slow/hold free water and monitor, as adults tolerate this better than the reverse. In CHILDREN, where correction-induced cerebral edema risk is higher, relowering/active management may be considered.</div><div class="rtt">⚠️ WRONG: aggressively re-raising Na with hypertonic saline after an adult overshoots downward. Discriminator — adults: pause free water and observe; the child-specific concern about cerebral edema does not mandate re-inducing hypernatremia in adults.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperna_fluid_choice.html" title="Hypernatremia — Fluid Choice Algorithm">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hypok_gi_loss.html" title="Hypokalemia — GI / extrarenal loss">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

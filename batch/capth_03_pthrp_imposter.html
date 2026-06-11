@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The PTHrP Tumor Imposter</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Ca sensed -&gt; PTH off</b> — A stem reports hypercalcemia and assumes the parathyroids must be overactive — WRONG in HHM. The healthy parathyroids shut PTH off in response to the tumor's calcium load. The discriminator: high Ca + LOW PTH points away from a parathyroid source and toward malignancy (PTHrP), vitamin D, or other non-PTH causes.</li><li><b>SCC squamous tumor</b> — A lung-cancer stem with hypercalcemia where you reflexively pick small cell carcinoma — WRONG for hypercalcemia. SQUAMOUS cell carcinoma causes PTHrP hypercalcemia; small cell causes SIADH/ectopic ACTH. The discriminator: match the lung histology to the paraneoplastic syndrome — squamous → high calcium (PTHrP).</li><li><b>RCC renal</b> — A stem with RCC, hypercalcemia, and an elevated PTHrP that you misread as primary hyperparathyroidism — WRONG. PTH is suppressed and PTHrP is elevated, marking malignancy. The discriminator: a separate PTHrP assay, not the standard PTH assay, identifies the culprit; PTH itself is low.</li><li><b>Breast / bladder / ovarian</b> — A breast-cancer stem with hypercalcemia where you assume bone metastases are always the cause — WRONG/incomplete. Breast cancer can cause hypercalcemia via circulating PTHrP even without extensive bone mets. The discriminator: humoral PTHrP can be present with minimal bone disease, so check PTHrP and a bone survey/scan rather than assuming local osteolysis.</li><li><b>Fake knight / PTHrP imposter</b> — A stem expects the routine PTH (intact PTH) assay to be elevated in PTHrP-mediated hypercalcemia — WRONG. Standard PTH immunoassays do NOT cross-react with PTHrP, so measured PTH is LOW; you must order a SEPARATE PTHrP assay. The discriminator: low PTH does not exclude a PTH-like hormone — send PTHrP when malignancy is suspected.</li><li><b>PTH = PTHrP identity panel</b> — A stem uses the matching Ca/PO4 pattern (high Ca, low PO4) to conclude primary hyperparathyroidism in a cancer patient — WRONG. PTHrP gives the same Ca/PO4 pattern but with SUPPRESSED PTH. The discriminator: phosphaturia and hypophosphatemia look identical, so the PTH level (low in HHM vs high in primary HPT) is what separates them.</li><li><b>PTH1R receptor post</b> — A stem implies PTHrP works through a DIFFERENT receptor or pathway than PTH, producing a different electrolyte pattern — WRONG. They share PTH1R and produce the same Ca/PO4 effects. The discriminator: identical receptor → identical physiology, so distinguish by assay (PTH vs PTHrP), not by the calcium/phosphate pattern.</li><li><b>Bone-vault resorption</b> — A stem treats severe hypercalcemia of malignancy with bisphosphonate alone and expects immediate normalization — WRONG/incomplete. The first step is aggressive IV normal saline volume repletion (and calcitonin for rapid short-term lowering); bisphosphonates take 2-4 days to act. The discriminator: rehydrate first, calcitonin bridges, bisphosphonate/denosumab give durable control.</li><li><b>Humoral hypercalcemia label</b> — A stem lumps all cancer hypercalcemia into 'bone metastases' — WRONG. Three mechanisms exist: (1) HUMORAL (PTHrP, solid tumors, suppressed PTH, normal/low 1,25-D), (2) LOCAL OSTEOLYTIC (bone mets / multiple myeloma releasing local cytokines), and (3) 1,25-D-MEDIATED (lymphoma, granulomas making calcitriol → high 1,25-D). The discriminator: check PTHrP and 1,25-D to assign the mechanism; HHM is humoral, not metastatic.</li><li><b>Low Ca-serum chest (up Ca)</b> — A stem dismisses moderate hypercalcemia as needing no acute treatment regardless of symptoms — WRONG. Symptomatic hypercalcemia or calcium &gt;14 mg/dL warrants emergent IV saline (and calcitonin/bisphosphonate). The discriminator: treat based on calcium level AND symptoms, not the absolute number alone.</li><li><b>Low PO4 serum chest</b> — A stem uses normal/high phosphate to support a PTHrP diagnosis — WRONG. PTHrP causes LOW phosphate (renal wasting), just like PTH. The discriminator: low phosphate fits PTH/PTHrP-driven hypercalcemia, whereas vitamin-D-mediated and many osteolytic causes do not waste phosphate the same way.</li><li><b>Low endogenous PTH chest</b> — A stem gives high calcium and asks the next test, and you stop at a normal PTH thinking the workup is done — WRONG. With high Ca and LOW/suppressed PTH, the next step is PTHrP and 1,25-D levels (and consider malignancy workup). The discriminator: high Ca + high PTH = primary HPT; high Ca + low PTH = check PTHrP (malignancy), vitamin D, and other non-PTH causes.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Ca sensed -&gt; PTH off</div><div class="rte">In humoral hypercalcemia of malignancy, the parathyroid CaSR works normally: it senses the high calcium driven by tumor PTHrP and correctly SUPPRESSES endogenous PTH. So the diagnostic signature is hypercalcemia with a LOW (appropriately suppressed) PTH. This intact feedback is exactly what separates malignancy-driven hypercalcemia from primary hyperparathyroidism, where PTH is inappropriately high.</div><div class="rtt">⚠️ A stem reports hypercalcemia and assumes the parathyroids must be overactive — WRONG in HHM. The healthy parathyroids shut PTH off in response to the tumor's calcium load. The discriminator: high Ca + LOW PTH points away from a parathyroid source and toward malignancy (PTHrP), vitamin D, or other non-PTH causes.</div></div><div class="rt"><div class="rtl">2. SCC squamous tumor</div><div class="rte">Squamous cell carcinoma is the CLASSIC PTHrP secretor — squamous cancers of the LUNG, head and neck, esophagus, and cervix. Squamous cell lung cancer is the prototypical board answer for PTHrP-mediated hypercalcemia (whereas small cell lung cancer is associated with SIADH and ectopic ACTH instead). Mnemonic: 'Squamous Cells Spew PTHrP.'</div><div class="rtt">⚠️ A lung-cancer stem with hypercalcemia where you reflexively pick small cell carcinoma — WRONG for hypercalcemia. SQUAMOUS cell carcinoma causes PTHrP hypercalcemia; small cell causes SIADH/ectopic ACTH. The discriminator: match the lung histology to the paraneoplastic syndrome — squamous → high calcium (PTHrP).</div></div><div class="rt"><div class="rtl">3. RCC renal</div><div class="rte">Renal cell carcinoma is a common PTHrP-secreting tumor causing humoral hypercalcemia and is a notorious paraneoplastic chameleon (also EPO → polycythemia, renin → hypertension). It belongs to the classic PTHrP group alongside squamous carcinomas. Hypercalcemia in RCC may be humoral (PTHrP) or, with bone metastases, locally osteolytic.</div><div class="rtt">⚠️ A stem with RCC, hypercalcemia, and an elevated PTHrP that you misread as primary hyperparathyroidism — WRONG. PTH is suppressed and PTHrP is elevated, marking malignancy. The discriminator: a separate PTHrP assay, not the standard PTH assay, identifies the culprit; PTH itself is low.</div></div><div class="rt"><div class="rtl">4. Breast / bladder / ovarian</div><div class="rte">Breast, bladder, and ovarian carcinomas also secrete PTHrP. Breast cancer is special because it can cause hypercalcemia by TWO mechanisms: humoral (circulating PTHrP) and local osteolytic (bone metastases producing PTHrP/cytokines locally to drive focal resorption). Recognizing dual mechanisms matters because the workup and the imaging implications differ.</div><div class="rtt">⚠️ A breast-cancer stem with hypercalcemia where you assume bone metastases are always the cause — WRONG/incomplete. Breast cancer can cause hypercalcemia via circulating PTHrP even without extensive bone mets. The discriminator: humoral PTHrP can be present with minimal bone disease, so check PTHrP and a bone survey/scan rather than assuming local osteolysis.</div></div><div class="rt"><div class="rtl">5. Fake knight / PTHrP imposter</div><div class="rte">PTHrP is a molecular impostor: it shares N-terminal homology with PTH and 'keys into' the same PTH1R receptor on bone and kidney, reproducing PTH's calcium-raising actions — yet it is a distinct gene product not detected by standard PTH immunoassays. Physiologically PTHrP also has roles in cartilage/bone development, smooth muscle relaxation, and lactation, but in malignancy it acts as an ectopic PTH mimic.</div><div class="rtt">⚠️ A stem expects the routine PTH (intact PTH) assay to be elevated in PTHrP-mediated hypercalcemia — WRONG. Standard PTH immunoassays do NOT cross-react with PTHrP, so measured PTH is LOW; you must order a SEPARATE PTHrP assay. The discriminator: low PTH does not exclude a PTH-like hormone — send PTHrP when malignancy is suspected.</div></div><div class="rt"><div class="rtl">6. PTH = PTHrP identity panel</div><div class="rte">PTHrP reproduces PTH's downstream effects through PTH1R: hypercalcemia and renal phosphate wasting (hypophosphatemia), plus increased bone resorption. The KEY difference is the endogenous PTH level — high/inappropriate in primary hyperparathyroidism, but SUPPRESSED in PTHrP-driven malignancy. One point of divergence: PTHrP tends to raise calcitriol less than primary HPT, so 1,25-D is often normal/low in HHM.</div><div class="rtt">⚠️ A stem uses the matching Ca/PO4 pattern (high Ca, low PO4) to conclude primary hyperparathyroidism in a cancer patient — WRONG. PTHrP gives the same Ca/PO4 pattern but with SUPPRESSED PTH. The discriminator: phosphaturia and hypophosphatemia look identical, so the PTH level (low in HHM vs high in primary HPT) is what separates them.</div></div><div class="rt"><div class="rtl">7. PTH1R receptor post</div><div class="rte">Both PTH and PTHrP signal through the shared PTH1R (a Gs-coupled receptor) on osteoblasts and renal tubular cells, raising cAMP to drive calcium reabsorption, phosphaturia, and (via osteoblast RANKL) osteoclastic resorption. Because the receptor and signaling are identical, the biochemical effects on calcium and phosphate are indistinguishable; only the source hormone and the PTH assay differ.</div><div class="rtt">⚠️ A stem implies PTHrP works through a DIFFERENT receptor or pathway than PTH, producing a different electrolyte pattern — WRONG. They share PTH1R and produce the same Ca/PO4 effects. The discriminator: identical receptor → identical physiology, so distinguish by assay (PTH vs PTHrP), not by the calcium/phosphate pattern.</div></div><div class="rt"><div class="rtl">8. Bone-vault resorption</div><div class="rte">PTHrP stimulates osteoblasts (via PTH1R) to upregulate RANKL, activating osteoclasts to resorb bone and release calcium into the blood — the same RANKL-mediated indirect mechanism PTH uses. This osteoclast-driven resorption is why anti-resorptives are central to treating hypercalcemia of malignancy: IV bisphosphonates (zoledronic acid 4 mg) are first-line, with denosumab (anti-RANKL) for bisphosphonate failure or renal impairment, after IV saline rehydration.</div><div class="rtt">⚠️ A stem treats severe hypercalcemia of malignancy with bisphosphonate alone and expects immediate normalization — WRONG/incomplete. The first step is aggressive IV normal saline volume repletion (and calcitonin for rapid short-term lowering); bisphosphonates take 2-4 days to act. The discriminator: rehydrate first, calcitonin bridges, bisphosphonate/denosumab give durable control.</div></div><div class="rt"><div class="rtl">9. Humoral hypercalcemia label</div><div class="rte">Humoral hypercalcemia of malignancy (HHM) is PTHrP-mediated, circulating-hormone-driven hypercalcemia and is the MOST COMMON mechanism of malignancy-associated hypercalcemia (~80%), typically with solid tumors (squamous, renal, breast). It generally signals advanced disease and a poor prognosis. It is distinguished mechanistically from local osteolytic hypercalcemia and from 1,25-D-mediated hypercalcemia.</div><div class="rtt">⚠️ A stem lumps all cancer hypercalcemia into 'bone metastases' — WRONG. Three mechanisms exist: (1) HUMORAL (PTHrP, solid tumors, suppressed PTH, normal/low 1,25-D), (2) LOCAL OSTEOLYTIC (bone mets / multiple myeloma releasing local cytokines), and (3) 1,25-D-MEDIATED (lymphoma, granulomas making calcitriol → high 1,25-D). The discriminator: check PTHrP and 1,25-D to assign the mechanism; HHM is humoral, not metastatic.</div></div><div class="rt"><div class="rtl">10. Low Ca-serum chest (up Ca)</div><div class="rte">Hypercalcemia is the defining lab abnormality of PTHrP secretion and produces the classic 'stones, bones, groans, psychiatric overtones' (nephrolithiasis, bone pain, abdominal pain/constipation, confusion), plus polyuria and shortened QT on ECG. Severity guides urgency: total calcium &gt;14 mg/dL or symptomatic hypercalcemia is an emergency requiring aggressive IV saline and anti-resorptive therapy.</div><div class="rtt">⚠️ A stem dismisses moderate hypercalcemia as needing no acute treatment regardless of symptoms — WRONG. Symptomatic hypercalcemia or calcium &gt;14 mg/dL warrants emergent IV saline (and calcitonin/bisphosphonate). The discriminator: treat based on calcium level AND symptoms, not the absolute number alone.</div></div><div class="rt"><div class="rtl">11. Low PO4 serum chest</div><div class="rte">Like PTH, PTHrP causes renal phosphate wasting via PTH1R inhibition of the proximal Na-Pi cotransporter, producing hypophosphatemia. This shared phosphaturia is why the Ca/PO4 pattern of HHM (high Ca, low PO4) is identical to primary hyperparathyroidism and helps separate it from osteolytic or vitamin-D-mediated hypercalcemia, where phosphate is often normal or high.</div><div class="rtt">⚠️ A stem uses normal/high phosphate to support a PTHrP diagnosis — WRONG. PTHrP causes LOW phosphate (renal wasting), just like PTH. The discriminator: low phosphate fits PTH/PTHrP-driven hypercalcemia, whereas vitamin-D-mediated and many osteolytic causes do not waste phosphate the same way.</div></div><div class="rt"><div class="rtl">12. Low endogenous PTH chest</div><div class="rte">The complete diagnostic pattern of PTHrP-mediated HHM is: HIGH calcium, LOW phosphate, SUPPRESSED endogenous PTH, and ELEVATED PTHrP (with normal/low 1,25-D). This four-part fingerprint is the high-yield board pattern and immediately distinguishes malignancy from primary hyperparathyroidism, where PTH is the one value that is high instead of suppressed.</div><div class="rtt">⚠️ A stem gives high calcium and asks the next test, and you stop at a normal PTH thinking the workup is done — WRONG. With high Ca and LOW/suppressed PTH, the next step is PTHrP and 1,25-D levels (and consider malignancy workup). The discriminator: high Ca + high PTH = primary HPT; high Ca + low PTH = check PTHrP (malignancy), vitamin D, and other non-PTH causes.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_15_pth_resistance.html" title="Calcium/PTH/VitD — The PTH Receptor Resistance Clinic">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="capth_09_adenoma_office.html" title="Calcium/PTH/VitD — The Parathyroid Adenoma Office">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

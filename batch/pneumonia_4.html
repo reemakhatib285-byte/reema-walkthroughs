@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pneumonia — Ventilator-associated pneumonia (VAP): risk, prevention &amp; treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>VAP definition</b> — Pneumonia present before, or within 48 h of, intubation is NOT VAP — calling early aspiration at intubation 'VAP' is wrong. Also distinguish VAP from non-pneumonic ventilator-associated conditions (atelectasis, ARDS, pulmonary edema) that can mimic the radiographic picture.</li><li><b>Endotracheal tube = #1 risk</b> — The key prevention lever is reducing intubation/ventilation TIME (sedation holds, spontaneous breathing trials, early extubation, NIV when appropriate) — NOT prophylactic antibiotics, which only select resistance.</li><li><b>Bypasses mechanical barriers</b> — An intact gag/cough reflex offers NO protection once the tube is in place — don't assume a 'good cough' lowers VAP risk in an intubated patient. The tube is the breach.</li><li><b>Damages tracheal mucosa</b> — Colonization is NOT infection — a positive tracheal aspirate in a clinically stable patient may reflect colonization. Treat clinical VAP (new infiltrate + clinical deterioration), not mere colonization, to avoid antibiotic overuse and resistance.</li><li><b>Microaspiration of pooled secretions</b> — Cuff inflation does NOT fully prevent microaspiration — secretions track along channels in the cuff. Specialized ETTs with subglottic suction ports are needed to drain the pooled secretions; assuming 'the cuff seals the airway' is wrong.</li><li><b>Glycocalyx biofilm</b> — Biofilm organisms resist clearance even with appropriate systemic antibiotics, so VAP can persist/recur while the tube remains — source control (minimizing tube duration, considering reintubation/exchange in refractory cases) matters, not just escalating antibiotics.</li><li><b>Head of bed ≥30 degrees</b> — Keeping a ventilated patient supine/flat increases aspiration and VAP risk — 'lay the patient flat' is the wrong choice unless contraindicated (e.g., specific hemodynamic/spinal reasons).</li><li><b>Subglottic secretion suction</b> — A standard ETT without a subglottic suction port cannot deliver this benefit — choosing a plain tube and expecting subglottic drainage is wrong. It is a tube-selection decision made at/around intubation, ideally for patients expected to be ventilated &gt;48-72 h.</li><li><b>Daily sedation interruption / weaning</b> — Continuous deep sedation prolongs intubation and INCREASES VAP — 'keep the patient deeply sedated' is the wrong answer. The goal is the lightest effective sedation with daily readiness assessment, not maximal comfort at the cost of more ventilator days.</li><li><b>Hand hygiene</b> — Even well-designed ventilator bundles fail without consistent hand hygiene by all staff — it is the cheapest, highest-yield measure and should not be deprioritized in favor of expensive interventions.</li><li><b>Core pathogens (first 5-7 days)</b> — Truly early, low-risk VAP can be treated with NARROWER monotherapy — automatic broad triple-coverage (vancomycin + antipseudomonal + second antipseudomonal) is overtreatment for this group. The catch: this only applies when there are genuinely no MDR risk factors (see next).</li><li><b>MDR pathogens</b> — Prior antibiotics or other risk factors can make MDR pathogens likely even BEFORE day 7 — so don't rely on onset-day alone; risk factors trump the clock. Conversely, don't assume every late VAP has Acinetobacter/ESBL — be guided by local antibiogram and cultures.</li><li><b>No MDR risk → monotherapy</b> — Don't over-treat low-risk VAP with multiple broad agents — reflexive vancomycin + double gram-negative coverage selects resistance and adds toxicity (nephrotoxicity, C. difficile). Match breadth to risk.</li><li><b>MDR risk → combination + treatment duration</b> — Continue broad combination therapy only if cultures justify it — failing to DE-ESCALATE at 48-72 h is a classic stewardship error that breeds resistance and toxicity. Also, ~7 days is sufficient for most VAP; routinely extending to 14-21 days for an uncomplicated, improving VAP is a wrong answer.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. VAP definition</div><div class="rte">Ventilator-associated pneumonia (VAP) is pneumonia developing ≥48 hours after endotracheal intubation/initiation of mechanical ventilation. It is a subset of hospital-acquired pneumonia (HAP), which is pneumonia arising ≥48 h after admission in a non-intubated patient. VAP is diagnosed by a new/progressive infiltrate plus clinical signs (fever, leukocytosis, purulent secretions, worsening oxygenation) with a confirmatory respiratory culture.</div><div class="rtt">⚠️ Pneumonia present before, or within 48 h of, intubation is NOT VAP — calling early aspiration at intubation 'VAP' is wrong. Also distinguish VAP from non-pneumonic ventilator-associated conditions (atelectasis, ARDS, pulmonary edema) that can mimic the radiographic picture.</div></div><div class="rt"><div class="rtl">2. Endotracheal tube = #1 risk</div><div class="rte">The endotracheal tube itself is the single most important VAP risk factor: it holds the glottis open, bypasses upper-airway defenses, provides a biofilm surface, and allows pooled secretions to leak past the cuff. VAP risk rises with each day of ventilation. This is why prevention centers on avoiding intubation, minimizing its duration, and ventilator-bundle care.</div><div class="rtt">⚠️ The key prevention lever is reducing intubation/ventilation TIME (sedation holds, spontaneous breathing trials, early extubation, NIV when appropriate) — NOT prophylactic antibiotics, which only select resistance.</div></div><div class="rt"><div class="rtl">3. Bypasses mechanical barriers</div><div class="rte">The ETT bypasses the natural mechanical defenses — nasal filtration, the cough/gag reflex, glottic closure, and mucociliary escalator — giving pathogens a direct conduit to the lower airway. Sedation and supine positioning further blunt protective reflexes.</div><div class="rtt">⚠️ An intact gag/cough reflex offers NO protection once the tube is in place — don't assume a 'good cough' lowers VAP risk in an intubated patient. The tube is the breach.</div></div><div class="rt"><div class="rtl">4. Damages tracheal mucosa</div><div class="rte">Pressure and friction from the tube and cuff injure the tracheal mucosa, impairing local clearance and promoting bacterial adherence and colonization. Colonized secretions then become the reservoir for invasion of the lung parenchyma.</div><div class="rtt">⚠️ Colonization is NOT infection — a positive tracheal aspirate in a clinically stable patient may reflect colonization. Treat clinical VAP (new infiltrate + clinical deterioration), not mere colonization, to avoid antibiotic overuse and resistance.</div></div><div class="rt"><div class="rtl">5. Microaspiration of pooled secretions</div><div class="rte">Contaminated oropharyngeal and gastric secretions pool above the inflated cuff and leak past it (microaspiration) into the lower airway — this is the principal mechanism of VAP. Supine positioning and gastric distension increase it; subglottic suctioning and head-of-bed elevation reduce it.</div><div class="rtt">⚠️ Cuff inflation does NOT fully prevent microaspiration — secretions track along channels in the cuff. Specialized ETTs with subglottic suction ports are needed to drain the pooled secretions; assuming 'the cuff seals the airway' is wrong.</div></div><div class="rt"><div class="rtl">6. Glycocalyx biofilm</div><div class="rte">Bacteria coat the ETT lumen in a glycocalyx biofilm that shields them from host immune cells and from antibiotic penetration, and that periodically sheds emboli of organisms into the lung. This makes the tube a persistent reservoir that perpetuates and relapses infection.</div><div class="rtt">⚠️ Biofilm organisms resist clearance even with appropriate systemic antibiotics, so VAP can persist/recur while the tube remains — source control (minimizing tube duration, considering reintubation/exchange in refractory cases) matters, not just escalating antibiotics.</div></div><div class="rt"><div class="rtl">7. Head of bed ≥30 degrees</div><div class="rte">Elevating the head of the bed to 30-45° (semi-recumbent positioning) reduces gastroesophageal reflux and microaspiration and is a core component of the VAP-prevention 'ventilator bundle.' It is a simple, cheap, evidence-supported measure.</div><div class="rtt">⚠️ Keeping a ventilated patient supine/flat increases aspiration and VAP risk — 'lay the patient flat' is the wrong choice unless contraindicated (e.g., specific hemodynamic/spinal reasons).</div></div><div class="rt"><div class="rtl">8. Subglottic secretion suction</div><div class="rte">Continuous (or intermittent) aspiration of subglottic secretions via a specialized ETT with a dorsal suction port drains the secretions that pool above the cuff, reducing the microaspiration that causes VAP and lowering VAP incidence.</div><div class="rtt">⚠️ A standard ETT without a subglottic suction port cannot deliver this benefit — choosing a plain tube and expecting subglottic drainage is wrong. It is a tube-selection decision made at/around intubation, ideally for patients expected to be ventilated &gt;48-72 h.</div></div><div class="rt"><div class="rtl">9. Daily sedation interruption / weaning</div><div class="rte">Daily sedation interruptions ('sedation holds'/spontaneous awakening trials) paired with spontaneous breathing trials identify patients ready to extubate, shortening ventilation time — the most powerful way to cut VAP. Lighter, protocolized sedation also reduces delirium and ICU length of stay.</div><div class="rtt">⚠️ Continuous deep sedation prolongs intubation and INCREASES VAP — 'keep the patient deeply sedated' is the wrong answer. The goal is the lightest effective sedation with daily readiness assessment, not maximal comfort at the cost of more ventilator days.</div></div><div class="rt"><div class="rtl">10. Hand hygiene</div><div class="rte">Hand hygiene (alcohol-based rub or soap-and-water) before and after patient/equipment contact prevents cross-transmission of pathogens (including MDR organisms) between patients and is a foundational infection-control measure underpinning every VAP bundle.</div><div class="rtt">⚠️ Even well-designed ventilator bundles fail without consistent hand hygiene by all staff — it is the cheapest, highest-yield measure and should not be deprioritized in favor of expensive interventions.</div></div><div class="rt"><div class="rtl">11. Core pathogens (first 5-7 days)</div><div class="rte">Early VAP (&lt;5-7 days of hospitalization, no MDR risk factors) is typically caused by 'core' community-type organisms still sensitive to narrower agents: S. pneumoniae, H. influenzae, methicillin-sensitive S. aureus (MSSA), and antibiotic-sensitive enteric gram-negatives (E. coli, Klebsiella, Enterobacter, Proteus). These often respond to a single agent like ceftriaxone, ampicillin-sulbactam, levofloxacin, or ertapenem.</div><div class="rtt">⚠️ Truly early, low-risk VAP can be treated with NARROWER monotherapy — automatic broad triple-coverage (vancomycin + antipseudomonal + second antipseudomonal) is overtreatment for this group. The catch: this only applies when there are genuinely no MDR risk factors (see next).</div></div><div class="rt"><div class="rtl">12. MDR pathogens</div><div class="rte">Late-onset (≥5 days) or high-risk VAP is dominated by multidrug-resistant organisms: Pseudomonas aeruginosa, MRSA, Acinetobacter baumannii, and resistant Enterobacterales (including ESBL/carbapenemase producers). MDR risk factors include prior IV antibiotics within 90 days, ≥5 days of hospitalization, septic shock at VAP onset, ARDS/dialysis preceding VAP, and high local resistance rates.</div><div class="rtt">⚠️ Prior antibiotics or other risk factors can make MDR pathogens likely even BEFORE day 7 — so don't rely on onset-day alone; risk factors trump the clock. Conversely, don't assume every late VAP has Acinetobacter/ESBL — be guided by local antibiogram and cultures.</div></div><div class="rt"><div class="rtl">13. No MDR risk → monotherapy</div><div class="rte">When there are no MDR risk factors and low local resistance, empiric VAP can be a SINGLE agent that covers Pseudomonas and MSSA — e.g., piperacillin-tazobactam, cefepime, levofloxacin, imipenem, or meropenem. Empiric MRSA and double-antipseudomonal coverage are NOT needed in this low-risk scenario.</div><div class="rtt">⚠️ Don't over-treat low-risk VAP with multiple broad agents — reflexive vancomycin + double gram-negative coverage selects resistance and adds toxicity (nephrotoxicity, C. difficile). Match breadth to risk.</div></div><div class="rt"><div class="rtl">14. MDR risk → combination + treatment duration</div><div class="rte">With MDR risk, start empiric COMBINATION therapy: two antipseudomonal agents from different classes (e.g., an antipseudomonal beta-lactam PLUS an aminoglycoside or antipseudomonal fluoroquinolone) AND anti-MRSA coverage (vancomycin or linezolid). The standard treatment DURATION for VAP is about 7 days, with de-escalation to the narrowest effective agent once cultures/susceptibilities return.</div><div class="rtt">⚠️ Continue broad combination therapy only if cultures justify it — failing to DE-ESCALATE at 48-72 h is a classic stewardship error that breeds resistance and toxicity. Also, ~7 days is sufficient for most VAP; routinely extending to 14-21 days for an uncomplicated, improving VAP is a wrong answer.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pneumonia_2.html" title="Pneumonia — Resistance &amp; empiric antibiotic treatment armory">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pna_aspiration_abscess.html" title="Pneumonia/Abscess — Aspiration &amp; Lung Abscess">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

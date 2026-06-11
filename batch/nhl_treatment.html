@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">NHL — NHL Arsenal (armory)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Chemo weapon rack</b> — WRONG to use the same regimen for every B-cell lymphoma. The discriminator: match intensity to biology — indolent (watch-and-wait or BR), aggressive (R-CHOP), very high-grade Burkitt/double-hit (DA-EPOCH-R, never plain R-CHOP) — and remember T-cell lymphomas are CD20-NEGATIVE, so the 'R' is omitted entirely.</li><li><b>R-CHOP (top rack)</b> — WRONG to give R-CHOP to Burkitt or double-hit lymphoma. The discriminator: R-CHOP is INADEQUATE for the highest-grade tumors (Burkitt, high-grade B-cell with MYC+BCL2 rearrangements) — they need dose-intensive, CNS-penetrating regimens (DA-EPOCH-R, hyper-CVAD, CODOX-M/IVAC); using R-CHOP for Burkitt is a classic exam misstep that undertreats a curable disease.</li><li><b>Indolent / BR</b> — WRONG to rush to treat asymptomatic low-burden follicular lymphoma. The discriminator: follicular lymphoma is indolent and INCURABLE, and early treatment of asymptomatic low-burden disease does not improve survival (GELF criteria define when to treat) — so 'watch and wait' is the correct answer unless there is bulky disease, cytopenias, symptoms, or organ compromise.</li><li><b>DA-EPOCH-R (middle)</b> — WRONG to omit tumor-lysis and CNS prophylaxis when escalating to DA-EPOCH-R for Burkitt/high-grade disease. The discriminator: the same explosive proliferation that demands DA-EPOCH-R also creates the highest TLS risk and CNS-relapse risk — so rasburicase (not just allopurinol) for high-risk TLS plus intrathecal methotrexate/cytarabine are part of the package, not optional add-ons.</li><li><b>Double-hit</b> — WRONG to treat double-hit lymphoma as ordinary DLBCL with R-CHOP. The discriminator: confirm REARRANGEMENTS by FISH (genetic, not IHC) — double-hit requires DA-EPOCH-R-type intensification and CNS prophylaxis, whereas a mere double-expressor (protein by IHC) gets standard R-CHOP; conflating expressor with hit is a frequent trap.</li><li><b>Legacy / R-CVP (bottom)</b> — WRONG to substitute R-CVP for R-CHOP in a fit DLBCL patient just to avoid toxicity. The discriminator: the ANTHRACYCLINE (doxorubicin) is the curative backbone in aggressive lymphoma — omitting it (R-CVP) sacrifices cure rates, so reserve R-CVP for genuinely anthracycline-ineligible patients (poor cardiac function); fit DLBCL patients should get full R-CHOP with cardiac monitoring.</li><li><b>Rituximab mechanism</b> — WRONG to start rituximab without hepatitis B serologies. The discriminator: rituximab-induced B-cell depletion can REACTIVATE latent HBV (even in anti-HBc-positive, HBsAg-negative 'resolved' infection) leading to fulminant hepatitis — so HBsAg AND anti-HBc must be checked and prophylaxis started before the first dose; skipping this is a classic patient-safety exam trap.</li><li><b>CD20 target</b> — WRONG to expect rituximab/anti-CD20 to work in a T-cell lymphoma or a CD20-negative tumor. The discriminator: CD20 is a B-CELL marker — T-cell lymphomas (PTCL, ALCL, ATLL, mycosis fungoides) are CD20-negative, and even some B-cell tumors lose CD20 after prior rituximab; verify CD20 expression by flow/IHC before assuming the antibody will help.</li><li><b>IT MTX / CNS prophylaxis</b> — WRONG to give standard intravenous methotrexate doses and expect CNS coverage, or to forget leucovorin rescue. The discriminator: only HIGH-DOSE (≥3 g/m²) methotrexate penetrates the CNS, and it mandates leucovorin rescue + urinary alkalinization + drug-level monitoring (and avoiding interacting drugs like NSAIDs, PPIs, trimethoprim) to prevent fatal toxicity; intrathecal delivery is the alternative route.</li><li><b>CNS-IPI rules board</b> — WRONG to give CNS prophylaxis to every DLBCL patient or to omit it based on score alone in a high-risk SITE. The discriminator: routine CNS prophylaxis is reserved for HIGH CNS-IPI (4-6) and specific high-risk anatomic sites (testicular, breast, epidural) — over-prophylaxis exposes low-risk patients to methotrexate toxicity, while ignoring testicular involvement (which also needs scrotal radiation) undertreats a sanctuary site.</li><li><b>CAR-T launch bay CD19</b> — WRONG to treat CAR-T cytokine release syndrome the same as ICANS. The discriminator: CRS (IL-6-driven fever/hypotension) responds to TOCILIZUMAB (anti-IL-6R) ± steroids, whereas ICANS (neurotoxicity — aphasia, encephalopathy, seizures) does NOT respond well to tocilizumab and is managed with CORTICOSTEROIDS — and tocilizumab can paradoxically worsen ICANS by raising CNS IL-6; knowing which drug for which syndrome is high-yield.</li><li><b>CAR-T bays/lines</b> — WRONG to default every relapsed DLBCL to salvage chemo + autologous transplant. The discriminator: for PRIMARY-REFRACTORY or EARLY-relapse (≤12 months) DLBCL, CAR-T is now preferred second-line (ZUMA-7/TRANSFORM), whereas autologous transplant after salvage chemo remains appropriate for LATE relapses that are still chemosensitive — timing of relapse decides the pathway.</li><li><b>Bispecifics (CD20xCD3)</b> — WRONG to assume bispecifics carry the same logistics as CAR-T. The discriminator: bispecific antibodies are OFF-THE-SHELF (immediately available, given as a drug with step-up dosing), whereas CAR-T requires apheresis, weeks of manufacturing, and lymphodepletion — making bispecifics an option for patients who cannot wait for or are ineligible for CAR-T, though both share CRS risk.</li><li><b>ADC concept</b> — WRONG to assume an ADC's toxicity comes from the antibody. The discriminator: ADC toxicity tracks the CYTOTOXIC PAYLOAD — polatuzumab's MMAE causes peripheral NEUROPATHY (like vincristine/brentuximab), so it's combined with R-CHP minus vincristine to avoid stacking neurotoxicity; recognizing the payload class predicts the side-effect profile.</li><li><b>Brentuximab (BRENT)</b> — WRONG to add brentuximab on top of a full vincristine-containing regimen, or to give it with bleomycin. The discriminator: brentuximab's MMAE payload causes neuropathy, so in PTCL it REPLACES vincristine (CHOP→CHP), and in Hodgkin frontline it replaces bleomycin (ABVD→AVD) to avoid additive lung toxicity — matching the ADC to the regimen it modifies is the high-yield point.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Chemo weapon rack</div><div class="rte">The unifying principle of B-cell NHL therapy is immunochemotherapy: an anti-CD20 antibody (RITUXIMAB, the 'R') added to a cytotoxic backbone, with regimen INTENSITY scaling to tumor aggressiveness. Aggressive B-cell disease (DLBCL) gets R-CHOP; indolent disease (follicular, marginal zone) gets gentler bendamustine-rituximab or watchful waiting; very high-grade disease (Burkitt, double-hit) gets dose-intensive DA-EPOCH-R or hyper-CVAD with CNS coverage. Across the board, screen HEPATITIS B before rituximab and give tumor-lysis prophylaxis for bulky/high-grade tumors.</div><div class="rtt">⚠️ WRONG to use the same regimen for every B-cell lymphoma. The discriminator: match intensity to biology — indolent (watch-and-wait or BR), aggressive (R-CHOP), very high-grade Burkitt/double-hit (DA-EPOCH-R, never plain R-CHOP) — and remember T-cell lymphomas are CD20-NEGATIVE, so the 'R' is omitted entirely.</div></div><div class="rt"><div class="rtl">2. R-CHOP (top rack)</div><div class="rte">R-CHOP = Rituximab + Cyclophosphamide + Hydroxydaunorubicin (DOXORUBICIN) + Oncovin (VINCRISTINE) + Prednisone, given every 21 days for ~6 cycles; it is the standard frontline for DLBCL and most aggressive B-cell NHL and CURES ~60% of DLBCL. Key toxicities map to each drug: doxorubicin → CARDIOTOXICITY (dose-dependent; check baseline ejection fraction), vincristine → peripheral NEUROPATHY and constipation, cyclophosphamide → hemorrhagic cystitis/myelosuppression, prednisone → hyperglycemia/mood. The newer pola-R-CHP (polatuzumab replacing vincristine) modestly improved outcomes in POLARIX.</div><div class="rtt">⚠️ WRONG to give R-CHOP to Burkitt or double-hit lymphoma. The discriminator: R-CHOP is INADEQUATE for the highest-grade tumors (Burkitt, high-grade B-cell with MYC+BCL2 rearrangements) — they need dose-intensive, CNS-penetrating regimens (DA-EPOCH-R, hyper-CVAD, CODOX-M/IVAC); using R-CHOP for Burkitt is a classic exam misstep that undertreats a curable disease.</div></div><div class="rt"><div class="rtl">3. Indolent / BR</div><div class="rte">Bendamustine + Rituximab (BR) is a standard frontline for symptomatic INDOLENT B-cell NHL — follicular, marginal-zone, and (in older/less-fit patients) mantle cell — and was non-inferior/better tolerated than R-CHOP in the StiL and BRIGHT trials. Bendamustine is a hybrid alkylator/purine-analog with notable LYMPHOPENIA and infection/opportunistic-infection risk (PJP, herpesvirus reactivation), so consider antimicrobial prophylaxis. Asymptomatic, low-tumor-burden follicular lymphoma is often just OBSERVED ('watch and wait') rather than treated.</div><div class="rtt">⚠️ WRONG to rush to treat asymptomatic low-burden follicular lymphoma. The discriminator: follicular lymphoma is indolent and INCURABLE, and early treatment of asymptomatic low-burden disease does not improve survival (GELF criteria define when to treat) — so 'watch and wait' is the correct answer unless there is bulky disease, cytopenias, symptoms, or organ compromise.</div></div><div class="rt"><div class="rtl">4. DA-EPOCH-R (middle)</div><div class="rte">Dose-Adjusted EPOCH-R (Etoposide, Prednisone, Oncovin/vincristine, Cyclophosphamide, Hydroxydaunorubicin/doxorubicin + Rituximab) uses continuous-infusion dosing that is escalated by nadir counts; it is preferred for BURKITT lymphoma, HIGH-GRADE/DOUBLE-HIT B-cell lymphoma, and primary mediastinal large B-cell lymphoma. It delivers more dose intensity and better CNS coverage than R-CHOP. Because Burkitt's proliferation is near 100%, aggressive TUMOR-LYSIS prophylaxis (hydration, rasburicase/allopurinol) and intrathecal CNS prophylaxis are mandatory.</div><div class="rtt">⚠️ WRONG to omit tumor-lysis and CNS prophylaxis when escalating to DA-EPOCH-R for Burkitt/high-grade disease. The discriminator: the same explosive proliferation that demands DA-EPOCH-R also creates the highest TLS risk and CNS-relapse risk — so rasburicase (not just allopurinol) for high-risk TLS plus intrathecal methotrexate/cytarabine are part of the package, not optional add-ons.</div></div><div class="rt"><div class="rtl">5. Double-hit</div><div class="rte">'Double-hit' (high-grade B-cell lymphoma with MYC + BCL2 and/or BCL6 REARRANGEMENTS on FISH) is biologically near-Burkitt in aggressiveness and behaves poorly with standard R-CHOP, so it is treated like Burkitt with intensive therapy (DA-EPOCH-R) plus CNS prophylaxis. It is distinct from a 'double-EXPRESSOR' lymphoma (MYC + BCL2 overexpressed by IHC without rearrangement), which is prognostically worse but still treated with R-CHOP. Every aggressive GCB-type DLBCL with high Ki-67 should be sent for MYC/BCL2/BCL6 FISH.</div><div class="rtt">⚠️ WRONG to treat double-hit lymphoma as ordinary DLBCL with R-CHOP. The discriminator: confirm REARRANGEMENTS by FISH (genetic, not IHC) — double-hit requires DA-EPOCH-R-type intensification and CNS prophylaxis, whereas a mere double-expressor (protein by IHC) gets standard R-CHOP; conflating expressor with hit is a frequent trap.</div></div><div class="rt"><div class="rtl">6. Legacy / R-CVP (bottom)</div><div class="rte">R-CVP = Rituximab + Cyclophosphamide + Vincristine + Prednisone — essentially R-CHOP WITHOUT the anthracycline (no doxorubicin) — used as a gentler regimen for FRAIL/elderly patients or low-grade disease where cardiotoxicity must be avoided (e.g., reduced ejection fraction, prior anthracycline exposure). Dropping doxorubicin spares the heart but lowers efficacy in aggressive disease, so R-CVP is not the choice for fit DLBCL patients.</div><div class="rtt">⚠️ WRONG to substitute R-CVP for R-CHOP in a fit DLBCL patient just to avoid toxicity. The discriminator: the ANTHRACYCLINE (doxorubicin) is the curative backbone in aggressive lymphoma — omitting it (R-CVP) sacrifices cure rates, so reserve R-CVP for genuinely anthracycline-ineligible patients (poor cardiac function); fit DLBCL patients should get full R-CHOP with cardiac monitoring.</div></div><div class="rt"><div class="rtl">7. Rituximab mechanism</div><div class="rte">Rituximab is a chimeric anti-CD20 IgG1 monoclonal antibody that depletes B-cells via four mechanisms: antibody-dependent cellular cytotoxicity (ADCC), complement-dependent cytotoxicity (CDC), antibody-dependent phagocytosis, and direct apoptosis signaling. Because CD20 is expressed on most B-cell NHLs but NOT on plasma cells or stem cells, normal B-cell recovery eventually occurs. Mandatory pre-treatment step: screen HEPATITIS B (HBsAg + anti-HBc) and give antiviral prophylaxis (entecavir/tenofovir) for positives, because rituximab can cause fatal HBV REACTIVATION; also a rare risk of PML (JC virus).</div><div class="rtt">⚠️ WRONG to start rituximab without hepatitis B serologies. The discriminator: rituximab-induced B-cell depletion can REACTIVATE latent HBV (even in anti-HBc-positive, HBsAg-negative 'resolved' infection) leading to fulminant hepatitis — so HBsAg AND anti-HBc must be checked and prophylaxis started before the first dose; skipping this is a classic patient-safety exam trap.</div></div><div class="rt"><div class="rtl">8. CD20 target</div><div class="rte">CD20 is a B-lineage-restricted surface phosphoprotein expressed from the pre-B stage through mature B-cells but lost on plasma cells and absent on stem cells — making it the canonical immunotherapy target in B-cell NHL. OBINUTUZUMAB is a glycoengineered, type-II humanized anti-CD20 with enhanced ADCC and direct cell death, used in follicular lymphoma and CLL. CD20-targeting is why T-cell lymphomas (CD20-negative) get NO benefit from rituximab.</div><div class="rtt">⚠️ WRONG to expect rituximab/anti-CD20 to work in a T-cell lymphoma or a CD20-negative tumor. The discriminator: CD20 is a B-CELL marker — T-cell lymphomas (PTCL, ALCL, ATLL, mycosis fungoides) are CD20-negative, and even some B-cell tumors lose CD20 after prior rituximab; verify CD20 expression by flow/IHC before assuming the antibody will help.</div></div><div class="rt"><div class="rtl">9. IT MTX / CNS prophylaxis</div><div class="rte">CNS prophylaxis aims to prevent leptomeningeal/parenchymal relapse in lymphomas at high CNS risk, delivered as INTRATHECAL methotrexate/cytarabine and/or HIGH-DOSE systemic methotrexate (which crosses the blood-brain barrier). It is indicated for Burkitt, lymphoblastic lymphoma, high-grade/double-hit lymphoma, testicular DLBCL, and DLBCL with high CNS-IPI or involvement of high-risk sites (e.g., paranasal sinus, epidural, breast, bone marrow). High-dose methotrexate requires leucovorin rescue, urine alkalinization, and methotrexate-level monitoring.</div><div class="rtt">⚠️ WRONG to give standard intravenous methotrexate doses and expect CNS coverage, or to forget leucovorin rescue. The discriminator: only HIGH-DOSE (≥3 g/m²) methotrexate penetrates the CNS, and it mandates leucovorin rescue + urinary alkalinization + drug-level monitoring (and avoiding interacting drugs like NSAIDs, PPIs, trimethoprim) to prevent fatal toxicity; intrathecal delivery is the alternative route.</div></div><div class="rt"><div class="rtl">10. CNS-IPI rules board</div><div class="rte">The CNS-IPI is a 6-point risk score for CNS relapse in DLBCL combining the 5 IPI factors (age &gt;60, elevated LDH, ECOG performance status &gt;1, stage III/IV, &gt;1 extranodal site) PLUS adrenal/KIDNEY involvement. Scores stratify low (0-1, ~0.6%), intermediate (2-3, ~3.4%), and high (4-6, ~10%) CNS-relapse risk, identifying which DLBCL patients warrant CNS-directed prophylaxis. Certain anatomic sites (testis, breast, epidural, paranasal sinus) independently raise risk regardless of score.</div><div class="rtt">⚠️ WRONG to give CNS prophylaxis to every DLBCL patient or to omit it based on score alone in a high-risk SITE. The discriminator: routine CNS prophylaxis is reserved for HIGH CNS-IPI (4-6) and specific high-risk anatomic sites (testicular, breast, epidural) — over-prophylaxis exposes low-risk patients to methotrexate toxicity, while ignoring testicular involvement (which also needs scrotal radiation) undertreats a sanctuary site.</div></div><div class="rt"><div class="rtl">11. CAR-T launch bay CD19</div><div class="rte">Chimeric antigen receptor (CAR) T-cell therapy genetically engineers the patient's own T-cells to express an anti-CD19 receptor; approved products for relapsed/refractory aggressive B-cell lymphoma are axicabtagene ciloleucel (axi-cel), tisagenlecleucel (tisa-cel), and lisocabtagene maraleucel (liso-cel); BREXUcabtagene autoleucel (brexu-cel) is for relapsed mantle cell lymphoma. Signature toxicities are CYTOKINE RELEASE SYNDROME (fever/hypotension/hypoxia, treated with tocilizumab ± steroids) and ICANS (immune-effector-cell-associated neurotoxicity, treated with steroids).</div><div class="rtt">⚠️ WRONG to treat CAR-T cytokine release syndrome the same as ICANS. The discriminator: CRS (IL-6-driven fever/hypotension) responds to TOCILIZUMAB (anti-IL-6R) ± steroids, whereas ICANS (neurotoxicity — aphasia, encephalopathy, seizures) does NOT respond well to tocilizumab and is managed with CORTICOSTEROIDS — and tocilizumab can paradoxically worsen ICANS by raising CNS IL-6; knowing which drug for which syndrome is high-yield.</div></div><div class="rt"><div class="rtl">12. CAR-T bays/lines</div><div class="rte">CD19 CAR-T therapy has moved EARLIER in DLBCL: based on ZUMA-7 (axi-cel) and TRANSFORM (liso-cel), it is now SECOND-LINE for primary-refractory or early-relapsing (within 12 months) DLBCL, outperforming the old standard of salvage chemo + autologous stem-cell transplant. Patients relapsing LATER (&gt;12 months) may still go to salvage chemo/autoSCT first. In mantle cell lymphoma, brexu-cel CAR-T is used after BTK-inhibitor failure.</div><div class="rtt">⚠️ WRONG to default every relapsed DLBCL to salvage chemo + autologous transplant. The discriminator: for PRIMARY-REFRACTORY or EARLY-relapse (≤12 months) DLBCL, CAR-T is now preferred second-line (ZUMA-7/TRANSFORM), whereas autologous transplant after salvage chemo remains appropriate for LATE relapses that are still chemosensitive — timing of relapse decides the pathway.</div></div><div class="rt"><div class="rtl">13. Bispecifics (CD20xCD3)</div><div class="rte">Bispecific T-cell engagers (e.g., GLOFITAMAB, EPCORITAMAB, mosunetuzumab) are antibodies with one arm binding tumor CD20 and the other binding CD3 on T-cells, physically bridging T-cells to the tumor to trigger killing. They are 'OFF-THE-SHELF' (no manufacturing lag, unlike CAR-T) and used in relapsed/refractory follicular and large B-cell lymphoma. Like CAR-T they cause CYTOKINE RELEASE SYNDROME, mitigated by step-up dosing and prophylaxis; mosunetuzumab is approved for relapsed follicular lymphoma.</div><div class="rtt">⚠️ WRONG to assume bispecifics carry the same logistics as CAR-T. The discriminator: bispecific antibodies are OFF-THE-SHELF (immediately available, given as a drug with step-up dosing), whereas CAR-T requires apheresis, weeks of manufacturing, and lymphodepletion — making bispecifics an option for patients who cannot wait for or are ineligible for CAR-T, though both share CRS risk.</div></div><div class="rt"><div class="rtl">14. ADC concept</div><div class="rte">Antibody-drug conjugates couple a tumor-antigen-targeting antibody to a cytotoxic payload, delivering chemo selectively to lymphoma cells. POLATUZUMAB VEDOTIN targets CD79b (with MMAE payload) and is used in pola-R-CHP frontline (POLARIX) and in relapsed DLBCL; LONCASTUXIMAB tesirine targets CD19 (with a PBD-dimer payload) for relapsed/refractory DLBCL. ADCs let a single B-cell express several druggable antigens (CD19, CD20, CD79b, CD30), enabling sequential targeting.</div><div class="rtt">⚠️ WRONG to assume an ADC's toxicity comes from the antibody. The discriminator: ADC toxicity tracks the CYTOTOXIC PAYLOAD — polatuzumab's MMAE causes peripheral NEUROPATHY (like vincristine/brentuximab), so it's combined with R-CHP minus vincristine to avoid stacking neurotoxicity; recognizing the payload class predicts the side-effect profile.</div></div><div class="rt"><div class="rtl">15. Brentuximab (BRENT)</div><div class="rte">Brentuximab vedotin is an anti-CD30 antibody-drug conjugate carrying the antimitotic MMAE payload; it targets CD30+ tumors — frontline (with CHP) for CD30+ peripheral T-cell lymphomas including ALCL (ECHELON-2), and used in Hodgkin lymphoma (with AVD frontline per ECHELON-1, and in relapse). Its hallmark dose-limiting toxicity is peripheral SENSORY NEUROPATHY from the MMAE; combining it with bleomycin is avoided due to pulmonary toxicity.</div><div class="rtt">⚠️ WRONG to add brentuximab on top of a full vincristine-containing regimen, or to give it with bleomycin. The discriminator: brentuximab's MMAE payload causes neuropathy, so in PTCL it REPLACES vincristine (CHOP→CHP), and in Hodgkin frontline it replaces bleomycin (ABVD→AVD) to avoid additive lung toxicity — matching the ADC to the regimen it modifies is the high-yield point.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nhl_mantle.html" title="NHL — Mantle Cell Forge (blacksmith forge)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nhl_registry.html" title="NHL — NHL Registry (census bureau)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

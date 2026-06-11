@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD / STEMI — arrhythmia, VF &amp; ICD timing</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Primary VF room</b> — Board says: 'Primary VF reflects extensive pump failure and predicts poor outcome.' WRONG — that describes SECONDARY VF (occurs with HF/cardiogenic shock and marks a large infarct). Discriminator: primary VF happens &lt;48h in a hemodynamically intact heart and does NOT worsen long-term prognosis once the patient is revascularized.</li><li><b>First 48 hours</b> — Board says: 'Primary VF occurs after day 2 / late in the hospital course.' WRONG. Discriminator: by definition primary (early) VF is WITHIN 48h; arrhythmia beyond 48h is 'late VF/VT' with a different, worse implication and is the type that argues for an ICD.</li><li><b>Excellent long-term prognosis</b> — Board says: 'A patient who had VF on day 1 of his STEMI needs an ICD before discharge because his long-term survival is poor.' WRONG. Discriminator: early primary VF that is defibrillated and revascularized confers EXCELLENT long-term prognosis — the correct answer is reassess EF in ≥40 days, not implant now.</li><li><b>No ICD for primary VF</b> — Board says: 'Any VF episode during an MI is an automatic, lifelong ICD indication.' WRONG. Discriminator: timing is everything — VF &lt;48h = reversible ischemic trigger (no ICD); sustained VT/VF &gt;48h or low EF measured later = ICD.</li><li><b>Secondary VF / poor prognosis</b> — Board says: 'Secondary VF carries an excellent prognosis like primary VF.' WRONG. Discriminator: secondary VF is a marker of extensive myocardial damage and HF, so in-hospital mortality is markedly ELEVATED — the opposite of primary VF.</li><li><b>In-hospital mortality elevated</b> — Board says: 'VF does not change in-hospital mortality regardless of when it occurs.' WRONG. Discriminator: secondary VF (with HF/shock) significantly raises in-hospital mortality; primary VF (&lt;48h, intact pump) does not change long-term mortality — the context, not the rhythm name, drives the answer.</li><li><b>EF may recover — don't implant early</b> — Board says: 'Implant an ICD during the initial STEMI admission because the EF is 30%.' WRONG. Discriminator: an acutely low EF may recover — the guideline-correct answer is to optimize GDMT and reassess EF at ≥40 days post-MI (or ≥90 days post-revascularization) before deciding on an ICD.</li><li><b>30 days ≠ final EF</b> — Board says: 'The EF obtained on day 1–2 of the MI determines ICD eligibility.' WRONG. Discriminator: the qualifying EF must be measured after the recovery window (≥40 days post-MI / ≥90 days post-revasc), not acutely — using the early EF over-implants devices.</li><li><b>40 days post-MI hourglass</b> — Board says: 'Refer for ICD at 7 days post-MI if EF is low.' WRONG. Discriminator: primary-prevention ICD eval is deferred to ≥40 days post-MI — implanting at one week showed no benefit (DINAMIT) and is the classic distractor.</li><li><b>90 days post-revasc hourglass</b> — Board says: 'Implant an ICD immediately after PCI in a patient with EF 30%.' WRONG. Discriminator: post-revascularization you must wait ~90 days and re-check EF, since the procedure may raise EF above the ICD threshold — immediate implantation is not guideline-supported.</li><li><b>EF ≤35% + NYHA II–III vest</b> — Board says: 'An ICD is only indicated when the patient is NYHA class IV.' WRONG. Discriminator: NYHA IV (non-ambulatory, end-stage) patients are generally NOT candidates for a primary-prevention ICD (consider CRT-D, transplant, or palliation). The sweet spot is NYHA II–III with EF ≤35%.</li><li><b>EF ≤30% NYHA I vest</b> — Board says: 'Asymptomatic (NYHA I) patients never qualify for an ICD.' WRONG. Discriminator: an asymptomatic post-MI patient with EF ≤30% (measured ≥40 days out) DOES qualify for a primary-prevention ICD per MADIT-II.</li><li><b>EF ≥45% improving (no ICD)</b> — Board says: 'Implant the ICD anyway even though repeat EF improved to 50%.' WRONG. Discriminator: once EF recovers above the threshold, the patient no longer meets criteria — the correct action is continued GDMT and surveillance, not implantation.</li><li><b>EF ≤40% + NSVT monitor</b> — Board says: 'A patient with EF 38% and runs of NSVT needs no further workup.' WRONG. Discriminator: this intermediate group warrants an EP study; inducible sustained VT then justifies an ICD (MADIT-I/MUSTT). Ignoring NSVT in a patient with reduced EF misses a guided ICD indication.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Primary VF room</div><div class="rte">Primary VF is ventricular fibrillation occurring in the first 48h of an MI from acute electrical instability of ischemic myocardium (re-entry around the infarct border zone, catecholamine surge, hypokalemia/hypomagnesemia), NOT from pump failure or shock. It is the most common cause of pre-hospital sudden cardiac death in MI. Treat immediately with unsynchronized defibrillation (200 J biphasic) plus amiodarone 300 mg IV bolus; correct K+ to &gt;4.0 and Mg2+. Mnemonic: 'primary = pure electrical, prognosis preserved.'</div><div class="rtt">⚠️ Board says: 'Primary VF reflects extensive pump failure and predicts poor outcome.' WRONG — that describes SECONDARY VF (occurs with HF/cardiogenic shock and marks a large infarct). Discriminator: primary VF happens &lt;48h in a hemodynamically intact heart and does NOT worsen long-term prognosis once the patient is revascularized.</div></div><div class="rt"><div class="rtl">2. First 48 hours</div><div class="rte">The 48-hour window defines 'primary/early' VF. VF or sustained VT in the first 48h after STEMI is attributed to transient ischemia/reperfusion and electrical instability, so it does NOT by itself trigger an ICD. After 48h, ventricular arrhythmia is 'late' and signals a fixed arrhythmogenic substrate (scar re-entry) — that DOES carry prognostic weight and may warrant ICD evaluation. Mnemonic: 'the 48-hour clock resets the prognosis.'</div><div class="rtt">⚠️ Board says: 'Primary VF occurs after day 2 / late in the hospital course.' WRONG. Discriminator: by definition primary (early) VF is WITHIN 48h; arrhythmia beyond 48h is 'late VF/VT' with a different, worse implication and is the type that argues for an ICD.</div></div><div class="rt"><div class="rtl">3. Excellent long-term prognosis</div><div class="rte">Patients who survive early primary VF and are successfully revascularized have long-term survival similar to MI patients who never had VF. The risk was confined to the acute peri-infarct period, so once discharged their prognosis is excellent and no ICD is needed for that event alone. This is why you do NOT implant a device for an isolated early VF episode. Mnemonic: 'survive the first 48h → survive long-term.'</div><div class="rtt">⚠️ Board says: 'A patient who had VF on day 1 of his STEMI needs an ICD before discharge because his long-term survival is poor.' WRONG. Discriminator: early primary VF that is defibrillated and revascularized confers EXCELLENT long-term prognosis — the correct answer is reassess EF in ≥40 days, not implant now.</div></div><div class="rt"><div class="rtl">4. No ICD for primary VF</div><div class="rte">An ICD is NOT indicated for VF/VT occurring within the first 48h of MI. The arrhythmia is a transient ischemic phenomenon, not a marker of a permanent substrate, and trials (DINAMIT, IRIS) showed early ICD implantation post-MI provides no mortality benefit and may harm. ICDs are reserved for sustained VT/VF that is unrelated to a transient/reversible cause, or for primary prevention based on EF measured ≥40 days out. Mnemonic: 'early VF, no ICD.'</div><div class="rtt">⚠️ Board says: 'Any VF episode during an MI is an automatic, lifelong ICD indication.' WRONG. Discriminator: timing is everything — VF &lt;48h = reversible ischemic trigger (no ICD); sustained VT/VF &gt;48h or low EF measured later = ICD.</div></div><div class="rt"><div class="rtl">5. Secondary VF / poor prognosis</div><div class="rte">Secondary VF occurs in the setting of heart failure, cardiogenic shock, or hemodynamic collapse and reflects a large infarct with pump failure — not just electrical instability. It carries high in-hospital mortality (the death is driven by the underlying pump failure). Management is defibrillation plus aggressive treatment of the shock/HF (revascularization, inotropes/pressors, mechanical support). Mnemonic: 'secondary = shock-associated, survival suffers.'</div><div class="rtt">⚠️ Board says: 'Secondary VF carries an excellent prognosis like primary VF.' WRONG. Discriminator: secondary VF is a marker of extensive myocardial damage and HF, so in-hospital mortality is markedly ELEVATED — the opposite of primary VF.</div></div><div class="rt"><div class="rtl">6. In-hospital mortality elevated</div><div class="rte">The excess mortality of secondary VF comes from the large infarct/pump failure it accompanies, not the arrhythmia per se. These patients are typically Killip class III–IV. Even with successful defibrillation, in-hospital death is high because the underlying cardiogenic shock persists. This is why secondary VF is a poor-prognosis marker while primary VF is not. Mnemonic: 'big infarct → secondary VF → big mortality.'</div><div class="rtt">⚠️ Board says: 'VF does not change in-hospital mortality regardless of when it occurs.' WRONG. Discriminator: secondary VF (with HF/shock) significantly raises in-hospital mortality; primary VF (&lt;48h, intact pump) does not change long-term mortality — the context, not the rhythm name, drives the answer.</div></div><div class="rt"><div class="rtl">7. EF may recover — don't implant early</div><div class="rte">Acutely depressed LV function after MI often improves once stunned/hibernating myocardium recovers following revascularization and optimal GDMT. Implanting an ICD during the index admission based on an acutely low EF over-treats patients whose EF will rise above threshold. Therefore defer the ICD decision and re-measure EF after a waiting period. Mnemonic: 'stunned muscle wakes up — wait before you wire.'</div><div class="rtt">⚠️ Board says: 'Implant an ICD during the initial STEMI admission because the EF is 30%.' WRONG. Discriminator: an acutely low EF may recover — the guideline-correct answer is to optimize GDMT and reassess EF at ≥40 days post-MI (or ≥90 days post-revascularization) before deciding on an ICD.</div></div><div class="rt"><div class="rtl">8. 30 days ≠ final EF</div><div class="rte">EF measured at or before 30 days is not the 'final' EF for ICD decisions. Guidelines require reassessment at ≥40 days after the MI, or ≥90 days after revascularization (PCI/CABG), because recovery continues over weeks. The later, stabilized EF — combined with NYHA class — determines primary-prevention ICD eligibility. Mnemonic: '40 days for the MI, 90 days for the wire (revasc).'</div><div class="rtt">⚠️ Board says: 'The EF obtained on day 1–2 of the MI determines ICD eligibility.' WRONG. Discriminator: the qualifying EF must be measured after the recovery window (≥40 days post-MI / ≥90 days post-revasc), not acutely — using the early EF over-implants devices.</div></div><div class="rt"><div class="rtl">9. 40 days post-MI hourglass</div><div class="rte">Primary-prevention ICD evaluation must wait ≥40 days after the MI (per MADIT-II/SCD-HeFT-derived guidelines and the DINAMIT/IRIS early-implant null results). This waiting period allows EF recovery and avoids implanting in patients with high early non-arrhythmic mortality. At 40 days, re-measure EF; if EF ≤35% with NYHA II–III (or ≤30% NYHA I), implant. Mnemonic: 'wait forty days after the MI, then decide.'</div><div class="rtt">⚠️ Board says: 'Refer for ICD at 7 days post-MI if EF is low.' WRONG. Discriminator: primary-prevention ICD eval is deferred to ≥40 days post-MI — implanting at one week showed no benefit (DINAMIT) and is the classic distractor.</div></div><div class="rt"><div class="rtl">10. 90 days post-revasc hourglass</div><div class="rte">If the patient was revascularized (PCI or CABG), wait ~90 days before primary-prevention ICD evaluation, because revascularization itself can improve EF over that period. Re-image EF at ≥90 days; implant only if it remains ≤35% (NYHA II–III) or ≤30% (NYHA I). The two clocks are distinct: 40 days post-MI vs 90 days post-revascularization. Mnemonic: 'revascularized = give it 90 days to revive.'</div><div class="rtt">⚠️ Board says: 'Implant an ICD immediately after PCI in a patient with EF 30%.' WRONG. Discriminator: post-revascularization you must wait ~90 days and re-check EF, since the procedure may raise EF above the ICD threshold — immediate implantation is not guideline-supported.</div></div><div class="rt"><div class="rtl">11. EF ≤35% + NYHA II–III vest</div><div class="rte">Core primary-prevention ICD criterion (SCD-HeFT): EF ≤35% with NYHA class II–III heart failure on optimal GDMT, measured after the appropriate waiting period. The ICD prevents sudden cardiac death from scar-related VT/VF. Patient must have a reasonable expected survival &gt;1 year with good functional status. Mnemonic: 'thirty-five and class two-three → ICD for me.'</div><div class="rtt">⚠️ Board says: 'An ICD is only indicated when the patient is NYHA class IV.' WRONG. Discriminator: NYHA IV (non-ambulatory, end-stage) patients are generally NOT candidates for a primary-prevention ICD (consider CRT-D, transplant, or palliation). The sweet spot is NYHA II–III with EF ≤35%.</div></div><div class="rt"><div class="rtl">12. EF ≤30% NYHA I vest</div><div class="rte">Primary-prevention ICD is ALSO indicated at EF ≤30% even in NYHA class I (asymptomatic) patients post-MI (MADIT-II criterion). The lower EF threshold compensates for the absence of symptoms. So two pathways qualify: EF ≤35% with NYHA II–III, OR EF ≤30% with NYHA I. Mnemonic: 'thirty or under, symptoms or not.'</div><div class="rtt">⚠️ Board says: 'Asymptomatic (NYHA I) patients never qualify for an ICD.' WRONG. Discriminator: an asymptomatic post-MI patient with EF ≤30% (measured ≥40 days out) DOES qualify for a primary-prevention ICD per MADIT-II.</div></div><div class="rt"><div class="rtl">13. EF ≥45% improving (no ICD)</div><div class="rte">If the reassessed EF has recovered above threshold (e.g., ≥45%, and certainly if normalized), there is NO indication for a primary-prevention ICD — the arrhythmic risk has fallen with the improved function. This is the payoff of waiting 40/90 days: you spare patients an unnecessary device. Reassessment, not the acute nadir EF, governs the decision. Mnemonic: 'EF bounced back → no device.'</div><div class="rtt">⚠️ Board says: 'Implant the ICD anyway even though repeat EF improved to 50%.' WRONG. Discriminator: once EF recovers above the threshold, the patient no longer meets criteria — the correct action is continued GDMT and surveillance, not implantation.</div></div><div class="rt"><div class="rtl">14. EF ≤40% + NSVT monitor</div><div class="rte">In the intermediate zone — EF 36–40% with non-sustained VT (NSVT) on monitoring — patients do not automatically qualify by EF alone. The classic MUSTT/MADIT-I pathway is an electrophysiology (EP) study: if programmed stimulation induces sustained VT, an ICD is indicated. This risk-stratifies patients who fall between clear-cut thresholds. Mnemonic: 'borderline EF + NSVT → send to the EP lab.'</div><div class="rtt">⚠️ Board says: 'A patient with EF 38% and runs of NSVT needs no further workup.' WRONG. Discriminator: this intermediate group warrants an EP study; inducible sustained VT then justifies an ICD (MADIT-I/MUSTT). Ignoring NSVT in a patient with reduced EF misses a guided ICD indication.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_stemi_adjuncts.html" title="IHD / STEMI — adjuncts: nitrates &amp; beta-blockers">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_stemi_conduction.html" title="IHD / STEMI — conduction blocks &amp; QRS width">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

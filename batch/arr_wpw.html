@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Arrhythmias — WPW &amp; Accessory Pathways (AVRT)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>AV node drawbridge</b> — WRONG: 'The AV node is the only electrical connection between atria and ventricles, so blocking it always controls the ventricular rate.' The discriminator is the accessory pathway — in pre-excited AF, blocking the node shunts conduction down the bypass tract and can accelerate the ventricular rate to VF, so 'block the node' is NOT universally safe.</li><li><b>Accessory pathway</b> — WRONG: 'A short PR interval by itself establishes the diagnosis of WPW.' The discriminator is the delta wave — a short PR without a delta wave suggests LGL-type enhanced nodal conduction or a normal variant, whereas WPW requires the delta wave/pre-excitation from the accessory pathway.</li><li><b>WPW syndrome vs pattern</b> — WRONG: 'A delta wave on a routine ECG in an asymptomatic patient is WPW syndrome requiring immediate ablation.' The discriminator is symptoms/arrhythmia — without them this is WPW PATTERN, which is risk-stratified (often by EP study) rather than automatically ablated; calling it 'syndrome' overtreats.</li><li><b>Orthodromic AVRT</b> — WRONG: 'A narrow-complex regular SVT in a known WPW patient is the same dangerous rhythm where adenosine is forbidden.' The discriminator is QRS width/regularity — narrow + regular = orthodromic AVRT (node-dependent, adenosine works); the contraindication to nodal blockers applies to the WIDE, IRREGULAR pre-excited AF, not to orthodromic AVRT.</li><li><b>Most common direction</b> — WRONG: 'The most common WPW tachycardia is a wide-complex rhythm, so it is hard to distinguish from VT.' The discriminator is prevalence and morphology — the COMMON form (orthodromic) is narrow-complex; only the uncommon antidromic form is wide and VT-mimicking.</li><li><b>Antidromic AVRT</b> — WRONG: 'A wide-complex regular tachycardia in a WPW patient should be treated as SVT with a calcium-channel blocker or adenosine.' The discriminator is that a wide-complex tachycardia is VT until proven otherwise AND, if it is antidromic AVRT, nodal blockers are risky — the safe move is procainamide or synchronized cardioversion, not verapamil/diltiazem.</li><li><b>Concealed pathway</b> — WRONG: 'A normal resting ECG rules out an accessory pathway as the cause of recurrent SVT.' The discriminator is retrograde-only conduction — a concealed pathway produces a normal baseline ECG yet still drives orthodromic AVRT, diagnosed at electrophysiology study, so a normal ECG does not exclude it.</li><li><b>Left free wall most common</b> — WRONG: 'Accessory pathways are most commonly located in the septum, so anteroseptal ablation is the default.' The discriminator is location frequency — the LEFT FREE WALL is most common; anteroseptal pathways are both less common and riskier to ablate (proximity to the AV node/His), so they are not the default target.</li><li><b>Ebstein anomaly</b> — WRONG: 'Multiple right-sided accessory pathways in a young patient point to an isolated electrical disease with a structurally normal heart.' The discriminator is the structural lesion — multiple right-sided pathways should prompt echo evaluation for Ebstein anomaly, which changes the procedural risk and overall management.</li><li><b>Fabry</b> — WRONG: 'A short PR interval with LVH on ECG is simply athletic remodeling or hypertensive LVH.' The discriminator is the multisystem clues — a short PR plus LVH with neuropathic pain, angiokeratomas, and proteinuria should raise Fabry disease, which is treatable with enzyme-replacement therapy.</li><li><b>SCD risk 1:1000</b> — WRONG: 'WPW is a benign ECG finding with negligible sudden-death risk, so no risk stratification is needed.' The discriminator is the accessory-pathway refractory period — a short refractory period allows lethally fast conduction in AF; such high-risk patients warrant EP testing and ablation rather than reassurance.</li><li><b>PJRT incessant</b> — WRONG: 'A young patient with an incessant long-RP tachycardia and a dilated, poorly contracting LV has a primary dilated cardiomyopathy needing transplant evaluation.' The discriminator is the incessant tachycardia driving the dysfunction — recognizing tachycardia-induced cardiomyopathy from PJRT means ablation (not transplant) can reverse the LV dysfunction.</li><li><b>Septal localization</b> — WRONG: 'Ablation risk is identical regardless of accessory-pathway location.' The discriminator is anatomy — anteroseptal/midseptal (parahisian) pathways carry a meaningfully higher risk of AV-block during ablation because of their proximity to the normal conduction system, so localization changes both approach and consent.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. AV node drawbridge</div><div class="rte">The AV node is the normal, decremental gateway from atria to ventricles — it deliberately slows conduction (the PR interval) to protect the ventricles from fast atrial rates. Its decremental, rate-dependent slowing is exactly why AV-nodal blockers (adenosine, beta-blockers, calcium-channel blockers) terminate node-dependent re-entry. In WPW the danger is that an accessory pathway provides a SECOND route that bypasses this protective drawbridge.</div><div class="rtt">⚠️ WRONG: 'The AV node is the only electrical connection between atria and ventricles, so blocking it always controls the ventricular rate.' The discriminator is the accessory pathway — in pre-excited AF, blocking the node shunts conduction down the bypass tract and can accelerate the ventricular rate to VF, so 'block the node' is NOT universally safe.</div></div><div class="rt"><div class="rtl">2. Accessory pathway</div><div class="rte">WPW features an accessory pathway (bundle of Kent) — an abnormal muscular bridge that connects atrium to ventricle outside the AV node, conducting rapidly and NON-decrementally. Because it pre-excites ventricular myocardium ahead of the AV-node impulse, the resting ECG shows a short PR (&lt;120 ms) and a delta wave (slurred QRS upstroke) with a widened QRS. The same dual pathways (node + Kent) set up the re-entrant circuit that causes AVRT.</div><div class="rtt">⚠️ WRONG: 'A short PR interval by itself establishes the diagnosis of WPW.' The discriminator is the delta wave — a short PR without a delta wave suggests LGL-type enhanced nodal conduction or a normal variant, whereas WPW requires the delta wave/pre-excitation from the accessory pathway.</div></div><div class="rt"><div class="rtl">3. WPW syndrome vs pattern</div><div class="rte">WPW SYNDROME = ECG pre-excitation (delta wave + short PR) PLUS documented arrhythmia/symptoms (palpitations, SVT, syncope). WPW PATTERN = the same delta wave/short PR on ECG in an asymptomatic person with no arrhythmia. The distinction matters for management: symptomatic syndrome warrants electrophysiology study and ablation, while an asymptomatic pattern is risk-stratified (some high-risk asymptomatic patients, e.g., short accessory-pathway refractory period, are still offered ablation).</div><div class="rtt">⚠️ WRONG: 'A delta wave on a routine ECG in an asymptomatic patient is WPW syndrome requiring immediate ablation.' The discriminator is symptoms/arrhythmia — without them this is WPW PATTERN, which is risk-stratified (often by EP study) rather than automatically ablated; calling it 'syndrome' overtreats.</div></div><div class="rt"><div class="rtl">4. Orthodromic AVRT</div><div class="rte">Orthodromic AVRT is the MOST common WPW tachycardia (~90–95%): the impulse goes DOWN the AV node and back UP the accessory pathway, so the ventricles are activated normally → NARROW QRS, regular, rate ~150–250, with a retrograde P wave AFTER the QRS (short RP). Because the AV node is part of the circuit, vagal maneuvers and AV-nodal blockers (adenosine 6 mg IV push, then 12 mg) terminate it — this is the one WPW arrhythmia where adenosine is appropriate.</div><div class="rtt">⚠️ WRONG: 'A narrow-complex regular SVT in a known WPW patient is the same dangerous rhythm where adenosine is forbidden.' The discriminator is QRS width/regularity — narrow + regular = orthodromic AVRT (node-dependent, adenosine works); the contraindication to nodal blockers applies to the WIDE, IRREGULAR pre-excited AF, not to orthodromic AVRT.</div></div><div class="rt"><div class="rtl">5. Most common direction</div><div class="rte">Orthodromic conduction (down the node, up the pathway) is the most common AVRT direction, accounting for roughly 90–95% of AVRT in WPW, and it produces a narrow-complex tachycardia. Antidromic AVRT (the wide-complex form) is far rarer.</div><div class="rtt">⚠️ WRONG: 'The most common WPW tachycardia is a wide-complex rhythm, so it is hard to distinguish from VT.' The discriminator is prevalence and morphology — the COMMON form (orthodromic) is narrow-complex; only the uncommon antidromic form is wide and VT-mimicking.</div></div><div class="rt"><div class="rtl">6. Antidromic AVRT</div><div class="rte">Antidromic AVRT is the uncommon reverse circuit: DOWN the accessory pathway and UP the AV node, so the ventricles are activated entirely through the bypass tract → a maximally pre-excited WIDE-complex regular tachycardia that closely mimics VT. It is more frequent with multiple accessory pathways. Treatment leans toward procainamide/ibutilide or cardioversion rather than aggressive nodal blockade because the rhythm is pathway-dependent and may be hard to distinguish from VT.</div><div class="rtt">⚠️ WRONG: 'A wide-complex regular tachycardia in a WPW patient should be treated as SVT with a calcium-channel blocker or adenosine.' The discriminator is that a wide-complex tachycardia is VT until proven otherwise AND, if it is antidromic AVRT, nodal blockers are risky — the safe move is procainamide or synchronized cardioversion, not verapamil/diltiazem.</div></div><div class="rt"><div class="rtl">7. Concealed pathway</div><div class="rte">A concealed accessory pathway conducts ONLY retrograde (ventricle→atrium), so there is NO delta wave or short PR on the resting ECG — the baseline tracing looks normal. It still completes the orthodromic re-entry loop and causes recurrent narrow-complex AVRT. Because it cannot conduct antegrade, a concealed pathway does NOT carry the pre-excited-AF/SCD risk of a manifest pathway.</div><div class="rtt">⚠️ WRONG: 'A normal resting ECG rules out an accessory pathway as the cause of recurrent SVT.' The discriminator is retrograde-only conduction — a concealed pathway produces a normal baseline ECG yet still drives orthodromic AVRT, diagnosed at electrophysiology study, so a normal ECG does not exclude it.</div></div><div class="rt"><div class="rtl">8. Left free wall most common</div><div class="rte">The left free wall (left lateral) is the single most common accessory-pathway location, followed by posteroseptal, right free wall, and anteroseptal. Pathway location is inferred from delta-wave polarity across the 12 leads and confirmed at EP study, guiding the ablation target. Left free-wall pathways are typically ablated via a transseptal or retrograde-aortic approach.</div><div class="rtt">⚠️ WRONG: 'Accessory pathways are most commonly located in the septum, so anteroseptal ablation is the default.' The discriminator is location frequency — the LEFT FREE WALL is most common; anteroseptal pathways are both less common and riskier to ablate (proximity to the AV node/His), so they are not the default target.</div></div><div class="rt"><div class="rtl">9. Ebstein anomaly</div><div class="rte">Ebstein anomaly (apically displaced, malformed tricuspid valve with an 'atrialized' RV) is the classic congenital association with WPW — these patients often have RIGHT-SIDED and frequently MULTIPLE accessory pathways. Suspect Ebstein when a young patient has pre-excitation plus tricuspid regurgitation, right-heart enlargement, and cyanosis/RBBB. Lithium exposure in utero is a known risk factor.</div><div class="rtt">⚠️ WRONG: 'Multiple right-sided accessory pathways in a young patient point to an isolated electrical disease with a structurally normal heart.' The discriminator is the structural lesion — multiple right-sided pathways should prompt echo evaluation for Ebstein anomaly, which changes the procedural risk and overall management.</div></div><div class="rt"><div class="rtl">10. Fabry</div><div class="rte">Fabry disease (X-linked alpha-galactosidase A deficiency with glycosphingolipid accumulation) is associated with a SHORT PR/pre-excitation and conduction abnormalities, alongside LVH, angiokeratomas, acroparesthesias, corneal verticillata, and renal failure. The infiltrative deposition shortens AV conduction early and later causes conduction disease/arrhythmias.</div><div class="rtt">⚠️ WRONG: 'A short PR interval with LVH on ECG is simply athletic remodeling or hypertensive LVH.' The discriminator is the multisystem clues — a short PR plus LVH with neuropathic pain, angiokeratomas, and proteinuria should raise Fabry disease, which is treatable with enzyme-replacement therapy.</div></div><div class="rt"><div class="rtl">11. SCD risk 1:1000</div><div class="rte">Manifest WPW carries a small but real annual sudden-cardiac-death risk (~1:1000 to 1:2000 per year), driven by pre-excited AF degenerating into VF when the accessory pathway conducts very rapidly to the ventricles. High-risk features include a SHORT accessory-pathway antegrade refractory period (&lt;250 ms), shortest pre-excited RR in AF &lt;250 ms, and multiple pathways. These features justify EP study and ablation even in some asymptomatic patients.</div><div class="rtt">⚠️ WRONG: 'WPW is a benign ECG finding with negligible sudden-death risk, so no risk stratification is needed.' The discriminator is the accessory-pathway refractory period — a short refractory period allows lethally fast conduction in AF; such high-risk patients warrant EP testing and ablation rather than reassurance.</div></div><div class="rt"><div class="rtl">12. PJRT incessant</div><div class="rte">Permanent junctional reciprocating tachycardia (PJRT) is a form of orthodromic AVRT using a SLOWLY conducting, decremental, concealed posteroseptal accessory pathway, producing a near-incessant long-RP narrow-complex tachycardia (inverted P in II/III/aVF). Because it runs almost continuously, it is a classic cause of tachycardia-induced cardiomyopathy in children/young adults; ablation is curative and reverses the cardiomyopathy.</div><div class="rtt">⚠️ WRONG: 'A young patient with an incessant long-RP tachycardia and a dilated, poorly contracting LV has a primary dilated cardiomyopathy needing transplant evaluation.' The discriminator is the incessant tachycardia driving the dysfunction — recognizing tachycardia-induced cardiomyopathy from PJRT means ablation (not transplant) can reverse the LV dysfunction.</div></div><div class="rt"><div class="rtl">13. Septal localization</div><div class="rte">Delta-wave polarity localizes the accessory pathway before ablation: a NEGATIVE delta wave in the inferior leads (II, III, aVF) suggests a POSTEROSEPTAL pathway, while pathway position across V1 and the frontal axis maps left- vs right-sided and septal locations. Anteroseptal/parahisian pathways sit close to the AV node and His bundle, raising the risk of inadvertent heart block during ablation.</div><div class="rtt">⚠️ WRONG: 'Ablation risk is identical regardless of accessory-pathway location.' The discriminator is anatomy — anteroseptal/midseptal (parahisian) pathways carry a meaningfully higher risk of AV-block during ablation because of their proximity to the normal conduction system, so localization changes both approach and consent.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="arr_svt_vagal_adenosine.html" title="Arrhythmias — Vagal Maneuvers &amp; Adenosine in SVT">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="arr_wct_approach.html" title="Arrhythmias — Wide-Complex Tachycardia Approach &amp; Treatment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

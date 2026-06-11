@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">AML — Risk Stratification</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Green = favorable</b> — Favorable-risk AML is generally NOT transplanted in CR1 — the relapse risk does not justify transplant-related mortality. Reflexively sending every AML patient to transplant is wrong; risk tier decides.</li><li><b>t(15;17) 85%</b> — APL is treated with ATRA + arsenic, NOT 7+3 — and ATRA must be started on suspicion before genetic confirmation because of the catastrophic DIC. Watch for differentiation syndrome (fever, dyspnea, infiltrates, edema) and treat with dexamethasone.</li><li><b>t(8;21) / inv16 55%</b> — Core-binding-factor AML (t(8;21), inv(16)) is favorable and responds well to high-dose cytarabine — but a co-occurring KIT mutation worsens the prognosis and is the testable modifier.</li><li><b>NPM1 / CEBPA favorable</b> — NPM1 is favorable ONLY in the absence of FLT3-ITD — NPM1 plus FLT3-ITD moves the patient into intermediate risk. The CEBPA benefit specifically requires the bZIP in-frame mutation.</li><li><b>Yellow = intermediate</b> — Intermediate-risk patients are typically referred for allo-HCT in CR1, unlike favorable-risk patients. The transplant decision hinges on risk tier plus fitness and donor availability, not on age alone.</li><li><b>NPM1+FLT3 / t(9;11)</b> — The combination NPM1mut + FLT3-ITD = intermediate, whereas NPM1mut alone = favorable — the FLT3-ITD is the deciding factor. Note t(9;11) is the one KMT2A rearrangement that is intermediate, while other KMT2A rearrangements are adverse.</li><li><b>Red = adverse</b> — Adverse-risk AML pushes hard toward allo-HCT in CR1, but TP53-mutated/complex-karyotype disease responds poorly even to transplant — outcomes remain dismal, which is itself frequently tested.</li><li><b>TP53 / complex</b> — TP53 mutation is the single most ominous AML lesion — it predicts resistance to standard chemo AND to HMA/venetoclax, with poor transplant outcomes; clinical-trial enrollment is often preferred. TP53 also overlaps heavily with therapy-related AML.</li><li><b>KMT2A / -7 / MECOM</b> — KMT2A rearrangements are adverse EXCEPT t(9;11), which is intermediate — the exception is the trap. Monosomy 7 and KMT2A also flag secondary/therapy-related AML, linking cytogenetics back to etiology.</li><li><b>Survival 1/31/62%</b> — Prognosis in AML is driven primarily by genetics/cytogenetics, not by the morphologic FAB subtype — the old FAB classification has been supplanted by molecular ELN risk grouping.</li><li><b>≥20% blasts / DNA scroll</b> — AML-defining genetics (APL, CBF, etc.) establish the diagnosis even when blasts are &lt;20% — the 20% threshold is not absolute. Note: with TP53/MDS-related changes, WHO/ICC now allow an AML or MDS/AML diagnosis at 10-19% blasts.</li><li><b>Young vs old</b> — Age and fitness modulate the therapy intensity and transplant decision but do NOT override the genetic risk tier — an old fit patient can still be transplanted, and a young patient with favorable APL still avoids CR1 transplant.</li><li><b>MPO flow cytometry</b> — MPO positivity (cytochemistry or flow) distinguishes AML from ALL — ALL blasts are MPO-negative. CD33 expression also identifies candidates for gemtuzumab ozogamicin and CD34/CD117 mark myeloid blasts.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Green = favorable</div><div class="rte">The ELN 2022 system stratifies AML into favorable, intermediate, and adverse risk using cytogenetics and molecular markers, and this drives the single biggest decision in management: whether to consolidate with chemotherapy alone or proceed to allogeneic stem cell transplant in first remission (CR1). Favorable-risk patients have the best survival and are generally consolidated with chemotherapy (e.g., high-dose cytarabine), reserving allo-HCT for relapse rather than CR1.</div><div class="rtt">⚠️ Favorable-risk AML is generally NOT transplanted in CR1 — the relapse risk does not justify transplant-related mortality. Reflexively sending every AML patient to transplant is wrong; risk tier decides.</div></div><div class="rt"><div class="rtl">2. t(15;17) 85%</div><div class="rte">t(15;17) creates the PML-RARA fusion of acute promyelocytic leukemia (APL/M3), the most curable AML (~85-90% cure) when treated with ATRA + arsenic trioxide (ATO), largely chemo-free in standard-risk APL. ATRA differentiates the arrested promyelocytes rather than killing them. The lethal early hazards are DIC/hemorrhage and differentiation (retinoic acid) syndrome.</div><div class="rtt">⚠️ APL is treated with ATRA + arsenic, NOT 7+3 — and ATRA must be started on suspicion before genetic confirmation because of the catastrophic DIC. Watch for differentiation syndrome (fever, dyspnea, infiltrates, edema) and treat with dexamethasone.</div></div><div class="rt"><div class="rtl">3. t(8;21) / inv16 55%</div><div class="rte">t(8;21) (RUNX1-RUNX1T1) and inv(16)/t(16;16) (CBFB-MYH11) are the core-binding-factor (CBF) leukemias — favorable risk with good response to high-dose cytarabine consolidation. Adding gemtuzumab ozogamicin (anti-CD33 antibody-drug conjugate) further improves CBF-AML outcomes. KIT mutations can downgrade CBF prognosis.</div><div class="rtt">⚠️ Core-binding-factor AML (t(8;21), inv(16)) is favorable and responds well to high-dose cytarabine — but a co-occurring KIT mutation worsens the prognosis and is the testable modifier.</div></div><div class="rt"><div class="rtl">4. NPM1 / CEBPA favorable</div><div class="rte">NPM1 mutation WITHOUT FLT3-ITD is favorable risk, as is in-frame bZIP-mutated CEBPA. NPM1-mutant AML is also a useful MRD marker by PCR. These confer good outcomes with chemotherapy consolidation in the absence of adverse co-mutations.</div><div class="rtt">⚠️ NPM1 is favorable ONLY in the absence of FLT3-ITD — NPM1 plus FLT3-ITD moves the patient into intermediate risk. The CEBPA benefit specifically requires the bZIP in-frame mutation.</div></div><div class="rt"><div class="rtl">5. Yellow = intermediate</div><div class="rte">Intermediate-risk AML (including normal karyotype not otherwise classified, NPM1 with FLT3-ITD, and t(9;11)/KMT2A-MLLT3) has an outcome poor enough that allogeneic transplant in CR1 is generally recommended if a suitable donor exists and the patient is fit. MRD status increasingly refines this decision.</div><div class="rtt">⚠️ Intermediate-risk patients are typically referred for allo-HCT in CR1, unlike favorable-risk patients. The transplant decision hinges on risk tier plus fitness and donor availability, not on age alone.</div></div><div class="rt"><div class="rtl">6. NPM1+FLT3 / t(9;11)</div><div class="rte">NPM1-mutant AML co-occurring with FLT3-ITD falls into intermediate risk (the FLT3-ITD pulls the otherwise-favorable NPM1 down), and t(9;11)(p21;q23)/KMT2A-MLLT3 is also intermediate. FLT3-mutated patients additionally receive midostaurin added to induction/consolidation.</div><div class="rtt">⚠️ The combination NPM1mut + FLT3-ITD = intermediate, whereas NPM1mut alone = favorable — the FLT3-ITD is the deciding factor. Note t(9;11) is the one KMT2A rearrangement that is intermediate, while other KMT2A rearrangements are adverse.</div></div><div class="rt"><div class="rtl">7. Red = adverse</div><div class="rte">Adverse-risk AML has the worst survival and the highest relapse rate, so allogeneic transplant in CR1 is strongly favored in any fit patient with a donor. This category includes TP53, complex/monosomal karyotype, -7/del(7q), -5/del(5q), KMT2A rearrangements (other than t(9;11)), MECOM(EVI1), RUNX1, ASXL1, and BCR-ABL1.</div><div class="rtt">⚠️ Adverse-risk AML pushes hard toward allo-HCT in CR1, but TP53-mutated/complex-karyotype disease responds poorly even to transplant — outcomes remain dismal, which is itself frequently tested.</div></div><div class="rt"><div class="rtl">8. TP53 / complex</div><div class="rte">TP53 mutation and complex karyotype (≥3 abnormalities) or monosomal karyotype define the worst-prognosis AML, with chemoresistance and very low cure rates even with transplant. TP53-mutant AML is often therapy-related/secondary and responds poorly to both intensive chemo and HMA+venetoclax.</div><div class="rtt">⚠️ TP53 mutation is the single most ominous AML lesion — it predicts resistance to standard chemo AND to HMA/venetoclax, with poor transplant outcomes; clinical-trial enrollment is often preferred. TP53 also overlaps heavily with therapy-related AML.</div></div><div class="rt"><div class="rtl">9. KMT2A / -7 / MECOM</div><div class="rte">KMT2A (MLL, 11q23) rearrangements other than t(9;11), monosomy 7 (-7)/del(7q), and MECOM(EVI1) rearrangements [inv(3)/t(3;3)] are adverse-risk. -7 and complex karyotypes are classic for alkylator-induced therapy-related AML, and KMT2A/11q23 for topoisomerase-II-inhibitor-induced t-AML.</div><div class="rtt">⚠️ KMT2A rearrangements are adverse EXCEPT t(9;11), which is intermediate — the exception is the trap. Monosomy 7 and KMT2A also flag secondary/therapy-related AML, linking cytogenetics back to etiology.</div></div><div class="rt"><div class="rtl">10. Survival 1/31/62%</div><div class="rte">Outcomes diverge dramatically across ELN tiers — favorable APL/CBF leukemias approach high cure rates, while adverse-risk TP53/complex disease has very low long-term survival. This gradient is precisely why genetic risk classification is mandatory before choosing consolidation strategy.</div><div class="rtt">⚠️ Prognosis in AML is driven primarily by genetics/cytogenetics, not by the morphologic FAB subtype — the old FAB classification has been supplanted by molecular ELN risk grouping.</div></div><div class="rt"><div class="rtl">11. ≥20% blasts / DNA scroll</div><div class="rte">AML is diagnosed by ≥20% myeloblasts in blood or marrow, OR by an AML-defining recurrent genetic abnormality regardless of blast count. The defining genetics that diagnose AML below 20% blasts include t(15;17)/PML-RARA, t(8;21), inv(16)/t(16;16), and other recurrent fusions; an extramedullary myeloid sarcoma also qualifies.</div><div class="rtt">⚠️ AML-defining genetics (APL, CBF, etc.) establish the diagnosis even when blasts are &lt;20% — the 20% threshold is not absolute. Note: with TP53/MDS-related changes, WHO/ICC now allow an AML or MDS/AML diagnosis at 10-19% blasts.</div></div><div class="rt"><div class="rtl">12. Young vs old</div><div class="rte">Age, performance status, and comorbidities determine fitness for intensive therapy and transplant eligibility, which interacts with genetic risk. Older or unfit patients receive HMA + venetoclax rather than 7+3 regardless of tier, and transplant is offered to fit intermediate/adverse-risk patients with an acceptable donor.</div><div class="rtt">⚠️ Age and fitness modulate the therapy intensity and transplant decision but do NOT override the genetic risk tier — an old fit patient can still be transplanted, and a young patient with favorable APL still avoids CR1 transplant.</div></div><div class="rt"><div class="rtl">13. MPO flow cytometry</div><div class="rte">Myeloperoxidase (MPO) positivity confirms myeloid lineage and distinguishes AML from ALL, and flow cytometry establishes the immunophenotype (myeloid blasts express CD13, CD33, CD117, and CD34; monocytic markers CD14/CD64). Flow and molecular MRD assessment after induction are mandatory and increasingly guide post-remission transplant decisions.</div><div class="rtt">⚠️ MPO positivity (cytochemistry or flow) distinguishes AML from ALL — ALL blasts are MPO-negative. CD33 expression also identifies candidates for gemtuzumab ozogamicin and CD34/CD117 mark myeloid blasts.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aml_presentation.html" title="AML — Presentation &amp; Diagnosis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aml_secondary_etiology.html" title="AML — Secondary AML &amp; Etiology">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

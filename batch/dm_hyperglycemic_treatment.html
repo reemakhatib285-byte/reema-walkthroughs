@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DM — Scene 2 — Acute Hyperglycemic Treatment: DKA/HHS Management</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Step 1 Fluids first</b> — WRONG: 'Start the insulin drip immediately on arrival.' Insulin before volume resuscitation worsens hypovolemia and can cause fatal hypokalemia. Discriminator: fluids are rung 1 — insulin waits for volume + a checked K+.</li><li><b>Correct Na -&gt; switch to half-NS</b> — WRONG: 'The measured serum Na is low, so give hypotonic fluids and treat hyponatremia.' The low measured Na is usually a dilutional artifact of hyperglycemia — correct it first. Discriminator: act on the CORRECTED sodium, not the raw value.</li><li><b>Step 2 Potassium before insulin</b> — WRONG: 'Glucose is dangerously high, so start insulin first and check potassium afterward.' Insulin given before knowing K+ can cause fatal hypokalemia. Discriminator: K+ is checked and managed BEFORE the insulin drip — always.</li><li><b>K traffic light &lt;3.3 hold insulin</b> — WRONG: 'K+ is 3.0 but glucose is 500 — start insulin anyway, the hyperglycemia is the emergency.' Hypokalemia is the more immediate killer (arrhythmia). Discriminator: K+ &lt;3.3 → replete potassium FIRST, hold insulin, no exceptions.</li><li><b>K 3.3-5.2 give K with fluids</b> — WRONG: 'K+ is normal at 4.5, so no potassium replacement is needed.' A 'normal' serum K+ in DKA still means total-body depletion and will drop with insulin. Discriminator: in the 3.3-5.2 window, give K+ WITH the insulin — a normal value is not reassurance.</li><li><b>K &gt;5.2 no K yet</b> — WRONG: 'K+ is 5.5 — treat the hyperkalemia with kayexalate/aggressive measures.' The hyperkalemia is from transcellular shift and self-corrects with insulin/fluids. Discriminator: hold K+ replacement (don't aggressively lower it either) and recheck — insulin itself is the treatment.</li><li><b>Step 3 Insulin infusion</b> — WRONG: 'Use intermittent subcutaneous regular insulin boluses for severe DKA.' Variable SC absorption in a dehydrated patient is unreliable — IV infusion is standard for severe DKA/HHS. Discriminator: continuous IV insulin (not SC) until the gap closes.</li><li><b>Step 4 Add dextrose at ~200</b> — WRONG: 'Glucose dropped to 200, so discontinue the insulin drip.' The anion gap is usually still open; stopping insulin reopens ketogenesis. Discriminator: at glucose ~200 → ADD dextrose, KEEP insulin — resolution is defined by the gap, not the glucose.</li><li><b>Step 5 Bicarb not routine</b> — WRONG: 'pH is 7.1 — give bicarbonate to speed correction.' No benefit at pH &gt;7.0, and it adds harm. Discriminator: the ONLY bicarb indication in DKA is pH &lt;7.0; moderate acidosis resolves with insulin and fluids alone.</li><li><b>Bicarb risks</b> — WRONG: 'Bicarbonate is harmless and at worst just doesn't help.' It actively causes hypokalemia, paradoxical CNS acidosis, and pediatric cerebral edema. Discriminator: bicarb is potentially harmful, which is precisely why it's withheld unless pH &lt;7.0.</li><li><b>Step 6 Transition / anion gap closed</b> — WRONG: 'The glucose normalized, so stop the IV insulin now.' Glucose normalizes long before the gap closes; stopping early causes rebound DKA. Discriminator: transition is triggered by gap closure (not glucose) and requires SC overlap before the drip stops.</li><li><b>Prevent rebound DKA</b> — WRONG: 'Turn off the drip and give the first SC dose at the same moment.' The gap between drip-off and SC onset reopens ketogenesis. Discriminator: SC insulin must be given 1-2h BEFORE stopping the IV drip — no insulin-free gap.</li><li><b>Complications: cerebral edema</b> — WRONG: 'In pediatric DKA, correct fluids and glucose as fast as possible to fix the acidosis quickly.' Aggressive/rapid correction precipitates fatal cerebral edema. Discriminator: in children, go SLOW (no bolus, controlled osmolar correction) — speed kills here.</li><li><b>Complications: hypoglycemia/hypoK/hypophos/HCMA</b> — WRONG: 'A persistent acidosis after the anion gap has closed means the DKA is not resolved — restart aggressive insulin.' A post-treatment NON-gap (hyperchloremic) acidosis from NS is benign and self-limited. Discriminator: check the gap — if it's closed, a residual non-gap acidosis is the saline artifact, not ongoing DKA.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Step 1 Fluids first</div><div class="rte">Rung 1 (always first): isotonic IV fluids — 0.9% NS (or LR) at ~15-20 mL/kg or 1-1.5 L in the first hour. Deficits: DKA ~3-6 L, HHS ~8-12 L (more profound dehydration → more aggressive resuscitation). Fluids alone lower glucose substantially via hemodilution and restored renal perfusion/clearance, and they restore hemodynamics before insulin shifts fluid/K+ intracellularly.</div><div class="rtt">⚠️ WRONG: 'Start the insulin drip immediately on arrival.' Insulin before volume resuscitation worsens hypovolemia and can cause fatal hypokalemia. Discriminator: fluids are rung 1 — insulin waits for volume + a checked K+.</div></div><div class="rt"><div class="rtl">2. Correct Na -&gt; switch to half-NS</div><div class="rte">After the initial NS bolus, choose maintenance fluid by the CORRECTED sodium (add ~1.6-2.4 mEq Na per 100 mg/dL glucose above normal, since hyperglycemia dilutes measured Na). If corrected Na is normal/high → switch to 0.45% (half) NS to give free water; if corrected Na is low → continue 0.9% NS. Goal: replace the free-water deficit while avoiding too-rapid osmolar shifts.</div><div class="rtt">⚠️ WRONG: 'The measured serum Na is low, so give hypotonic fluids and treat hyponatremia.' The low measured Na is usually a dilutional artifact of hyperglycemia — correct it first. Discriminator: act on the CORRECTED sodium, not the raw value.</div></div><div class="rt"><div class="rtl">3. Step 2 Potassium before insulin</div><div class="rte">Rung 2: check serum potassium BEFORE starting insulin, because insulin (and correction of acidosis) drives K+ into cells and can precipitate life-threatening hypokalemia/arrhythmia. Total-body K+ is depleted in every DKA/HHS patient regardless of the serum value, due to osmotic-diuresis losses and transcellular shift. Recheck K+ q2h during treatment.</div><div class="rtt">⚠️ WRONG: 'Glucose is dangerously high, so start insulin first and check potassium afterward.' Insulin given before knowing K+ can cause fatal hypokalemia. Discriminator: K+ is checked and managed BEFORE the insulin drip — always.</div></div><div class="rt"><div class="rtl">4. K traffic light &lt;3.3 hold insulin</div><div class="rte">RED light — K+ &lt;3.3 mEq/L: HOLD insulin and replete potassium first (give ~10-20 mEq/hr IV) until K+ &gt;=3.3. Insulin here would shift the already-low K+ intracellularly and cause fatal hypokalemia/arrhythmia. Resume insulin only once K+ has crossed back above 3.3.</div><div class="rtt">⚠️ WRONG: 'K+ is 3.0 but glucose is 500 — start insulin anyway, the hyperglycemia is the emergency.' Hypokalemia is the more immediate killer (arrhythmia). Discriminator: K+ &lt;3.3 → replete potassium FIRST, hold insulin, no exceptions.</div></div><div class="rt"><div class="rtl">5. K 3.3-5.2 give K with fluids</div><div class="rte">YELLOW light — K+ 3.3-5.2 mEq/L: proceed with insulin AND add 20-30 mEq potassium to each liter of IV fluid to keep K+ in the 4-5 range, anticipating the fall as insulin acts. This is the most common scenario at presentation. Continue cardiac monitoring and q2h K+ checks.</div><div class="rtt">⚠️ WRONG: 'K+ is normal at 4.5, so no potassium replacement is needed.' A 'normal' serum K+ in DKA still means total-body depletion and will drop with insulin. Discriminator: in the 3.3-5.2 window, give K+ WITH the insulin — a normal value is not reassurance.</div></div><div class="rt"><div class="rtl">6. K &gt;5.2 no K yet</div><div class="rte">GREEN light — K+ &gt;5.2 mEq/L: start insulin and fluids but do NOT add potassium yet; recheck K+ in ~2 hours. Insulin and rehydration will bring the elevated serum K+ down (and total-body K+ is still low, so it will eventually need replacement). Begin K+ once it falls below 5.2 and urine output is confirmed.</div><div class="rtt">⚠️ WRONG: 'K+ is 5.5 — treat the hyperkalemia with kayexalate/aggressive measures.' The hyperkalemia is from transcellular shift and self-corrects with insulin/fluids. Discriminator: hold K+ replacement (don't aggressively lower it either) and recheck — insulin itself is the treatment.</div></div><div class="rt"><div class="rtl">7. Step 3 Insulin infusion</div><div class="rte">Rung 3: IV regular insulin infusion at 0.1 U/kg/hr (with or without an initial 0.1 U/kg bolus; the bolus is OMITTED in children to reduce cerebral-edema risk). Target a glucose fall of 50-100 mg/dL/hr; if glucose doesn't drop ~10% in the first hour, increase the rate or reassess fluids. Insulin's real job is to halt lipolysis/ketogenesis and close the anion gap.</div><div class="rtt">⚠️ WRONG: 'Use intermittent subcutaneous regular insulin boluses for severe DKA.' Variable SC absorption in a dehydrated patient is unreliable — IV infusion is standard for severe DKA/HHS. Discriminator: continuous IV insulin (not SC) until the gap closes.</div></div><div class="rt"><div class="rtl">8. Step 4 Add dextrose at ~200</div><div class="rte">Rung 4: when glucose reaches ~200 mg/dL (DKA) or ~250-300 (HHS), add D5 (e.g., D5-half-NS) to the fluids and CONTINUE the insulin infusion. The dextrose lets you keep insulin running to clear ketones/close the gap without causing hypoglycemia. You may reduce the insulin rate slightly but do not stop it.</div><div class="rtt">⚠️ WRONG: 'Glucose dropped to 200, so discontinue the insulin drip.' The anion gap is usually still open; stopping insulin reopens ketogenesis. Discriminator: at glucose ~200 → ADD dextrose, KEEP insulin — resolution is defined by the gap, not the glucose.</div></div><div class="rt"><div class="rtl">9. Step 5 Bicarb not routine</div><div class="rte">Rung 5: bicarbonate is NOT routine — insulin + fluids correct the acidosis by clearing ketoacids (each metabolized ketone regenerates bicarbonate). Reserve it for severe acidemia, pH &lt;7.0 (some use &lt;6.9), where cardiac contractility and pressor responsiveness are impaired. Give as a slow infusion, never a rapid push.</div><div class="rtt">⚠️ WRONG: 'pH is 7.1 — give bicarbonate to speed correction.' No benefit at pH &gt;7.0, and it adds harm. Discriminator: the ONLY bicarb indication in DKA is pH &lt;7.0; moderate acidosis resolves with insulin and fluids alone.</div></div><div class="rt"><div class="rtl">10. Bicarb risks</div><div class="rte">Why bicarbonate is avoided: it worsens HYPOKALEMIA (drives K+ intracellularly), causes a PARADOXICAL CSF/CNS acidosis (CO2 generated crosses the blood-brain barrier faster than bicarbonate), promotes arrhythmias, delays ketone clearance, can cause rebound metabolic alkalosis, and increases cerebral-edema risk in children.</div><div class="rtt">⚠️ WRONG: 'Bicarbonate is harmless and at worst just doesn't help.' It actively causes hypokalemia, paradoxical CNS acidosis, and pediatric cerebral edema. Discriminator: bicarb is potentially harmful, which is precisely why it's withheld unless pH &lt;7.0.</div></div><div class="rt"><div class="rtl">11. Step 6 Transition / anion gap closed</div><div class="rte">Rung 6: stop the IV insulin only after RESOLUTION — anion gap closed (and HCO3 &gt;=15-18, pH &gt;7.3, patient eating). DKA resolution criteria are gap/bicarb-based, NOT a normal glucose. Before stopping the drip, give long-acting SC (basal) insulin and OVERLAP it with the infusion for 1-2 hours so a basal level is established when the drip comes off.</div><div class="rtt">⚠️ WRONG: 'The glucose normalized, so stop the IV insulin now.' Glucose normalizes long before the gap closes; stopping early causes rebound DKA. Discriminator: transition is triggered by gap closure (not glucose) and requires SC overlap before the drip stops.</div></div><div class="rt"><div class="rtl">12. Prevent rebound DKA</div><div class="rte">IV regular insulin has a very short half-life (~minutes); if the drip is stopped before SC basal insulin has taken effect, insulin levels crater and ketoacidosis rebounds. Give SC basal (e.g., glargine) and overlap with the infusion for 1-2 hours (rapid-acting nutritional insulin overlaps ~15-30 min) so coverage is continuous.</div><div class="rtt">⚠️ WRONG: 'Turn off the drip and give the first SC dose at the same moment.' The gap between drip-off and SC onset reopens ketogenesis. Discriminator: SC insulin must be given 1-2h BEFORE stopping the IV drip — no insulin-free gap.</div></div><div class="rt"><div class="rtl">13. Complications: cerebral edema</div><div class="rte">Cerebral edema is the most feared, leading cause of DKA death in CHILDREN, caused by over-rapid fluid/osmolar correction (rapid drop in glucose/osmolality shifts water into brain cells). Prevention: avoid the insulin bolus in kids, lower glucose no faster than ~50-100 mg/dL/hr, and correct osmolality gradually. Onset: headache, lethargy, bradycardia/HTN (Cushing), declining consciousness 4-12h into treatment → give mannitol/hypertonic saline.</div><div class="rtt">⚠️ WRONG: 'In pediatric DKA, correct fluids and glucose as fast as possible to fix the acidosis quickly.' Aggressive/rapid correction precipitates fatal cerebral edema. Discriminator: in children, go SLOW (no bolus, controlled osmolar correction) — speed kills here.</div></div><div class="rt"><div class="rtl">14. Complications: hypoglycemia/hypoK/hypophos/HCMA</div><div class="rte">Treatment-related complications: HYPOGLYCEMIA (from continuing insulin — prevent by adding dextrose at glucose ~200); HYPOKALEMIA (insulin/bicarb shift K+ in — replace proactively); HYPOPHOSPHATEMIA (insulin drives phosphate intracellularly — replace only if severe &lt;1.0 mg/dL or with cardiac/respiratory/muscle weakness); HYPERCHLOREMIC NON-GAP ACIDOSIS (from large-volume NS resuscitation — expected, benign, self-resolves).</div><div class="rtt">⚠️ WRONG: 'A persistent acidosis after the anion gap has closed means the DKA is not resolved — restart aggressive insulin.' A post-treatment NON-gap (hyperchloremic) acidosis from NS is benign and self-limited. Discriminator: check the gap — if it's closed, a residual non-gap acidosis is the saline artifact, not ongoing DKA.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_pharm_liver_pancreas.html" title="DM — Scene 1 — Diabetes Pharmacology: The Liver-Pancreas Workshop">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_t1_vs_t2.html" title="DM — Scene 2 — DM Pathophys &amp; Dx: T1DM Battle vs T2DM Factory">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

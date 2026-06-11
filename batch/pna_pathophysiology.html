@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pneumonia/Abscess — Pathogenesis &amp; Lobar Phases</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>11</em></summary><ol class="traps"><li><b>Microbiota / inhale</b> — A positive sputum/throat culture can reflect colonization, not infection — the lower respiratory tract is normally sterile, so interpret cultures with the clinical picture.</li><li><b>Micro-aspiration</b> — Aspiration pneumonia and aspiration pneumonitis (Mendelson — sterile acid chemical injury) look alike early; antibiotics are NOT routinely needed for pure chemical pneumonitis in the first 48h.</li><li><b>Risk: smoking/cytokines</b> — Post-influenza secondary bacterial pneumonia is classically Staph aureus (including MRSA) and pneumococcus — a biphasic illness with re-worsening fever after initial flu improvement is the board cue.</li><li><b>Trigger → inflammation</b> — Procalcitonin rises with bacterial (not viral) infection and can guide antibiotic duration, but a low value does not reliably exclude pneumonia — never withhold antibiotics in a sick patient on PCT alone.</li><li><b>Phase 1: Edema</b> — "Hepatization" describes the gross firm liver-like texture of consolidated lung — it is a pathology term, not a radiology finding; do not expect it on CXR.</li><li><b>Phase 3: Gray hepatization</b> — Color sequence trap: RED hepatization comes BEFORE GRAY (RBCs arrive then degrade) — reversing the order is a classic exam distractor.</li><li><b>Phase 4: Resolution</b> — Do not repeat the CXR too early — radiographic infiltrate persists long after the patient is clinically well; early re-imaging causes needless concern and overtreatment.</li><li><b>Lobar CXR</b> — Don't call diffuse bilateral infiltrate "lobar" — lobar means confined to a single anatomic lobe respecting fissures.</li><li><b>Bronchopneumonia CXR</b> — Cavitation within patchy bronchopneumonia suggests S. aureus, Klebsiella, anaerobes, or TB — a cavity should prompt a hunt for these, not routine pneumococcus.</li><li><b>Interstitial/GGO CXR</b> — GGO ≠ bacterial lobar pneumonia — think atypical/viral/PJP. In a patient with hypoxia out of proportion to the film and low CD4, treat empirically for PJP (TMP-SMX) plus steroids if PaO2 &lt;70/A-a gradient &gt;35.</li><li><b>VAP CXR</b> — VAP is defined as pneumonia developing &gt;48 hours after intubation; an infiltrate present at/just after intubation is community-acquired, not VAP, and does not warrant broad anti-MDR coverage.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Microbiota / inhale</div><div class="rte">Pneumonia begins when pathogens reach the normally sterile lower airways via micro-aspiration of colonizing oropharyngeal flora, inhalation of aerosols, or (rarely) hematogenous seeding. The healthy lung defends with cough, mucociliary escalator, and alveolar macrophages; infection results when inoculum/virulence overwhelms these defenses. Community pathogens are dominated by Strep pneumoniae (most common typical), then H. influenzae, atypicals (Mycoplasma, Chlamydophila, Legionella), and respiratory viruses.</div><div class="rtt">⚠️ A positive sputum/throat culture can reflect colonization, not infection — the lower respiratory tract is normally sterile, so interpret cultures with the clinical picture.</div></div><div class="rt"><div class="rtl">2. Micro-aspiration</div><div class="rte">Silent micro-aspiration of oropharyngeal secretions during sleep is the dominant route for typical bacterial CAP — distinct from gross/macro-aspiration of gastric contents, which favors anaerobes/mixed flora and can progress to a lung abscess. Classic aspiration localizes to gravity-dependent segments: posterior upper lobes (supine) or superior segments of lower lobes; the RIGHT lung is favored because the right mainstem bronchus is wider and more vertical.</div><div class="rtt">⚠️ Aspiration pneumonia and aspiration pneumonitis (Mendelson — sterile acid chemical injury) look alike early; antibiotics are NOT routinely needed for pure chemical pneumonitis in the first 48h.</div></div><div class="rt"><div class="rtl">3. Risk: smoking/cytokines</div><div class="rte">Host-defense impairment raises risk: smoking and alcohol paralyze the mucociliary escalator and macrophage function; COPD, CHF, diabetes, and age &gt;65 are independent risks; asplenia/complement deficiency predispose to encapsulated organisms (pneumococcus). Viral infection (influenza) damages epithelium and precedes secondary bacterial pneumonia (S. pneumoniae, S. aureus).</div><div class="rtt">⚠️ Post-influenza secondary bacterial pneumonia is classically Staph aureus (including MRSA) and pneumococcus — a biphasic illness with re-worsening fever after initial flu improvement is the board cue.</div></div><div class="rt"><div class="rtl">4. Trigger → inflammation</div><div class="rte">Recognition of pathogen PAMPs by alveolar macrophages (TLRs) releases IL-1 and TNF-α (fever, malaise), IL-6 (acute-phase/CRP), and IL-8 + G-CSF (neutrophil chemotaxis and marrow release → leukocytosis with left shift). The resulting capillary leak and neutrophil flood produce the alveolar exudate that fills airspaces and is seen as consolidation on imaging.</div><div class="rtt">⚠️ Procalcitonin rises with bacterial (not viral) infection and can guide antibiotic duration, but a low value does not reliably exclude pneumonia — never withhold antibiotics in a sick patient on PCT alone.</div></div><div class="rt"><div class="rtl">5. Phase 1: Edema</div><div class="rte">Phase 1 (congestion/edema, ~day 1): bacterial proliferation with vascular engorgement and protein-rich edema fluid flooding alveoli — few neutrophils yet. This is the earliest substrate of consolidation, when bacteria spread freely through the pores of Kohn to adjacent alveoli.</div><div class="rtt">⚠️ "Hepatization" describes the gross firm liver-like texture of consolidated lung — it is a pathology term, not a radiology finding; do not expect it on CXR.</div></div><div class="rt"><div class="rtl">6. Phase 2: Red hepatization</div><div class="rte">Phase 2 (red hepatization, ~days 2-3): alveoli pack with RBCs (diapedesis), fibrin, and neutrophils. The lung is red, firm, and airless — liver-like consistency. Capillary congestion gives the red color.</div></div><div class="rt"><div class="rtl">7. Phase 3: Gray hepatization</div><div class="rte">Phase 3 (gray hepatization, ~days 4-6): RBCs lyse and degrade while a fibrinopurulent neutrophil exudate persists — lung turns gray-brown, still firm. This is the phase of active bacterial containment; the mnemonic order is Edema → Red → Gray → Resolution.</div><div class="rtt">⚠️ Color sequence trap: RED hepatization comes BEFORE GRAY (RBCs arrive then degrade) — reversing the order is a classic exam distractor.</div></div><div class="rt"><div class="rtl">8. Phase 4: Resolution</div><div class="rte">Phase 4 (resolution, ~day 8+): macrophages clear debris, fibrinolytic enzymes digest exudate, and normal alveolar architecture is restored (lobar pneumonia heals without scarring if uncomplicated). Radiographic clearance lags clinical recovery by weeks — a follow-up CXR to confirm resolution is taken at ~6-8 weeks, mainly to exclude an obstructing lesion in smokers/older patients.</div><div class="rtt">⚠️ Do not repeat the CXR too early — radiographic infiltrate persists long after the patient is clinically well; early re-imaging causes needless concern and overtreatment.</div></div><div class="rt"><div class="rtl">9. Lobar CXR</div><div class="rte">Lobar pattern: dense, homogeneous consolidation confined to one lobe with air bronchograms (air-filled bronchi standing out against fluid-filled alveoli) — the classic signature of Strep pneumoniae. Klebsiella can cause a lobar pattern with a bulging fissure and currant-jelly sputum, especially in alcoholics/diabetics.</div><div class="rtt">⚠️ Don't call diffuse bilateral infiltrate "lobar" — lobar means confined to a single anatomic lobe respecting fissures.</div></div><div class="rt"><div class="rtl">10. Bronchopneumonia CXR</div><div class="rte">Bronchopneumonia: patchy, multifocal, often bilateral airspace opacities centered on bronchi (no lobar consolidation). Typical of Staph aureus, gram-negatives (Klebsiella, Pseudomonas), and many nosocomial/hospital-acquired pneumonias.</div><div class="rtt">⚠️ Cavitation within patchy bronchopneumonia suggests S. aureus, Klebsiella, anaerobes, or TB — a cavity should prompt a hunt for these, not routine pneumococcus.</div></div><div class="rt"><div class="rtl">11. Interstitial/GGO CXR</div><div class="rte">Diffuse ground-glass/interstitial pattern: hazy bilateral opacity without dense lobar consolidation — characteristic of atypical (Mycoplasma, often a striking radiographic-clinical mismatch where the film looks worse than the patient), viral pneumonias, and PJP (Pneumocystis jirovecii in HIV/immunosuppressed; note the PJP label).</div><div class="rtt">⚠️ GGO ≠ bacterial lobar pneumonia — think atypical/viral/PJP. In a patient with hypoxia out of proportion to the film and low CD4, treat empirically for PJP (TMP-SMX) plus steroids if PaO2 &lt;70/A-a gradient &gt;35.</div></div><div class="rt"><div class="rtl">12. VAP CXR</div><div class="rte">Ventilator-associated pneumonia: a new or progressive infiltrate &gt;48h after intubation, plus fever, leukocytosis, purulent secretions, and worsening oxygenation. Suspect MDR organisms — Pseudomonas aeruginosa, MRSA, Acinetobacter, ESBL Enterobacterales — and cover them empirically while awaiting cultures.</div><div class="rtt">⚠️ VAP is defined as pneumonia developing &gt;48 hours after intubation; an infiltrate present at/just after intubation is community-acquired, not VAP, and does not warrant broad anti-MDR coverage.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pna_aspiration_abscess.html" title="Pneumonia/Abscess — Aspiration &amp; Lung Abscess">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pna_organisms_resistance.html" title="Pneumonia/Abscess — Pneumococcal Resistance, CA-MRSA &amp; Atypicals">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — SCENE 7: ADHF Phenotypes (ER Triage 4 Beds)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Typical ADHF — bed 1</b> — WRONG answer: 'give high-dose IV furosemide as the primary treatment for a hypertensive flash-pulmonary-edema patient.' Discriminator: in hypertensive/vascular ADHF the problem is afterload-driven fluid shift, so aggressive diuresis of a near-euvolemic patient causes hypotension and AKI — the correct first move is a vasodilator (nitrates ± NIV).</li><li><b>Normotensive typical</b> — WRONG answer: 'treat every normotensive ADHF patient like flash edema with vasodilators only and minimal diuresis.' Discriminator: normotensive gradual-onset ADHF reflects true total-body volume overload — diuresis to euvolemia is the priority, unlike the redistribution physiology of hypertensive ADHF.</li><li><b>Pulmonary edema phenotype</b> — WRONG answer: 'intubate immediately and start broad-spectrum antibiotics for the bilateral infiltrates.' Discriminator: bilateral symmetric perihilar edema with elevated JVP and S3 is cardiogenic — NIV plus nitrates usually averts intubation, and antibiotics treat pneumonia (asymmetric, fever, leukocytosis), not flash edema.</li><li><b>Opiates / NIV</b> — WRONG answer: 'give IV morphine liberally to calm the dyspneic flash-edema patient.' Discriminator: routine morphine in ADHF is associated with respiratory depression, more intubations, and worse outcomes — NIV and nitrates are the evidence-based preload-reducing tools.</li><li><b>Low output phenotype</b> — WRONG answer: 'the cool extremities and low urine output mean the patient is dehydrated — give a fluid bolus.' Discriminator: in cold-wet ADHF hypoperfusion is from pump failure WITH congestion, not hypovolemia — fluids worsen pulmonary edema; the patient needs decongestion ± inotropic support, not volume.</li><li><b>Inotropes if low BP / diuretic-refractory</b> — WRONG answer: 'add an inotrope to any ADHF patient who is still congested.' Discriminator: inotropes are only for low-output/hypoperfusion or diuretic-refractory states — in a warm-wet patient with adequate BP they add arrhythmia and mortality risk with no decongestion benefit (OPTIME-CHF showed harm with routine milrinone).</li><li><b>Cardiogenic shock — bed 4</b> — WRONG answer: 'in MI-related cardiogenic shock, perform immediate complete multivessel revascularization of all stenoses.' Discriminator: CULPRIT-SHOCK showed culprit-lesion-only PCI lowered 30-day death/renal failure vs immediate multivessel PCI — stage non-culprit lesions later.</li><li><b>Inotropes/pressors + MCS</b> — WRONG answer: 'start dopamine as the first-line vasopressor and place a routine IABP to improve survival in MI cardiogenic shock.' Discriminator: norepinephrine beats dopamine (SOAP-II) and routine IABP gave no mortality benefit (IABP-SHOCK II) — MCS is selective, not reflexive.</li><li><b>Precipitants — always ask</b> — WRONG answer: 'just treat the congestion with diuretics and discharge — the trigger does not matter.' Discriminator: missing AF with RVR, ACS, or a new severe valve lesion leads to early readmission or death; identifying/correcting the precipitant is a board-mandated step in ADHF workup.</li><li><b>BUN &gt; 43</b> — WRONG answer: 'an elevated BUN in ADHF is just dehydration and is prognostically meaningless.' Discriminator: BUN &gt;43 is the top node of the ADHERE mortality tree — it is a high-risk marker reflecting neurohormonal activation/hypoperfusion, not a benign lab.</li><li><b>SBP &lt; 115</b> — WRONG answer: 'a low SBP on ADHF admission is reassuring because the patient is not hypertensive.' Discriminator: low admission SBP marks low cardiac output and predicts worse outcomes; the hypertensive (high-SBP) phenotype carries the better prognosis.</li><li><b>Cr &gt; 2.75 / rising troponin</b> — WRONG answer: 'a detectable troponin in an ADHF patient without chest pain is always a STEMI requiring emergent cath.' Discriminator: low-level troponin elevation is common in ADHF from demand ischemia/wall stress and is prognostic — distinguish a flat low-level elevation from a dynamic rise-and-fall pattern that signals true type 1 MI.</li><li><b>Swan-Ganz — selective only</b> — WRONG answer: 'place a PA catheter routinely in all ADHF admissions to optimize fluid management and improve outcomes.' Discriminator: ESCAPE proved routine PA catheterization gives no outcome benefit and adds harm — it is a selective tool for shock or refractory/uncertain hemodynamics only.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Typical ADHF — bed 1</div><div class="rte">Hypertensive ('vascular') ADHF is the most common ER presentation: rapid-onset 'flash' pulmonary edema driven by an abrupt rise in afterload and fluid REDISTRIBUTION into the lungs, NOT whole-body fluid accumulation — these patients are often warm-wet but near euvolemic in total body water. SBP is typically &gt;140. Cornerstone therapy is IV vasodilators (nitroglycerin starting ~5–10 mcg/min titrated up, or nitroprusside) to drop preload/afterload; diuretics are secondary because there is little extra total-body volume to remove. Mnemonic: 'high pressure, redistribute not deplete.'</div><div class="rtt">⚠️ WRONG answer: 'give high-dose IV furosemide as the primary treatment for a hypertensive flash-pulmonary-edema patient.' Discriminator: in hypertensive/vascular ADHF the problem is afterload-driven fluid shift, so aggressive diuresis of a near-euvolemic patient causes hypotension and AKI — the correct first move is a vasodilator (nitrates ± NIV).</div></div><div class="rt"><div class="rtl">2. Normotensive typical</div><div class="rte">Normotensive ADHF (SBP ~ normal) is the classic gradual 'cardiac' decompensation: days-to-weeks of progressive sodium/water retention with rising weight, edema, and elevated JVP — these patients ARE truly volume overloaded. IV loop diuretic is the cornerstone; per DOSE trial give an IV dose ~2.5× the chronic oral loop dose and target a falling JVP/weight. Distinguish from hypertensive ADHF where total body water is near normal.</div><div class="rtt">⚠️ WRONG answer: 'treat every normotensive ADHF patient like flash edema with vasodilators only and minimal diuresis.' Discriminator: normotensive gradual-onset ADHF reflects true total-body volume overload — diuresis to euvolemia is the priority, unlike the redistribution physiology of hypertensive ADHF.</div></div><div class="rt"><div class="rtl">3. Pulmonary edema phenotype</div><div class="rte">Acute cardiogenic pulmonary edema = severe respiratory distress with hypoxia, diffuse crackles, and bilateral 'bat-wing' infiltrates on CXR. Management bundle (mnemonic LMNOP-ish): sit Upright, high-flow O2/Noninvasive ventilation (CPAP/BiPAP), IV Nitrates for preload reduction, and diuretics if volume overloaded; morphine only cautiously. Target SpO2 ≥90%. NIV reduces intubation rates and work of breathing.</div><div class="rtt">⚠️ WRONG answer: 'intubate immediately and start broad-spectrum antibiotics for the bilateral infiltrates.' Discriminator: bilateral symmetric perihilar edema with elevated JVP and S3 is cardiogenic — NIV plus nitrates usually averts intubation, and antibiotics treat pneumonia (asymmetric, fever, leukocytosis), not flash edema.</div></div><div class="rt"><div class="rtl">4. Opiates / NIV</div><div class="rte">NIV (CPAP/BiPAP) is first-line adjunct in cardiogenic pulmonary edema: positive pressure recruits alveoli, lowers preload AND afterload, and reduces work of breathing and intubation rate. Opiates (low-dose IV morphine) modestly reduce preload and anxiety but are now DISCOURAGED for routine use — registry data link morphine to more ICU admissions, mechanical ventilation, and possibly higher mortality.</div><div class="rtt">⚠️ WRONG answer: 'give IV morphine liberally to calm the dyspneic flash-edema patient.' Discriminator: routine morphine in ADHF is associated with respiratory depression, more intubations, and worse outcomes — NIV and nitrates are the evidence-based preload-reducing tools.</div></div><div class="rt"><div class="rtl">5. Low output phenotype</div><div class="rte">Low-output ('cold') ADHF = inadequate cardiac output with hypoperfusion: cool/clammy extremities, NARROW pulse pressure (proportional pulse pressure &lt;25%), altered mentation, rising creatinine, and congested liver. This is the 'cold-wet' Stevenson quadrant (low perfusion + congestion). Confirm hemodynamics; in unclear cases or shock a PA catheter can guide. Cardiorenal and cardiohepatic dysfunction are markers of severity.</div><div class="rtt">⚠️ WRONG answer: 'the cool extremities and low urine output mean the patient is dehydrated — give a fluid bolus.' Discriminator: in cold-wet ADHF hypoperfusion is from pump failure WITH congestion, not hypovolemia — fluids worsen pulmonary edema; the patient needs decongestion ± inotropic support, not volume.</div></div><div class="rt"><div class="rtl">6. Inotropes if low BP / diuretic-refractory</div><div class="rte">Inotropes (dobutamine ~2–10 mcg/kg/min, or milrinone 0.125–0.75 mcg/kg/min) are reserved for the cold/low-output patient with hypotension causing end-organ hypoperfusion OR genuine diuretic refractoriness from poor renal perfusion. They improve contractility and forward flow as a bridge, but increase myocardial O2 demand and arrhythmias and do NOT improve survival. Milrinone is renally cleared and a pulmonary vasodilator (good for RV failure/pulmonary HTN); avoid milrinone in profound hypotension.</div><div class="rtt">⚠️ WRONG answer: 'add an inotrope to any ADHF patient who is still congested.' Discriminator: inotropes are only for low-output/hypoperfusion or diuretic-refractory states — in a warm-wet patient with adequate BP they add arrhythmia and mortality risk with no decongestion benefit (OPTIME-CHF showed harm with routine milrinone).</div></div><div class="rt"><div class="rtl">7. Cardiogenic shock — bed 4</div><div class="rte">Cardiogenic shock = sustained hypotension (SBP &lt;90 for &gt;30 min or pressors needed) PLUS end-organ hypoperfusion (lactate &gt;2, oliguria, cold mottled skin, altered mentation) with cardiac index typically &lt;2.2 L/min/m² and PCWP &gt;15. Mortality ~40–50%. Find and fix the cause — ACS is #1, so emergent revascularization (PCI) per the CULPRIT-SHOCK trial: revascularize the culprit lesion ONLY, not all vessels.</div><div class="rtt">⚠️ WRONG answer: 'in MI-related cardiogenic shock, perform immediate complete multivessel revascularization of all stenoses.' Discriminator: CULPRIT-SHOCK showed culprit-lesion-only PCI lowered 30-day death/renal failure vs immediate multivessel PCI — stage non-culprit lesions later.</div></div><div class="rt"><div class="rtl">8. Inotropes/pressors + MCS</div><div class="rte">Cardiogenic shock support: vasopressor of choice is NOREPINEPHRINE (SOAP-II — dopamine caused more arrhythmias and trended to higher mortality), plus an inotrope (dobutamine) for contractility. Add mechanical circulatory support — IABP, Impella (pVAD), or VA-ECMO — for refractory shock as a bridge to recovery/transplant. Note: the IABP-SHOCK II trial showed routine IABP did NOT reduce mortality in MI shock.</div><div class="rtt">⚠️ WRONG answer: 'start dopamine as the first-line vasopressor and place a routine IABP to improve survival in MI cardiogenic shock.' Discriminator: norepinephrine beats dopamine (SOAP-II) and routine IABP gave no mortality benefit (IABP-SHOCK II) — MCS is selective, not reflexive.</div></div><div class="rt"><div class="rtl">9. Precipitants — always ask</div><div class="rte">Every ADHF admission demands a hunt for the precipitant because treating it changes outcomes. Mnemonic FAILURE / 'CHAMP': Forgot meds/Faild compliance, Arrhythmia (esp new AF with RVR), Ischemia/ACS, Lifestyle (dietary salt/fluid, NSAIDs, alcohol), Upregulation (thyrotoxicosis, pregnancy, anemia), Rheumatic/valve disease, Embolism (PE), plus infection/sepsis. CHAMP = Coronary, Hypertension emergency, Arrhythmia, acute Mechanical (papillary rupture, VSD), PE.</div><div class="rtt">⚠️ WRONG answer: 'just treat the congestion with diuretics and discharge — the trigger does not matter.' Discriminator: missing AF with RVR, ACS, or a new severe valve lesion leads to early readmission or death; identifying/correcting the precipitant is a board-mandated step in ADHF workup.</div></div><div class="rt"><div class="rtl">10. BUN &gt; 43</div><div class="rte">BUN &gt;43 mg/dL is the single STRONGEST predictor of in-hospital mortality in the ADHERE registry risk tree — it reflects both renal hypoperfusion and intense neurohormonal (RAAS/ADH) activation. The ADHERE decision tree splits first on BUN ≥43, then SBP &lt;115, then creatinine ≥2.75; the highest-risk branch (all three) carries ~22% in-hospital mortality vs ~2% for none.</div><div class="rtt">⚠️ WRONG answer: 'an elevated BUN in ADHF is just dehydration and is prognostically meaningless.' Discriminator: BUN &gt;43 is the top node of the ADHERE mortality tree — it is a high-risk marker reflecting neurohormonal activation/hypoperfusion, not a benign lab.</div></div><div class="rt"><div class="rtl">11. SBP &lt; 115</div><div class="rte">Admission SBP &lt;115 mmHg is the SECOND node of the ADHERE risk tree and a powerful adverse prognostic marker — LOW blood pressure in ADHF signals a low-output, poorly perfusing state, the opposite of the better-prognosis hypertensive phenotype. Higher admission SBP actually correlates with LOWER mortality in ADHF.</div><div class="rtt">⚠️ WRONG answer: 'a low SBP on ADHF admission is reassuring because the patient is not hypertensive.' Discriminator: low admission SBP marks low cardiac output and predicts worse outcomes; the hypertensive (high-SBP) phenotype carries the better prognosis.</div></div><div class="rt"><div class="rtl">12. Cr &gt; 2.75 / rising troponin</div><div class="rte">Creatinine ≥2.75 mg/dL is the third splitting node of the ADHERE tree (cardiorenal injury). A detectable/rising troponin in ADHF — even without overt ACS — independently predicts higher mortality (ongoing myocyte injury), and a rising BNP/NT-proBNP trend tracks worsening wall stress. Together these mark the highest-risk patients.</div><div class="rtt">⚠️ WRONG answer: 'a detectable troponin in an ADHF patient without chest pain is always a STEMI requiring emergent cath.' Discriminator: low-level troponin elevation is common in ADHF from demand ischemia/wall stress and is prognostic — distinguish a flat low-level elevation from a dynamic rise-and-fall pattern that signals true type 1 MI.</div></div><div class="rt"><div class="rtl">13. Swan-Ganz — selective only</div><div class="rte">The pulmonary artery (Swan-Ganz) catheter is NOT used routinely: the ESCAPE trial showed no improvement in mortality or days alive out of hospital, with more catheter-related adverse events. Reserve it for selected cases — cardiogenic shock with unclear hemodynamics, diuretic-refractory congestion, suspected mixed/discordant shock, or evaluation before transplant/MCS — where it guides tailored therapy (measures PCWP, CO, SVR).</div><div class="rtt">⚠️ WRONG answer: 'place a PA catheter routinely in all ADHF admissions to optimize fluid management and improve outcomes.' Discriminator: ESCAPE proved routine PA catheterization gives no outcome benefit and adds harm — it is a selective tool for shock or refractory/uncertain hemodynamics only.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_hall_of_shame.html" title="Heart Failure — SCENE 6: HF Hall of Shame &amp; Comorbidities">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_adhf_trials.html" title="Heart Failure — SCENE 8: ADHF Trials &amp; Discharge">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

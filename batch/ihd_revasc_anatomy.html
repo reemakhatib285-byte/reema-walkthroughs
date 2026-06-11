@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD — Revascularization Anatomy: Which Vessel, Which Procedure</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>DM + multivessel = CABG always</b> — WRONG answer: choosing PCI for a diabetic with 3-vessel disease 'because it's less invasive.' Discriminator — FREEDOM showed CABG is superior for hard endpoints in diabetics with multivessel CAD; less-invasive does not mean better-outcome here. PCI is acceptable only for single-vessel or focal disease.</li><li><b>Left main artery</b> — WRONG answer: managing significant left main disease with medical therapy alone. Discriminator — unlike most stable CAD where revascularization only relieves symptoms, left main stenosis carries a true survival benefit from revascularization; deferring it is a board pitfall.</li><li><b>Survival benefit</b> — WRONG answer: assuming any revascularization prolongs life in stable CAD. Discriminator — the survival benefit is specific to CABG in high-risk anatomy (left main, 3-vessel + low EF, diabetic multivessel); routine PCI of stable lesions does not reduce mortality.</li><li><b>Vessel count vs LAD location</b> — WRONG answer: deciding revascularization strategy purely on vessel count and ignoring lesion location. Discriminator — a single proximal LAD lesion can warrant surgical-grade attention because of the large jeopardized territory, whereas distal small-branch disease in two vessels may not.</li><li><b>Three-vessel disease</b> — WRONG answer: offering multivessel PCI for high-SYNTAX 3-vessel disease. Discriminator — the higher the SYNTAX score (anatomic complexity), the more CABG outperforms PCI; PCI is preferred only when complexity is low or surgical risk is prohibitive.</li><li><b>Two-vessel disease</b> — WRONG answer: treating all two-vessel disease identically. Discriminator — the presence of proximal LAD disease or LV dysfunction converts a PCI-eligible case into one that benefits from CABG; failing to check these is the trap.</li><li><b>Proximal LAD = my territory</b> — WRONG answer: stenting an isolated significant proximal LAD lesion when surgery is feasible, ignoring the durability advantage of an IMA graft. Discriminator — IMA→LAD has &gt;90% 10-year patency and a survival benefit; a stent in the same spot has higher restenosis.</li><li><b>IMA → LAD graft</b> — WRONG answer: assuming all bypass grafts are equivalent in durability. Discriminator — arterial IMA grafts vastly outlast saphenous vein grafts (which fail ~50% by 10 years); the survival benefit of CABG is largely the IMA→LAD graft.</li><li><b>EF &lt;50% → CABG side</b> — WRONG answer: withholding revascularization in low-EF ischemic cardiomyopathy because 'the heart is too weak/the muscle is dead.' Discriminator — viable hibernating myocardium recovers after CABG; STICH extended-follow-up favored surgery for survival in EF &lt;35%.</li><li><b>Upstream protection (grafts)</b> — WRONG answer: believing PCI and CABG offer equivalent protection against future disease in the same artery. Discriminator — CABG grafts protect the entire distal territory regardless of new proximal plaque, which is a key reason CABG outperforms PCI in diffuse/multivessel disease.</li><li><b>Single vessel / normal EF → PCI</b> — WRONG answer: choosing CABG for an isolated single-vessel non-LAD lesion with normal EF. Discriminator — there is no survival benefit to surgery here; PCI (or even medical therapy) is appropriate, and the lower stroke risk favors the percutaneous approach.</li><li><b>Vein graft attrition over years</b> — WRONG answer: reassuring a patient that a saphenous vein graft is a permanent fix. Discriminator — vein grafts have steady attrition (½ fail by 10 yr) and develop graft atherosclerosis; the durable conduit is the arterial IMA, and recurrent angina years after CABG often reflects vein-graft disease.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. DM + multivessel = CABG always</div><div class="rte">Diabetics with multivessel CAD derive a clear mortality benefit from CABG over PCI — driven by the FREEDOM trial (CABG cut death/MI/stroke vs PCI with DES in diabetics with multivessel disease, NNT ~12 over 5 yr). The mechanism: diabetics have diffuse, distal, rapidly progressive disease and accelerated in-stent restenosis, so spot-treating a culprit lesion with a stent fails to address the disease burden, whereas a bypass graft delivers blood distal to the whole diseased segment. Mnemonic: 'Diabetic + Diffuse Disease → Detour (bypass).'</div><div class="rtt">⚠️ WRONG answer: choosing PCI for a diabetic with 3-vessel disease 'because it's less invasive.' Discriminator — FREEDOM showed CABG is superior for hard endpoints in diabetics with multivessel CAD; less-invasive does not mean better-outcome here. PCI is acceptable only for single-vessel or focal disease.</div></div><div class="rt"><div class="rtl">2. Left main artery</div><div class="rte">The left main supplies ~75% of the LV (it gives rise to the LAD and LCx), so a significant left main stenosis (≥50%) jeopardizes a massive myocardial territory — this is the highest-risk lesion in cardiology and an indication for revascularization with survival benefit. CABG is the historical gold standard; PCI is reasonable for low-to-intermediate complexity left main (SYNTAX score ≤32) in selected patients per EXCEL/NOBLE data. Mnemonic: left main = 'widow-maker's parent vessel.'</div><div class="rtt">⚠️ WRONG answer: managing significant left main disease with medical therapy alone. Discriminator — unlike most stable CAD where revascularization only relieves symptoms, left main stenosis carries a true survival benefit from revascularization; deferring it is a board pitfall.</div></div><div class="rt"><div class="rtl">3. Survival benefit</div><div class="rte">CABG (not PCI) confers a mortality benefit — beyond symptom relief — in three settings: left main disease, 3-vessel disease (especially with reduced EF), and diabetics with multivessel disease. The survival edge comes from arterial (IMA→LAD) grafts that resist atherosclerosis and from 'upstream' protection of the entire vessel rather than one segment. Contrast: in stable single/two-vessel disease, revascularization relieves angina but does NOT prolong life (COURAGE/ISCHEMIA).</div><div class="rtt">⚠️ WRONG answer: assuming any revascularization prolongs life in stable CAD. Discriminator — the survival benefit is specific to CABG in high-risk anatomy (left main, 3-vessel + low EF, diabetic multivessel); routine PCI of stable lesions does not reduce mortality.</div></div><div class="rt"><div class="rtl">4. Vessel count vs LAD location</div><div class="rte">It is not merely how many vessels are diseased but WHERE — proximal LAD involvement places the entire anterior wall and septum at risk and independently pushes toward CABG with an IMA graft. A proximal LAD lesion supplies V1–V4 (anteroseptal) territory; losing it causes large anterior infarcts and severe LV dysfunction. Mnemonic: 'Location (proximal LAD) beats the head-count.'</div><div class="rtt">⚠️ WRONG answer: deciding revascularization strategy purely on vessel count and ignoring lesion location. Discriminator — a single proximal LAD lesion can warrant surgical-grade attention because of the large jeopardized territory, whereas distal small-branch disease in two vessels may not.</div></div><div class="rt"><div class="rtl">5. Three-vessel disease</div><div class="rte">Three-vessel disease (LAD + LCx + RCA all significantly stenosed) favors CABG over PCI, especially with high anatomic complexity (SYNTAX score &gt;22–32) or reduced EF, where CABG gives the greatest survival benefit. CABG bypasses all diseased segments at once with durable arterial conduits; PCI requires multiple stents with higher restenosis and incomplete revascularization. Mnemonic: '3 vessels → 3-way detour (surgery).'</div><div class="rtt">⚠️ WRONG answer: offering multivessel PCI for high-SYNTAX 3-vessel disease. Discriminator — the higher the SYNTAX score (anatomic complexity), the more CABG outperforms PCI; PCI is preferred only when complexity is low or surgical risk is prohibitive.</div></div><div class="rt"><div class="rtl">6. Two-vessel disease</div><div class="rte">In two-vessel disease the decision pivots on two things: is the PROXIMAL LAD involved, and is LV function reduced? Two-vessel disease WITHOUT proximal LAD and with normal EF can be managed with PCI or medical therapy; two-vessel disease WITH proximal LAD (or low EF) shifts toward CABG. Mnemonic: 'Two vessels — ask the LAD and the EF.'</div><div class="rtt">⚠️ WRONG answer: treating all two-vessel disease identically. Discriminator — the presence of proximal LAD disease or LV dysfunction converts a PCI-eligible case into one that benefits from CABG; failing to check these is the trap.</div></div><div class="rt"><div class="rtl">7. Proximal LAD = my territory</div><div class="rte">The LAD perfuses the anterior wall, anterior 2/3 of the septum, and apex (ECG: V1–V4) — the largest single coronary territory, so significant proximal LAD disease puts an enormous amount of myocardium at risk and is a class indication for an IMA→LAD graft. A proximal-LAD lesion correlates with anterior STEMI and the worst LV outcomes if it occludes. Mnemonic: 'proximal LAD = the prize the surgeon claims.'</div><div class="rtt">⚠️ WRONG answer: stenting an isolated significant proximal LAD lesion when surgery is feasible, ignoring the durability advantage of an IMA graft. Discriminator — IMA→LAD has &gt;90% 10-year patency and a survival benefit; a stent in the same spot has higher restenosis.</div></div><div class="rt"><div class="rtl">8. IMA → LAD graft</div><div class="rte">The left internal mammary artery (LIMA/IMA) grafted to the LAD is the single most important conduit in CABG: arterial tissue resists atherosclerosis, giving &gt;90% patency at 10 years and an independent survival benefit. It stays connected to the subclavian (in situ graft) and adapts to flow demand. This is why the LAD is the 'priority' target and why CABG beats PCI for proximal LAD/left main/3-vessel disease. Mnemonic: 'IMA is immortal — arterial grafts last, vein grafts don't.'</div><div class="rtt">⚠️ WRONG answer: assuming all bypass grafts are equivalent in durability. Discriminator — arterial IMA grafts vastly outlast saphenous vein grafts (which fail ~50% by 10 years); the survival benefit of CABG is largely the IMA→LAD graft.</div></div><div class="rt"><div class="rtl">9. EF &lt;50% → CABG side</div><div class="rte">Reduced LV systolic function (EF &lt;50%, especially &lt;35%) shifts the balance toward CABG, where the survival benefit of complete revascularization is greatest — STICH trial showed CABG + medical therapy improved long-term survival vs medical therapy alone in ischemic cardiomyopathy. Low-EF hearts often harbor viable/hibernating myocardium that recovers contractility after grafting. Mnemonic: 'low pump (EF) → CABG bump (in survival).'</div><div class="rtt">⚠️ WRONG answer: withholding revascularization in low-EF ischemic cardiomyopathy because 'the heart is too weak/the muscle is dead.' Discriminator — viable hibernating myocardium recovers after CABG; STICH extended-follow-up favored surgery for survival in EF &lt;35%.</div></div><div class="rt"><div class="rtl">10. Upstream protection (grafts)</div><div class="rte">A bypass graft connects the aorta (or subclavian via IMA) to the vessel BEYOND the diseased segment, so it perfuses distal myocardium even if new atherosclerosis develops proximally — 'upstream' protection of the whole downstream territory. A PCI stent, by contrast, only props open one focal segment and offers no protection against future proximal lesions. Mnemonic: 'CABG builds a bridge over the whole river; PCI patches one pothole.'</div><div class="rtt">⚠️ WRONG answer: believing PCI and CABG offer equivalent protection against future disease in the same artery. Discriminator — CABG grafts protect the entire distal territory regardless of new proximal plaque, which is a key reason CABG outperforms PCI in diffuse/multivessel disease.</div></div><div class="rt"><div class="rtl">11. Single vessel / normal EF → PCI</div><div class="rte">Single-vessel disease with preserved EF and a discrete, accessible lesion is ideal for PCI — it is less invasive, has shorter recovery, and lower periprocedural stroke risk than CABG. The trade-off: PCI treats only the culprit lesion ('culprit only — no upstream cover') and provides no protection against future proximal disease. In stable CAD, PCI relieves angina but does not reduce mortality. Mnemonic: 'one focal lesion, good pump → percutaneous patch.'</div><div class="rtt">⚠️ WRONG answer: choosing CABG for an isolated single-vessel non-LAD lesion with normal EF. Discriminator — there is no survival benefit to surgery here; PCI (or even medical therapy) is appropriate, and the lower stroke risk favors the percutaneous approach.</div></div><div class="rt"><div class="rtl">12. Vein graft attrition over years</div><div class="rte">Saphenous vein grafts fail in a predictable timeline: ~10–20% occlude within the first year (early thrombosis from endothelial injury/low flow), then ~2%/yr from years 1–6 (intimal hyperplasia), accelerating to ~4%/yr after year 7 as vein-graft atherosclerosis sets in — roughly 50% patent at 10 years. This contrasts sharply with arterial IMA grafts (&gt;90% at 10 yr) and explains why arterial conduits are preferred and why aggressive statin/antiplatelet therapy is needed to protect vein grafts. Mnemonic: 'veins were never built for arterial pressure.'</div><div class="rtt">⚠️ WRONG answer: reassuring a patient that a saphenous vein graft is a permanent fix. Discriminator — vein grafts have steady attrition (½ fail by 10 yr) and develop graft atherosclerosis; the durable conduit is the arterial IMA, and recurrent angina years after CABG often reflects vein-graft disease.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_pretest.html" title="IHD — Pretest Probability &amp; Triage">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_revascularization.html" title="IHD — Revascularization: PCI vs CABG &amp; Medical Therapy">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

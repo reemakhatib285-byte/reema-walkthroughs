@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — HFrEF drugs (TABLE 265-2)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>17</em></summary><ol class="traps"><li><b>ACE inhibitors</b> — WRONG: continue the ACEi and add an ARB or ARNI on top for 'extra RAAS blockade.' Discriminator: never combine ACEi with ARB or ARNI (hyperkalemia, hypotension, renal failure, angioedema) — and require a ≥36-hour washout when switching ACEi→ARNI to avoid angioedema.</li><li><b>Lisinopril target 20-35mg</b> — WRONG: any ACEi dose that lowers blood pressure is good enough. Discriminator: ATLAS showed the higher target dose, not just 'on an ACEi,' drives the outcome benefit — under-titration is a common quality gap, so push to target as BP/renal function allow.</li><li><b>ARBs</b> — WRONG: a patient who had ANGIOEDEMA on an ACEi can safely switch to an ARB. Discriminator: ARBs carry a small cross-reactive angioedema risk and are used cautiously/avoided after ACEi angioedema — cough (not angioedema) is the clean reason to switch ACEi→ARB.</li><li><b>Aldosterone antagonists (MRA)</b> — WRONG: start an MRA in a HFrEF patient with eGFR 25 or K+ 5.4. Discriminator: MRAs are contraindicated when eGFR &lt;30 or K+ &gt;5.0 — and combining an MRA with an ACEi/ARNI plus a potassium supplement or trimethoprim is a classic life-threatening hyperkalemia setup.</li><li><b>Spironolactone vs eplerenone</b> — WRONG: gynecomastia from spironolactone means you must stop all MRA therapy. Discriminator: switch to selective eplerenone rather than abandoning the class — MRAs are mortality-reducing, and the endocrine effects are a spironolactone-specific, fixable problem.</li><li><b>Beta blockers</b> — WRONG: all beta-blockers in this class are interchangeable for HFrEF. Discriminator: only carvedilol, metoprolol succinate, and bisoprolol have mortality evidence — metoprolol TARTRATE, atenolol and others do NOT count, and substituting tartrate for succinate is a frequently tested error.</li><li><b>Metoprolol succinate CR/XL target 200</b> — WRONG: metoprolol tartrate twice daily is equivalent to metoprolol succinate for HFrEF. Discriminator: only the SUCCINATE (CR/XL) salt was studied and proven in MERIT-HF — tartrate has no HFrEF mortality evidence; the salt/formulation is the whole point of this row.</li><li><b>Carvedilol / bisoprolol dosing</b> — WRONG: avoid all beta-blockers in a HFrEF patient with mild COPD/asthma. Discriminator: a cardioselective agent (bisoprolol or metoprolol succinate) is generally tolerated and the mortality benefit outweighs the small bronchospasm risk — carvedilol (non-selective) is the one to avoid in significant reactive airway disease.</li><li><b>Hydralazine + ISDN</b> — WRONG: hydralazine-ISDN can replace ACEi/ARB/ARNI as routine first-line RAAS therapy in everyone. Discriminator: it is ADD-ON therapy in Black patients on top of standard GDMT (A-HeFT), or a substitute only when RAAS inhibitors can't be used — it does not block the RAAS and is not a universal first-line agent.</li><li><b>ARNI (sacubitril-valsartan)</b> — WRONG: start ARNI the day after stopping an ACEi (or while still on it). Discriminator: you MUST allow a ≥36-hour washout from an ACEi before starting ARNI because overlapping neprilysin + ACE inhibition causes angioedema — also avoid ARNI with eGFR/hyperkalemia issues, and it raises BNP but lowers NT-proBNP.</li><li><b>SGLT2 inhibitor (fixed 10mg)</b> — WRONG: SGLT2i must be up-titrated to a target dose like the other pillars. Discriminator: it is a FIXED 10 mg dose with no titration — and unlike its diabetes indication, it is given for HFrEF outcomes even in non-diabetics; do not withhold it for a normal HbA1c.</li><li><b>Novel: vericiguat</b> — WRONG: vericiguat is a first-line pillar that replaces the SGLT2i or MRA. Discriminator: it is reserved as ADD-ON for high-risk patients with a recent decompensation already on GDMT (VICTORIA) — and don't combine with nitrates/PDE5i (additive hypotension via the same cGMP pathway).</li><li><b>Novel: omecamtiv mecarbil</b> — WRONG: omecamtiv mecarbil works like an inotrope such as milrinone or dobutamine and raises myocardial oxygen demand. Discriminator: it improves contractility WITHOUT increasing oxygen consumption or arrhythmia the way calcium-dependent inotropes do — but its clinical benefit is modest and it is not standard GDMT.</li><li><b>Initiation vs target columns</b> — WRONG: keeping a patient 'on all four pillars' at starting doses is optimized GDMT. Discriminator: outcomes track titration to target doses — but the modern STRONG-HF approach gets all four classes ON first at low doses, then rapidly up-titrates, rather than maxing one drug before adding the next.</li><li><b>Avoid in HFrEF — non-DHP CCB, NSAIDs, TZDs</b> — WRONG: use diltiazem or verapamil for rate control of AF in a HFrEF patient. Discriminator: non-DHP CCBs are negative inotropes contraindicated in HFrEF — use a beta-blocker (or digoxin) for rate control instead; amlodipine/felodipine are the only CCBs considered neutral/safe in HFrEF.</li><li><b>Loop diuretics — symptom control</b> — WRONG: loop diuretics reduce mortality and are a 'pillar' of HFrEF therapy. Discriminator: they are for congestion/symptom control only, not survival — the four pillars (ARNI, beta-blocker, MRA, SGLT2i) reduce mortality, and diuretics should be titrated to the lowest dose maintaining euvolemia.</li><li><b>Ivabradine &amp; digoxin — adjuncts</b> — WRONG: ivabradine works in atrial fibrillation and substitutes for a beta-blocker. Discriminator: ivabradine requires SINUS rhythm and is added ON TOP of a beta-blocker (not instead of it). For digoxin, watch toxicity (nausea, visual halos, arrhythmia) — risk rises with hypokalemia and renal failure, and the target trough is LOW (0.5–0.9).</li></ol></details><details class="panel"><summary>📖 Read-through — all 17 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ACE inhibitors</div><div class="rte">ACE inhibitors (lisinopril, enalapril, captopril, trandolapril) block conversion of angiotensin I→II, reducing afterload, aldosterone and adverse remodeling — a foundational mortality-reducing RAAS therapy in HFrEF (SOLVD, CONSENSUS). Start low, up-titrate to target, monitor K+ and creatinine, and accept a modest (~&lt;30%) creatinine rise.</div><div class="rtt">⚠️ WRONG: continue the ACEi and add an ARB or ARNI on top for 'extra RAAS blockade.' Discriminator: never combine ACEi with ARB or ARNI (hyperkalemia, hypotension, renal failure, angioedema) — and require a ≥36-hour washout when switching ACEi→ARNI to avoid angioedema.</div></div><div class="rt"><div class="rtl">2. Lisinopril target 20-35mg</div><div class="rte">Up-titrate lisinopril (initiation 2.5–5 mg) toward its target 20–35 mg once daily, because the mortality/morbidity benefit of RAAS inhibition is dose-dependent (ATLAS: high-dose lisinopril reduced hospitalizations vs low dose). Don't leave patients stranded at the starting dose.</div><div class="rtt">⚠️ WRONG: any ACEi dose that lowers blood pressure is good enough. Discriminator: ATLAS showed the higher target dose, not just 'on an ACEi,' drives the outcome benefit — under-titration is a common quality gap, so push to target as BP/renal function allow.</div></div><div class="rt"><div class="rtl">3. ARBs</div><div class="rte">ARBs (losartan target 150 mg, valsartan 160 mg bid, candesartan 32 mg) block the AT1 receptor and are used when an ACEi is not tolerated, classically due to ACEi-induced cough (bradykinin) — CHARM-Alternative, Val-HeFT. They are second-line to ARNI/ACEi for RAAS inhibition in HFrEF.</div><div class="rtt">⚠️ WRONG: a patient who had ANGIOEDEMA on an ACEi can safely switch to an ARB. Discriminator: ARBs carry a small cross-reactive angioedema risk and are used cautiously/avoided after ACEi angioedema — cough (not angioedema) is the clean reason to switch ACEi→ARB.</div></div><div class="rt"><div class="rtl">4. Aldosterone antagonists (MRA)</div><div class="rte">Mineralocorticoid receptor antagonists (eplerenone, spironolactone) block aldosterone, reducing fibrosis, sodium retention and mortality in HFrEF (RALES spironolactone, EMPHASIS-HF/EPHESUS eplerenone). Indicated for EF ≤35% on ACEi/ARB + beta-blocker. Require K+ &lt;5.0 and eGFR &gt;30 to start; recheck K+/creatinine within 1 week.</div><div class="rtt">⚠️ WRONG: start an MRA in a HFrEF patient with eGFR 25 or K+ 5.4. Discriminator: MRAs are contraindicated when eGFR &lt;30 or K+ &gt;5.0 — and combining an MRA with an ACEi/ARNI plus a potassium supplement or trimethoprim is a classic life-threatening hyperkalemia setup.</div></div><div class="rt"><div class="rtl">5. Spironolactone vs eplerenone</div><div class="rte">Spironolactone (target 25–50 mg qd) is non-selective and binds androgen/progesterone receptors, causing gynecomastia, breast tenderness and menstrual changes. Eplerenone (target 50 mg qd) is selective for the mineralocorticoid receptor, so it largely avoids those endocrine side effects — switch to eplerenone if spironolactone causes painful gynecomastia.</div><div class="rtt">⚠️ WRONG: gynecomastia from spironolactone means you must stop all MRA therapy. Discriminator: switch to selective eplerenone rather than abandoning the class — MRAs are mortality-reducing, and the endocrine effects are a spironolactone-specific, fixable problem.</div></div><div class="rt"><div class="rtl">6. Beta blockers</div><div class="rte">Beta-blockers counter chronic sympathetic toxicity in HFrEF, reducing mortality and producing reverse remodeling — but ONLY three are proven: carvedilol, metoprolol SUCCINATE (CR/XL), and bisoprolol (CIBIS-II, MERIT-HF, COPERNICUS). Start low, go slow, and only when the patient is euvolemic/compensated (they can transiently worsen HF).</div><div class="rtt">⚠️ WRONG: all beta-blockers in this class are interchangeable for HFrEF. Discriminator: only carvedilol, metoprolol succinate, and bisoprolol have mortality evidence — metoprolol TARTRATE, atenolol and others do NOT count, and substituting tartrate for succinate is a frequently tested error.</div></div><div class="rt"><div class="rtl">7. Metoprolol succinate CR/XL target 200</div><div class="rte">Use metoprolol SUCCINATE CR/XL (extended-release, once daily), NOT metoprolol tartrate (immediate-release, twice daily). Initiation 12.5–25 mg, target 200 mg daily (MERIT-HF). The succinate formulation gives the steady beta-1 blockade that delivered the mortality benefit.</div><div class="rtt">⚠️ WRONG: metoprolol tartrate twice daily is equivalent to metoprolol succinate for HFrEF. Discriminator: only the SUCCINATE (CR/XL) salt was studied and proven in MERIT-HF — tartrate has no HFrEF mortality evidence; the salt/formulation is the whole point of this row.</div></div><div class="rt"><div class="rtl">8. Carvedilol / bisoprolol dosing</div><div class="rte">Carvedilol (initiation 3.125 mg bid, target 25 mg bid; 50 mg bid if &gt;85 kg) is a non-selective beta- plus alpha-blocker (extra vasodilation, helpful in HTN). Bisoprolol (initiation 1.25 mg, target 10 mg qd) is beta-1 selective (CIBIS-II) — a good choice when alpha-blockade/hypotension or reactive airways are a concern.</div><div class="rtt">⚠️ WRONG: avoid all beta-blockers in a HFrEF patient with mild COPD/asthma. Discriminator: a cardioselective agent (bisoprolol or metoprolol succinate) is generally tolerated and the mortality benefit outweighs the small bronchospasm risk — carvedilol (non-selective) is the one to avoid in significant reactive airway disease.</div></div><div class="rt"><div class="rtl">9. Hydralazine + ISDN</div><div class="rte">Hydralazine (arterial/afterload reducer) + isosorbide dinitrate (venodilator/preload, nitric-oxide donor) — target ~75/40 mg tid or the fixed-dose combo. Add to GDMT in self-identified BLACK patients with NYHA III–IV HFrEF (A-HeFT), and use as the RAAS alternative when ACEi/ARB/ARNI are contraindicated (renal failure, hyperkalemia, hypotension).</div><div class="rtt">⚠️ WRONG: hydralazine-ISDN can replace ACEi/ARB/ARNI as routine first-line RAAS therapy in everyone. Discriminator: it is ADD-ON therapy in Black patients on top of standard GDMT (A-HeFT), or a substitute only when RAAS inhibitors can't be used — it does not block the RAAS and is not a universal first-line agent.</div></div><div class="rt"><div class="rtl">10. ARNI (sacubitril-valsartan)</div><div class="rte">ARNI = sacubitril (neprilysin inhibitor → raises beneficial natriuretic peptides) + valsartan (ARB). Initiation 24/26–49/51 mg bid, target 97/103 mg (≈200 mg) bid. PARADIGM-HF showed ARNI SUPERIOR to enalapril for CV death/HF hospitalization, so it is the PREFERRED RAAS agent in HFrEF.</div><div class="rtt">⚠️ WRONG: start ARNI the day after stopping an ACEi (or while still on it). Discriminator: you MUST allow a ≥36-hour washout from an ACEi before starting ARNI because overlapping neprilysin + ACE inhibition causes angioedema — also avoid ARNI with eGFR/hyperkalemia issues, and it raises BNP but lowers NT-proBNP.</div></div><div class="rt"><div class="rtl">11. SGLT2 inhibitor (fixed 10mg)</div><div class="rte">SGLT2 inhibitors (dapagliflozin, empagliflozin) reduce CV death and HF hospitalization in HFrEF regardless of diabetes (DAPA-HF, EMPEROR-Reduced) via natriuresis and cardiac-metabolic effects. Fixed 10 mg once daily — NO titration. Sotagliflozin (SGLT1/2, target 200 mg) is an alternative. Watch for euglycemic DKA, volume depletion, and genital mycotic infections.</div><div class="rtt">⚠️ WRONG: SGLT2i must be up-titrated to a target dose like the other pillars. Discriminator: it is a FIXED 10 mg dose with no titration — and unlike its diabetes indication, it is given for HFrEF outcomes even in non-diabetics; do not withhold it for a normal HbA1c.</div></div><div class="rt"><div class="rtl">12. Novel: vericiguat</div><div class="rte">Vericiguat is a soluble guanylate cyclase (sGC) STIMULATOR that augments the NO–cGMP pathway when endogenous NO is low. Initiation 2.5 mg, target 10 mg qd. VICTORIA: in high-risk HFrEF with a recent worsening event, it modestly reduced CV death/HF hospitalization — an add-on, not a core pillar.</div><div class="rtt">⚠️ WRONG: vericiguat is a first-line pillar that replaces the SGLT2i or MRA. Discriminator: it is reserved as ADD-ON for high-risk patients with a recent decompensation already on GDMT (VICTORIA) — and don't combine with nitrates/PDE5i (additive hypotension via the same cGMP pathway).</div></div><div class="rt"><div class="rtl">13. Novel: omecamtiv mecarbil</div><div class="rte">Omecamtiv mecarbil is a selective cardiac MYOSIN activator that increases contractility (systolic ejection time) without raising myocardial oxygen demand or intracellular calcium. Dosed by plasma level (up to ~50 mg bid). GALACTIC-HF: small reduction in HF events but no mortality benefit — investigational/limited role.</div><div class="rtt">⚠️ WRONG: omecamtiv mecarbil works like an inotrope such as milrinone or dobutamine and raises myocardial oxygen demand. Discriminator: it improves contractility WITHOUT increasing oxygen consumption or arrhythmia the way calcium-dependent inotropes do — but its clinical benefit is modest and it is not standard GDMT.</div></div><div class="rt"><div class="rtl">14. Initiation vs target columns</div><div class="rte">The table is built around two columns: the low INITIATION dose (where you start to avoid hypotension/renal hits/hyperkalemia) and the evidence-based TARGET DOSE (where the trial mortality benefit was achieved). The principle: start low, titrate up to target as BP, K+ and renal function allow.</div><div class="rtt">⚠️ WRONG: keeping a patient 'on all four pillars' at starting doses is optimized GDMT. Discriminator: outcomes track titration to target doses — but the modern STRONG-HF approach gets all four classes ON first at low doses, then rapidly up-titrates, rather than maxing one drug before adding the next.</div></div><div class="rt"><div class="rtl">15. Avoid in HFrEF — non-DHP CCB, NSAIDs, TZDs</div><div class="rte">Drugs that WORSEN HFrEF and should be avoided: non-dihydropyridine CCBs (verapamil, diltiazem) — negative inotropes that increase mortality; NSAIDs — cause sodium/water retention, blunt diuretics/RAAS and precipitate decompensation/AKI; thiazolidinediones (pioglitazone, rosiglitazone) — fluid retention worsening HF; and class I antiarrhythmics/dronedarone (pro-arrhythmic in low EF).</div><div class="rtt">⚠️ WRONG: use diltiazem or verapamil for rate control of AF in a HFrEF patient. Discriminator: non-DHP CCBs are negative inotropes contraindicated in HFrEF — use a beta-blocker (or digoxin) for rate control instead; amlodipine/felodipine are the only CCBs considered neutral/safe in HFrEF.</div></div><div class="rt"><div class="rtl">16. Loop diuretics — symptom control</div><div class="rte">Loop diuretics (furosemide, torsemide, bumetanide) inhibit the Na-K-2Cl transporter to relieve congestion — they improve SYMPTOMS but have no proven mortality benefit. Torsemide/bumetanide have more reliable oral absorption than furosemide. IV-to-PO furosemide is roughly 2:1; equivalence ≈ furosemide 40 = torsemide 20 = bumetanide 1 mg.</div><div class="rtt">⚠️ WRONG: loop diuretics reduce mortality and are a 'pillar' of HFrEF therapy. Discriminator: they are for congestion/symptom control only, not survival — the four pillars (ARNI, beta-blocker, MRA, SGLT2i) reduce mortality, and diuretics should be titrated to the lowest dose maintaining euvolemia.</div></div><div class="rt"><div class="rtl">17. Ivabradine &amp; digoxin — adjuncts</div><div class="rte">Ivabradine blocks the SA-node funny (If) current to slow rate WITHOUT affecting contractility — add when in SINUS rhythm with HR ≥70 despite a maximally tolerated beta-blocker, EF ≤35% (SHIFT: fewer HF hospitalizations). Digoxin (target trough 0.5–0.9 ng/mL) reduces HF hospitalizations but not mortality (DIG trial) — a late add-on for symptoms or AF rate control.</div><div class="rtt">⚠️ WRONG: ivabradine works in atrial fibrillation and substitutes for a beta-blocker. Discriminator: ivabradine requires SINUS rhythm and is added ON TOP of a beta-blocker (not instead of it). For digoxin, watch toxicity (nausea, visual halos, arrhythmia) — risk rises with hypokalemia and renal failure, and the target trough is LOW (0.5–0.9).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_comorbidities.html" title="Heart Failure — HFpEF Management &amp; Comorbidities">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_icd.html" title="Heart Failure — ICD (Anti-Death Device)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

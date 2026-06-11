@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">VTE — Anticoagulation: Treatment, Dosing &amp; Reversal</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>UFH (heparin) — onset now</b> — WRONG: 'Use LMWH (enoxaparin) in a patient with CrCl 15.' LMWH and fondaparinux are renally cleared and accumulate in severe CKD (CrCl &lt;30), risking bleeding — UFH is the correct parenteral agent because it is hepatically/reticuloendothelially cleared and monitorable.</li><li><b>LMWH (enoxaparin)</b> — WRONG: 'Give a DOAC to a pregnant patient with acute DVT.' DOACs and warfarin are contraindicated in pregnancy (warfarin is teratogenic, DOACs cross the placenta and lack safety data) — LMWH is the answer because it does not cross the placenta.</li><li><b>Fondaparinux</b> — WRONG: 'Avoid fondaparinux because it can trigger HIT.' Fondaparinux essentially does not cause HIT and is actually used to treat it in some cases — the discriminator is that HIT risk tracks with heparin chain length (UFH &gt; LMWH &gt; fondaparinux ≈ none).</li><li><b>Rivaroxaban / Apixaban — no lead-in</b> — WRONG: 'Bridge a non-cancer DVT patient with 5 days of LMWH before starting apixaban.' Apixaban and rivaroxaban require no parenteral lead-in — only dabigatran and edoxaban do — so adding a heparin bridge is unnecessary and exposes the patient to extra bleeding risk.</li><li><b>Dabigatran / Edoxaban — need lead-in</b> — WRONG: 'Start dabigatran or edoxaban on day 1 of acute VTE without any parenteral anticoagulant.' Both require a 5-day heparin/LMWH lead-in (unlike apixaban/rivaroxaban) — skipping it leaves the patient under-treated during the highest-risk early window.</li><li><b>Apixaban dosing</b> — WRONG: 'Apixaban 15 mg BID for 21 days then 20 mg daily.' That is the rivaroxaban schedule — confusing the two is a classic exam trap; apixaban is 10 mg BID ×7 days then 5 mg BID.</li><li><b>Rivaroxaban dosing</b> — WRONG: 'Take the 20 mg maintenance dose on an empty stomach.' The 20 mg rivaroxaban dose must be taken with food to ensure absorption — taking it fasting reduces bioavailability and risks treatment failure (the 10/15 mg doses are food-independent).</li><li><b>Warfarin bridging station</b> — WRONG: 'Start warfarin alone in acute VTE and stop when INR hits 2.' Warfarin alone is initially prothrombotic (early protein C depletion → risk of warfarin-induced skin necrosis) and the long-half-life clotting factors haven't fallen yet — a ≥5-day heparin/LMWH bridge with 24 h of overlapping therapeutic INR is mandatory.</li><li><b>Never warfarin alone</b> — WRONG: 'In a protein C–deficient patient, load warfarin quickly to reach INR fast.' Rapid warfarin loading worsens the transient hypercoagulable state and risks skin necrosis — bridge with heparin/LMWH and start warfarin at a modest dose with overlap.</li><li><b>Argatroban / bivalirudin (HIT)</b> — WRONG: 'Treat acute HIT by switching from UFH to LMWH, or start warfarin alone.' LMWH cross-reacts with HIT antibodies and warfarin alone can precipitate venous limb gangrene/skin necrosis when platelets are low — give a direct thrombin inhibitor (argatroban/bivalirudin) or fondaparinux, and delay warfarin until platelets recover (&gt;150k).</li><li><b>Andexanet alfa (Xa reversal)</b> — WRONG: 'Reverse a major rivaroxaban-associated bleed with idarucizumab.' Idarucizumab only reverses dabigatran (a thrombin inhibitor) — factor Xa inhibitors are reversed with andexanet alfa or 4-factor PCC.</li><li><b>Idarucizumab (dabigatran reversal)</b> — WRONG: 'Give vitamin K to reverse a bleeding patient on dabigatran or apixaban.' Vitamin K only reverses warfarin (vitamin-K-dependent factor synthesis) — it has no effect on DOACs; use idarucizumab for dabigatran and andexanet/PCC for Xa inhibitors.</li><li><b>Special populations: cancer/pregnancy/CKD</b> — WRONG: 'Use a DOAC (rivaroxaban) for VTE in triple-positive antiphospholipid syndrome.' The TRAPS trial showed rivaroxaban caused excess arterial events in APS — warfarin (INR 2–3) is the correct long-term agent; DOACs are inferior/contraindicated in high-risk APS.</li><li><b>Active bleeding → IVC filter</b> — WRONG: 'Place an IVC filter as first-line treatment for a routine proximal DVT/PE the patient can be anticoagulated for.' Filters are reserved for contraindications to anticoagulation or failure despite it; routine use adds DVT risk without reducing mortality — anticoagulation is the primary therapy.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. UFH (heparin) — onset now</div><div class="rte">Unfractionated heparin potentiates antithrombin to inactivate thrombin (IIa) and factor Xa; given as IV bolus then weight-based infusion with immediate onset, titrated to aPTT 1.5–2.5× control (or anti-Xa). Its short half-life (~60–90 min) and full reversibility with protamine make it the agent of choice when bleeding/procedures are anticipated and in severe renal failure (CrCl &lt;30), since it is not renally cleared. Mnemonic: UFH = 'Use For Hospital/renal failure — fast on, fast off.'</div><div class="rtt">⚠️ WRONG: 'Use LMWH (enoxaparin) in a patient with CrCl 15.' LMWH and fondaparinux are renally cleared and accumulate in severe CKD (CrCl &lt;30), risking bleeding — UFH is the correct parenteral agent because it is hepatically/reticuloendothelially cleared and monitorable.</div></div><div class="rt"><div class="rtl">2. LMWH (enoxaparin)</div><div class="rte">Low-molecular-weight heparin (enoxaparin 1 mg/kg SC BID or 1.5 mg/kg daily; dalteparin 200 U/kg) preferentially inhibits factor Xa over thrombin, giving a predictable dose-response so routine monitoring is unnecessary (check anti-Xa only in obesity, pregnancy, severe CKD). It is the historical first-line for cancer-associated VTE (CLOT trial) and the anticoagulant of choice in pregnancy because it does not cross the placenta. Mnemonic: LMWH = 'Low Monitoring, Wins in cancer/pregnancy.'</div><div class="rtt">⚠️ WRONG: 'Give a DOAC to a pregnant patient with acute DVT.' DOACs and warfarin are contraindicated in pregnancy (warfarin is teratogenic, DOACs cross the placenta and lack safety data) — LMWH is the answer because it does not cross the placenta.</div></div><div class="rt"><div class="rtl">3. Fondaparinux</div><div class="rte">Fondaparinux is a synthetic pentasaccharide that selectively inhibits factor Xa via antithrombin (no thrombin effect); dosed once daily SC (5/7.5/10 mg by weight). Because it lacks the heparin chain length needed to form PF4 immune complexes, it does NOT cause HIT and is an option for VTE prophylaxis/treatment in patients with a HIT history. It is renally cleared (avoid if CrCl &lt;30) and is NOT reversible by protamine. Mnemonic: 'Fonda = Free of HIT.'</div><div class="rtt">⚠️ WRONG: 'Avoid fondaparinux because it can trigger HIT.' Fondaparinux essentially does not cause HIT and is actually used to treat it in some cases — the discriminator is that HIT risk tracks with heparin chain length (UFH &gt; LMWH &gt; fondaparinux ≈ none).</div></div><div class="rt"><div class="rtl">4. Rivaroxaban / Apixaban — no lead-in</div><div class="rte">Apixaban and rivaroxaban are oral direct factor Xa inhibitors that can be started as monotherapy with NO parenteral lead-in — they begin with a higher-intensity loading phase instead. They are first-line for most acute VTE (provoked or unprovoked) in patients without cancer, mechanical valves, or APS, given fewer drug/food interactions and no INR monitoring. Mnemonic: 'A &amp; R Are Ready right away (no bridge).'</div><div class="rtt">⚠️ WRONG: 'Bridge a non-cancer DVT patient with 5 days of LMWH before starting apixaban.' Apixaban and rivaroxaban require no parenteral lead-in — only dabigatran and edoxaban do — so adding a heparin bridge is unnecessary and exposes the patient to extra bleeding risk.</div></div><div class="rt"><div class="rtl">5. Dabigatran / Edoxaban — need lead-in</div><div class="rte">Dabigatran (direct thrombin/IIa inhibitor) and edoxaban (direct Xa inhibitor) were studied only after an initial parenteral phase, so both REQUIRE ≥5 days of LMWH/UFH lead-in before the oral drug is started. Dabigatran is the only DOAC with a specific reversal agent (idarucizumab) and is renally cleared (avoid if CrCl &lt;30). Mnemonic: 'D and E need 5 Days Earlier (heparin first).'</div><div class="rtt">⚠️ WRONG: 'Start dabigatran or edoxaban on day 1 of acute VTE without any parenteral anticoagulant.' Both require a 5-day heparin/LMWH lead-in (unlike apixaban/rivaroxaban) — skipping it leaves the patient under-treated during the highest-risk early window.</div></div><div class="rt"><div class="rtl">6. Apixaban dosing</div><div class="rte">Apixaban acute VTE regimen: 10 mg PO BID for the first 7 days (loading), then 5 mg PO BID for maintenance; for extended/secondary prevention after ≥6 months it can be reduced to 2.5 mg BID. It is the least renally dependent DOAC (~27% renal clearance), making it the preferred DOAC in moderate CKD. Mnemonic: 'Apixaban: 10-for-7, then 5.'</div><div class="rtt">⚠️ WRONG: 'Apixaban 15 mg BID for 21 days then 20 mg daily.' That is the rivaroxaban schedule — confusing the two is a classic exam trap; apixaban is 10 mg BID ×7 days then 5 mg BID.</div></div><div class="rt"><div class="rtl">7. Rivaroxaban dosing</div><div class="rte">Rivaroxaban acute VTE regimen: 15 mg PO BID for the first 21 days (loading), then 20 mg once daily WITH FOOD (food markedly increases the bioavailability of the 20 mg dose). For extended prevention it may drop to 10 mg daily. Avoid if CrCl &lt;30 and avoid with strong CYP3A4/P-gp inhibitors or inducers. Mnemonic: 'Rivaroxaban: 15-for-21, then 20 with a meal.'</div><div class="rtt">⚠️ WRONG: 'Take the 20 mg maintenance dose on an empty stomach.' The 20 mg rivaroxaban dose must be taken with food to ensure absorption — taking it fasting reduces bioavailability and risks treatment failure (the 10/15 mg doses are food-independent).</div></div><div class="rt"><div class="rtl">8. Warfarin bridging station</div><div class="rte">Warfarin inhibits vitamin-K-dependent factors II, VII, IX, X (and proteins C &amp; S); target INR 2.0–3.0 for VTE. Because protein C (short half-life ~8 h) falls before the procoagulant factors II/X (long half-lives), warfarin is transiently PROthrombotic on initiation, so it must overlap with a parenteral anticoagulant for ≥5 days AND until INR is therapeutic for ≥24 h. Mnemonic: 'Warfarin: 2–3, bridge 5 days, overlap until INR sticks.'</div><div class="rtt">⚠️ WRONG: 'Start warfarin alone in acute VTE and stop when INR hits 2.' Warfarin alone is initially prothrombotic (early protein C depletion → risk of warfarin-induced skin necrosis) and the long-half-life clotting factors haven't fallen yet — a ≥5-day heparin/LMWH bridge with 24 h of overlapping therapeutic INR is mandatory.</div></div><div class="rt"><div class="rtl">9. Never warfarin alone</div><div class="rte">The early procoagulant window of warfarin (rapid protein C/S drop) can precipitate warfarin-induced skin necrosis, especially in protein C/S–deficient patients, and leaves the patient unprotected until factors II/VII/IX/X decline. Therefore acute VTE always uses a fast-acting parenteral agent overlapped with warfarin for ≥5 days and until INR ≥2 for 24 h. Mnemonic: 'No warfarin solo — always have a heparin wingman first.'</div><div class="rtt">⚠️ WRONG: 'In a protein C–deficient patient, load warfarin quickly to reach INR fast.' Rapid warfarin loading worsens the transient hypercoagulable state and risks skin necrosis — bridge with heparin/LMWH and start warfarin at a modest dose with overlap.</div></div><div class="rt"><div class="rtl">10. Argatroban / bivalirudin (HIT)</div><div class="rte">In heparin-induced thrombocytopenia (HIT — PF4/heparin IgG antibodies → platelet activation, paradoxical thrombosis, platelet drop &gt;50% at days 5–10), STOP all heparin and start a non-heparin anticoagulant. Argatroban (hepatically cleared — preferred in renal failure; prolongs INR, complicating warfarin transition) or bivalirudin are parenteral direct thrombin inhibitors used acutely. Mnemonic: '4Ts score → stop heparin → argatroban (liver) / bivalirudin.'</div><div class="rtt">⚠️ WRONG: 'Treat acute HIT by switching from UFH to LMWH, or start warfarin alone.' LMWH cross-reacts with HIT antibodies and warfarin alone can precipitate venous limb gangrene/skin necrosis when platelets are low — give a direct thrombin inhibitor (argatroban/bivalirudin) or fondaparinux, and delay warfarin until platelets recover (&gt;150k).</div></div><div class="rt"><div class="rtl">11. Andexanet alfa (Xa reversal)</div><div class="rte">Andexanet alfa is a recombinant decoy factor Xa that sequesters apixaban and rivaroxaban, reversing their effect in life-threatening bleeding; 4-factor PCC (e.g., 50 U/kg) is the practical alternative where andexanet is unavailable or unaffordable. Both restore hemostasis within minutes. Mnemonic: 'Xa inhibitors (apiXaban, rivaroXaban) → andeXanet (or PCC).'</div><div class="rtt">⚠️ WRONG: 'Reverse a major rivaroxaban-associated bleed with idarucizumab.' Idarucizumab only reverses dabigatran (a thrombin inhibitor) — factor Xa inhibitors are reversed with andexanet alfa or 4-factor PCC.</div></div><div class="rt"><div class="rtl">12. Idarucizumab (dabigatran reversal)</div><div class="rte">Idarucizumab is a monoclonal antibody fragment that binds dabigatran with very high affinity for immediate, complete reversal in major bleeding or urgent surgery (dabigatran is also dialyzable). Map the rest of the armory: vitamin K (slow) + 4-factor PCC (fast) reverse WARFARIN, and protamine reverses UFH (partial for LMWH). Mnemonic: 'iDArucizumab → Dabigatran; protamine → heparin; vit K/PCC → warfarin; andexanet/PCC → Xa.'</div><div class="rtt">⚠️ WRONG: 'Give vitamin K to reverse a bleeding patient on dabigatran or apixaban.' Vitamin K only reverses warfarin (vitamin-K-dependent factor synthesis) — it has no effect on DOACs; use idarucizumab for dabigatran and andexanet/PCC for Xa inhibitors.</div></div><div class="rt"><div class="rtl">13. Special populations: cancer/pregnancy/CKD</div><div class="rte">Population-specific agents: cancer-associated VTE → LMWH or a DOAC (apixaban/rivaroxaban/edoxaban preferred for most; favor LMWH with luminal GI/GU tumors due to DOAC bleeding); pregnancy → LMWH only; antiphospholipid syndrome (esp. triple-positive) → WARFARIN, not a DOAC; severe CKD (CrCl &lt;30) → UFH. Mnemonic: 'APS=warfarin, Cancer=LMWH/DOAC, Pregnancy=LMWH, CKD=UFH.'</div><div class="rtt">⚠️ WRONG: 'Use a DOAC (rivaroxaban) for VTE in triple-positive antiphospholipid syndrome.' The TRAPS trial showed rivaroxaban caused excess arterial events in APS — warfarin (INR 2–3) is the correct long-term agent; DOACs are inferior/contraindicated in high-risk APS.</div></div><div class="rt"><div class="rtl">14. Active bleeding → IVC filter</div><div class="rte">An IVC (retrievable) filter is indicated only when anticoagulation is absolutely contraindicated (active major bleeding, recent neurosurgery) or when recurrent PE occurs despite therapeutic anticoagulation. It mechanically blocks emboli but does NOT treat the clot — resume anticoagulation and retrieve the filter as soon as it is safe, because long-term filters increase recurrent DVT. Mnemonic: 'Filter = bridge over a bleeding river, not a cure.'</div><div class="rtt">⚠️ WRONG: 'Place an IVC filter as first-line treatment for a routine proximal DVT/PE the patient can be anticoagulated for.' Filters are reserved for contraindications to anticoagulation or failure despite it; routine use adds DVT risk without reducing mortality — anticoagulation is the primary therapy.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="plt_vwd_tx.html" title="Platelet disorders — von Willebrand disease treatment">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="vte_diagnosis_imaging.html" title="VTE — Diagnostic Imaging Algorithm (CTPA, V/Q, US, Echo)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

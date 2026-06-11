@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The CaSR Thermostat Workshop</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>PTH regulation recap</b> — A stem says calcitriol STIMULATES PTH secretion — WRONG. Calcitriol provides NEGATIVE feedback, suppressing PTH synthesis. The discriminator: low Ca and low calcitriol drive PTH up; high Ca and high calcitriol turn PTH down.</li><li><b>CaSR = Ca thermostat</b> — A stem implies that high calcium ACTIVATES the parathyroid to release more PTH — WRONG. CaSR activation by high calcium INHIBITS PTH secretion (negative feedback). The discriminator: the CaSR is an off-switch for PTH when calcium is high; it is not a stimulatory sensor.</li><li><b>FHH warning sign</b> — A young patient with mild hypercalcemia, family history, and normal/high PTH is diagnosed with primary hyperparathyroidism and sent to surgery — WRONG if urine Ca/Cr clearance is &lt;0.01. That ratio indicates FHH. The discriminator: primary HPT typically has urine Ca/Cr ratio &gt;0.02 (normal/high urine calcium); FHH has &lt;0.01 (low urine calcium). Always check urine calcium before parathyroidectomy.</li><li><b>No surgery / loss of function</b> — A patient with confirmed FHH (low urine Ca/Cr) undergoes parathyroidectomy for 'hypercalcemia' — WRONG and harmful. Surgery does not cure FHH because the problem is the CaSR setpoint, not a parathyroid tumor. The discriminator: FHH = genetic, lifelong, asymptomatic, low urine Ca → observe; primary HPT with end-organ effects → consider surgery.</li><li><b>Kidney hoards Ca / urine Ca low</b> — A stem attributes the low urine calcium of FHH purely to high PTH driving renal reabsorption — WRONG/incomplete. The low urine calcium stems from the defective RENAL CaSR itself (PTH-independent reabsorption), which is why FHH urine calcium stays low even though PTH is only normal/mildly elevated.</li><li><b>CaSR dial set point</b> — A stem treats the setpoint as fixed and unaffected by drugs — WRONG. Lithium raises the setpoint and calcimimetics (cinacalcet) lower the effective setpoint, both shifting PTH output without any parathyroid pathology. The discriminator: medications can move the CaSR dial, so always review the drug list before invoking primary gland disease.</li><li><b>Lithium shifts set point</b> — A bipolar patient on lithium with mild hypercalcemia and high-normal PTH is rushed to parathyroid surgery — WRONG before reviewing the medication. Lithium-induced hypercalcemia mimics primary HPT. The discriminator: take a drug history; stop/reassess lithium before attributing the picture to an adenoma.</li><li><b>Mild up-PTH state</b> — A stem concludes 'high-normal PTH with high calcium = primary hyperparathyroidism' without further testing — WRONG. The same labs occur in FHH and lithium use. The discriminator: order a 24-h urinary calcium / Ca-Cr clearance ratio and review medications before committing to primary HPT.</li><li><b>Mg Goldilocks panels</b> — A stem assumes 'low magnesium always raises PTH' — WRONG. Only MILD hypomagnesemia raises PTH; SEVERE hypomagnesemia suppresses it. The discriminator is severity: the curve is U-shaped, and severe Mg depletion behaves opposite to mild depletion.</li><li><b>Severe low Mg / PTH suppressed</b> — A patient with hypocalcemia that fails to respond to IV calcium is given ever-larger calcium doses — WRONG. Suspect and correct SEVERE hypomagnesemia first. The discriminator: refractory hypocalcemia (especially with low PTH despite low Ca) points to low magnesium; calcium will not respond until Mg is replaced.</li><li><b>High Mg mimics low Ca</b> — A stem expects high magnesium to RAISE PTH (treating it like low calcium) — WRONG. High magnesium ACTIVATES the CaSR and SUPPRESSES PTH, lowering calcium. The discriminator: magnesium and calcium act on the same receptor, so hypermagnesemia mimics hypercalcemia at the CaSR (PTH down), even though it lowers serum calcium.</li><li><b>ADH gain of function</b> — A patient with ADH and symptomatic hypocalcemia is treated with aggressive calcium and vitamin D to normalize serum calcium — WRONG. Because the renal CaSR is overactive, this dramatically worsens HYPERCALCIURIA, causing nephrocalcinosis, stones, and renal impairment. The discriminator: in ADH, treat only to relieve symptoms (target low-normal calcium); PTH is LOW, not high, so this is NOT ordinary hypoparathyroidism management.</li><li><b>Summary dials (FHH/ADH/Li)</b> — A stem pairs an inactivating CaSR phenotype with high urine calcium (or an activating one with low urine calcium) — WRONG; that is backwards. FHH (inactivating) = high serum Ca / LOW urine Ca; ADH (activating) = low serum Ca / HIGH urine Ca. The discriminator: the two are mirror images, and the urine calcium always travels with the direction of CaSR activity (more active receptor → more urinary calcium loss).</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. PTH regulation recap</div><div class="rte">PTH is synthesized as prepro-PTH, cleaved to proPTH, then to the active 84-amino-acid hormone PTH(1-84), which has a short half-life (~2-4 min) for tight minute-to-minute control. Secretion is RAISED by low ionized calcium and low calcitriol, and is also stimulated by high phosphate (partly indirectly, by binding calcium and lowering ionized Ca). Calcitriol feeds back to suppress PTH gene transcription — the rationale for vitamin D analogs in secondary hyperparathyroidism of CKD.</div><div class="rtt">⚠️ A stem says calcitriol STIMULATES PTH secretion — WRONG. Calcitriol provides NEGATIVE feedback, suppressing PTH synthesis. The discriminator: low Ca and low calcitriol drive PTH up; high Ca and high calcitriol turn PTH down.</div></div><div class="rt"><div class="rtl">2. CaSR = Ca thermostat</div><div class="rte">The calcium-sensing receptor behaves like a thermostat: its SET POINT is the ionized calcium concentration at which PTH secretion is half-maximal. ACTIVATING the CaSR (rising ionized Ca, or agonists like cinacalcet, or hypermagnesemia) SUPPRESSES PTH. The calcimimetic cinacalcet exploits this to lower PTH in secondary/tertiary hyperparathyroidism and in parathyroid carcinoma. Mnemonic: 'sensor sees high Ca → shuts PTH.'</div><div class="rtt">⚠️ A stem implies that high calcium ACTIVATES the parathyroid to release more PTH — WRONG. CaSR activation by high calcium INHIBITS PTH secretion (negative feedback). The discriminator: the CaSR is an off-switch for PTH when calcium is high; it is not a stimulatory sensor.</div></div><div class="rt"><div class="rtl">3. FHH warning sign</div><div class="rte">Familial hypocalciuric hypercalcemia (FHH) is an autosomal dominant INACTIVATING CaSR mutation. The receptor under-senses calcium, so the setpoint shifts up: the body tolerates mild lifelong hypercalcemia with normal-to-mildly-high PTH. The hallmark distinguishing it from primary hyperparathyroidism is INAPPROPRIATELY LOW urinary calcium, with a calcium/creatinine clearance ratio &lt;0.01. It is usually asymptomatic and benign.</div><div class="rtt">⚠️ A young patient with mild hypercalcemia, family history, and normal/high PTH is diagnosed with primary hyperparathyroidism and sent to surgery — WRONG if urine Ca/Cr clearance is &lt;0.01. That ratio indicates FHH. The discriminator: primary HPT typically has urine Ca/Cr ratio &gt;0.02 (normal/high urine calcium); FHH has &lt;0.01 (low urine calcium). Always check urine calcium before parathyroidectomy.</div></div><div class="rt"><div class="rtl">4. No surgery / loss of function</div><div class="rte">FHH is benign and managed conservatively with reassurance and monitoring — no calcium restriction, no surgery. Parathyroidectomy fails because the defect is a generalized CaSR setpoint problem in every parathyroid cell (and the kidney), not a discrete adenoma; removing glands leaves residual tissue that resets to the same abnormal setpoint and risks hypoparathyroidism.</div><div class="rtt">⚠️ A patient with confirmed FHH (low urine Ca/Cr) undergoes parathyroidectomy for 'hypercalcemia' — WRONG and harmful. Surgery does not cure FHH because the problem is the CaSR setpoint, not a parathyroid tumor. The discriminator: FHH = genetic, lifelong, asymptomatic, low urine Ca → observe; primary HPT with end-organ effects → consider surgery.</div></div><div class="rt"><div class="rtl">5. Kidney hoards Ca / urine Ca low</div><div class="rte">In FHH the inactivated CaSR in the renal thick ascending limb fails to sense calcium, so the kidney keeps reabsorbing calcium even when serum calcium is high — producing the characteristic INAPPROPRIATELY LOW urinary calcium. (Normally, a high serum calcium activates the renal CaSR to promote calciuria; that brake is broken in FHH.) This renal handle, independent of PTH, is what creates the low Ca/Cr clearance ratio.</div><div class="rtt">⚠️ A stem attributes the low urine calcium of FHH purely to high PTH driving renal reabsorption — WRONG/incomplete. The low urine calcium stems from the defective RENAL CaSR itself (PTH-independent reabsorption), which is why FHH urine calcium stays low even though PTH is only normal/mildly elevated.</div></div><div class="rt"><div class="rtl">6. CaSR dial set point</div><div class="rte">The setpoint is the calcium concentration at which PTH secretion is half-maximal; the steep sigmoid relationship means small calcium changes near the setpoint produce large PTH swings. Shifting the dial shifts the regulated calcium: inactivating CaSR (FHH) raises the setpoint (tolerates higher Ca), activating CaSR (ADH) lowers it (defends a lower Ca), and lithium nudges it upward pharmacologically.</div><div class="rtt">⚠️ A stem treats the setpoint as fixed and unaffected by drugs — WRONG. Lithium raises the setpoint and calcimimetics (cinacalcet) lower the effective setpoint, both shifting PTH output without any parathyroid pathology. The discriminator: medications can move the CaSR dial, so always review the drug list before invoking primary gland disease.</div></div><div class="rt"><div class="rtl">7. Lithium shifts set point</div><div class="rte">Lithium raises the CaSR setpoint (the parathyroid needs a higher calcium to shut off), so chronic lithium causes mild hypercalcemia with normal-to-high PTH and reduced urinary calcium — a near-perfect mimic of primary hyperparathyroidism (and of FHH). It can also cause true parathyroid hyperplasia over time. Management is to review/adjust lithium and monitor; surgery is generally avoided unless clearly indicated.</div><div class="rtt">⚠️ A bipolar patient on lithium with mild hypercalcemia and high-normal PTH is rushed to parathyroid surgery — WRONG before reviewing the medication. Lithium-induced hypercalcemia mimics primary HPT. The discriminator: take a drug history; stop/reassess lithium before attributing the picture to an adenoma.</div></div><div class="rt"><div class="rtl">8. Mild up-PTH state</div><div class="rte">Mild CaSR inactivation (FHH) and lithium effect both produce a deceptively benign picture: mildly elevated calcium with normal-to-mildly-high PTH, closely resembling early/mild primary hyperparathyroidism. Distinguishing them rests on urinary calcium and clinical context (family history, age of onset, medications) rather than the serum calcium/PTH pair alone.</div><div class="rtt">⚠️ A stem concludes 'high-normal PTH with high calcium = primary hyperparathyroidism' without further testing — WRONG. The same labs occur in FHH and lithium use. The discriminator: order a 24-h urinary calcium / Ca-Cr clearance ratio and review medications before committing to primary HPT.</div></div><div class="rt"><div class="rtl">9. Mg Goldilocks panels</div><div class="rte">Magnesium has a biphasic, 'Goldilocks' effect on PTH. MILD hypomagnesemia stimulates PTH secretion (like low calcium). SEVERE hypomagnesemia paradoxically BLOCKS PTH release and causes end-organ PTH resistance, yielding functional hypoparathyroidism and refractory hypocalcemia. HIGH magnesium activates the CaSR and suppresses PTH. So both too-little and too-much magnesium can lower PTH.</div><div class="rtt">⚠️ A stem assumes 'low magnesium always raises PTH' — WRONG. Only MILD hypomagnesemia raises PTH; SEVERE hypomagnesemia suppresses it. The discriminator is severity: the curve is U-shaped, and severe Mg depletion behaves opposite to mild depletion.</div></div><div class="rt"><div class="rtl">10. Severe low Mg / PTH suppressed</div><div class="rte">Severe hypomagnesemia (often from PPIs, alcoholism, diarrhea, or aminoglycosides) impairs BOTH PTH secretion and PTH action at bone/kidney, producing hypocalcemia that will not correct with calcium alone. The fix is to replete MAGNESIUM first; once magnesium is restored, PTH secretion and responsiveness recover and calcium normalizes.</div><div class="rtt">⚠️ A patient with hypocalcemia that fails to respond to IV calcium is given ever-larger calcium doses — WRONG. Suspect and correct SEVERE hypomagnesemia first. The discriminator: refractory hypocalcemia (especially with low PTH despite low Ca) points to low magnesium; calcium will not respond until Mg is replaced.</div></div><div class="rt"><div class="rtl">11. High Mg mimics low Ca</div><div class="rte">Hypermagnesemia activates the CaSR (magnesium is a CaSR agonist), suppressing PTH and lowering calcium. The classic setting is obstetric MgSO4 for preeclampsia/tocolysis, where rising magnesium causes loss of deep tendon reflexes (first sign), then respiratory depression and cardiac effects. Treatment of symptomatic hypermagnesemia is IV calcium gluconate (direct antagonist) plus stopping the source.</div><div class="rtt">⚠️ A stem expects high magnesium to RAISE PTH (treating it like low calcium) — WRONG. High magnesium ACTIVATES the CaSR and SUPPRESSES PTH, lowering calcium. The discriminator: magnesium and calcium act on the same receptor, so hypermagnesemia mimics hypercalcemia at the CaSR (PTH down), even though it lowers serum calcium.</div></div><div class="rt"><div class="rtl">12. ADH gain of function</div><div class="rte">Autosomal dominant hypocalcemia (ADH, also called type 1 with CaSR gain-of-function) is an ACTIVATING CaSR mutation. The over-sensitive receptor perceives normal calcium as high, so it suppresses PTH and drives renal calcium wasting — yielding hypocalcemia with inappropriately low/normal PTH AND hypercalciuria. It is the mirror image of FHH. Treatment is cautious; calcimimetics worsen it, and recombinant PTH may be used.</div><div class="rtt">⚠️ A patient with ADH and symptomatic hypocalcemia is treated with aggressive calcium and vitamin D to normalize serum calcium — WRONG. Because the renal CaSR is overactive, this dramatically worsens HYPERCALCIURIA, causing nephrocalcinosis, stones, and renal impairment. The discriminator: in ADH, treat only to relieve symptoms (target low-normal calcium); PTH is LOW, not high, so this is NOT ordinary hypoparathyroidism management.</div></div><div class="rt"><div class="rtl">13. Summary dials (FHH/ADH/Li)</div><div class="rte">Urinary calcium is the key discriminator among CaSR disorders. FHH (inactivating) = hypercalcemia with LOW urine calcium (Ca/Cr clearance &lt;0.01). ADH (activating) = hypocalcemia with HIGH urine calcium. Lithium shifts the setpoint upward, mimicking FHH/primary HPT with variable (often low) urine calcium. Pairing serum calcium with urine calcium and PTH localizes the lesion.</div><div class="rtt">⚠️ A stem pairs an inactivating CaSR phenotype with high urine calcium (or an activating one with low urine calcium) — WRONG; that is backwards. FHH (inactivating) = high serum Ca / LOW urine Ca; ADH (activating) = low serum Ca / HIGH urine Ca. The discriminator: the two are mirror images, and the urine calcium always travels with the direction of CaSR activity (more active receptor → more urinary calcium loss).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_10_casr_sensitivity.html" title="Calcium/PTH/VitD — The CaSR Sensitivity Lab (FHH vs PHPT)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="capth_08_calcium_courthouse.html" title="Calcium/PTH/VitD — The Calcium Courthouse">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

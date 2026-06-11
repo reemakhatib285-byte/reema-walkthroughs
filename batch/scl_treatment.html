@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Scleroderma — Treatment by Organ</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>No cure / organ-based therapy</b> — Picking a single 'disease-modifying' drug to treat scleroderma globally — WRONG. No one agent reverses SSc; you treat organ by organ. Discriminator: the right answer always names the therapy matched to the specific organ complication in the stem (e.g., captopril for renal crisis), not a blanket immunosuppressant.</li><li><b>Avoid steroids (renal crisis risk)</b> — Choosing high-dose prednisone for tightening diffuse skin or a small pericardial effusion — WRONG. Steroids trigger renal crisis in diffuse SSc. Discriminator: when a stem offers steroids for SSc skin/serositis, the correct move is a steroid-sparing agent (methotrexate, mycophenolate) — reserve any steroid only for clear inflammatory overlap and at low dose.</li><li><b>ILD: MMF first-line</b> — Defaulting to cyclophosphamide as first-line for SSc-ILD — WRONG. MMF is preferred first-line (equal efficacy, fewer adverse effects like hemorrhagic cystitis, marrow suppression, and malignancy). Discriminator: reserve cyclophosphamide for severe or refractory ILD; choose MMF for typical progressive SSc-ILD.</li><li><b>ILD: nintedanib / tocilizumab</b> — Expecting nintedanib to reverse established lung fibrosis — WRONG. Antifibrotics SLOW the rate of FVC decline; they do not restore lost lung. Discriminator: nintedanib's endpoint in trials was reduced annual FVC decline, not improvement — set expectations and combine with immunosuppression in inflammatory disease.</li><li><b>PAH: vasodilator triple class</b> — Treating SSc-PAH with high-dose calcium channel blockers (the Raynaud drug) as you would idiopathic vasoreactive PAH — WRONG. SSc-PAH patients are almost never CCB-responders. Discriminator: idiopathic PAH with a positive acute vasoreactivity test may use high-dose CCBs, but SSc-PAH requires the three-class PAH-specific agents above. NEVER combine riociguat with a PDE-5 inhibitor (severe hypotension).</li><li><b>PAH: avoid digoxin/diuretic pitfalls</b> — Aggressively diuretizing a hypotensive SSc-PAH patient with elevated JVP to 'unload' the heart — WRONG. The pressure-loaded RV depends on preload; over-diuresis collapses cardiac output. Discriminator: in right-heart-dominant PAH, optimize volume gently and start PAH-specific vasodilators — do not treat it like left-heart failure with brisk diuresis.</li><li><b>SRC: ACE inhibitor (lifesaving)</b> — Substituting an ARB for the ACE inhibitor, or stopping the ACEi when creatinine climbs — WRONG. ACEi (not ARB) is the proven first-line in SRC, and you do not stop it for a rising creatinine. Discriminator: ARBs lack the same evidence base in SRC; the standard answer is captopril, continued through the expected creatinine bump, with dialysis as a bridge if needed.</li><li><b>Raynaud: CCB first-line</b> — Reaching for a non-dihydropyridine or a beta-blocker, or starting a PDE-5 inhibitor before a CCB in uncomplicated Raynaud — WRONG. Dihydropyridine CCBs are first-line; beta-blockers WORSEN vasospasm. Discriminator: escalate to PDE-5 inhibitors/iloprost only for refractory disease or digital ulcers, not as the initial agent.</li><li><b>Digital ulcers: PDE-5i / iloprost / bosentan</b> — Choosing bosentan to heal an existing acute digital ulcer — WRONG. Bosentan's evidence is for PREVENTING new ulcers, not accelerating healing of current ones. Discriminator: to heal an active ulcer use IV iloprost and/or PDE-5 inhibitors; use bosentan to reduce the number of future ulcers in recurrent disease.</li><li><b>GI: PPI + prokinetics</b> — Treating severe SSc reflux with lifestyle and intermittent antacids alone — WRONG. SSc esophageal disease usually needs chronic, often high-dose, PPI therapy. Discriminator: undertreated reflux leads to peptic strictures and Barrett esophagus; the correct answer escalates acid suppression and adds prokinetics rather than relying on PRN antacids.</li><li><b>GI: rotating antibiotics for SIBO</b> — Diagnosing SSc diarrhea/weight loss as inflammatory bowel disease and starting immunosuppression — WRONG. Malabsorptive diarrhea in SSc is usually dysmotility-driven SIBO. Discriminator: SIBO responds to rotating antibiotics and improves with prokinetics; an abnormal hydrogen breath test and the SSc dysmotility context point away from IBD.</li><li><b>Skin/MSK: MTX, HSCT for severe</b> — Offering HSCT to a stable limited-SSc patient, or reaching for steroids for skin tightening — WRONG. HSCT is only for severe progressive EARLY DIFFUSE disease, and steroids precipitate renal crisis. Discriminator: match intensity to severity — methotrexate/mycophenolate for typical diffuse skin, HSCT only for high-risk rapidly progressive diffuse disease in selected centers.</li><li><b>MCTD comparison (anti-U1-RNP)</b> — Withholding steroids from an anti-U1-RNP MCTD patient because 'steroids cause renal crisis in scleroderma' — WRONG. MCTD does respond to and is treated with steroids. Discriminator: high-titer anti-U1-RNP = MCTD (steroid-responsive overlap); anti-Scl-70/centromere/RNA-pol III = systemic sclerosis (avoid steroids). Match antibody to whether steroids help or harm.</li><li><b>Eosinophilic fasciitis (mimic)</b> — Diagnosing systemic sclerosis in a patient with arm induration after exercise and withholding steroids — WRONG. Eosinophilic fasciitis lacks Raynaud, lacks ANA, spares the digits, has eosinophilia, and is STEROID-responsive. Discriminator: no Raynaud + no nailfold changes + finger sparing + peripheral eosinophilia + groove sign = eosinophilic fasciitis, where steroids are the correct treatment (the opposite of SSc).</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. No cure / organ-based therapy</div><div class="rte">There is no cure for systemic sclerosis; management is ORGAN-BASED, targeting each affected system separately. The mantra: ACEi for the kidney (renal crisis), PPI for the gut (reflux), mycophenolate/cyclophosphamide for the lung (ILD), vasodilators for the vessels (Raynaud/PAH). Established fibrosis is not reversible, so therapy halts progression and treats complications.</div><div class="rtt">⚠️ Picking a single 'disease-modifying' drug to treat scleroderma globally — WRONG. No one agent reverses SSc; you treat organ by organ. Discriminator: the right answer always names the therapy matched to the specific organ complication in the stem (e.g., captopril for renal crisis), not a blanket immunosuppressant.</div></div><div class="rt"><div class="rtl">2. Avoid steroids (renal crisis risk)</div><div class="rte">High-dose corticosteroids (≥15 mg/day prednisone) are AVOIDED in SSc, especially early diffuse disease, because they precipitate scleroderma renal crisis. This is a major exception to the rheumatology rule that steroids treat most autoimmune flares. If unavoidable, use the lowest dose with close BP and creatinine monitoring.</div><div class="rtt">⚠️ Choosing high-dose prednisone for tightening diffuse skin or a small pericardial effusion — WRONG. Steroids trigger renal crisis in diffuse SSc. Discriminator: when a stem offers steroids for SSc skin/serositis, the correct move is a steroid-sparing agent (methotrexate, mycophenolate) — reserve any steroid only for clear inflammatory overlap and at low dose.</div></div><div class="rt"><div class="rtl">3. ILD: MMF first-line</div><div class="rte">Mycophenolate mofetil (MMF, ~target 1-1.5 g twice daily) is now first-line for SSc-ILD, having matched cyclophosphamide efficacy in the Scleroderma Lung Study II with far better tolerability and less toxicity. Cyclophosphamide is reserved for severe/rapidly progressive disease. Treat based on objective FVC/DLCO decline and HRCT extent.</div><div class="rtt">⚠️ Defaulting to cyclophosphamide as first-line for SSc-ILD — WRONG. MMF is preferred first-line (equal efficacy, fewer adverse effects like hemorrhagic cystitis, marrow suppression, and malignancy). Discriminator: reserve cyclophosphamide for severe or refractory ILD; choose MMF for typical progressive SSc-ILD.</div></div><div class="rt"><div class="rtl">4. ILD: nintedanib / tocilizumab</div><div class="rte">Add-on options for SSc-ILD: nintedanib (a tyrosine-kinase antifibrotic, FDA-approved for SSc-ILD, slows the rate of FVC decline) and tocilizumab (anti-IL-6R, approved to preserve lung function in early inflammatory SSc-ILD with elevated inflammatory markers). These complement, rather than replace, MMF.</div><div class="rtt">⚠️ Expecting nintedanib to reverse established lung fibrosis — WRONG. Antifibrotics SLOW the rate of FVC decline; they do not restore lost lung. Discriminator: nintedanib's endpoint in trials was reduced annual FVC decline, not improvement — set expectations and combine with immunosuppression in inflammatory disease.</div></div><div class="rt"><div class="rtl">5. PAH: vasodilator triple class</div><div class="rte">SSc-PAH (Group 1) is treated with PAH-specific vasodilators across three pathways: endothelin receptor antagonists (bosentan, ambrisentan, macitentan), PDE-5 inhibitors (sildenafil, tadalafil) or the sGC stimulator riociguat, and prostacyclin analogs (epoprostenol, treprostinil, oral selexipag). Early combination therapy improves outcomes; epoprostenol improves survival in severe disease.</div><div class="rtt">⚠️ Treating SSc-PAH with high-dose calcium channel blockers (the Raynaud drug) as you would idiopathic vasoreactive PAH — WRONG. SSc-PAH patients are almost never CCB-responders. Discriminator: idiopathic PAH with a positive acute vasoreactivity test may use high-dose CCBs, but SSc-PAH requires the three-class PAH-specific agents above. NEVER combine riociguat with a PDE-5 inhibitor (severe hypotension).</div></div><div class="rt"><div class="rtl">6. PAH: avoid digoxin/diuretic pitfalls</div><div class="rte">Supportive PAH care: cautious diuretics for RV volume overload (the failing RV is preload-dependent — over-diuresis drops cardiac output), supplemental O2 for hypoxemia, and treat the right heart. Aggressive diuresis and unnecessary negative inotropy/AV-nodal slowing can precipitate RV failure and hypotension.</div><div class="rtt">⚠️ Aggressively diuretizing a hypotensive SSc-PAH patient with elevated JVP to 'unload' the heart — WRONG. The pressure-loaded RV depends on preload; over-diuresis collapses cardiac output. Discriminator: in right-heart-dominant PAH, optimize volume gently and start PAH-specific vasodilators — do not treat it like left-heart failure with brisk diuresis.</div></div><div class="rt"><div class="rtl">7. SRC: ACE inhibitor (lifesaving)</div><div class="rte">Scleroderma renal crisis is treated with immediate, rapidly titrated short-acting ACE inhibitors (captopril, e.g. 6.25-12.5 mg uptitrated every few hours to control BP). Continue the ACEi even as creatinine rises and even if temporary dialysis is required, because renal recovery occurs in many patients over weeks to months. ACEi transformed SRC from near-uniformly fatal to survivable.</div><div class="rtt">⚠️ Substituting an ARB for the ACE inhibitor, or stopping the ACEi when creatinine climbs — WRONG. ACEi (not ARB) is the proven first-line in SRC, and you do not stop it for a rising creatinine. Discriminator: ARBs lack the same evidence base in SRC; the standard answer is captopril, continued through the expected creatinine bump, with dialysis as a bridge if needed.</div></div><div class="rt"><div class="rtl">8. Raynaud: CCB first-line</div><div class="rte">Raynaud management starts with non-drug measures (keep core/hands warm, avoid cold/nicotine/sympathomimetics/beta-blockers) then a dihydropyridine calcium channel blocker — nifedipine (extended-release ~30-60 mg/day) or amlodipine — as first-line pharmacotherapy. Topical nitrates are an adjunct.</div><div class="rtt">⚠️ Reaching for a non-dihydropyridine or a beta-blocker, or starting a PDE-5 inhibitor before a CCB in uncomplicated Raynaud — WRONG. Dihydropyridine CCBs are first-line; beta-blockers WORSEN vasospasm. Discriminator: escalate to PDE-5 inhibitors/iloprost only for refractory disease or digital ulcers, not as the initial agent.</div></div><div class="rt"><div class="rtl">9. Digital ulcers: PDE-5i / iloprost / bosentan</div><div class="rte">For refractory Raynaud and active digital ulcers: add PDE-5 inhibitors (sildenafil/tadalafil) and IV prostacyclin (iloprost) for healing; bosentan (endothelin antagonist) is used specifically to PREVENT new digital ulcers in patients with recurrent ulceration. Surgical/chemical digital sympathectomy for critical ischemia.</div><div class="rtt">⚠️ Choosing bosentan to heal an existing acute digital ulcer — WRONG. Bosentan's evidence is for PREVENTING new ulcers, not accelerating healing of current ones. Discriminator: to heal an active ulcer use IV iloprost and/or PDE-5 inhibitors; use bosentan to reduce the number of future ulcers in recurrent disease.</div></div><div class="rt"><div class="rtl">10. GI: PPI + prokinetics</div><div class="rte">GI dysmotility is nearly universal (the esophagus is the most commonly involved internal organ). Treat reflux/esophagitis with PPIs (often high-dose, sometimes twice daily) to prevent strictures and Barrett's; add prokinetics (metoclopramide, domperidone) for dysmotility, gastroparesis, and pseudo-obstruction. Lifestyle: small meals, head-of-bed elevation.</div><div class="rtt">⚠️ Treating severe SSc reflux with lifestyle and intermittent antacids alone — WRONG. SSc esophageal disease usually needs chronic, often high-dose, PPI therapy. Discriminator: undertreated reflux leads to peptic strictures and Barrett esophagus; the correct answer escalates acid suppression and adds prokinetics rather than relying on PRN antacids.</div></div><div class="rt"><div class="rtl">11. GI: rotating antibiotics for SIBO</div><div class="rte">Small intestinal bacterial overgrowth (SIBO) results from small-bowel hypomotility, causing bloating, diarrhea, and malabsorption with B12/fat-soluble-vitamin deficiency and weight loss. Treat with cyclical/rotating courses of antibiotics (e.g., rifaximin, metronidazole, ciprofloxacin) to suppress overgrowth, plus nutritional support.</div><div class="rtt">⚠️ Diagnosing SSc diarrhea/weight loss as inflammatory bowel disease and starting immunosuppression — WRONG. Malabsorptive diarrhea in SSc is usually dysmotility-driven SIBO. Discriminator: SIBO responds to rotating antibiotics and improves with prokinetics; an abnormal hydrogen breath test and the SSc dysmotility context point away from IBD.</div></div><div class="rt"><div class="rtl">12. Skin/MSK: MTX, HSCT for severe</div><div class="rte">For active diffuse skin disease, methotrexate or mycophenolate are the steroid-sparing agents of choice; physical/occupational therapy preserves hand function and prevents contractures. Autologous hematopoietic stem cell transplant (HSCT) is reserved for severe, rapidly progressive early diffuse disease with organ involvement — it improves survival but carries significant upfront treatment-related mortality.</div><div class="rtt">⚠️ Offering HSCT to a stable limited-SSc patient, or reaching for steroids for skin tightening — WRONG. HSCT is only for severe progressive EARLY DIFFUSE disease, and steroids precipitate renal crisis. Discriminator: match intensity to severity — methotrexate/mycophenolate for typical diffuse skin, HSCT only for high-risk rapidly progressive diffuse disease in selected centers.</div></div><div class="rt"><div class="rtl">13. MCTD comparison (anti-U1-RNP)</div><div class="rte">Mixed connective tissue disease (MCTD) is an overlap of SLE, systemic sclerosis, and polymyositis features (Raynaud, puffy hands, arthritis, myositis) defined by HIGH-TITER anti-U1-RNP antibody. Unlike SSc, MCTD is generally STEROID-RESPONSIVE and has a better prognosis, though PAH is its leading cause of death.</div><div class="rtt">⚠️ Withholding steroids from an anti-U1-RNP MCTD patient because 'steroids cause renal crisis in scleroderma' — WRONG. MCTD does respond to and is treated with steroids. Discriminator: high-titer anti-U1-RNP = MCTD (steroid-responsive overlap); anti-Scl-70/centromere/RNA-pol III = systemic sclerosis (avoid steroids). Match antibody to whether steroids help or harm.</div></div><div class="rt"><div class="rtl">14. Eosinophilic fasciitis (mimic)</div><div class="rte">Eosinophilic fasciitis is a scleroderma MIMIC affecting the FASCIA (not dermis), typically after vigorous exercise, with symmetric limb induration, peau d'orange skin, the 'groove sign' (depressions along veins), and peripheral EOSINOPHILIA. It SPARES the fingers and has no Raynaud or ANA. Full-thickness skin-to-muscle biopsy confirms; it RESPONDS WELL to corticosteroids (± methotrexate).</div><div class="rtt">⚠️ Diagnosing systemic sclerosis in a patient with arm induration after exercise and withholding steroids — WRONG. Eosinophilic fasciitis lacks Raynaud, lacks ANA, spares the digits, has eosinophilia, and is STEROID-responsive. Discriminator: no Raynaud + no nailfold changes + finger sparing + peripheral eosinophilia + groove sign = eosinophilic fasciitis, where steroids are the correct treatment (the opposite of SSc).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="scl_subtypes.html" title="Scleroderma — Subtypes, Raynaud &amp; Skin">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="sjog_complications.html" title="Sjögren — Complications, Lymphoma &amp; Treatment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

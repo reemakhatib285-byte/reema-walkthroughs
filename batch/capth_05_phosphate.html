@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The Phosphate Vanishing Act</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Four buckets banner</b> — WRONG ANSWER: 'A low serum phosphate always means total-body phosphate depletion.' Discriminator: many causes (insulin, refeeding, alkalosis) are intracellular SHIFTS with normal total-body stores, while others are true depletion. Measuring urinary PO4 (renal wasting vs not) tells you which bucket and guides whether you treat the shift or replace a deficit.</li><li><b>Insulin / DKA treatment</b> — WRONG ANSWER: 'Aggressively replace phosphate in every DKA patient as soon as insulin starts.' Discriminator: DKA hypophosphatemia is largely a treatment-induced SHIFT; routine repletion has no proven benefit and IV phosphate can precipitate hypocalcemia/hypomagnesemia. Replace only if severe (&lt;1.0) or symptomatic.</li><li><b>Refeeding syndrome</b> — WRONG ANSWER: 'Feed the malnourished patient to goal calories immediately to correct malnutrition.' Discriminator: rapid refeeding precipitates refeeding syndrome — the hypophosphatemia can cause cardiac arrhythmia, heart failure, respiratory failure, and death. Start LOW and slow, give thiamine, and monitor/replace PO4, K, Mg. This is the tested management point.</li><li><b>Into cells bucket</b> — WRONG ANSWER: 'Acute hypophosphatemia in an inpatient must be from renal wasting.' Discriminator: a transcellular shift (insulin, alkalosis, refeeding) is far more common acutely and shows LOW urine PO4, whereas renal wasting shows HIGH urine PO4 (FEPO4 &gt;5%). Checking urinary phosphate separates shift from wasting.</li><li><b>Kidney dumps PO4 / PTH</b> — WRONG ANSWER: 'Primary hyperparathyroidism raises both calcium and phosphate.' Discriminator: PTH WASTES phosphate (phosphaturic), so primary HPT = HIGH Ca with LOW PO4. High Ca WITH high PO4 points instead to vitamin D toxicity, milk-alkali, or granulomatous disease — the phosphate direction splits them.</li><li><b>PTHrP / FGF23 wasting</b> — WRONG ANSWER: 'High calcium + low phosphate in a cancer patient means primary hyperparathyroidism.' Discriminator: in malignancy it's PTHrP — measure it; native PTH is SUPPRESSED (low) and calcitriol is low/normal, whereas primary HPT has high/inappropriately-normal PTH. PTHrP-mediated hypercalcemia signals advanced malignancy and poor prognosis.</li><li><b>Fanconi syndrome</b> — WRONG ANSWER: 'Isolated hypophosphatemia from renal wasting — work it up as XLH/TIO.' Discriminator: Fanconi phosphaturia comes WITH glucosuria, aminoaciduria, and a non-anion-gap (type 2) metabolic acidosis — it is NOT isolated. Finding glucosuria with normal serum glucose plus a normal-AG acidosis points to Fanconi (check for myeloma/tenofovir), not an FGF23 syndrome.</li><li><b>Into urine bucket</b> — WRONG ANSWER: 'You can't tell renal from non-renal phosphate loss without a renal biopsy.' Discriminator: a simple spot urine for FEPO4 (or 24-hr urine PO4) distinguishes them — high (&gt;5%) = renal wasting; low (&lt;5%) = the kidney is appropriately conserving, so the cause is a shift/GI/bone. This single test directs the entire workup.</li><li><b>Hungry bone / into bone</b> — WRONG ANSWER: 'Post-parathyroidectomy hypocalcemia is always due to accidentally removing/damaging the remaining glands (hypoparathyroidism).' Discriminator: hungry bone syndrome causes hypocalcemia WITH hypophosphatemia and high ALP (bone uptake), whereas surgical hypoparathyroidism causes hypocalcemia WITH HIGH phosphate (loss of phosphaturia). The phosphate direction and ALP distinguish them — PTH will be low in both.</li><li><b>Osteoblastic mets / prostate</b> — WRONG ANSWER: 'All bone metastases cause hypercalcemia.' Discriminator: osteoBLASTIC mets (prostate) consume Ca/PO4 → low/normal serum levels, while osteoLYTIC mets (myeloma, renal cell) release Ca → hypercalcemia. The cancer type and the lytic-vs-blastic pattern predict the direction of serum calcium.</li><li><b>Into bone bucket</b> — WRONG ANSWER: 'Low phosphate with low urine phosphate must be a GI/malabsorption cause.' Discriminator: rapid bone deposition (hungry bone, osteoblastic mets) ALSO gives low urine PO4, but is accompanied by high ALP and a recent parathyroidectomy or known sclerotic cancer — clinical context separates bone deposition from GI loss.</li><li><b>Malabsorption / binders / not absorbed</b> — WRONG ANSWER: 'Antacids are inert and don't affect phosphate.' Discriminator: chronic aluminum- or magnesium-hydroxide antacid use (or sevelamer) binds dietary phosphate in the gut and is a classic, easily-missed cause of hypophosphatemia and even osteomalacia — always ask about OTC antacid/binder use in unexplained low PO4.</li><li><b>Severe danger panel</b> — WRONG ANSWER: 'Hypophosphatemia is a benign incidental lab finding.' Discriminator: severe hypophosphatemia (&lt;1.0) is a true emergency — it causes respiratory failure, rhabdomyolysis, hemolysis, and arrhythmia from ATP depletion and needs prompt IV repletion. Mild hypophosphatemia can be observed/oral-replaced, but the severe end is life-threatening.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Four buckets banner</div><div class="rte">Hypophosphatemia (serum PO4 &lt;2.5 mg/dL; severe &lt;1.0 mg/dL) is best organized into four mechanistic buckets: (1) transcellular SHIFT into cells (insulin, refeeding, respiratory alkalosis); (2) deposition INTO bone (hungry bone syndrome, osteoblastic mets); (3) renal wasting INTO urine (PTH/PTHrP, FGF23, Fanconi); (4) NOT absorbed from gut (malnutrition, malabsorption, phosphate binders/antacids). The discriminator across buckets is urinary phosphate: high (FEPO4 &gt;5%) points to renal wasting; low points to a shift, GI cause, or bone deposition.</div><div class="rtt">⚠️ WRONG ANSWER: 'A low serum phosphate always means total-body phosphate depletion.' Discriminator: many causes (insulin, refeeding, alkalosis) are intracellular SHIFTS with normal total-body stores, while others are true depletion. Measuring urinary PO4 (renal wasting vs not) tells you which bucket and guides whether you treat the shift or replace a deficit.</div></div><div class="rt"><div class="rtl">2. Insulin / DKA treatment</div><div class="rte">Insulin drives phosphate (and potassium and glucose) intracellularly. During DKA treatment, serum phosphate falls as insulin and rehydration push PO4 into cells AND as osmotic diuresis has already depleted total-body stores. Routine phosphate replacement in DKA is NOT recommended unless PO4 &lt;1.0 mg/dL or there is cardiac dysfunction, respiratory depression, or hemolysis — overzealous IV phosphate causes hypocalcemia.</div><div class="rtt">⚠️ WRONG ANSWER: 'Aggressively replace phosphate in every DKA patient as soon as insulin starts.' Discriminator: DKA hypophosphatemia is largely a treatment-induced SHIFT; routine repletion has no proven benefit and IV phosphate can precipitate hypocalcemia/hypomagnesemia. Replace only if severe (&lt;1.0) or symptomatic.</div></div><div class="rt"><div class="rtl">3. Refeeding syndrome</div><div class="rte">Refeeding syndrome: in a chronically malnourished patient (alcohol use disorder, anorexia, prolonged NPO/starvation), reintroducing carbohydrate triggers an insulin surge that drives phosphate, potassium, and magnesium into cells while ATP and 2,3-DPG synthesis consume phosphate — causing acute, sometimes fatal hypophosphatemia plus hypokalemia and hypomagnesemia. Thiamine is depleted too. Respiratory alkalosis independently shifts PO4 intracellularly. Prevention: start feeding slowly (~10 kcal/kg/day), give thiamine first, and replete electrolytes proactively.</div><div class="rtt">⚠️ WRONG ANSWER: 'Feed the malnourished patient to goal calories immediately to correct malnutrition.' Discriminator: rapid refeeding precipitates refeeding syndrome — the hypophosphatemia can cause cardiac arrhythmia, heart failure, respiratory failure, and death. Start LOW and slow, give thiamine, and monitor/replace PO4, K, Mg. This is the tested management point.</div></div><div class="rt"><div class="rtl">4. Into cells bucket</div><div class="rte">The intracellular-shift bucket (insulin/glucose, refeeding, respiratory alkalosis, recovery from hypothermia, rapid cell proliferation e.g. GM-CSF/leukemia) is the most common cause of acute hypophosphatemia in hospitalized patients and occurs WITHOUT total-body depletion. Urinary phosphate is appropriately LOW because the kidney is conserving. These typically self-correct once the trigger resolves.</div><div class="rtt">⚠️ WRONG ANSWER: 'Acute hypophosphatemia in an inpatient must be from renal wasting.' Discriminator: a transcellular shift (insulin, alkalosis, refeeding) is far more common acutely and shows LOW urine PO4, whereas renal wasting shows HIGH urine PO4 (FEPO4 &gt;5%). Checking urinary phosphate separates shift from wasting.</div></div><div class="rt"><div class="rtl">5. Kidney dumps PO4 / PTH</div><div class="rte">PTH is phosphaturic: it downregulates the proximal-tubule NaPi-2a/2c cotransporters, dumping phosphate into urine. Primary hyperparathyroidism therefore gives HIGH calcium with LOW phosphate (and high/normal PTH, high calcitriol). This is the classic 'stones, bones, groans, psychiatric moans' picture. The phosphaturia is the mechanism behind the low PO4.</div><div class="rtt">⚠️ WRONG ANSWER: 'Primary hyperparathyroidism raises both calcium and phosphate.' Discriminator: PTH WASTES phosphate (phosphaturic), so primary HPT = HIGH Ca with LOW PO4. High Ca WITH high PO4 points instead to vitamin D toxicity, milk-alkali, or granulomatous disease — the phosphate direction splits them.</div></div><div class="rt"><div class="rtl">6. PTHrP / FGF23 wasting</div><div class="rte">PTHrP (PTH-related peptide) is the mediator of humoral hypercalcemia of malignancy (squamous cell lung/head-neck, renal, bladder cancers); it mimics PTH at the PTH1 receptor, raising Ca and wasting phosphate (low PO4) but with SUPPRESSED native PTH and low/normal calcitriol. FGF23 (XLH, TIO, ADHR) also wastes phosphate but additionally suppresses calcitriol. Both produce renal phosphate wasting with inappropriately high urine PO4.</div><div class="rtt">⚠️ WRONG ANSWER: 'High calcium + low phosphate in a cancer patient means primary hyperparathyroidism.' Discriminator: in malignancy it's PTHrP — measure it; native PTH is SUPPRESSED (low) and calcitriol is low/normal, whereas primary HPT has high/inappropriately-normal PTH. PTHrP-mediated hypercalcemia signals advanced malignancy and poor prognosis.</div></div><div class="rt"><div class="rtl">7. Fanconi syndrome</div><div class="rte">Fanconi syndrome is a generalized proximal tubule transport defect causing simultaneous wasting of phosphate, glucose (glucosuria with normal blood glucose), amino acids (aminoaciduria), bicarbonate (proximal/type 2 RTA → normal anion-gap metabolic acidosis), and uric acid. The phosphaturia causes hypophosphatemia and can lead to osteomalacia/rickets. Causes: multiple myeloma/light chains, Wilson disease, cystinosis (kids), drugs (tenofovir, ifosfamide, expired tetracycline, aminoglycosides), and heavy metals.</div><div class="rtt">⚠️ WRONG ANSWER: 'Isolated hypophosphatemia from renal wasting — work it up as XLH/TIO.' Discriminator: Fanconi phosphaturia comes WITH glucosuria, aminoaciduria, and a non-anion-gap (type 2) metabolic acidosis — it is NOT isolated. Finding glucosuria with normal serum glucose plus a normal-AG acidosis points to Fanconi (check for myeloma/tenofovir), not an FGF23 syndrome.</div></div><div class="rt"><div class="rtl">8. Into urine bucket</div><div class="rte">Renal phosphate wasting (PTH/PTHrP, FGF23, Fanconi, diuretics, post-transplant, volume expansion) is identified by an inappropriately HIGH urinary phosphate despite low serum phosphate — quantified by the fractional excretion of phosphate (FEPO4 &gt;5%) or a low tubular maximum reabsorption (TmP/GFR). A LOW urine PO4 (&lt;100 mg/day, FEPO4 &lt;5%) instead points to a shift, GI loss, or bone deposition.</div><div class="rtt">⚠️ WRONG ANSWER: 'You can't tell renal from non-renal phosphate loss without a renal biopsy.' Discriminator: a simple spot urine for FEPO4 (or 24-hr urine PO4) distinguishes them — high (&gt;5%) = renal wasting; low (&lt;5%) = the kidney is appropriately conserving, so the cause is a shift/GI/bone. This single test directs the entire workup.</div></div><div class="rt"><div class="rtl">9. Hungry bone / into bone</div><div class="rte">Hungry bone syndrome occurs after parathyroidectomy (for severe primary/tertiary HPT) or thyroidectomy: with the chronic high-PTH/high-turnover drive suddenly removed, bone avidly takes up calcium AND phosphate AND magnesium to remineralize, causing rapid, profound, prolonged hypocalcemia, hypophosphatemia, and hypomagnesemia (with high ALP reflecting osteoblast activity). It can last days to weeks and requires aggressive calcium (and PO4/Mg) repletion.</div><div class="rtt">⚠️ WRONG ANSWER: 'Post-parathyroidectomy hypocalcemia is always due to accidentally removing/damaging the remaining glands (hypoparathyroidism).' Discriminator: hungry bone syndrome causes hypocalcemia WITH hypophosphatemia and high ALP (bone uptake), whereas surgical hypoparathyroidism causes hypocalcemia WITH HIGH phosphate (loss of phosphaturia). The phosphate direction and ALP distinguish them — PTH will be low in both.</div></div><div class="rt"><div class="rtl">10. Osteoblastic mets / prostate</div><div class="rte">Osteoblastic (sclerotic) metastases — classically prostate cancer, also breast and small cell lung — drive calcium and phosphate INTO new bone formation, lowering serum levels (can cause hypocalcemia/hypophosphatemia). Contrast with osteoLYTIC mets (myeloma, lytic breast, renal) which RELEASE calcium and cause HYPERcalcemia. ALP is elevated with osteoblastic activity.</div><div class="rtt">⚠️ WRONG ANSWER: 'All bone metastases cause hypercalcemia.' Discriminator: osteoBLASTIC mets (prostate) consume Ca/PO4 → low/normal serum levels, while osteoLYTIC mets (myeloma, renal cell) release Ca → hypercalcemia. The cancer type and the lytic-vs-blastic pattern predict the direction of serum calcium.</div></div><div class="rt"><div class="rtl">11. Into bone bucket</div><div class="rte">The 'into bone' bucket: any state of rapid bone mineralization pulls phosphate (and calcium) out of serum — hungry bone syndrome post-parathyroidectomy and osteoblastic metastases are the classics. Urinary phosphate is appropriately LOW (kidney conserving) and ALP is typically high. This is a distinct mechanism from shift and from renal wasting.</div><div class="rtt">⚠️ WRONG ANSWER: 'Low phosphate with low urine phosphate must be a GI/malabsorption cause.' Discriminator: rapid bone deposition (hungry bone, osteoblastic mets) ALSO gives low urine PO4, but is accompanied by high ALP and a recent parathyroidectomy or known sclerotic cancer — clinical context separates bone deposition from GI loss.</div></div><div class="rt"><div class="rtl">12. Malabsorption / binders / not absorbed</div><div class="rte">Decreased gut absorption: chronic malnutrition/starvation (phosphate is in most foods, so dietary deficiency alone is rare and usually needs malabsorption or binders to manifest), steatorrhea/malabsorption, chronic diarrhea, and most importantly phosphate-binding drugs — aluminum/magnesium-containing antacids and sevelamer/calcium binders taken chronically can bind dietary phosphate and cause hypophosphatemia. Vitamin D deficiency also reduces intestinal phosphate (and calcium) absorption.</div><div class="rtt">⚠️ WRONG ANSWER: 'Antacids are inert and don't affect phosphate.' Discriminator: chronic aluminum- or magnesium-hydroxide antacid use (or sevelamer) binds dietary phosphate in the gut and is a classic, easily-missed cause of hypophosphatemia and even osteomalacia — always ask about OTC antacid/binder use in unexplained low PO4.</div></div><div class="rt"><div class="rtl">13. Severe danger panel</div><div class="rte">Severe hypophosphatemia (&lt;1.0 mg/dL) depletes ATP and 2,3-DPG, causing: diaphragmatic/respiratory muscle weakness → respiratory failure and failure to wean from the ventilator; rhabdomyolysis; hemolysis (rigid, ATP-depleted RBCs); impaired cardiac contractility/arrhythmia; and encephalopathy/seizures. This warrants IV phosphate (sodium or potassium phosphate) with monitoring (risk of hypocalcemia, hyperkalemia, and metastatic calcification on repletion).</div><div class="rtt">⚠️ WRONG ANSWER: 'Hypophosphatemia is a benign incidental lab finding.' Discriminator: severe hypophosphatemia (&lt;1.0) is a true emergency — it causes respiratory failure, rhabdomyolysis, hemolysis, and arrhythmia from ATP depletion and needs prompt IV repletion. Mild hypophosphatemia can be observed/oral-replaced, but the severe end is life-threatening.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_09_adenoma_office.html" title="Calcium/PTH/VitD — The Parathyroid Adenoma Office">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="capth_06_vitamin_d.html" title="Calcium/PTH/VitD — The Vitamin D Lab Pattern Ward">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD — Stable Angina: Chest Pain Features</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Pressure / heaviness</b> — WRONG answer: calling sharp, stabbing, knife-like, or pinpoint chest pain 'angina.' Discriminator — sharp/pleuritic/positional or single-point pain argues AGAINST ischemia and toward musculoskeletal, pericardial, or pleural causes; true angina is a diffuse pressure sensation.</li><li><b>Provoked by exertion</b> — WRONG answer: labeling chest pain that occurs purely AT REST (especially prolonged) as stable angina. Discriminator — rest angina, crescendo angina, or new-onset angina = UNSTABLE angina/ACS, not stable; stable angina is provoked by demand and resolves when demand falls.</li><li><b>Relieved by rest / NTG</b> — WRONG answer: calling chest pain that lasts hours or fails to respond to rest/NTG 'stable angina.' Discriminator — pain unrelieved by rest/NTG and lasting &gt;20 min suggests ACS (unstable angina/NSTEMI/STEMI), requiring ECG and troponins, not reassurance.</li><li><b>Short duration</b> — WRONG answer: classifying pain lasting only seconds (a fleeting jab) OR pain that is constant all day as stable angina. Discriminator — momentary or unremitting pain is non-ischemic; anginal pain is a discrete episode of minutes. Pain &gt;20 min raises concern for infarction.</li><li><b>Typical = 3/3 features</b> — WRONG answer: equating atypical angina (2/3 features) with typical angina or dismissing it as benign. Discriminator — atypical angina still carries meaningful CAD probability (especially in older men/diabetics) and may warrant stress testing; only ≤1 feature is truly non-anginal.</li><li><b>Radiation jaw/teeth/arm</b> — WRONG answer: interpreting radiation to the TRAPEZIUS ridge as a sign of angina. Discriminator — trapezius-ridge radiation is the classic clue for PERICARDITIS (phrenic nerve, C3–C5), NOT angina; jaw/teeth/arm radiation favors ischemia, trapezius favors pericarditis.</li><li><b>NOT trapezius</b> — WRONG answer: attributing trapezius-ridge pain to myocardial ischemia. Discriminator — combined with positional/pleuritic features and a friction rub, trapezius radiation strongly indicates pericarditis; mislabeling it as angina sends you down the wrong workup (and risks anticoagulating a pericarditis patient).</li><li><b>Pericarditis: worse supine</b> — WRONG answer: working up positional/pleuritic, worse-supine chest pain as stable angina with stress testing. Discriminator — angina is NOT positional or pleuritic; pain that changes with body position or breathing points to pericarditis (or pleuritic/MSK causes), warranting ECG for diffuse ST elevation rather than ischemic evaluation.</li><li><b>Angina equivalents</b> — WRONG answer: excluding myocardial ischemia in a diabetic/elderly patient simply because there is no chest pain. Discriminator — autonomic neuropathy causes painless/atypical presentations; exertional dyspnea or unexplained nausea/fatigue in a diabetic can BE the ischemic presentation and must be evaluated.</li><li><b>Older age / sex</b> — WRONG answer: applying the same low pretest probability to an older man with typical symptoms as to a young woman with atypical symptoms. Discriminator — pretest probability (age + sex + symptom type) determines testing yield; ignoring it leads to over-testing low-risk patients and under-testing high-risk ones.</li><li><b>Fixed threshold</b> — WRONG answer: interpreting a recent DROP in the exertion threshold (angina now at lower workloads or at rest) as still 'stable.' Discriminator — a falling/crescendo threshold or new rest symptoms = UNSTABLE angina/ACS; truly stable angina has an unchanged reproducible threshold over time.</li><li><b>Variable threshold (vasospasm)</b> — WRONG answer: giving a NON-selective beta-blocker as first-line for suspected coronary vasospasm/Prinzmetal angina. Discriminator — unopposed alpha tone from beta-blockade can worsen vasospasm; the correct treatment is a calcium-channel blocker (± nitrates) and avoidance of triggers (smoking, cocaine, triptans).</li><li><b>Cold-weather angina</b> — WRONG answer: assuming cold-induced angina indicates a fundamentally different (non-atherosclerotic) disease. Discriminator — cold simply raises afterload/demand on the same fixed stenosis; it is a provocation, not a separate diagnosis, and is managed with standard antianginal therapy plus avoiding sudden cold exertion.</li><li><b>Reproducible chest-wall pain</b> — WRONG answer: ordering stress testing/catheterization for clearly reproducible single-point chest-wall tenderness with a non-anginal history. Discriminator — reproducibility on palpation makes ischemia very unlikely and points to costochondritis/MSK pain; over-testing exposes the patient to unnecessary risk and cost.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Pressure / heaviness</div><div class="rte">Typical angina is a deep, poorly-localized SUBSTERNAL pressure, heaviness, tightness, or squeezing (often a clenched fist over the sternum — Levine sign) — never sharp or pinpoint. It reflects demand ischemia: a fixed atherosclerotic stenosis (≥70%) cannot augment flow when O2 demand rises (exertion, heavy meals, cold, emotion). Quality, provocation, and relief are the three pillars of the typical-angina definition. Mnemonic: 'angina is an elephant on the chest, not an ice-pick.'</div><div class="rtt">⚠️ WRONG answer: calling sharp, stabbing, knife-like, or pinpoint chest pain 'angina.' Discriminator — sharp/pleuritic/positional or single-point pain argues AGAINST ischemia and toward musculoskeletal, pericardial, or pleural causes; true angina is a diffuse pressure sensation.</div></div><div class="rt"><div class="rtl">2. Provoked by exertion</div><div class="rte">Typical angina is reproducibly PROVOKED by anything that raises myocardial O2 demand — physical exertion, emotional stress, a heavy meal (splanchnic steal), or cold air — against a fixed plaque that cannot increase supply. Symptoms come on predictably at a given workload (see 'fixed threshold'). This demand-supply mismatch is the defining physiology of stable exertional angina. Mnemonic: 'exertion exposes the fixed stenosis.'</div><div class="rtt">⚠️ WRONG answer: labeling chest pain that occurs purely AT REST (especially prolonged) as stable angina. Discriminator — rest angina, crescendo angina, or new-onset angina = UNSTABLE angina/ACS, not stable; stable angina is provoked by demand and resolves when demand falls.</div></div><div class="rt"><div class="rtl">3. Relieved by rest / NTG</div><div class="rte">Typical angina is RELIEVED within ~2–5 minutes by rest or sublingual nitroglycerin. NTG is a venodilator that drops preload (and dilates coronaries), reducing wall stress and O2 demand so the supply-demand balance is restored. Prompt relief supports an ischemic origin. Note: esophageal spasm can also respond to NTG, so relief is supportive, not definitive. Mnemonic: 'rest and nitro reset the demand.'</div><div class="rtt">⚠️ WRONG answer: calling chest pain that lasts hours or fails to respond to rest/NTG 'stable angina.' Discriminator — pain unrelieved by rest/NTG and lasting &gt;20 min suggests ACS (unstable angina/NSTEMI/STEMI), requiring ECG and troponins, not reassurance.</div></div><div class="rt"><div class="rtl">4. Short duration</div><div class="rte">Stable anginal episodes are BRIEF — typically 2–5 minutes, up to ~10 min — because relief follows once demand falls or NTG is taken. The duration window is a key discriminator: very short (seconds) or constant all-day pain is non-anginal, while prolonged rest pain &gt;20 min signals MI/unstable angina. Mnemonic: 'minutes = angina; seconds or hours = something else.'</div><div class="rtt">⚠️ WRONG answer: classifying pain lasting only seconds (a fleeting jab) OR pain that is constant all day as stable angina. Discriminator — momentary or unremitting pain is non-ischemic; anginal pain is a discrete episode of minutes. Pain &gt;20 min raises concern for infarction.</div></div><div class="rt"><div class="rtl">5. Typical = 3/3 features</div><div class="rte">TYPICAL (definite) angina requires ALL 3 features: (1) substernal chest discomfort of characteristic quality/duration, (2) provoked by exertion or emotional stress, (3) relieved by rest or NTG. 2 of 3 = ATYPICAL (probable) angina; 0–1 = non-anginal chest pain. This triad drives pretest probability of CAD and downstream testing decisions. Mnemonic: 'three-for-three is the real deal.'</div><div class="rtt">⚠️ WRONG answer: equating atypical angina (2/3 features) with typical angina or dismissing it as benign. Discriminator — atypical angina still carries meaningful CAD probability (especially in older men/diabetics) and may warrant stress testing; only ≤1 feature is truly non-anginal.</div></div><div class="rt"><div class="rtl">6. Radiation jaw/teeth/arm</div><div class="rte">Anginal pain commonly radiates to the jaw, teeth, neck, throat, shoulders, or arms (classically the LEFT arm/ulnar border) due to shared spinal afferents (referred pain via T1–T4). Radiation to BOTH arms or to the jaw substantially raises the likelihood of ischemia. Mnemonic: 'ischemia refers up to the jaw and down the arm.'</div><div class="rtt">⚠️ WRONG answer: interpreting radiation to the TRAPEZIUS ridge as a sign of angina. Discriminator — trapezius-ridge radiation is the classic clue for PERICARDITIS (phrenic nerve, C3–C5), NOT angina; jaw/teeth/arm radiation favors ischemia, trapezius favors pericarditis.</div></div><div class="rt"><div class="rtl">7. NOT trapezius</div><div class="rte">Trapezius-ridge pain is a high-yield discriminator: it points AWAY from angina and TOWARD acute pericarditis. The trapezius ridge is innervated by the phrenic nerve (C3–C5), which also innervates the pericardium, so pericardial inflammation refers there. Angina refers to jaw/arm (T1–T4 sympathetic afferents), not the trapezius. Mnemonic: 'Trapezius = pericarditis; jaw/arm = angina.'</div><div class="rtt">⚠️ WRONG answer: attributing trapezius-ridge pain to myocardial ischemia. Discriminator — combined with positional/pleuritic features and a friction rub, trapezius radiation strongly indicates pericarditis; mislabeling it as angina sends you down the wrong workup (and risks anticoagulating a pericarditis patient).</div></div><div class="rt"><div class="rtl">8. Pericarditis: worse supine</div><div class="rte">Pericarditic pain is PLEURITIC and POSITIONAL — sharp, worse lying flat (supine) and with deep inspiration, and RELIEVED by sitting up and leaning forward. Other features: pericardial friction rub, diffuse concave-up ST elevation with PR depression on ECG, often post-viral. This is a classic angina mimic/distractor on exams. Mnemonic: 'sit up and lean forward = pericarditis relief.'</div><div class="rtt">⚠️ WRONG answer: working up positional/pleuritic, worse-supine chest pain as stable angina with stress testing. Discriminator — angina is NOT positional or pleuritic; pain that changes with body position or breathing points to pericarditis (or pleuritic/MSK causes), warranting ECG for diffuse ST elevation rather than ischemic evaluation.</div></div><div class="rt"><div class="rtl">9. Angina equivalents</div><div class="rte">Elderly patients, women, and especially DIABETICS (autonomic neuropathy blunts pain) may have SILENT ischemia or present with anginal EQUIVALENTS instead of chest pain: exertional dyspnea, nausea, diaphoresis, fatigue, faintness/lightheadedness, or epigastric discomfort. A high index of suspicion is needed in these groups. Mnemonic: 'diabetics feel ischemia as dyspnea, not pain.'</div><div class="rtt">⚠️ WRONG answer: excluding myocardial ischemia in a diabetic/elderly patient simply because there is no chest pain. Discriminator — autonomic neuropathy causes painless/atypical presentations; exertional dyspnea or unexplained nausea/fatigue in a diabetic can BE the ischemic presentation and must be evaluated.</div></div><div class="rt"><div class="rtl">10. Older age / sex</div><div class="rte">Pretest probability of CAD rises sharply with age and is higher in men at any given age (estrogen is relatively protective premenopausally). Men &gt;50 and women &gt;60 with anginal symptoms carry a meaningful CAD likelihood that, combined with the typical/atypical symptom classification, guides whether and how to test (e.g., stress testing vs CTA). Mnemonic: 'older + male + typical = high pretest probability.'</div><div class="rtt">⚠️ WRONG answer: applying the same low pretest probability to an older man with typical symptoms as to a young woman with atypical symptoms. Discriminator — pretest probability (age + sex + symptom type) determines testing yield; ignoring it leads to over-testing low-risk patients and under-testing high-risk ones.</div></div><div class="rt"><div class="rtl">11. Fixed threshold</div><div class="rte">Classic stable angina from a FIXED atherosclerotic plaque has a fixed/stable threshold — symptoms appear at a predictable, reproducible level of exertion (e.g., always at 2 flights of stairs) and resolve with rest. The flat line denotes a stable demand threshold that hasn't worsened. Management: optimal medical therapy (antianginals + statin + aspirin + risk-factor control). Mnemonic: 'fixed plaque → fixed threshold.'</div><div class="rtt">⚠️ WRONG answer: interpreting a recent DROP in the exertion threshold (angina now at lower workloads or at rest) as still 'stable.' Discriminator — a falling/crescendo threshold or new rest symptoms = UNSTABLE angina/ACS; truly stable angina has an unchanged reproducible threshold over time.</div></div><div class="rt"><div class="rtl">12. Variable threshold (vasospasm)</div><div class="rte">Variable-threshold angina has a dynamic vasomotor component (coronary vasospasm superimposed on fixed disease, or pure vasospastic/Prinzmetal angina) — symptoms occur at varying, sometimes minimal exertion, often early morning or at rest, due to fluctuating coronary tone. Prinzmetal shows transient ST ELEVATION during episodes and responds to CCBs/nitrates; beta-blockers can WORSEN pure vasospasm. Mnemonic: 'wavy threshold = vasospasm; treat with calcium-channel blockers.'</div><div class="rtt">⚠️ WRONG answer: giving a NON-selective beta-blocker as first-line for suspected coronary vasospasm/Prinzmetal angina. Discriminator — unopposed alpha tone from beta-blockade can worsen vasospasm; the correct treatment is a calcium-channel blocker (± nitrates) and avoidance of triggers (smoking, cocaine, triptans).</div></div><div class="rt"><div class="rtl">13. Cold-weather angina</div><div class="rte">Cold exposure provokes angina by raising systemic vascular resistance (peripheral vasoconstriction → increased afterload) and may trigger coronary vasoconstriction, both increasing myocardial O2 demand and lowering the angina threshold. Walking into cold wind after a meal is a classic provoker. This supports the demand-ischemia model of stable angina. Mnemonic: 'cold clamps the vessels → demand climbs → angina.'</div><div class="rtt">⚠️ WRONG answer: assuming cold-induced angina indicates a fundamentally different (non-atherosclerotic) disease. Discriminator — cold simply raises afterload/demand on the same fixed stenosis; it is a provocation, not a separate diagnosis, and is managed with standard antianginal therapy plus avoiding sudden cold exertion.</div></div><div class="rt"><div class="rtl">14. Reproducible chest-wall pain</div><div class="rte">Pain precisely REPRODUCED by single-finger palpation of one localized chest-wall/costochondral spot is musculoskeletal (e.g., costochondritis) — sharp, well-localized, and reproducible on pressure, which is essentially never the pattern of true angina. No cardiac workup is needed if the history is otherwise non-ischemic. Mnemonic: 'if one finger reproduces it, the heart is innocent.'</div><div class="rtt">⚠️ WRONG answer: ordering stress testing/catheterization for clearly reproducible single-point chest-wall tenderness with a non-anginal history. Discriminator — reproducibility on palpation makes ischemia very unlikely and points to costochondritis/MSK pain; over-testing exposes the patient to unnecessary risk and cost.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_revascularization.html" title="IHD — Revascularization: PCI vs CABG &amp; Medical Therapy">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_stress_testing.html" title="IHD — Stress Testing &amp; CTA Decision Tree">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypernatremia — Clinical Features</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Acute brain shrink</b> — WRONG answer: 'the symptoms of hypernatremia are mostly from the high sodium itself acting on nerves.' The symptoms are driven by brain CELL SHRINKAGE from osmotic water efflux, and severity depends on how FAST Na rose, not just the number. Discriminator: the same Na of 160 is barely symptomatic if chronic but can cause seizures if it developed acutely.</li><li><b>Vessels tear</b> — WRONG answer: 'intracranial hemorrhage in hypernatremia comes from hypertensive vessel rupture.' The bleeding is MECHANICAL — brain volume loss stretches and tears the bridging veins (and can cause venous sinus thrombosis). Discriminator: a hypernatremic infant or elder with new focal deficit/seizure should prompt imaging for hemorrhage from brain shrinkage, not just BP control.</li><li><b>Bleed</b> — WRONG answer: 'a seizing, hypernatremic neonate just needs the sodium corrected and no imaging.' New neurologic deficits or seizures in severe hypernatremia warrant brain imaging because shrinkage can cause hemorrhage (subdural, subarachnoid, parenchymal) or venous thrombosis. Discriminator: focal signs or persistent obtundation out of proportion to the Na should trigger a CT/MRI.</li><li><b>&lt;48h acute</b> — WRONG answer: 'always correct hypernatremia at the same slow rate regardless of duration.' Truly ACUTE (&lt;48 h) hypernatremia can and should be corrected faster because no idiogenic osmolytes have formed, so there is little cerebral-edema risk; it is CHRONIC cases that demand the ≤10 mEq/L/day limit. Discriminator: establish onset — &lt;48 h allows brisker correction, &gt;48 h mandates slow correction.</li><li><b>Neonates</b> — WRONG answer: 'correct a hypernatremic neonate quickly with hypotonic fluids to fix the Na fast.' Neonates are uniquely vulnerable to cerebral edema/seizures from rapid correction, so the safe ≤10–12 mEq/L/24 h limit is especially important here. Discriminator: in a hypernatremic infant, slow controlled correction trumps speed — overcorrection causes seizures.</li><li><b>Demyelination</b> — WRONG answer: 'osmotic demyelination only happens when you correct hyponatremia too fast.' Although that is the classic association, severe hypernatremia itself can cause osmotic demyelination/neuronal injury from extreme hypertonicity. Discriminator: the buzzword 'demyelination after rapid correction' = hyponatremia, but recognize hypernatremia can cause direct hyperosmolar neuronal injury too.</li><li><b>Rhabdomyolysis</b> — WRONG answer: 'muscle breakdown is not a feature of electrolyte disorders like hypernatremia.' Severe hypernatremia is a genuine, if uncommon, cause of rhabdomyolysis and the associated AKI. Discriminator: a hypernatremic patient with a rising CK and weakness has hypernatremia-induced rhabdo — send CK and watch the kidneys.</li><li><b>Chronic/48h</b> — WRONG answer: 'a chronically hypernatremic patient who looks well can have their Na corrected rapidly since they tolerate it.' Their apparent tolerance is BECAUSE of accumulated osmolytes, which makes rapid correction DANGEROUS (cerebral edema). Discriminator: chronic + adapted brain = correct slowly (≤10 mEq/L/day), regardless of how well the patient currently appears.</li><li><b>Adapted brain</b> — WRONG answer: 'once the brain has adapted and looks normal-sized, it is safe to normalize the sodium quickly.' The adapted brain is full of osmolytes that clear slowly, so quick correction causes edema. Discriminator: adapted/normal-volume brain after chronic hyperNa = MOST at risk from fast correction, not least.</li><li><b>Osmolytes</b> — WRONG answer: 'idiogenic osmolytes clear as fast as you can correct the serum sodium, so timing doesn't matter.' Osmolytes wash out over DAYS, far slower than serum Na can be dropped, creating a transient osmotic gradient that drives water into the brain. Discriminator: the slow clearance of osmolytes is the reason chronic hypernatremia must be corrected slowly.</li><li><b>Fast correction</b> — WRONG answer: 'the faster you correct hypernatremia, the better the neurologic outcome.' Fast correction of chronic hypernatremia drives water into the brain and causes cerebral edema/seizures — speed harms. Discriminator: controlled, slow correction (≤10–12 mEq/L/day) yields the best outcomes in chronic hypernatremia.</li><li><b>Edema + seizure</b> — WRONG answer: 'new seizures during treatment of hypernatremia mean you are correcting too SLOWLY.' New seizures and deteriorating mental status during correction usually signal OVER-rapid correction with cerebral edema — slow down, do not speed up. Discriminator: deterioration AS the Na falls quickly = overcorrection edema; the response is to slow the rate, not accelerate it.</li><li><b>Too fast</b> — WRONG answer: 'aim to normalize the sodium completely within the first 24 hours.' In chronic/unknown-duration cases the safe ceiling is a ~10 mEq/L drop in 24 h; full normalization over 24 h risks cerebral edema. Discriminator: pace correction by the per-24-h limit and frequent rechecks — only confirmed acute cases warrant brisk correction.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Acute brain shrink</div><div class="rte">Hypernatremia is a hyperosmolar state, so water osmotically shifts OUT of brain neurons and the brain physically shrinks. This produces the neurologic symptom complex that dominates the clinical picture: lethargy, weakness, irritability, restlessness, confusion, and progressing to stupor, seizures, and coma. Symptom severity tracks both the absolute Na (markedly symptomatic when Na &gt;158–160) and especially the RATE of rise — an acute jump is far more dangerous than the same Na reached slowly. The shrunken brain pulling away from the skull is the central image of acute hypernatremia.</div><div class="rtt">⚠️ WRONG answer: 'the symptoms of hypernatremia are mostly from the high sodium itself acting on nerves.' The symptoms are driven by brain CELL SHRINKAGE from osmotic water efflux, and severity depends on how FAST Na rose, not just the number. Discriminator: the same Na of 160 is barely symptomatic if chronic but can cause seizures if it developed acutely.</div></div><div class="rt"><div class="rtl">2. Vessels tear</div><div class="rte">As the brain shrinks away from the skull it puts traction on the bridging veins that cross from the cortical surface to the dural sinuses. Stretching these tethered vessels can rupture them, producing intracranial bleeding — the mechanism is the same anatomy that causes subdural hematoma in elderly atrophied brains. This is most likely in ACUTE, severe hypernatremia where shrinkage is rapid and the brain has not adapted.</div><div class="rtt">⚠️ WRONG answer: 'intracranial hemorrhage in hypernatremia comes from hypertensive vessel rupture.' The bleeding is MECHANICAL — brain volume loss stretches and tears the bridging veins (and can cause venous sinus thrombosis). Discriminator: a hypernatremic infant or elder with new focal deficit/seizure should prompt imaging for hemorrhage from brain shrinkage, not just BP control.</div></div><div class="rt"><div class="rtl">3. Bleed</div><div class="rte">Intracranial/intraparenchymal and subarachnoid hemorrhage is a feared complication of rapid brain volume loss in severe acute hypernatremia, classically described in neonates and young infants who have a less rigid skull and rapidly shrinking brain. It contributes to the morbidity and mortality of severe hypernatremia and is one reason acute severe cases warrant prompt (but still controlled) correction.</div><div class="rtt">⚠️ WRONG answer: 'a seizing, hypernatremic neonate just needs the sodium corrected and no imaging.' New neurologic deficits or seizures in severe hypernatremia warrant brain imaging because shrinkage can cause hemorrhage (subdural, subarachnoid, parenchymal) or venous thrombosis. Discriminator: focal signs or persistent obtundation out of proportion to the Na should trigger a CT/MRI.</div></div><div class="rt"><div class="rtl">4. &lt;48h acute</div><div class="rte">ACUTE hypernatremia = developed in under 48 hours. The brain has NOT yet had time to manufacture protective idiogenic osmolytes, so it shrinks fully and patients are MORE symptomatic. Because no osmolytes have accumulated, the brain will not over-swell when water is restored, so acute hypernatremia can be corrected FASTER and more aggressively (you may bring Na down ~1 mEq/L/h, toward normal over 24 h) — the opposite caution from chronic cases.</div><div class="rtt">⚠️ WRONG answer: 'always correct hypernatremia at the same slow rate regardless of duration.' Truly ACUTE (&lt;48 h) hypernatremia can and should be corrected faster because no idiogenic osmolytes have formed, so there is little cerebral-edema risk; it is CHRONIC cases that demand the ≤10 mEq/L/day limit. Discriminator: establish onset — &lt;48 h allows brisker correction, &gt;48 h mandates slow correction.</div></div><div class="rt"><div class="rtl">5. Neonates</div><div class="rte">Infants and neonates are the highest-risk group: they have a high surface-area-to-volume ratio (large insensible losses), cannot ask for or access water, and depend on caregivers for fluid. Classic scenarios are inadequate breastfeeding ('lactation failure' hypernatremia) and improperly mixed/over-concentrated formula. They present with lethargy, a high-pitched cry, fever, irritability, seizures, and are particularly prone to brain-shrinkage hemorrhage. They are also the group at greatest risk of cerebral edema from over-rapid correction.</div><div class="rtt">⚠️ WRONG answer: 'correct a hypernatremic neonate quickly with hypotonic fluids to fix the Na fast.' Neonates are uniquely vulnerable to cerebral edema/seizures from rapid correction, so the safe ≤10–12 mEq/L/24 h limit is especially important here. Discriminator: in a hypernatremic infant, slow controlled correction trumps speed — overcorrection causes seizures.</div></div><div class="rt"><div class="rtl">6. Demyelination</div><div class="rte">Severe hypernatremia can itself injure neurons and cause osmotic demyelination of brain tissue as a consequence of the profound hyperosmolar stress and cell shrinkage (distinct from the classic pontine demyelination of over-corrected hyponatremia). It reflects the direct neurotoxicity of marked hypertonicity and is part of why severe hypernatremia carries high mortality.</div><div class="rtt">⚠️ WRONG answer: 'osmotic demyelination only happens when you correct hyponatremia too fast.' Although that is the classic association, severe hypernatremia itself can cause osmotic demyelination/neuronal injury from extreme hypertonicity. Discriminator: the buzzword 'demyelination after rapid correction' = hyponatremia, but recognize hypernatremia can cause direct hyperosmolar neuronal injury too.</div></div><div class="rt"><div class="rtl">7. Rhabdomyolysis</div><div class="rte">Severe hypernatremia is an under-recognized cause of rhabdomyolysis — marked hypertonicity injures myocytes, releasing CK and myoglobin and risking acute kidney injury. Suspect and check a CK in any patient with severe hypernatremia, weakness, or muscle pain; the resulting AKI can further complicate fluid and electrolyte management.</div><div class="rtt">⚠️ WRONG answer: 'muscle breakdown is not a feature of electrolyte disorders like hypernatremia.' Severe hypernatremia is a genuine, if uncommon, cause of rhabdomyolysis and the associated AKI. Discriminator: a hypernatremic patient with a rising CK and weakness has hypernatremia-induced rhabdo — send CK and watch the kidneys.</div></div><div class="rt"><div class="rtl">8. Chronic/48h</div><div class="rte">CHRONIC hypernatremia = present &gt;48 hours. Over this window the brain accumulates idiogenic osmolytes (organic solutes such as myoinositol, taurine, glutamine, glutamate) that draw water back in and restore brain volume, so these patients are RELATIVELY ASYMPTOMATIC for a given Na. The trade-off: the osmolyte-loaded, re-expanded brain is now vulnerable to cerebral edema if Na is lowered faster than it can shed those osmolytes — hence the strict slow-correction rule.</div><div class="rtt">⚠️ WRONG answer: 'a chronically hypernatremic patient who looks well can have their Na corrected rapidly since they tolerate it.' Their apparent tolerance is BECAUSE of accumulated osmolytes, which makes rapid correction DANGEROUS (cerebral edema). Discriminator: chronic + adapted brain = correct slowly (≤10 mEq/L/day), regardless of how well the patient currently appears.</div></div><div class="rt"><div class="rtl">9. Adapted brain</div><div class="rte">After roughly 48 hours the brain has re-expanded to near-normal volume by accumulating idiogenic osmolytes — the 'adapted' brain. Crucially, those osmolytes dissipate SLOWLY (over days), so if you drop the serum osmolality quickly, the still-osmolyte-rich brain pulls water IN and swells. This adaptation is the entire physiologic basis for the slow-correction rule in chronic hypernatremia.</div><div class="rtt">⚠️ WRONG answer: 'once the brain has adapted and looks normal-sized, it is safe to normalize the sodium quickly.' The adapted brain is full of osmolytes that clear slowly, so quick correction causes edema. Discriminator: adapted/normal-volume brain after chronic hyperNa = MOST at risk from fast correction, not least.</div></div><div class="rt"><div class="rtl">10. Osmolytes</div><div class="rte">Idiogenic (organic) osmolytes — myoinositol, taurine, glutamine, glutamate and others — are generated by brain cells over ~48 h to restore intracellular osmolality and pull water back into shrunken neurons. They are the brain's defense against chronic hypertonicity but they are slow to be cleared, lagging behind a fast drop in serum Na. That mismatch (slow osmolyte clearance vs fast serum correction) is exactly what causes overcorrection edema.</div><div class="rtt">⚠️ WRONG answer: 'idiogenic osmolytes clear as fast as you can correct the serum sodium, so timing doesn't matter.' Osmolytes wash out over DAYS, far slower than serum Na can be dropped, creating a transient osmotic gradient that drives water into the brain. Discriminator: the slow clearance of osmolytes is the reason chronic hypernatremia must be corrected slowly.</div></div><div class="rt"><div class="rtl">11. Fast correction</div><div class="rte">Rapidly lowering serum Na in an adapted (osmolyte-loaded) brain creates a steep osmotic gradient favoring water entry into brain cells. Water rushes in, the brain swells, and intracranial pressure rises — the iatrogenic catastrophe the whole 'correct slowly' message is built around. This is why the target is ≤10 mEq/L drop per 24 h in chronic cases.</div><div class="rtt">⚠️ WRONG answer: 'the faster you correct hypernatremia, the better the neurologic outcome.' Fast correction of chronic hypernatremia drives water into the brain and causes cerebral edema/seizures — speed harms. Discriminator: controlled, slow correction (≤10–12 mEq/L/day) yields the best outcomes in chronic hypernatremia.</div></div><div class="rt"><div class="rtl">12. Edema + seizure</div><div class="rte">The clinical endpoint of over-rapid correction is cerebral EDEMA, manifesting as new seizures, worsening mental status, and potentially fatal herniation. This is the single most important reason to cap the correction rate. If overcorrection occurs, management may include re-administering free water/hypotonic fluid or even desmopressin to slow the fall in Na.</div><div class="rtt">⚠️ WRONG answer: 'new seizures during treatment of hypernatremia mean you are correcting too SLOWLY.' New seizures and deteriorating mental status during correction usually signal OVER-rapid correction with cerebral edema — slow down, do not speed up. Discriminator: deterioration AS the Na falls quickly = overcorrection edema; the response is to slow the rate, not accelerate it.</div></div><div class="rt"><div class="rtl">13. Too fast</div><div class="rte">The quantitative rule, summarized by the spilled pitcher: limit the drop in serum Na to no more than ~10–12 mEq/L per 24 h (≈0.5 mEq/L/h) in CHRONIC or unknown-duration hypernatremia. Recheck Na every 2–4 hours during active correction and adjust the rate. Acute (&lt;48 h) hypernatremia is the exception and may be corrected faster.</div><div class="rtt">⚠️ WRONG answer: 'aim to normalize the sodium completely within the first 24 hours.' In chronic/unknown-duration cases the safe ceiling is a ~10 mEq/L drop in 24 h; full normalization over 24 h risks cerebral edema. Discriminator: pace correction by the per-24-h limit and frequent rechecks — only confirmed acute cases warrant brisk correction.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperna_causes_di.html" title="Hypernatremia — Causes &amp; DI Overview">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperna_di_treatment.html" title="Hypernatremia — DI Treatment Specifics">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

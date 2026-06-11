@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DM — Scene 1 — Acute Hyperglycemic Crisis: DKA vs HHS Diagnosis</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Insulin deficit + counter-regs banner</b> — WRONG: 'HHS occurs because the patient has NO insulin at all.' If insulin were truly absent they would ketose (DKA). Discriminator: HHS = relative/partial insulin (enough to block ketones); DKA = near-absolute deficiency (ketogenesis unleashed).</li><li><b>DKA fast onset (bay one)</b> — WRONG: 'A gradual, days-long decline over a week is the typical DKA course.' That tempo fits HHS. Discriminator: DKA = hours (rapid); HHS = days (insidious).</li><li><b>Kussmaul breathing</b> — WRONG: 'Kussmaul breathing in a hyperglycemic patient points to HHS.' Kussmaul means acidosis = DKA. Discriminator: deep compensatory breathing belongs to DKA, not HHS.</li><li><b>Acetone / fruity breath</b> — WRONG: 'A negative or only mildly positive urine ketone test rules out significant DKA.' The dipstick misses beta-OHB and underestimates severity. Discriminator: measure serum beta-hydroxybutyrate, not urine acetoacetate, to gauge DKA severity.</li><li><b>DKA labs (bay one)</b> — WRONG: 'The higher the glucose, the more severe the DKA.' Severity is defined by the degree of acidosis and mental status, not glucose. Discriminator: a glucose of 300 with pH 6.9 is far worse than a glucose of 600 with pH 7.28.</li><li><b>HHS slow onset (bay two)</b> — WRONG: 'HHS is less dangerous than DKA because there's no acidosis.' HHS has HIGHER mortality. Discriminator: absence of acidosis does not mean lower risk — HHS kills more often due to severe dehydration, age, and precipitants.</li><li><b>HHS altered mental status</b> — WRONG: 'Expect deep coma from ketoacidosis itself in HHS.' HHS has minimal ketosis; the obtundation comes from hyperosmolarity, not acidosis. Discriminator: AMS severity tracks osmolality in HHS — if a DKA patient is comatose, suspect another cause or extreme osmolar/acidotic derangement.</li><li><b>HHS labs</b> — WRONG: 'A patient with glucose 700, osm 340, and a large anion gap with ketones has pure HHS.' Significant ketoacidosis means DKA or a mixed picture, not pure HHS. Discriminator: pure HHS has minimal ketones and pH &gt;7.3 — prominent ketoacidosis excludes the 'pure' label.</li><li><b>Euglycemic DKA (bay three)</b> — WRONG: 'Glucose is 180 and the patient is on empagliflozin — DKA is excluded.' This is the textbook missed euglycemic DKA. Discriminator: in an acidotic patient on an SGLT2i, the normal glucose is a red herring — check the gap and ketones.</li><li><b>Eu-DKA labs</b> — WRONG: 'Because glucose is only 200, give fluids alone and withhold insulin.' Insulin is required to stop ketogenesis; just co-administer dextrose. Discriminator: euglycemic DKA still needs insulin — pair it with D5/D10, don't omit it.</li><li><b>Urine glucosuria / abdo pain</b> — WRONG: 'Diabetic with severe abdominal pain and vomiting — rush to surgery/CT for an acute abdomen.' DKA-related pain usually resolves with correction of acidosis. Discriminator: pain that clears as the gap closes was metabolic; persistent pain after resolution warrants a surgical search.</li><li><b>Precipitant: infection</b> — WRONG: 'The elevated WBC in this DKA patient confirms infection and mandates broad antibiotics for everyone.' Mild leukocytosis is nonspecific in DKA. Discriminator: look for fever/left shift/a source — DKA itself causes a stress leukocytosis without infection.</li><li><b>Precipitant: MI</b> — WRONG: 'No chest pain, so an MI can be excluded as the trigger.' Diabetic MIs are frequently asymptomatic. Discriminator: screen with ECG/troponin regardless of chest-pain history in an older patient with DKA/HHS.</li><li><b>Precipitant: missed insulin</b> — WRONG: 'A sick T1DM patient who isn't eating should hold all insulin to avoid hypoglycemia.' Stopping basal insulin precipitates DKA. Discriminator: during illness, continue basal insulin and check ketones/glucose frequently — never zero out insulin.</li><li><b>Precipitant: pump fail / SGLT2</b> — WRONG: 'A pump-treated patient can't develop DKA quickly because the pump is automated.' A pump occlusion leaves zero basal depot and triggers DKA fast. Discriminator: pump patients in DKA → suspect mechanical failure; on SGLT2i → suspect euglycemic DKA despite normal glucose.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Insulin deficit + counter-regs banner</div><div class="rte">Both crises share one engine: insulin deficiency (absolute in DKA, relative in HHS) plus EXCESS counter-regulatory hormones — glucagon, catecholamines (adrenaline), cortisol, and growth hormone. This combination drives hepatic gluconeogenesis/glycogenolysis (→ hyperglycemia) and, when insulin is essentially absent, unrestrained lipolysis and hepatic ketogenesis (→ DKA). In HHS, residual insulin is enough to suppress ketogenesis but not hyperglycemia.</div><div class="rtt">⚠️ WRONG: 'HHS occurs because the patient has NO insulin at all.' If insulin were truly absent they would ketose (DKA). Discriminator: HHS = relative/partial insulin (enough to block ketones); DKA = near-absolute deficiency (ketogenesis unleashed).</div></div><div class="rt"><div class="rtl">2. DKA fast onset (bay one)</div><div class="rte">DKA develops rapidly, typically over &lt;24 hours, classically in younger patients with T1DM (but increasingly seen in T2DM 'ketosis-prone' and on SGLT2i). The fast tempo reflects how quickly ketoacidosis accumulates once insulin is withdrawn or a stressor hits. Contrast with HHS, which simmers over days.</div><div class="rtt">⚠️ WRONG: 'A gradual, days-long decline over a week is the typical DKA course.' That tempo fits HHS. Discriminator: DKA = hours (rapid); HHS = days (insidious).</div></div><div class="rt"><div class="rtl">3. Kussmaul breathing</div><div class="rte">Kussmaul respirations = deep, rapid, labored breathing that is the respiratory (Winter's) compensation for the metabolic acidosis of DKA — the lungs blow off CO2 to raise pH. Expected PaCO2 ≈ 1.5×HCO3 + 8 (±2). Present in DKA, ABSENT in pure HHS (no significant acidosis).</div><div class="rtt">⚠️ WRONG: 'Kussmaul breathing in a hyperglycemic patient points to HHS.' Kussmaul means acidosis = DKA. Discriminator: deep compensatory breathing belongs to DKA, not HHS.</div></div><div class="rt"><div class="rtl">4. Acetone / fruity breath</div><div class="rte">Ketogenesis produces three ketone bodies — beta-hydroxybutyrate (dominant in DKA, the one to MEASURE in serum), acetoacetate (what urine dipstick/nitroprusside detects), and acetone (volatile, exhaled → fruity breath). As DKA resolves, beta-OHB converts to acetoacetate, so the urine test can transiently worsen even as the patient improves.</div><div class="rtt">⚠️ WRONG: 'A negative or only mildly positive urine ketone test rules out significant DKA.' The dipstick misses beta-OHB and underestimates severity. Discriminator: measure serum beta-hydroxybutyrate, not urine acetoacetate, to gauge DKA severity.</div></div><div class="rt"><div class="rtl">5. DKA labs (bay one)</div><div class="rte">DKA diagnostic triad: glucose &gt;250 mg/dL, metabolic acidosis (pH &lt;7.30, HCO3 &lt;18 mEq/L), and ketonemia/ketonuria with an ELEVATED anion gap (Na − [Cl + HCO3] &gt; 12). Severity is graded by pH/HCO3/mental status (mild pH 7.25-7.30; severe pH &lt;7.0 with obtundation), NOT by the glucose level.</div><div class="rtt">⚠️ WRONG: 'The higher the glucose, the more severe the DKA.' Severity is defined by the degree of acidosis and mental status, not glucose. Discriminator: a glucose of 300 with pH 6.9 is far worse than a glucose of 600 with pH 7.28.</div></div><div class="rt"><div class="rtl">6. HHS slow onset (bay two)</div><div class="rte">HHS evolves insidiously over days to weeks, classically in ELDERLY T2DM patients — often those with limited access to water (nursing home, dementia, post-stroke) who cannot keep up with osmotic-diuresis losses. Mortality (~10-20%) exceeds DKA's (~1-5%), driven largely by age, comorbidities, and the precipitant.</div><div class="rtt">⚠️ WRONG: 'HHS is less dangerous than DKA because there's no acidosis.' HHS has HIGHER mortality. Discriminator: absence of acidosis does not mean lower risk — HHS kills more often due to severe dehydration, age, and precipitants.</div></div><div class="rt"><div class="rtl">7. HHS altered mental status</div><div class="rte">The hallmark of HHS is profound altered mental status — ranging from confusion to coma — driven by severe hyperosmolarity and dehydration (cellular dehydration of neurons). The depth of AMS correlates with the effective serum osmolality; frank coma usually requires osm &gt;320-340 mOsm/kg. Focal deficits and seizures can occur and may mimic stroke.</div><div class="rtt">⚠️ WRONG: 'Expect deep coma from ketoacidosis itself in HHS.' HHS has minimal ketosis; the obtundation comes from hyperosmolarity, not acidosis. Discriminator: AMS severity tracks osmolality in HHS — if a DKA patient is comatose, suspect another cause or extreme osmolar/acidotic derangement.</div></div><div class="rt"><div class="rtl">8. HHS labs</div><div class="rte">HHS diagnostic criteria: glucose &gt;600 mg/dL, effective serum osmolality &gt;320 mOsm/kg [2×Na + glucose/18], pH &gt;7.30, HCO3 &gt;18, and minimal/absent ketones (no significant ketoacidosis). A mild metabolic acidosis can coexist (lactate from hypoperfusion or some ketosis) — overlap 'mixed DKA-HHS' pictures exist.</div><div class="rtt">⚠️ WRONG: 'A patient with glucose 700, osm 340, and a large anion gap with ketones has pure HHS.' Significant ketoacidosis means DKA or a mixed picture, not pure HHS. Discriminator: pure HHS has minimal ketones and pH &gt;7.3 — prominent ketoacidosis excludes the 'pure' label.</div></div><div class="rt"><div class="rtl">9. Euglycemic DKA (bay three)</div><div class="rte">Euglycemic DKA = ketoacidosis with near-normal glucose (typically &lt;250, often 150-200). Causes: SGLT2 inhibitors (urinary glucose loss masks hyperglycemia — hold the drug ~3-4 days before surgery/fasting), pregnancy (increased glucose utilization), prolonged starvation, and heavy alcohol use. The acidosis/ketosis/anion gap are the same as classic DKA.</div><div class="rtt">⚠️ WRONG: 'Glucose is 180 and the patient is on empagliflozin — DKA is excluded.' This is the textbook missed euglycemic DKA. Discriminator: in an acidotic patient on an SGLT2i, the normal glucose is a red herring — check the gap and ketones.</div></div><div class="rt"><div class="rtl">10. Eu-DKA labs</div><div class="rte">Euglycemic DKA labs: glucose 100-250 mg/dL but pH &lt;7.30, positive ketones, and an elevated anion gap — i.e., full ketoacidosis without marked hyperglycemia. Treat exactly as DKA (fluids, K+, insulin) but start dextrose-containing fluids EARLY so insulin can keep running to clear ketones without causing hypoglycemia.</div><div class="rtt">⚠️ WRONG: 'Because glucose is only 200, give fluids alone and withhold insulin.' Insulin is required to stop ketogenesis; just co-administer dextrose. Discriminator: euglycemic DKA still needs insulin — pair it with D5/D10, don't omit it.</div></div><div class="rt"><div class="rtl">11. Urine glucosuria / abdo pain</div><div class="rte">Once glucose exceeds the renal threshold (~180 mg/dL), glucosuria drives an osmotic diuresis (polyuria, dehydration, electrolyte loss). DKA also commonly presents with nausea, vomiting, and diffuse abdominal pain that can mimic an acute surgical abdomen; the pain correlates with acidosis severity and typically resolves as the anion gap closes.</div><div class="rtt">⚠️ WRONG: 'Diabetic with severe abdominal pain and vomiting — rush to surgery/CT for an acute abdomen.' DKA-related pain usually resolves with correction of acidosis. Discriminator: pain that clears as the gap closes was metabolic; persistent pain after resolution warrants a surgical search.</div></div><div class="rt"><div class="rtl">12. Precipitant: infection</div><div class="rte">Infection is the MOST COMMON precipitant of both DKA and HHS (pneumonia and UTI lead). Stress hormones from sepsis raise glucose and counter-regulatory drive. Note: a mildly elevated WBC is expected from stress/dehydration alone, so fever, bandemia, or a clear source — not just leukocytosis — should prompt cultures and empiric antibiotics.</div><div class="rtt">⚠️ WRONG: 'The elevated WBC in this DKA patient confirms infection and mandates broad antibiotics for everyone.' Mild leukocytosis is nonspecific in DKA. Discriminator: look for fever/left shift/a source — DKA itself causes a stress leukocytosis without infection.</div></div><div class="rt"><div class="rtl">13. Precipitant: MI</div><div class="rte">Myocardial infarction/ischemia is a key precipitant — and may be SILENT/painless in diabetics due to autonomic neuropathy. Always obtain an ECG and troponin in older patients presenting in hyperglycemic crisis. The MI both triggers the crisis (catecholamine surge) and is worsened by it (demand ischemia from dehydration/tachycardia).</div><div class="rtt">⚠️ WRONG: 'No chest pain, so an MI can be excluded as the trigger.' Diabetic MIs are frequently asymptomatic. Discriminator: screen with ECG/troponin regardless of chest-pain history in an older patient with DKA/HHS.</div></div><div class="rt"><div class="rtl">14. Precipitant: missed insulin</div><div class="rte">Insulin omission/nonadherence is a LEADING precipitant of DKA, especially in young T1DM patients (psychosocial stress, eating disorders, cost/access). A common pitfall: patients incorrectly stop their insulin when ill or not eating ('sick-day' error) — basal insulin must NEVER be fully held, even with reduced intake, or DKA ensues.</div><div class="rtt">⚠️ WRONG: 'A sick T1DM patient who isn't eating should hold all insulin to avoid hypoglycemia.' Stopping basal insulin precipitates DKA. Discriminator: during illness, continue basal insulin and check ketones/glucose frequently — never zero out insulin.</div></div><div class="rt"><div class="rtl">15. Precipitant: pump fail / SGLT2</div><div class="rte">Insulin pump failure (kinked/dislodged catheter, occlusion) causes rapid DKA because pumps deliver only rapid-acting insulin with no long-acting depot — any interruption removes all basal coverage within hours. SGLT2 inhibitors cause EUGLYCEMIC DKA (glucose may be near-normal); hold them ~3-4 days before surgery or during acute illness/fasting.</div><div class="rtt">⚠️ WRONG: 'A pump-treated patient can't develop DKA quickly because the pump is automated.' A pump occlusion leaves zero basal depot and triggers DKA fast. Discriminator: pump patients in DKA → suspect mechanical failure; on SGLT2i → suspect euglycemic DKA despite normal glucose.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperk_renal.html" title="Hyperkalemia — where renal K+ excretion fails">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_dx_threshold.html" title="DM — Scene 1 — DM Pathophys &amp; Dx: The Diagnostic Threshold Crossing">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Approach — Azotemia / Uremia Overview (Pre/Intra/Post-renal &amp; BUN:Cr)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Acute Renal Failure arch</b> — Tempting wrong answer: 'azotemia = intrinsic kidney disease, biopsy the kidney.' Azotemia alone does NOT localize the lesion — the discriminator is to first place the patient into pre/intra/post-renal using volume status, urine indices, and a bladder scan/renal ultrasound before ever considering biopsy.</li><li><b>Decreased circulating volume</b> — Tempting wrong answer: 'edematous CHF/cirrhosis patient can't be pre-renal because they're fluid-overloaded.' The discriminator is EFFECTIVE arterial volume — in CHF and cirrhosis the kidney is underperfused despite total-body fluid excess, so they show pre-renal indices (FENa &lt;1%, BUN:Cr &gt;20).</li><li><b>Glomerular hemodynamics</b> — Tempting wrong answer: swapping the arterioles — 'ACEi constrict the afferent.' Discriminator: NSAIDs constrict the AFFERENT (block vasodilatory prostaglandins), ACEi/ARB dilate the EFFERENT (block AngII). The triple-whammy of NSAID + ACEi/ARB + diuretic in a volume-depleted patient is the classic exam setup for hemodynamic AKI.</li><li><b>MAP / GFR falls steeply</b> — Tempting wrong answer: 'a chronically hypertensive patient is protected from hypoperfusion AKI because their pressures run high.' Opposite — their autoregulatory curve is shifted right, so a 'normal' MAP of 75 that a young patient tolerates can already be below their threshold and precipitate ischemic injury.</li><li><b>Double hit / precipitous drop</b> — Tempting wrong answer: 'any ACEi-induced creatinine bump means bilateral RAS — stop the drug.' Discriminator: a mild ≤30% creatinine rise after starting an ACEi is expected, reflects efferent dilation, and you continue the drug; only a sharp &gt;30% rise (or hyperkalemia) suggests bilateral RAS. Also, UNILATERAL RAS with a healthy contralateral kidney does NOT cause this — the good kidney compensates.</li><li><b>Continuum to ATN</b> — Tempting wrong answer: 'give fluids and the creatinine will correct in hours' applied to a patient who has already crossed into ATN. Discriminator: if FENa is now &gt;2%, urine has muddy-brown casts, and creatinine keeps climbing despite euvolemia, the tubules are dead — fluids won't fix it; over-resuscitating risks pulmonary edema while you wait days-weeks for tubular regeneration.</li><li><b>Ischemic ATN</b> — Tempting wrong answer: 'AKI after sepsis with active sediment must be glomerulonephritis — order ANCA/complement and biopsy.' Discriminator: most intrinsic AKI is ATN, not GN. Muddy-brown granular casts = ATN; you need RBC casts and dysmorphic RBCs for GN. The clinical context (shock/sepsis/contrast/nephrotoxin) plus FENa &gt;2% nails ATN.</li><li><b>Nephrotoxic ATN</b> — Tempting wrong answer: calling pigment-induced (rhabdo/hemolysis) AKI 'pre-renal' because FENa can be &lt;1%. Discriminator: heme-pigment ATN is a classic FENa &lt;1% EXCEPTION — look for CK elevation, tea-colored urine, dipstick-positive-blood-with-no-RBCs, and hyperkalemia/hyperphosphatemia out of proportion. Treat with aggressive IV fluids, not just observation.</li><li><b>BUN:Cr ratio</b> — Tempting wrong answer: 'BUN:Cr &gt;20 always means pre-renal, give fluids.' Discriminator: a high BUN:Cr also occurs WITHOUT hypoperfusion in GI bleeding (blood = protein load), high-protein feeds, corticosteroids/catabolic states, and tetracyclines — all raise BUN independent of GFR. Conversely the ratio is falsely LOW in malnutrition, liver disease, and SIADH. Always pair it with FENa and urine osmolality.</li><li><b>FENa</b> — Tempting wrong answer: 'FENa &lt;1% always equals pre-renal.' Discriminator — memorize the FENa &lt;1% EXCEPTIONS (intrinsic causes that still retain Na): contrast nephropathy, early/acute obstruction, acute glomerulonephritis, hepatorenal syndrome, and pigment (rhabdo/hemoglobin) AKI. Conversely FENa can be falsely HIGH in a pre-renal patient on diuretics or with CKD — switch to FEurea.</li><li><b>Urine osmolality / Na</b> — Tempting wrong answer: 'a Uosm of 320 with polyuria points to diabetes insipidus.' Discriminator: in the AKI context an isosthenuric Uosm (~300) means the tubule has lost concentrating power = ATN, not DI. DI presents as polyuria in a non-AKI patient with hypernatremia and a Uosm that stays low after water deprivation.</li><li><b>Muddy brown casts</b> — Tempting wrong answer: confusing casts on the boards. Discriminator — muddy-brown granular casts = ATN; RBC casts/dysmorphic RBCs = glomerulonephritis; WBC casts = pyelonephritis or AIN; broad waxy casts = chronic CKD; fatty/oval-fat-body 'maltese cross' casts = nephrotic-range proteinuria. RBC casts are NEVER from ATN.</li><li><b>Post-renal obstruction</b> — Tempting wrong answer: 'unilateral ureteral stone in a patient with two kidneys explains the AKI.' Discriminator: unilateral obstruction with a normal contralateral kidney keeps creatinine NORMAL (the other kidney compensates) — look instead for a bladder-outlet cause (BPH, retention) or bilateral process. Also, early obstruction can show FENa &lt;1% (an exception) and ultrasound may miss hydronephrosis in the first 24-48h or with retroperitoneal encasement.</li><li><b>Reversibility hourglasses</b> — Tempting wrong answer: 'relieving the obstruction should immediately normalize creatinine, so if it doesn't the diagnosis was wrong.' Discriminator: after relieving prolonged obstruction, expect a post-obstructive diuresis and gradual (hours-days) creatinine improvement, plus possible lasting concentrating/acidification defects — slow recovery does not invalidate the post-renal diagnosis. Monitor for volume depletion and electrolyte losses during the diuretic phase.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Acute Renal Failure arch</div><div class="rte">AKI is an abrupt (hours-days) fall in GFR defined by KDIGO as a rise in creatinine ≥0.3 mg/dL in 48h, a ≥1.5× rise over baseline within 7 days, or urine output &lt;0.5 mL/kg/h for 6h. Every AKI is triaged into three buckets: pre-renal (~40-80% of cases), intrinsic, and post-renal (&lt;5%). 'Azotemia' just means elevated nitrogenous waste (BUN/Cr); 'uremia' is the symptomatic syndrome (encephalopathy, pericarditis, platelet dysfunction, asterixis). Mnemonic: think Pre (perfusion), Intra (parenchyma), Post (plumbing).</div><div class="rtt">⚠️ Tempting wrong answer: 'azotemia = intrinsic kidney disease, biopsy the kidney.' Azotemia alone does NOT localize the lesion — the discriminator is to first place the patient into pre/intra/post-renal using volume status, urine indices, and a bladder scan/renal ultrasound before ever considering biopsy.</div></div><div class="rt"><div class="rtl">2. Decreased circulating volume</div><div class="rte">Pre-renal azotemia is hypoperfusion from either true volume loss (hemorrhage, GI losses, burns, over-diuresis, third-spacing in pancreatitis) or low EFFECTIVE circulating volume despite total-body overload (CHF/cardiogenic shock, cirrhosis, nephrotic syndrome). The kidney senses low perfusion and avidly reabsorbs Na and water, concentrating the urine. It is the single most common cause of AKI and is rapidly reversible if perfusion is restored with fluids (or treating the heart/liver). Mnemonic — 'the kidney is crying out for blood, not broken.'</div><div class="rtt">⚠️ Tempting wrong answer: 'edematous CHF/cirrhosis patient can't be pre-renal because they're fluid-overloaded.' The discriminator is EFFECTIVE arterial volume — in CHF and cirrhosis the kidney is underperfused despite total-body fluid excess, so they show pre-renal indices (FENa &lt;1%, BUN:Cr &gt;20).</div></div><div class="rt"><div class="rtl">3. Glomerular hemodynamics</div><div class="rte">GFR depends on the pressure gradient across the glomerulus set by afferent vs efferent arteriolar tone. Prostaglandins dilate the AFFERENT arteriole (NSAIDs block this → afferent constriction → ↓GFR); angiotensin II constricts the EFFERENT arteriole to hold filtration pressure (ACEi/ARB block this → efferent dilation → ↓GFR). In a normally perfused kidney these drugs are tolerated, but during hypoperfusion they remove the compensatory mechanism and unmask pre-renal AKI. Mnemonic: 'A for Afferent, NSAIDs Attack the Afferent; E for Efferent, ACEi relax the Efferent.'</div><div class="rtt">⚠️ Tempting wrong answer: swapping the arterioles — 'ACEi constrict the afferent.' Discriminator: NSAIDs constrict the AFFERENT (block vasodilatory prostaglandins), ACEi/ARB dilate the EFFERENT (block AngII). The triple-whammy of NSAID + ACEi/ARB + diuretic in a volume-depleted patient is the classic exam setup for hemodynamic AKI.</div></div><div class="rt"><div class="rtl">4. MAP / GFR falls steeply</div><div class="rte">Renal autoregulation keeps GFR roughly constant across a MAP of ~80-180 mmHg via myogenic reflex and tubuloglomerular feedback. Below the lower autoregulatory limit (MAP ~70-80, or higher in chronic HTN where the curve is shifted right), GFR falls steeply and linearly with pressure. This is why hypotensive/septic patients and chronically hypertensive patients drop GFR sooner. Mnemonic — once you fall off the autoregulation plateau, the cliff is steep.</div><div class="rtt">⚠️ Tempting wrong answer: 'a chronically hypertensive patient is protected from hypoperfusion AKI because their pressures run high.' Opposite — their autoregulatory curve is shifted right, so a 'normal' MAP of 75 that a young patient tolerates can already be below their threshold and precipitate ischemic injury.</div></div><div class="rt"><div class="rtl">5. Double hit / precipitous drop</div><div class="rte">Bilateral renal artery stenosis (or stenosis of a solitary functioning kidney) makes the glomerulus dependent on efferent (AngII) constriction to maintain filtration pressure against a fixed low inflow. Add an ACEi/ARB and the efferent dilates, collapsing the gradient → precipitous, often &gt;30%, rise in creatinine within days. Causes of bilateral RAS: atherosclerosis (older, vascular) and fibromuscular dysplasia (young women, 'string of beads'). Mnemonic — 'stenosis + ACEi = the floor drops out.'</div><div class="rtt">⚠️ Tempting wrong answer: 'any ACEi-induced creatinine bump means bilateral RAS — stop the drug.' Discriminator: a mild ≤30% creatinine rise after starting an ACEi is expected, reflects efferent dilation, and you continue the drug; only a sharp &gt;30% rise (or hyperkalemia) suggests bilateral RAS. Also, UNILATERAL RAS with a healthy contralateral kidney does NOT cause this — the good kidney compensates.</div></div><div class="rt"><div class="rtl">6. Continuum to ATN</div><div class="rte">Pre-renal azotemia and ischemic ATN are two ends of one continuum, not separate diseases. Brief hypoperfusion is purely functional and reverses with fluids; if ischemia is prolonged the energy-starved tubular cells die, slough, and form casts — now it is structural ATN that will NOT reverse with fluids alone and takes days-weeks to recover. The proximal tubule (S3 segment, outer medulla) and thick ascending limb are most vulnerable because they have the highest metabolic demand. Mnemonic — 'pre-renal ignored long enough becomes ATN.'</div><div class="rtt">⚠️ Tempting wrong answer: 'give fluids and the creatinine will correct in hours' applied to a patient who has already crossed into ATN. Discriminator: if FENa is now &gt;2%, urine has muddy-brown casts, and creatinine keeps climbing despite euvolemia, the tubules are dead — fluids won't fix it; over-resuscitating risks pulmonary edema while you wait days-weeks for tubular regeneration.</div></div><div class="rt"><div class="rtl">7. Ischemic ATN</div><div class="rte">Ischemic ATN is the most common cause of intrinsic AKI (~90% of intrinsic cases) and follows shock, sepsis, major surgery/trauma, or prolonged hypovolemia. Tubular cells undergo ATP depletion → loss of polarity, cast formation, and back-leak of filtrate. The hallmark sediment is muddy-brown granular and renal tubular epithelial cell casts; clinically it follows initiation → maintenance (oliguric, hyperkalemia/acidosis peak) → recovery (often a polyuric diuretic phase). Management is supportive — there is no proven pharmacologic reversal; avoid further nephrotoxins.</div><div class="rtt">⚠️ Tempting wrong answer: 'AKI after sepsis with active sediment must be glomerulonephritis — order ANCA/complement and biopsy.' Discriminator: most intrinsic AKI is ATN, not GN. Muddy-brown granular casts = ATN; you need RBC casts and dysmorphic RBCs for GN. The clinical context (shock/sepsis/contrast/nephrotoxin) plus FENa &gt;2% nails ATN.</div></div><div class="rt"><div class="rtl">8. Nephrotoxic ATN</div><div class="rte">Nephrotoxic ATN comes from direct tubular toxins, intrarenal vasoconstriction, or intratubular obstruction. Exogenous: aminoglycosides (nonoliguric ATN ~5-7 days in, dose by levels), amphotericin B, cisplatin, IV contrast, tenofovir. Endogenous pigments: myoglobin (rhabdomyolysis — CK often &gt;5,000-10,000, dipstick + for blood with no RBCs) and hemoglobin; crystals: tumor lysis (uric acid), ethylene glycol (calcium oxalate), acyclovir, methotrexate. Prevention: volume expansion and avoiding stacking nephrotoxins. Mnemonic — 'AAA + Contrast + Pigments' (Aminoglycosides, Amphotericin, cisplAtin).</div><div class="rtt">⚠️ Tempting wrong answer: calling pigment-induced (rhabdo/hemolysis) AKI 'pre-renal' because FENa can be &lt;1%. Discriminator: heme-pigment ATN is a classic FENa &lt;1% EXCEPTION — look for CK elevation, tea-colored urine, dipstick-positive-blood-with-no-RBCs, and hyperkalemia/hyperphosphatemia out of proportion. Treat with aggressive IV fluids, not just observation.</div></div><div class="rt"><div class="rtl">9. BUN:Cr ratio</div><div class="rte">In pre-renal states the kidney avidly reabsorbs Na and water in the proximal tubule, and urea passively follows water, so BUN rises out of proportion to creatinine → BUN:Cr &gt;20:1. In ATN the tubules can't reabsorb, so urea is lost with everything else and the ratio normalizes to ~10-15:1. Normal ratio is ~10-15:1. Mnemonic — 'pre-renal kidney hoards water and urea comes along for the ride.'</div><div class="rtt">⚠️ Tempting wrong answer: 'BUN:Cr &gt;20 always means pre-renal, give fluids.' Discriminator: a high BUN:Cr also occurs WITHOUT hypoperfusion in GI bleeding (blood = protein load), high-protein feeds, corticosteroids/catabolic states, and tetracyclines — all raise BUN independent of GFR. Conversely the ratio is falsely LOW in malnutrition, liver disease, and SIADH. Always pair it with FENa and urine osmolality.</div></div><div class="rt"><div class="rtl">10. FENa</div><div class="rte">FENa = (UNa × PCr)/(PNa × UCr) × 100 measures the fraction of filtered sodium excreted. Pre-renal kidneys are perfusion-starved and reabsorb Na avidly → FENa &lt;1% (UNa &lt;20). ATN tubules are injured and waste Na → FENa &gt;2% (UNa &gt;40). FENa is only valid in OLIGURIC AKI and is invalidated by diuretics — in a diuretic-treated patient use FEurea instead (FEurea &lt;35% = pre-renal). Mnemonic — 'low FENa, kidney is starving for volume.'</div><div class="rtt">⚠️ Tempting wrong answer: 'FENa &lt;1% always equals pre-renal.' Discriminator — memorize the FENa &lt;1% EXCEPTIONS (intrinsic causes that still retain Na): contrast nephropathy, early/acute obstruction, acute glomerulonephritis, hepatorenal syndrome, and pigment (rhabdo/hemoglobin) AKI. Conversely FENa can be falsely HIGH in a pre-renal patient on diuretics or with CKD — switch to FEurea.</div></div><div class="rt"><div class="rtl">11. Urine osmolality / Na</div><div class="rte">A well-perfused but volume-starved (pre-renal) kidney maximally concentrates urine: Uosm &gt;500 mOsm/kg and UNa &lt;20 mEq/L because ADH-driven water reabsorption and Na avidity are intact. ATN destroys the concentrating gradient and tubular Na handling, so urine becomes isosthenuric (Uosm ~300-350, similar to plasma) with UNa &gt;40. The concentrating ability is the functional readout of an intact tubule. Mnemonic — 'pre-renal pees concentrated salt-poor urine; ATN pees dilute salty urine.'</div><div class="rtt">⚠️ Tempting wrong answer: 'a Uosm of 320 with polyuria points to diabetes insipidus.' Discriminator: in the AKI context an isosthenuric Uosm (~300) means the tubule has lost concentrating power = ATN, not DI. DI presents as polyuria in a non-AKI patient with hypernatremia and a Uosm that stays low after water deprivation.</div></div><div class="rt"><div class="rtl">12. Muddy brown casts</div><div class="rte">Muddy-brown granular casts and renal tubular epithelial cell casts are the pathognomonic sediment of ATN — they are sloughed, degenerating tubular cells packed into Tamm-Horsfall protein. Their presence in an AKI workup confirms intrinsic tubular injury and argues against a purely pre-renal or post-renal process. The more casts and RTE cells, the more severe the ATN. Mnemonic — 'mud in the urine = dead tubule.'</div><div class="rtt">⚠️ Tempting wrong answer: confusing casts on the boards. Discriminator — muddy-brown granular casts = ATN; RBC casts/dysmorphic RBCs = glomerulonephritis; WBC casts = pyelonephritis or AIN; broad waxy casts = chronic CKD; fatty/oval-fat-body 'maltese cross' casts = nephrotic-range proteinuria. RBC casts are NEVER from ATN.</div></div><div class="rt"><div class="rtl">13. Post-renal obstruction</div><div class="rte">Post-renal AKI (&lt;5% of cases) requires obstruction of BOTH kidneys or of a solitary functioning kidney to raise creatinine, since one healthy kidney can compensate. Common causes: BPH/prostate cancer (bladder outlet — most common in older men), bilateral ureteral stones, retroperitoneal fibrosis/malignancy, neurogenic bladder, and anticholinergic-induced retention. First test is a post-void residual / bladder scan and renal ultrasound looking for hydronephrosis; relief is bladder catheter or ureteral stent/nephrostomy. Mnemonic — 'plug both drains, or the only drain, to back up the creatinine.'</div><div class="rtt">⚠️ Tempting wrong answer: 'unilateral ureteral stone in a patient with two kidneys explains the AKI.' Discriminator: unilateral obstruction with a normal contralateral kidney keeps creatinine NORMAL (the other kidney compensates) — look instead for a bladder-outlet cause (BPH, retention) or bilateral process. Also, early obstruction can show FENa &lt;1% (an exception) and ultrasound may miss hydronephrosis in the first 24-48h or with retroperitoneal encasement.</div></div><div class="rt"><div class="rtl">14. Reversibility hourglasses</div><div class="rte">Recovery timeline tracks how much structural damage occurred: pre-renal is functional and corrects in minutes-hours once perfusion is restored; post-renal recovers in hours-days after the obstruction is relieved (watch for post-obstructive diuresis and persistent tubular dysfunction if prolonged); ATN takes days-weeks because the tubular epithelium must regenerate, often with an intervening oliguric phase and a recovery polyuric phase. Mnemonic — 'fix the pipe fast, fix the plug medium, regrow the tubule slow.'</div><div class="rtt">⚠️ Tempting wrong answer: 'relieving the obstruction should immediately normalize creatinine, so if it doesn't the diagnosis was wrong.' Discriminator: after relieving prolonged obstruction, expect a post-obstructive diuresis and gradual (hours-days) creatinine improvement, plus possible lasting concentrating/acidification defects — slow recovery does not invalidate the post-renal diagnosis. Monitor for volume depletion and electrolyte losses during the diuretic phase.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nca_rare.html" title="Calcium (Renal) — Rare Causes">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nappr_gfr.html" title="Renal Approach — GFR &amp; Estimation (creatinine, cystatin C, eGFR equations)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

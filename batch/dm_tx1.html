@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Diabetes — Tx 1: Oral &amp; Injectable Drug Classes</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Metformin — first line</b> — Wrong answer: 'metformin works mainly by stimulating pancreatic insulin secretion.' Discriminator — that is the sulfonylurea/glinide mechanism; metformin's principal action is DECREASING hepatic glucose output and it does not raise insulin secretion (hence no hypoglycemia and no weight gain).</li><li><b>Metformin — stop situations</b> — Wrong answer: 'stop metformin once eGFR falls below 60 (or 45).' Discriminator — the absolute contraindication cutoff is eGFR &lt;30, not 45 or 60 (it may continue with caution/reduced dose at 30–45). Picking 45/60 as the stop point is the classic numeric distractor.</li><li><b>SGLT2 inhibitors</b> — Wrong answer: 'add an SGLT2 inhibitor to a type 1 diabetic for extra glucose control.' Discriminator — SGLT2i are not recommended in T1DM because they substantially increase euglycemic DKA risk; reserve them for T2DM (and HF/CKD indications). Also counsel on genital/urinary infections.</li><li><b>GLP-1 receptor agonists</b> — Wrong answer: 'start a GLP-1 RA in a patient with a family history of medullary thyroid carcinoma / MEN2.' Discriminator — personal or family history of medullary thyroid carcinoma or MEN2 is a contraindication (rodent C-cell tumor signal); also avoid with prior pancreatitis. Choose a different class for these patients.</li><li><b>DPP-4 inhibitors</b> — Wrong answer: 'combine a DPP-4 inhibitor with a GLP-1 RA for additive incretin effect.' Discriminator — both act on the SAME incretin pathway, so the combination is redundant with no added benefit; never co-prescribe them. Also note saxagliptin/alogliptin increased HF hospitalization (avoid in HF).</li><li><b>DPP-4 inhibitors detail</b> — Wrong answer: 'a DPP-4 inhibitor will give the same weight loss and CV protection as a GLP-1 RA.' Discriminator — DPP-4i are weight-neutral and CV/renal-NEUTRAL, unlike GLP-1 RAs which produce weight loss and MACE reduction. If you need those outcomes, choose the injectable GLP-1 RA, not a gliptin.</li><li><b>Sulfonylureas &amp; glinides</b> — Wrong answer: 'use a sulfonylurea or glinide in a type 1 diabetic / insulin-deficient patient.' Discriminator — secretagogues need residual beta-cell function, so they don't work in T1DM (no beta cells); they also cause hypoglycemia and weight gain. Use insulin in T1DM, and pick low-hypo agents when hypoglycemia is a concern.</li><li><b>Thiazolidinediones (TZD)</b> — Wrong answer: 'pioglitazone is a safe add-on for a patient with NYHA III heart failure.' Discriminator — TZDs cause fluid retention/edema and are contraindicated in symptomatic HF; they also cause weight gain, fractures, and (rosiglitazone) CV concern/(pioglitazone) bladder cancer concern. Avoid in HF.</li><li><b>Acarbose</b> — Wrong answer: 'treat hypoglycemia in a patient on acarbose with orange juice or table sugar (sucrose).' Discriminator — acarbose blocks disaccharide breakdown, so sucrose won't be absorbed; you MUST give pure GLUCOSE (dextrose) to correct hypoglycemia. This is the signature acarbose board point.</li><li><b>Hypoglycemia on acarbose</b> — Wrong answer: 'sucrose-containing candy is adequate rescue for acarbose hypoglycemia.' Discriminator — sucrose requires alpha-glucosidase to be absorbed, which acarbose blocks; reach for pure glucose/dextrose instead. (Note acarbose alone rarely causes hypoglycemia — usually when combined with insulin/secretagogues.)</li><li><b>Weight gain vs weight loss zones</b> — Wrong answer: 'add insulin or a sulfonylurea to an obese T2DM patient because they're potent.' Discriminator — both cause weight gain, worsening the obese phenotype; choose a GLP-1 RA/tirzepatide (or SGLT2i) for weight loss. Reserve insulin for severe hyperglycemia/insulinopenia.</li><li><b>HbA1c reduction ranking</b> — Wrong answer: 'a DPP-4 inhibitor is the most powerful oral agent for lowering A1c.' Discriminator — DPP-4 inhibitors are the WEAKEST oral A1c-lowerers; metformin and sulfonylureas lower A1c most among orals. Don't pick a gliptin when maximal glucose lowering is the goal.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Metformin — first line</div><div class="rte">Metformin (a biguanide) is first-line oral therapy. Primary action: reduces hepatic gluconeogenesis (activates AMPK), with secondary improvement in peripheral insulin sensitivity. It is weight-neutral, does NOT cause hypoglycemia (no insulin secretion), lowers A1c ~1–1.5%, and is cardioprotective/cheap. Max dose ~2000–2550 mg/day; use extended-release to reduce GI upset; monitor B12 (long-term use → malabsorption/deficiency). Mnemonic: 'metformin muzzles the liver.'</div><div class="rtt">⚠️ Wrong answer: 'metformin works mainly by stimulating pancreatic insulin secretion.' Discriminator — that is the sulfonylurea/glinide mechanism; metformin's principal action is DECREASING hepatic glucose output and it does not raise insulin secretion (hence no hypoglycemia and no weight gain).</div></div><div class="rt"><div class="rtl">2. Metformin — stop situations</div><div class="rte">Hold/stop metformin when lactate could accumulate: eGFR &lt;30 (contraindicated; caution/dose-reduce 30–45), iodinated IV CONTRAST (hold at the time of/after contrast if eGFR reduced, restart after renal function confirmed stable ~48 h), and sepsis/hypoperfusion/AKI/decompensated HF — all raise lactic acidosis risk. Also hold for major surgery and significant hepatic impairment/alcohol use. Mnemonic: 'metformin + low perfusion = lactic acidosis.'</div><div class="rtt">⚠️ Wrong answer: 'stop metformin once eGFR falls below 60 (or 45).' Discriminator — the absolute contraindication cutoff is eGFR &lt;30, not 45 or 60 (it may continue with caution/reduced dose at 30–45). Picking 45/60 as the stop point is the classic numeric distractor.</div></div><div class="rt"><div class="rtl">3. SGLT2 inhibitors</div><div class="rte">SGLT2 inhibitors (-flozins: empagliflozin, dapagliflozin, canagliflozin) block glucose reabsorption in the proximal tubule → glucosuria, lowering glucose insulin-independently. Benefits: reduced CV death and HF hospitalization (even in non-diabetics), slowed CKD progression/albuminuria, modest weight loss (~2–3 kg) and BP reduction. Risks: euglycemic DKA, genital mycotic infections/UTIs, volume depletion. Mnemonic: 'pee out the sugar, protect heart + kidney.'</div><div class="rtt">⚠️ Wrong answer: 'add an SGLT2 inhibitor to a type 1 diabetic for extra glucose control.' Discriminator — SGLT2i are not recommended in T1DM because they substantially increase euglycemic DKA risk; reserve them for T2DM (and HF/CKD indications). Also counsel on genital/urinary infections.</div></div><div class="rt"><div class="rtl">4. GLP-1 receptor agonists</div><div class="rte">GLP-1 receptor agonists (semaglutide, liraglutide, dulaglutide) are incretin mimetics: they augment GLUCOSE-DEPENDENT insulin secretion, suppress glucagon, slow gastric emptying, and increase satiety → strong weight loss and proven CV (MACE) benefit. Because insulin release is glucose-dependent, monotherapy does not cause hypoglycemia. Main side effects: nausea/vomiting (titrate slowly), pancreatitis risk. Mnemonic: 'smart insulin boost + appetite brake.'</div><div class="rtt">⚠️ Wrong answer: 'start a GLP-1 RA in a patient with a family history of medullary thyroid carcinoma / MEN2.' Discriminator — personal or family history of medullary thyroid carcinoma or MEN2 is a contraindication (rodent C-cell tumor signal); also avoid with prior pancreatitis. Choose a different class for these patients.</div></div><div class="rt"><div class="rtl">5. DPP-4 inhibitors</div><div class="rte">DPP-4 inhibitors (-gliptins: sitagliptin, linagliptin, saxagliptin) block dipeptidyl peptidase-4, prolonging endogenous GLP-1/GIP → modest glucose-dependent insulin boost. They are weight-NEUTRAL, well tolerated, cause no hypoglycemia, but are weak A1c-lowerers (~0.5–0.8%) with no CV or renal benefit. Linagliptin needs no renal dose adjustment. Mnemonic: 'gliptins = gentle, weak, weight-neutral incretin helpers.'</div><div class="rtt">⚠️ Wrong answer: 'combine a DPP-4 inhibitor with a GLP-1 RA for additive incretin effect.' Discriminator — both act on the SAME incretin pathway, so the combination is redundant with no added benefit; never co-prescribe them. Also note saxagliptin/alogliptin increased HF hospitalization (avoid in HF).</div></div><div class="rt"><div class="rtl">6. DPP-4 inhibitors detail</div><div class="rte">DPP-4 inhibitors raise endogenous incretins only to physiologic levels, so they are markedly LESS potent than injectable GLP-1 RAs (which achieve supraphysiologic receptor activation) and lack the GLP-1 RA's CV/renal/weight-loss benefits. They are oral, convenient, and hypoglycemia-free, making them an option when injectables aren't feasible and comorbidity benefit isn't the priority. Mnemonic: 'a gliptin is a GLP-1 RA's weaker oral cousin.'</div><div class="rtt">⚠️ Wrong answer: 'a DPP-4 inhibitor will give the same weight loss and CV protection as a GLP-1 RA.' Discriminator — DPP-4i are weight-neutral and CV/renal-NEUTRAL, unlike GLP-1 RAs which produce weight loss and MACE reduction. If you need those outcomes, choose the injectable GLP-1 RA, not a gliptin.</div></div><div class="rt"><div class="rtl">7. Sulfonylureas &amp; glinides</div><div class="rte">Sulfonylureas (glipizide, glimepiride, glyburide) and meglitinides/glinides (repaglinide, nateglinide) close the beta-cell K-ATP channel → membrane depolarization → calcium influx → insulin exocytosis, INDEPENDENT of glucose level. They require functioning beta cells. SUs are long-acting (once-daily); glinides are short-acting, dosed BEFORE EACH MEAL to target postprandial glucose (useful with irregular meals). Mnemonic: 'shut the K channel, squeeze out insulin — meal-time for glinides.'</div><div class="rtt">⚠️ Wrong answer: 'use a sulfonylurea or glinide in a type 1 diabetic / insulin-deficient patient.' Discriminator — secretagogues need residual beta-cell function, so they don't work in T1DM (no beta cells); they also cause hypoglycemia and weight gain. Use insulin in T1DM, and pick low-hypo agents when hypoglycemia is a concern.</div></div><div class="rt"><div class="rtl">8. Thiazolidinediones (TZD)</div><div class="rte">Thiazolidinediones (pioglitazone, rosiglitazone) are PPAR-γ agonists that enhance peripheral insulin SENSITIVITY (adipose/muscle), lowering A1c without hypoglycemia and without renal dose adjustment. Useful where insulin resistance dominates (and historically in PCOS/NASH). Onset is slow (weeks). Mnemonic: 'PPAR-γ = sensitizer.'</div><div class="rtt">⚠️ Wrong answer: 'pioglitazone is a safe add-on for a patient with NYHA III heart failure.' Discriminator — TZDs cause fluid retention/edema and are contraindicated in symptomatic HF; they also cause weight gain, fractures, and (rosiglitazone) CV concern/(pioglitazone) bladder cancer concern. Avoid in HF.</div></div><div class="rt"><div class="rtl">9. Acarbose</div><div class="rte">Acarbose (and miglitol) inhibit intestinal brush-border alpha-glucosidase, delaying breakdown of complex carbohydrates/disaccharides into absorbable monosaccharides → blunts the POSTPRANDIAL glucose spike specifically. No hypoglycemia as monotherapy; modest A1c effect. Mnemonic: 'blocks carb digestion at the gut wall → flattens the after-meal peak.'</div><div class="rtt">⚠️ Wrong answer: 'treat hypoglycemia in a patient on acarbose with orange juice or table sugar (sucrose).' Discriminator — acarbose blocks disaccharide breakdown, so sucrose won't be absorbed; you MUST give pure GLUCOSE (dextrose) to correct hypoglycemia. This is the signature acarbose board point.</div></div><div class="rt"><div class="rtl">10. Hypoglycemia on acarbose</div><div class="rte">Because acarbose prevents cleavage of sucrose into glucose + fructose at the brush border, oral sucrose (table sugar) is ineffective for hypoglycemia in a patient on acarbose — only monosaccharide GLUCOSE (dextrose tablets/gel, or IV dextrose) reliably raises blood glucose. Mnemonic: 'acarbose hypo → give glucose, not the sugar bowl.'</div><div class="rtt">⚠️ Wrong answer: 'sucrose-containing candy is adequate rescue for acarbose hypoglycemia.' Discriminator — sucrose requires alpha-glucosidase to be absorbed, which acarbose blocks; reach for pure glucose/dextrose instead. (Note acarbose alone rarely causes hypoglycemia — usually when combined with insulin/secretagogues.)</div></div><div class="rt"><div class="rtl">11. Weight gain vs weight loss zones</div><div class="rte">Weight effect by class: GAIN — sulfonylureas, glinides, thiazolidinediones, and insulin. LOSS — GLP-1 RAs and tirzepatide (most), SGLT2i (modest); metformin and DPP-4i are weight-NEUTRAL. This drives drug choice in the obese phenotype. Mnemonic: 'secretagogues + insulin + TZD add pounds; incretins + flozins shed them.'</div><div class="rtt">⚠️ Wrong answer: 'add insulin or a sulfonylurea to an obese T2DM patient because they're potent.' Discriminator — both cause weight gain, worsening the obese phenotype; choose a GLP-1 RA/tirzepatide (or SGLT2i) for weight loss. Reserve insulin for severe hyperglycemia/insulinopenia.</div></div><div class="rt"><div class="rtl">12. HbA1c reduction ranking</div><div class="rte">A1c-lowering potency: insulin and GLP-1 RAs (especially semaglutide/tirzepatide) are most potent overall; among orals, metformin and sulfonylureas give the largest reductions (~1–2%), TZDs ~1%, SGLT2i ~0.5–1%, and DPP-4 inhibitors the LEAST (~0.5–0.8%). Mnemonic: 'metformin/SU strong, gliptins weak.'</div><div class="rtt">⚠️ Wrong answer: 'a DPP-4 inhibitor is the most powerful oral agent for lowering A1c.' Discriminator — DPP-4 inhibitors are the WEAKEST oral A1c-lowerers; metformin and sulfonylureas lower A1c most among orals. Don't pick a gliptin when maximal glucose lowering is the goal.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_war_room.html" title="Diabetes — Scene B: The Diabetes War Room (CV Benefit &amp; Comorbidity Drug Picks)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_cx_eye.html" title="DM — Scene 1 — Diabetic Complications: The Eye Tower">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

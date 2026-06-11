@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Glomerular (Nephrotic) — Cholesterol (Atheroembolic) Nephropathy</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Post-procedure / anticoag trigger</b> — On boards, the wrong answer is 'contrast-induced nephropathy.' Discriminator: contrast nephropathy is a direct tubular/hemodynamic insult peaking at 24–72h with FULL recovery in ~7 days, normal complement, no eosinophilia, and no skin findings. Atheroembolism is a mechanical/inflammatory disease with subacute AKI over 1–6 WEEKS, eosinophilia, low complement, livedo, and blue toes — and it is provoked by manipulation/anticoagulation, not by the dye itself.</li><li><b>Aorta / aging atherosclerosis</b> — Wrong answer: 'large-vessel thromboembolism from atrial fibrillation.' Discriminator — AFib emboli are platelet/fibrin thrombi that occlude a single large vessel acutely (e.g., a cold pulseless limb or a wedge-shaped renal infarct), whereas cholesterol crystals are tiny, shower diffusely, and leave distal pulses intact.</li><li><b>Catheter wrecking ball</b> — Wrong answer: 'the catheter caused acute tubular necrosis from contrast.' Discriminator — the injury here is mechanical plaque disruption (a crystal embolus), not osmotic/ischemic tubular damage. The tell is the timeline (weeks, not 1–3 days) plus systemic embolic stigmata.</li><li><b>Anticoag syringe trigger</b> — Wrong answer: 'start/continue anticoagulation to treat the emboli.' Discriminator — anticoagulation is a CAUSE and can WORSEN atheroembolism; there is no role for it (and you generally hold it). Contrast this with true thromboembolism (e.g., renal vein thrombosis or cardioembolic infarct) where anticoagulation IS the treatment.</li><li><b>Subacute silent shower</b> — Wrong answer: 'AKI within 24–72h of the procedure = atheroembolism.' Discriminator — that fast onset points to contrast nephropathy. Atheroembolic AKI is delayed (days to weeks) and progressive, which is the single most-tested timing distinction on the exam.</li><li><b>Blue toe / livedo reticularis</b> — Wrong answer: 'acute limb ischemia from arterial occlusion — pulses should be absent.' Discriminator — in atheroembolism the DISTAL PULSES ARE PRESERVED because the occluded vessels are tiny (downstream of palpable arteries). Blue toes with bounding pulses is the classic mismatch that points away from large-vessel disease.</li><li><b>Eye / Hollenhorst plaque</b> — Wrong answer: 'a Hollenhorst plaque indicates retinal vein occlusion.' Discriminator — Hollenhorst plaques are ARTERIAL cholesterol emboli; retinal vein occlusion shows tortuous dilated veins and a 'blood-and-thunder' fundus, a completely different mechanism.</li><li><b>Brain / TIA</b> — Wrong answer: 'multi-organ involvement plus low complement and eosinophilia = systemic vasculitis (e.g., ANCA or polyarteritis nodosa).' Discriminator — atheroembolism mimics vasculitis perfectly but has a clear procedural/anticoagulation trigger, NORMAL ANCA, and biconvex cholesterol clefts on biopsy rather than fibrinoid necrosis.</li><li><b>Eosinophilia + eosinophiluria</b> — Wrong answer: 'eosinophilia + AKI = allergic interstitial nephritis (AIN), give steroids.' Discriminator — AIN follows a culprit DRUG (PPIs, NSAIDs, beta-lactams) with WBC casts/sterile pyuria, not a procedure; it lacks livedo, blue toes, and low complement. Atheroembolism is the answer when the eosinophilia comes after a cath plus skin stigmata.</li><li><b>Biconvex clefts diagnostic</b> — Wrong answer: 'the empty clefts mean the slide is artifact or the lesion is non-specific.' Discriminator — the empty biconvex spaces ARE the pathognomonic finding; cholesterol is lipid-soluble and washes out in fixation, leaving the characteristic ghost shape. Diagnosis is usually clinical, so biopsy is reserved for unclear cases.</li><li><b>No reversal / irreversible</b> — Wrong answer: 'urgent thrombolysis, embolectomy, or therapeutic anticoagulation will restore perfusion.' Discriminator — these target THROMBI; crystals cannot be lysed or removed and anticoagulation/thrombolysis are themselves precipitants. The correct move is supportive care plus statin and risk-factor control.</li><li><b>Steroids don't help / rejected</b> — Wrong answer: 'give high-dose corticosteroids for the eosinophilia/low complement.' Discriminator — steroids treat AIN and true vasculitis, both of which atheroembolism mimics. The presence of a procedural trigger + blue toes + cholesterol clefts tells you steroids are the wrong (and ineffective) choice.</li><li><b>Prevention only / risk control</b> — Wrong answer: 'aggressive procedural intervention to clear the aorta.' Discriminator — more instrumentation = more crystal showers. The exam reward is risk-factor modification and AVOIDING further arterial manipulation, not a procedural fix.</li><li><b>Kidney FSGS-like / hematuria</b> — Wrong answer: 'expect heavy nephrotic-range proteinuria (&gt;3.5 g/day) with edema.' Discriminator — atheroembolic renal disease is typically a vascular/ischemic process giving MILD proteinuria; full nephrotic syndrome points to a primary glomerular disease (FSGS, membranous, diabetic, amyloid) instead.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Post-procedure / anticoag trigger</div><div class="rte">Cholesterol (atheroembolic) disease is a showering of needle-shaped cholesterol crystals from ulcerated aortic plaques into small arteries (150–200 µm), where they lodge and incite a foreign-body inflammatory reaction with intimal proliferation and ischemia. Three classic triggers: (1) intra-arterial instrumentation — cardiac catheterization, coronary/peripheral angiography, aortic surgery or stenting; (2) anticoagulation (heparin, warfarin); (3) thrombolysis (tPA). The unifying patient is an older man with diffuse atherosclerosis, a smoking history, and recent vascular intervention.</div><div class="rtt">⚠️ On boards, the wrong answer is 'contrast-induced nephropathy.' Discriminator: contrast nephropathy is a direct tubular/hemodynamic insult peaking at 24–72h with FULL recovery in ~7 days, normal complement, no eosinophilia, and no skin findings. Atheroembolism is a mechanical/inflammatory disease with subacute AKI over 1–6 WEEKS, eosinophilia, low complement, livedo, and blue toes — and it is provoked by manipulation/anticoagulation, not by the dye itself.</div></div><div class="rt"><div class="rtl">2. Aorta / aging atherosclerosis</div><div class="rte">The embolic source is an ulcerated, friable atherosclerotic plaque in the aorta or other large vessel. Risk scales with age, diffuse atherosclerosis, prior MI/stroke/PAD, hypertension, smoking, and high LDL. The aorta is the 'crumbling wall' that sheds crystals downstream to kidney, skin, gut, retina, and brain — explaining the multi-organ picture.</div><div class="rtt">⚠️ Wrong answer: 'large-vessel thromboembolism from atrial fibrillation.' Discriminator — AFib emboli are platelet/fibrin thrombi that occlude a single large vessel acutely (e.g., a cold pulseless limb or a wedge-shaped renal infarct), whereas cholesterol crystals are tiny, shower diffusely, and leave distal pulses intact.</div></div><div class="rt"><div class="rtl">3. Catheter wrecking ball</div><div class="rte">The catheter is the wrecking ball: mechanical scraping of the aortic intima during angiography or PCI physically dislodges cholesterol crystals from the plaque core. Incidence of clinically apparent disease after cardiac cath is roughly 1–2% but is far higher (&gt;25%) on autopsy series, so most cases are subclinical. The more aortic manipulation, the higher the embolic load.</div><div class="rtt">⚠️ Wrong answer: 'the catheter caused acute tubular necrosis from contrast.' Discriminator — the injury here is mechanical plaque disruption (a crystal embolus), not osmotic/ischemic tubular damage. The tell is the timeline (weeks, not 1–3 days) plus systemic embolic stigmata.</div></div><div class="rt"><div class="rtl">4. Anticoag syringe trigger</div><div class="rte">Anticoagulants and thrombolytics destabilize plaque by lysing or preventing the protective fibrin cap that overlies the ulcerated lesion, exposing the cholesterol core to the bloodstream and unleashing crystal showers. This is why a patient started on warfarin/heparin or given tPA can develop atheroembolism days to weeks later.</div><div class="rtt">⚠️ Wrong answer: 'start/continue anticoagulation to treat the emboli.' Discriminator — anticoagulation is a CAUSE and can WORSEN atheroembolism; there is no role for it (and you generally hold it). Contrast this with true thromboembolism (e.g., renal vein thrombosis or cardioembolic infarct) where anticoagulation IS the treatment.</div></div><div class="rt"><div class="rtl">5. Subacute silent shower</div><div class="rte">The clocks emphasize TIMING. Renal failure from atheroembolism is typically subacute and stepwise over 1–6 weeks, reflecting repeated crystal showers rather than a single event; a smaller subset has an acute shower with rapid decline. Creatinine often rises in a saltatory, stuttering pattern and may never fully recover.</div><div class="rtt">⚠️ Wrong answer: 'AKI within 24–72h of the procedure = atheroembolism.' Discriminator — that fast onset points to contrast nephropathy. Atheroembolic AKI is delayed (days to weeks) and progressive, which is the single most-tested timing distinction on the exam.</div></div><div class="rt"><div class="rtl">6. Blue toe / livedo reticularis</div><div class="rte">Cutaneous signs are the highest-yield clue: 'blue toe syndrome' (painful, cyanotic, well-demarcated toes) and livedo reticularis (lacy, reticular violaceous mottling, usually on the legs/trunk). Other findings: digital gangrene, Hollenhorst plaques, and splinter-like lesions. Skin findings appear in roughly a third to half of cases.</div><div class="rtt">⚠️ Wrong answer: 'acute limb ischemia from arterial occlusion — pulses should be absent.' Discriminator — in atheroembolism the DISTAL PULSES ARE PRESERVED because the occluded vessels are tiny (downstream of palpable arteries). Blue toes with bounding pulses is the classic mismatch that points away from large-vessel disease.</div></div><div class="rt"><div class="rtl">7. Eye / Hollenhorst plaque</div><div class="rte">Fundoscopy can show a Hollenhorst plaque — a bright, refractile, yellow-orange cholesterol crystal lodged at a retinal arteriole bifurcation, sometimes with a visual field defect or amaurosis fugax. It is direct visual proof of an aortic/carotid embolic source and supports the diagnosis non-invasively.</div><div class="rtt">⚠️ Wrong answer: 'a Hollenhorst plaque indicates retinal vein occlusion.' Discriminator — Hollenhorst plaques are ARTERIAL cholesterol emboli; retinal vein occlusion shows tortuous dilated veins and a 'blood-and-thunder' fundus, a completely different mechanism.</div></div><div class="rt"><div class="rtl">8. Brain / TIA</div><div class="rte">CNS crystal showers can produce TIA, stroke, or transient confusion as part of the multi-organ embolic syndrome. Together with gut involvement (mesenteric ischemia, GI bleeding, abdominal pain) and renal failure, this multi-system picture is what distinguishes a diffuse embolic shower from an isolated organ event.</div><div class="rtt">⚠️ Wrong answer: 'multi-organ involvement plus low complement and eosinophilia = systemic vasculitis (e.g., ANCA or polyarteritis nodosa).' Discriminator — atheroembolism mimics vasculitis perfectly but has a clear procedural/anticoagulation trigger, NORMAL ANCA, and biconvex cholesterol clefts on biopsy rather than fibrinoid necrosis.</div></div><div class="rt"><div class="rtl">9. Eosinophilia + eosinophiluria</div><div class="rte">Laboratory signature: peripheral eosinophilia (transient, ~60–80% of cases), eosinophiluria, transient HYPOCOMPLEMENTEMIA (low C3/C4), elevated ESR/CRP, and sometimes fever and weight loss. These reflect complement activation and a systemic inflammatory response to the crystals. The combination is a major diagnostic clue when paired with skin findings and recent instrumentation.</div><div class="rtt">⚠️ Wrong answer: 'eosinophilia + AKI = allergic interstitial nephritis (AIN), give steroids.' Discriminator — AIN follows a culprit DRUG (PPIs, NSAIDs, beta-lactams) with WBC casts/sterile pyuria, not a procedure; it lacks livedo, blue toes, and low complement. Atheroembolism is the answer when the eosinophilia comes after a cath plus skin stigmata.</div></div><div class="rt"><div class="rtl">10. Biconvex clefts diagnostic</div><div class="rte">The definitive (though often unnecessary) test is biopsy of an affected organ (skin, kidney, muscle) showing needle-shaped, biconvex CHOLESTEROL CLEFTS occluding small arteries/arterioles, surrounded by a foreign-body giant-cell reaction. The clefts appear as empty slit-like spaces because the cholesterol itself dissolves out during alcohol/xylene tissue processing.</div><div class="rtt">⚠️ Wrong answer: 'the empty clefts mean the slide is artifact or the lesion is non-specific.' Discriminator — the empty biconvex spaces ARE the pathognomonic finding; cholesterol is lipid-soluble and washes out in fixation, leaving the characteristic ghost shape. Diagnosis is usually clinical, so biopsy is reserved for unclear cases.</div></div><div class="rt"><div class="rtl">11. No reversal / irreversible</div><div class="rte">There is NO therapy that dissolves lodged crystals or reverses established embolic occlusion. Management is purely supportive: aggressive statin therapy (e.g., atorvastatin 40–80 mg or rosuvastatin 20–40 mg, plaque stabilization), strict BP control, avoid further arterial instrumentation, and stop/avoid anticoagulation where possible. Dialysis if needed; prognosis is guarded with significant mortality.</div><div class="rtt">⚠️ Wrong answer: 'urgent thrombolysis, embolectomy, or therapeutic anticoagulation will restore perfusion.' Discriminator — these target THROMBI; crystals cannot be lysed or removed and anticoagulation/thrombolysis are themselves precipitants. The correct move is supportive care plus statin and risk-factor control.</div></div><div class="rt"><div class="rtl">12. Steroids don't help / rejected</div><div class="rte">Despite eosinophilia, low complement, and an inflammatory appearance that screams 'steroid-responsive,' corticosteroids are NOT proven to change outcomes in atheroembolic disease and are not standard therapy. The eosinophilia is a clue to the diagnosis, not an indication for immunosuppression.</div><div class="rtt">⚠️ Wrong answer: 'give high-dose corticosteroids for the eosinophilia/low complement.' Discriminator — steroids treat AIN and true vasculitis, both of which atheroembolism mimics. The presence of a procedural trigger + blue toes + cholesterol clefts tells you steroids are the wrong (and ineffective) choice.</div></div><div class="rt"><div class="rtl">13. Prevention only / risk control</div><div class="rte">Because the disease is irreversible, the only truly effective strategy is PREVENTION: high-intensity statins to stabilize plaque, tight blood-pressure and lipid control, smoking cessation, and minimizing unnecessary arterial catheterization and anticoagulation in high-risk atherosclerotic patients. Radial (vs femoral) access reduces embolic risk during coronary procedures.</div><div class="rtt">⚠️ Wrong answer: 'aggressive procedural intervention to clear the aorta.' Discriminator — more instrumentation = more crystal showers. The exam reward is risk-factor modification and AVOIDING further arterial manipulation, not a procedural fix.</div></div><div class="rt"><div class="rtl">14. Kidney FSGS-like / hematuria</div><div class="rte">The renal picture is rising creatinine with SUB-nephrotic (mild) proteinuria, occasional hematuria, and a stepwise/saltatory GFR decline; chronic glomerular changes can resemble focal segmental glomerulosclerosis (FSGS). Renal recovery is often incomplete and many patients progress to CKD or dialysis.</div><div class="rtt">⚠️ Wrong answer: 'expect heavy nephrotic-range proteinuria (&gt;3.5 g/day) with edema.' Discriminator — atheroembolic renal disease is typically a vascular/ischemic process giving MILD proteinuria; full nephrotic syndrome points to a primary glomerular disease (FSGS, membranous, diabetic, amyloid) instead.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="glom_nephrotic_alport.html" title="Glomerular (Nephrotic) — Basement Membrane Syndromes: Alport / Thin BM / Nail-Patella">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="glom_nephrotic_diabetic2.html" title="Glomerular (Nephrotic) — Diabetic Nephropathy: Management">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

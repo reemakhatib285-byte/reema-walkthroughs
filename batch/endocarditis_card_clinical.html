@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Infective Endocarditis — Clinical &amp; Complications</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Conduction disturbance</b> — WRONG answer: 'continue IV antibiotics and recheck in a week.' New heart block in IE means a periannular/aortic root ABSCESS until proven otherwise and is a class I indication for URGENT surgery — abscesses are not cured by antibiotics alone. Discriminator: new conduction delay on ECG = invasion, not a benign rhythm finding.</li><li><b>Stroke / embolic timing</b> — WRONG answer: 'rush to valve surgery the same day in a patient who just had a hemorrhagic stroke.' Discriminator: ischemic stroke (no bleed) → early surgery OK; hemorrhagic stroke → wait 2–4 weeks. Confusing the two risks bypass-related catastrophic rebleed.</li><li><b>Embolism risk factors</b> — WRONG answer: 'add aspirin/anticoagulation to prevent embolism.' Antiplatelet/anticoagulant therapy does NOT reduce embolic risk in IE and may increase bleeding. The large mobile vegetation is itself a surgical indication; the answer is early surgery, not anticoagulation.</li><li><b>Q fever apothecary</b> — WRONG answer: 'routine blood cultures will identify the organism' or 'treat 4–6 weeks like typical IE.' Discriminator: Coxiella is culture-negative (diagnose by serology/PCR) and needs 18–24 months of doxycycline + hydroxychloroquine — a short course relapses.</li><li><b>Red zone: same-day surgery</b> — WRONG answer: 'stabilize medically and schedule elective surgery.' Acute severe regurgitation with cardiogenic shock/refractory pulmonary edema is an EMERGENCY (operate same day), not elective. Discriminator: hemodynamic instability from valve failure = immediate surgery regardless of antibiotic duration.</li><li><b>Sinus of Valsalva rupture</b> — WRONG answer: 'manage the new continuous murmur and fistula with antibiotics alone.' A ruptured sinus of Valsalva or intracardiac fistula is a surgical emergency. Discriminator: a new continuous machinery-like murmur plus heart failure in IE signals fistula/rupture, not just worsening regurgitation.</li><li><b>Dehisced prosthesis</b> — WRONG answer: 'continue antibiotics and observe the paravalvular leak.' A dehisced/rocking prosthesis is an unstable valve and a surgical indication. Discriminator: new paravalvular regurgitation or a rocking prosthesis on echo = operate, do not wait.</li><li><b>Orange zone 1–2 days</b> — WRONG answer: 'complete the full 4–6 week antibiotic course before considering surgery.' Urgent indications (abscess, persistent infection, progressive heart failure) require surgery within days. Discriminator: deferring surgery to finish antibiotics in a patient with an abscess or uncontrolled infection worsens outcomes.</li><li><b>Paravalvular extension</b> — WRONG answer: 'TTE is negative for abscess, so infection is contained.' A negative TTE does NOT exclude paravalvular extension — TEE is required (far higher sensitivity for abscess). Discriminator: persistent fever/bacteremia or new AV block with a 'clean' TTE should prompt TEE, not reassurance.</li><li><b>Persistent bacteremia</b> — WRONG answer: 'broaden or prolong antibiotics and keep waiting.' Persistent bacteremia despite appropriate therapy is a SURGICAL indication, not a cue for longer/more antibiotics. Discriminator: rule out alternative sources first, but uncontrolled infection on correct antibiotics = operate.</li><li><b>Yellow elective zone</b> — WRONG answer: 'discharge to finish antibiotics and re-evaluate the vegetation as an outpatient.' Even 'elective' IE surgery should generally be done during the index hospitalization. Discriminator: recurrent emboli or a persistent large vegetation while on antibiotics favors operating now, not later.</li><li><b>Fungal IE → surgery</b> — WRONG answer: 'treat fungal IE with antifungals alone.' Fungal IE is rarely cured medically — valve surgery is almost always required plus prolonged/often indefinite azole suppression. Discriminator: a culture-negative IE with large vegetations in an IVDU, TPN, or prosthetic-valve patient — think Candida and plan surgery.</li><li><b>CIED removal</b> — WRONG answer: 'treat with antibiotics and leave the device in place' (or 'just remove the generator pocket').' Partial or no hardware removal fails therapy because biofilm on the leads is not penetrated by antibiotics. Discriminator: device-related IE = remove the WHOLE system, every lead included.</li><li><b>PET-CT for prosthetic</b> — WRONG answer: 'a positive PET/CT around a valve prosthesis 6 weeks postop confirms IE.' PET/CT is prone to FALSE POSITIVES in the early postoperative period (sterile inflammation, typically &lt;3 months) and false negatives if the patient is already on antibiotics. Discriminator: interpret early-postop periprosthetic uptake with caution; it is most reliable beyond ~3 months.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Conduction disturbance</div><div class="rte">Perivalvular extension of infection — most often from the AORTIC root because it sits next to the AV node and His bundle — produces a periannular abscess that disrupts conduction. A NEW PR-interval prolongation, new bundle branch block, or new AV/heart block on ECG is the bedside red flag that infection has burrowed beyond the leaflet into the annulus. Get a TEE (more sensitive than TTE, ~90% vs ~50% for abscess) and serial ECGs. Daily ECG monitoring is standard in aortic-valve IE precisely to catch this.</div><div class="rtt">⚠️ WRONG answer: 'continue IV antibiotics and recheck in a week.' New heart block in IE means a periannular/aortic root ABSCESS until proven otherwise and is a class I indication for URGENT surgery — abscesses are not cured by antibiotics alone. Discriminator: new conduction delay on ECG = invasion, not a benign rhythm finding.</div></div><div class="rt"><div class="rtl">2. Stroke / embolic timing</div><div class="rte">Septic vegetations embolize; the brain is the most common systemic target (left-sided IE). Surgical timing must balance ongoing embolic risk against hemorrhagic transformation of a fresh infarct. After an ISCHEMIC stroke without bleed, valve surgery can usually proceed early (within days) if otherwise indicated. After INTRACRANIAL HEMORRHAGE or a large infarct, delay surgery ~2–4 weeks because cardiopulmonary bypass anticoagulation can convert/expand the bleed. Always image the brain (CT/MRI) before operating on left-sided IE.</div><div class="rtt">⚠️ WRONG answer: 'rush to valve surgery the same day in a patient who just had a hemorrhagic stroke.' Discriminator: ischemic stroke (no bleed) → early surgery OK; hemorrhagic stroke → wait 2–4 weeks. Confusing the two risks bypass-related catastrophic rebleed.</div></div><div class="rt"><div class="rtl">3. Embolism risk factors</div><div class="rte">Highest embolic risk: vegetation &gt;10 mm AND mobile, S. aureus, MITRAL location (especially the anterior leaflet), and prior embolism. Embolic risk is highest in the first 1–2 weeks and falls rapidly once effective antibiotics start. A large mobile vegetation that has already embolized once — or that is &gt;10 mm with another surgical indication — argues for early surgery to prevent the next embolus.</div><div class="rtt">⚠️ WRONG answer: 'add aspirin/anticoagulation to prevent embolism.' Antiplatelet/anticoagulant therapy does NOT reduce embolic risk in IE and may increase bleeding. The large mobile vegetation is itself a surgical indication; the answer is early surgery, not anticoagulation.</div></div><div class="rt"><div class="rtl">4. Q fever apothecary</div><div class="rte">Coxiella burnetii (Q fever) is a classic BLOOD-CULTURE-NEGATIVE cause of IE, tied to livestock (cattle/sheep/goats) exposure and prosthetic valves. Diagnosis is serologic: phase I IgG ≥1:800 counts as a STANDALONE major Duke criterion. Treat with doxycycline 100 mg BID PLUS hydroxychloroquine (alkalinizes the phagolysosome to make doxy bactericidal) for 18–24 months, with serial phase I titers to confirm cure.</div><div class="rtt">⚠️ WRONG answer: 'routine blood cultures will identify the organism' or 'treat 4–6 weeks like typical IE.' Discriminator: Coxiella is culture-negative (diagnose by serology/PCR) and needs 18–24 months of doxycycline + hydroxychloroquine — a short course relapses.</div></div><div class="rt"><div class="rtl">5. Red zone: same-day surgery</div><div class="rte">The RED (emergency, same-day) zone = valve dysfunction causing refractory cardiogenic shock or refractory pulmonary edema, typically acute severe aortic or mitral REGURGITATION. The native ventricle cannot dilate to accommodate sudden volume overload, so forward output collapses fast. This is the single most urgent surgical indication in IE and overrides concerns like recent stroke — heart failure is the leading cause of death in IE.</div><div class="rtt">⚠️ WRONG answer: 'stabilize medically and schedule elective surgery.' Acute severe regurgitation with cardiogenic shock/refractory pulmonary edema is an EMERGENCY (operate same day), not elective. Discriminator: hemodynamic instability from valve failure = immediate surgery regardless of antibiotic duration.</div></div><div class="rt"><div class="rtl">6. Sinus of Valsalva rupture</div><div class="rte">Aortic-root infection can erode into a sinus of Valsalva, creating an aneurysm that ruptures into a cardiac chamber (intracardiac fistula) or the pericardial sac (tamponade). This is a structural/mechanical emergency producing acute shunt, heart failure, or tamponade physiology. It mandates urgent/emergent surgical repair — it is a complication of invasive (often aortic) IE.</div><div class="rtt">⚠️ WRONG answer: 'manage the new continuous murmur and fistula with antibiotics alone.' A ruptured sinus of Valsalva or intracardiac fistula is a surgical emergency. Discriminator: a new continuous machinery-like murmur plus heart failure in IE signals fistula/rupture, not just worsening regurgitation.</div></div><div class="rt"><div class="rtl">7. Dehisced prosthesis</div><div class="rte">In prosthetic valve endocarditis, infection at the sewing ring causes partial detachment (dehiscence). On echo this is a paravalvular leak with a rocking/unstable prosthesis. Dehiscence indicates the infection has destroyed the annular anchor — a class I surgical indication regardless of organism, because the valve is mechanically unstable and antibiotics cannot re-seat it.</div><div class="rtt">⚠️ WRONG answer: 'continue antibiotics and observe the paravalvular leak.' A dehisced/rocking prosthesis is an unstable valve and a surgical indication. Discriminator: new paravalvular regurgitation or a rocking prosthesis on echo = operate, do not wait.</div></div><div class="rt"><div class="rtl">8. Orange zone 1–2 days</div><div class="rte">The ORANGE (urgent, within 1–2 days) zone = paravalvular extension/abscess, persistent infection despite appropriate antibiotics, or heart failure that is symptomatic but NOT yet in shock (NYHA III–IV without refractory shock). These conditions will not resolve medically but allow brief optimization before the operating room — distinct from the same-day RED emergencies.</div><div class="rtt">⚠️ WRONG answer: 'complete the full 4–6 week antibiotic course before considering surgery.' Urgent indications (abscess, persistent infection, progressive heart failure) require surgery within days. Discriminator: deferring surgery to finish antibiotics in a patient with an abscess or uncontrolled infection worsens outcomes.</div></div><div class="rt"><div class="rtl">9. Paravalvular extension</div><div class="rte">Paravalvular/periannular extension means the infection has spread beyond the leaflet into surrounding tissue, forming an abscess, pseudoaneurysm, or fistula. It is suggested by new conduction block, persistent fever/bacteremia despite therapy, and is best seen on TEE. Together with progressive heart failure (NYHA III–IV) it drives URGENT surgical timing because uncontrolled local infection cannot be sterilized by antibiotics alone.</div><div class="rtt">⚠️ WRONG answer: 'TTE is negative for abscess, so infection is contained.' A negative TTE does NOT exclude paravalvular extension — TEE is required (far higher sensitivity for abscess). Discriminator: persistent fever/bacteremia or new AV block with a 'clean' TTE should prompt TEE, not reassurance.</div></div><div class="rt"><div class="rtl">10. Persistent bacteremia</div><div class="rte">Persistent positive blood cultures or persistent fever after 5–7 (up to 7–10) days of appropriate, properly dosed antibiotics — with other causes (line infection, metastatic abscess) excluded — signals uncontrolled infection, often an abscess or undrained focus. This is a recognized indication for surgery to remove the infected nidus.</div><div class="rtt">⚠️ WRONG answer: 'broaden or prolong antibiotics and keep waiting.' Persistent bacteremia despite appropriate therapy is a SURGICAL indication, not a cue for longer/more antibiotics. Discriminator: rule out alternative sources first, but uncontrolled infection on correct antibiotics = operate.</div></div><div class="rt"><div class="rtl">11. Yellow elective zone</div><div class="rte">The YELLOW (elective, but earlier preferred) zone = large vegetations with high embolic risk, recurrent emboli on antibiotics, and difficult organisms (fungal, multidrug-resistant). These are firm indications for surgery during the index admission rather than after discharge — 'elective' here means it can be planned over days, not deferred for weeks.</div><div class="rtt">⚠️ WRONG answer: 'discharge to finish antibiotics and re-evaluate the vegetation as an outpatient.' Even 'elective' IE surgery should generally be done during the index hospitalization. Discriminator: recurrent emboli or a persistent large vegetation while on antibiotics favors operating now, not later.</div></div><div class="rt"><div class="rtl">12. Fungal IE → surgery</div><div class="rte">Fungal IE (most commonly Candida; also Aspergillus in prosthetic/immunocompromised hosts) produces large bulky vegetations, high embolic rates, and poor antifungal penetration into vegetations. Management is combined surgery PLUS prolonged antifungal therapy: induction with an echinocandin or liposomal amphotericin B, then long-term (often lifelong/months-to-years) azole suppression (e.g., fluconazole) for susceptible Candida.</div><div class="rtt">⚠️ WRONG answer: 'treat fungal IE with antifungals alone.' Fungal IE is rarely cured medically — valve surgery is almost always required plus prolonged/often indefinite azole suppression. Discriminator: a culture-negative IE with large vegetations in an IVDU, TPN, or prosthetic-valve patient — think Candida and plan surgery.</div></div><div class="rt"><div class="rtl">13. CIED removal</div><div class="rte">Cardiac implantable electronic device (pacemaker/ICD) infection — pocket infection or lead vegetation with bacteremia (especially S. aureus) — requires COMPLETE removal of the entire system (generator AND all leads), usually by percutaneous extraction, plus prolonged IV antibiotics. Reimplantation is delayed until blood cultures clear (often days to ~2 weeks).</div><div class="rtt">⚠️ WRONG answer: 'treat with antibiotics and leave the device in place' (or 'just remove the generator pocket').' Partial or no hardware removal fails therapy because biofilm on the leads is not penetrated by antibiotics. Discriminator: device-related IE = remove the WHOLE system, every lead included.</div></div><div class="rt"><div class="rtl">14. PET-CT for prosthetic</div><div class="rte">18F-FDG PET/CT detects metabolically active infection and is most useful in PROSTHETIC valve endocarditis (where echo is limited by shadowing) and for finding extracardiac/embolic foci and the primary source. Abnormal periprosthetic uptake is now incorporated as a major criterion in the 2023 Duke-ISCVID modification for prosthetic valves.</div><div class="rtt">⚠️ WRONG answer: 'a positive PET/CT around a valve prosthesis 6 weeks postop confirms IE.' PET/CT is prone to FALSE POSITIVES in the early postoperative period (sterile inflammation, typically &lt;3 months) and false negatives if the patient is already on antibiotics. Discriminator: interpret early-postop periprosthetic uptake with caution; it is most reliable beyond ~3 months.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="peri_recurrent.html" title="Pericardial Disease — Recurrent Pericarditis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="endocarditis_card_duke.html" title="Infective Endocarditis — Duke Criteria">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

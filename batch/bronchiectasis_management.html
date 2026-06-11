@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Bronchiectasis — Management, Exacerbations &amp; Hemoptysis</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Airway clearance (saline pour)</b> — A patient with daily purulent sputum is started on chronic oral antibiotics without any airway-clearance regimen — WRONG. Mucus clearance (physio + hypertonic saline) is first-line and must be optimized first; chronic antibiotics are reserved for frequent exacerbators despite good clearance. The discriminator is that escalation in bronchiectasis is stepwise, clearance → then antibiotics.</li><li><b>VEST device</b> — A board stem may imply a mechanical device REPLACES the need for an active patient clearance routine — WRONG. Devices supplement, not substitute for, a structured daily clearance program; adherence to the overall regimen is what reduces exacerbations, not any single gadget.</li><li><b>Spring / mucolytic valve</b> — A non-CF bronchiectasis patient with thick sputum is prescribed nebulized dornase alfa — WRONG and potentially harmful. RCTs showed DNase WORSENS outcomes (more exacerbations, faster FEV1 decline) in non-CF bronchiectasis. The discriminator: dornase is for CF only; in non-CF use hypertonic saline for mucus, never DNase.</li><li><b>CF vs NON-CF split pipe</b> — Applying a positive CF trial result (e.g., DNase, inhaled tobramycin benefit) directly to a non-CF patient — WRONG. CF trial data do not generalize; non-CF bronchiectasis is a distinct entity. Always anchor the answer to the patient's specific etiology rather than CF dogma.</li><li><b>MAY WORSEN cylinder (non-CF)</b> — Choosing inhaled mannitol or DNase as the 'best mucolytic' for non-CF bronchiectasis — WRONG. In non-CF disease the mucoactive of choice is nebulized hypertonic saline; mannitol/DNase are CF-context answers used here as distractors.</li><li><b>Levofloxacin / Cipro tool</b> — Treating a Pseudomonas-positive bronchiectasis exacerbation with amoxicillin or azithromycin — WRONG, neither covers Pseudomonas. Sputum culture must guide therapy; if Pseudomonas grows, the answer is an antipseudomonal fluoroquinolone (or IV beta-lactam like piperacillin-tazobactam/ceftazidime/cefepime if oral options fail).</li><li><b>Augmentin tool</b> — A stem with a prior Pseudomonas-positive culture is treated empirically with Augmentin during a new exacerbation — WRONG. Past microbiology predicts current pathogens; a known Pseudomonas colonizer needs antipseudomonal cover even before the new culture returns. Augmentin is correct only when H. influenzae / non-Pseudomonas organisms are expected.</li><li><b>7-14 DAYS clock</b> — Prescribing a 5-day course for a bronchiectasis exacerbation 'like for CAP' — WRONG. Five days is too short; treat ~14 days. The discriminator is that bronchiectasis is a chronic suppurative airway disease requiring extended courses to control bacterial load.</li><li><b>≥3/year + chronic abx</b> — Starting long-term antibiotics in a patient with only one exacerbation a year, or before clearance is optimized — WRONG. Chronic antibiotics are reserved for frequent exacerbators (≥3/yr) who are already adherent to clearance; jumping to suppressive therapy prematurely drives resistance without benefit.</li><li><b>Macrolide barrel</b> — Starting chronic azithromycin without first excluding active NTM/MAC infection — WRONG and dangerous. Macrolide monotherapy in unrecognized MAC selects for macrolide-resistant MAC, crippling future treatment. The discriminator: always send NTM sputum cultures and rule out active MAC BEFORE chronic macrolide monotherapy.</li><li><b>Ethambutol barrel (MAC triple)</b> — Treating proven MAC pulmonary disease with azithromycin alone — WRONG. Macrolide monotherapy induces macrolide resistance and treatment failure; MAC always needs the three-drug regimen (macrolide + ethambutol + rifampin). The macrolide must never stand alone against active mycobacteria.</li><li><b>Hemoptysis crossed barrels</b> — Reaching for aggressive anticoagulation or assuming the threat is blood loss in massive hemoptysis — WRONG. The lethal mechanism is asphyxiation from blood flooding the airways, so the priority is airway protection, and any anticoagulants/antiplatelets should be held and reversed. Death comes from drowning in blood, not low hemoglobin.</li><li><b>Protect non-bleeding lung</b> — Placing the patient bleeding-side UP (or sitting them fully upright) — WRONG; this lets blood spill into and drown the healthy lung. The rule is bleeding-side DOWN to confine blood to the already-diseased lung and preserve gas exchange in the good one.</li><li><b>BAE / surgery ladder</b> — Sending a patient with massive hemoptysis straight to emergency lobectomy — WRONG as the initial definitive step. Bronchial artery embolization is first-line definitive therapy; surgery is reserved for embolization failure or recurrent bleeding. The discriminator: stabilize the airway, localize, then BAE before considering the OR.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Airway clearance (saline pour)</div><div class="rte">The cornerstone of all bronchiectasis management is daily airway/secretion clearance, done BEFORE escalating to drugs. This combines chest physiotherapy (active cycle of breathing, postural drainage) with nebulized hypertonic saline 3-7%, which osmotically draws water into the airway lumen to hydrate and loosen tenacious sputum. A short-acting bronchodilator is often given before saline because hypertonic saline can trigger bronchospasm. Mnemonic: 'clear the pipes before you medicate them.'</div><div class="rtt">⚠️ A patient with daily purulent sputum is started on chronic oral antibiotics without any airway-clearance regimen — WRONG. Mucus clearance (physio + hypertonic saline) is first-line and must be optimized first; chronic antibiotics are reserved for frequent exacerbators despite good clearance. The discriminator is that escalation in bronchiectasis is stepwise, clearance → then antibiotics.</div></div><div class="rt"><div class="rtl">2. VEST device</div><div class="rte">High-frequency chest wall oscillation (the inflatable VEST) mechanically vibrates the chest at 5-25 Hz to mobilize peripheral secretions toward the central airways for expectoration. It is one of several adjuncts (oscillatory PEP devices like Flutter/Acapella, autogenic drainage) used when manual physiotherapy alone is insufficient or for self-administered daily clearance. These devices improve sputum yield and quality of life but have not been shown to change mortality.</div><div class="rtt">⚠️ A board stem may imply a mechanical device REPLACES the need for an active patient clearance routine — WRONG. Devices supplement, not substitute for, a structured daily clearance program; adherence to the overall regimen is what reduces exacerbations, not any single gadget.</div></div><div class="rt"><div class="rtl">3. Spring / mucolytic valve</div><div class="rte">In cystic fibrosis bronchiectasis, recombinant human DNase (dornase alfa, 2.5 mg nebulized daily) cleaves the extracellular DNA released from degraded neutrophils, dramatically lowering CF sputum viscosity and improving FEV1. It is a proven, guideline-recommended CF therapy. Crucially its benefit is CF-SPECIFIC and does not transfer to non-CF bronchiectasis.</div><div class="rtt">⚠️ A non-CF bronchiectasis patient with thick sputum is prescribed nebulized dornase alfa — WRONG and potentially harmful. RCTs showed DNase WORSENS outcomes (more exacerbations, faster FEV1 decline) in non-CF bronchiectasis. The discriminator: dornase is for CF only; in non-CF use hypertonic saline for mucus, never DNase.</div></div><div class="rt"><div class="rtl">4. CF vs NON-CF split pipe</div><div class="rte">Management forks fundamentally by etiology because the evidence bases differ. Every new bronchiectasis patient needs a workup for an underlying cause (CF sweat chloride/genetics, immunoglobulins for CVID, ABPA testing, alpha-1 antitrypsin, NTM cultures, rheumatologic and ciliary causes) since identifying CF, immunodeficiency, or ABPA changes therapy entirely. CF and non-CF differ in their response to mucolytics, inhaled antibiotics, and the spectrum of colonizing organisms.</div><div class="rtt">⚠️ Applying a positive CF trial result (e.g., DNase, inhaled tobramycin benefit) directly to a non-CF patient — WRONG. CF trial data do not generalize; non-CF bronchiectasis is a distinct entity. Always anchor the answer to the patient's specific etiology rather than CF dogma.</div></div><div class="rt"><div class="rtl">5. MAY WORSEN cylinder (non-CF)</div><div class="rte">Several interventions effective or neutral in CF can be harmful or unproven in non-CF bronchiectasis: dornase alfa worsens it, and inhaled mannitol (an osmotic dry-powder mucolytic) failed to show clear benefit and can provoke bronchospasm. The teaching point is therapeutic humility — do not assume a CF mucoactive agent helps non-CF disease.</div><div class="rtt">⚠️ Choosing inhaled mannitol or DNase as the 'best mucolytic' for non-CF bronchiectasis — WRONG. In non-CF disease the mucoactive of choice is nebulized hypertonic saline; mannitol/DNase are CF-context answers used here as distractors.</div></div><div class="rt"><div class="rtl">6. Levofloxacin / Cipro tool</div><div class="rte">When Pseudomonas aeruginosa is the colonizer/pathogen, the oral exacerbation antibiotic is an antipseudomonal fluoroquinolone: ciprofloxacin 500-750 mg PO BID or levofloxacin 750 mg daily, for 14 days. Ciprofloxacin is essentially the only reliable oral antipseudomonal agent. First isolation of Pseudomonas warrants an eradication attempt (e.g., oral cipro plus inhaled antipseudomonal) because chronic Pseudomonas colonization predicts worse lung function and more exacerbations.</div><div class="rtt">⚠️ Treating a Pseudomonas-positive bronchiectasis exacerbation with amoxicillin or azithromycin — WRONG, neither covers Pseudomonas. Sputum culture must guide therapy; if Pseudomonas grows, the answer is an antipseudomonal fluoroquinolone (or IV beta-lactam like piperacillin-tazobactam/ceftazidime/cefepime if oral options fail).</div></div><div class="rt"><div class="rtl">7. Augmentin tool</div><div class="rte">For non-Pseudomonas exacerbations — most commonly Haemophilus influenzae, also Streptococcus pneumoniae and Moraxella — amoxicillin-clavulanate (e.g., 875/125 mg PO BID) is appropriate empiric therapy, again for ~14 days. Always send sputum culture first and then narrow/tailor to the isolate and prior microbiology, since many patients have a known chronic colonizer that dictates the empiric choice.</div><div class="rtt">⚠️ A stem with a prior Pseudomonas-positive culture is treated empirically with Augmentin during a new exacerbation — WRONG. Past microbiology predicts current pathogens; a known Pseudomonas colonizer needs antipseudomonal cover even before the new culture returns. Augmentin is correct only when H. influenzae / non-Pseudomonas organisms are expected.</div></div><div class="rt"><div class="rtl">8. 7-14 DAYS clock</div><div class="rte">Acute bronchiectasis exacerbations are treated with a PROLONGED antibiotic course — roughly 14 days — substantially longer than the 5-7 days used for uncomplicated community-acquired pneumonia. The longer duration reflects the structurally damaged, chronically infected airways that clear organisms poorly. An exacerbation is defined clinically by sustained worsening (≥48 h) of cough, sputum volume/purulence, dyspnea, or systemic symptoms, not merely a positive culture.</div><div class="rtt">⚠️ Prescribing a 5-day course for a bronchiectasis exacerbation 'like for CAP' — WRONG. Five days is too short; treat ~14 days. The discriminator is that bronchiectasis is a chronic suppurative airway disease requiring extended courses to control bacterial load.</div></div><div class="rt"><div class="rtl">9. ≥3/year + chronic abx</div><div class="rte">The trigger to escalate to long-term suppressive antibiotics is ≥3 exacerbations per year despite optimized airway clearance. Options are chronic oral macrolide (anti-inflammatory + antimicrobial) or, particularly in Pseudomonas-colonized patients, inhaled antibiotics such as nebulized colistin or tobramycin. The goal is to reduce exacerbation frequency, sputum burden, and lung-function decline.</div><div class="rtt">⚠️ Starting long-term antibiotics in a patient with only one exacerbation a year, or before clearance is optimized — WRONG. Chronic antibiotics are reserved for frequent exacerbators (≥3/yr) who are already adherent to clearance; jumping to suppressive therapy prematurely drives resistance without benefit.</div></div><div class="rt"><div class="rtl">10. Macrolide barrel</div><div class="rte">Chronic low-dose azithromycin (e.g., 250-500 mg three times weekly) reduces exacerbation frequency in frequent exacerbators through combined immunomodulatory and antimicrobial effects. Before starting, baseline ECG (QT prolongation risk) and liver enzymes are checked, and audiometry is considered with prolonged use. It is the most evidence-backed long-term oral antibiotic for both CF and non-CF bronchiectasis.</div><div class="rtt">⚠️ Starting chronic azithromycin without first excluding active NTM/MAC infection — WRONG and dangerous. Macrolide monotherapy in unrecognized MAC selects for macrolide-resistant MAC, crippling future treatment. The discriminator: always send NTM sputum cultures and rule out active MAC BEFORE chronic macrolide monotherapy.</div></div><div class="rt"><div class="rtl">11. Ethambutol barrel (MAC triple)</div><div class="rte">Mycobacterium avium complex (MAC) pulmonary disease requires multidrug therapy: a macrolide (azithromycin or clarithromycin) PLUS ethambutol PLUS a rifamycin (rifampin), typically given for 12 months past culture conversion. Ethambutol's classic toxicity is dose-dependent optic neuritis (red-green color vision loss), so baseline and periodic eye exams are mandatory.</div><div class="rtt">⚠️ Treating proven MAC pulmonary disease with azithromycin alone — WRONG. Macrolide monotherapy induces macrolide resistance and treatment failure; MAC always needs the three-drug regimen (macrolide + ethambutol + rifampin). The macrolide must never stand alone against active mycobacteria.</div></div><div class="rt"><div class="rtl">12. Hemoptysis crossed barrels</div><div class="rte">Hemoptysis is a hallmark bronchiectasis complication arising from chronically inflamed, hypertrophied, and tortuous BRONCHIAL ARTERIES (systemic, high-pressure circulation), so bleeding can be brisk. Massive hemoptysis (variably defined as &gt;100-600 mL/24 h, or any volume causing airway compromise or hemodynamic instability) is life-threatening primarily through ASPHYXIATION, not exsanguination.</div><div class="rtt">⚠️ Reaching for aggressive anticoagulation or assuming the threat is blood loss in massive hemoptysis — WRONG. The lethal mechanism is asphyxiation from blood flooding the airways, so the priority is airway protection, and any anticoagulants/antiplatelets should be held and reversed. Death comes from drowning in blood, not low hemoglobin.</div></div><div class="rt"><div class="rtl">13. Protect non-bleeding lung</div><div class="rte">The immediate airway maneuver in massive hemoptysis is to protect the healthy lung: position the patient with the BLEEDING side DOWN (lateral decubitus) so gravity keeps blood in the affected lung and out of the good lung. Secure the airway early — intubate if needed, and selective intubation of the non-bleeding mainstem (or a double-lumen tube) can isolate and protect it.</div><div class="rtt">⚠️ Placing the patient bleeding-side UP (or sitting them fully upright) — WRONG; this lets blood spill into and drown the healthy lung. The rule is bleeding-side DOWN to confine blood to the already-diseased lung and preserve gas exchange in the good one.</div></div><div class="rt"><div class="rtl">14. BAE / surgery ladder</div><div class="rte">Stepwise management of massive hemoptysis: (1) stabilize/protect airway (intubate, bleeding-side down), (2) localize the source (bronchoscopy and/or CT angiography), (3) achieve definitive control with bronchial artery embolization (BAE) as first-line, and (4) reserve surgery (lobectomy) for BAE failure, recurrence, or non-embolizable sources. Bronchoscopy can also provide temporizing local control.</div><div class="rtt">⚠️ Sending a patient with massive hemoptysis straight to emergency lobectomy — WRONG as the initial definitive step. Bronchial artery embolization is first-line definitive therapy; surgery is reserved for embolization failure or recurrent bleeding. The discriminator: stabilize the airway, localize, then BAE before considering the OR.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="bronchiectasis_diagnosis.html" title="Bronchiectasis — Diagnosis, HRCT &amp; Workup">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="eos_acute.html" title="Eosinophilic Pneumonia — Acute (AEP)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

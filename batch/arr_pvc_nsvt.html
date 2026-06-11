@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Arrhythmias — PVCs &amp; NSVT (Benign vs Structural)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>PVC = early beat</b> — Do not confuse a PVC with a PAC with aberrancy: a PAC will have a preceding premature P wave and typically a non-compensatory pause, whereas a true PVC has no preceding P and a full compensatory pause. Calling every wide early beat a PVC is a classic miss.</li><li><b>NSVT = ≥3 beats, &lt;30s</b> — The trap answer is 'NSVT must last over 30 seconds' — that is backwards. NSVT is UNDER 30 seconds and self-terminating; ≥30 s (or needing cardioversion) is sustained VT. Also, a run of only 2 ventricular beats is a 'couplet,' not NSVT (which requires ≥3).</li><li><b>Outflow tract / idiopathic</b> — Idiopathic RVOT VT in a structurally normal heart is benign and does NOT warrant an ICD; treating it as malignant VT is wrong. Conversely, do not assume an LBBB/inferior-axis wide-complex tachy is always benign RVOT — exclude ARVC, which can mimic it but carries SCD risk.</li><li><b>Structurally normal = benign</b> — The trap is 'all NSVT requires an ICD.' NSVT in a structurally normal heart is benign and needs no device. ICD decisions hinge on EF and structural disease (e.g., EF ≤35%), NOT on the mere presence of NSVT.</li><li><b>Structural disease danger</b> — Suppressing PVCs with class I antiarrhythmics (flecainide, encainide) in post-MI structural disease INCREASES mortality — the landmark CAST trial lesson. Avoid class IC agents in coronary/structural disease; beta-blockers and amiodarone are safer choices.</li><li><b>Alarm board — red flags</b> — Polymorphic or short-coupled NSVT is NOT benign — labeling it as simple idiopathic ectopy and discharging without workup is the error. R-on-T short-coupled PVCs can degenerate to VF and are a red flag.</li><li><b>Reassuring vs warning ECGs</b> — A normal-appearing echo does NOT exclude a channelopathy (Long QT, Brugada have structurally normal hearts) — the ECG, not just the echo, is essential. Missing a long QT or Brugada pattern because 'the heart looks normal' is a classic trap.</li><li><b>PVC cardiomyopathy</b> — Do not attribute a new low EF to 'idiopathic dilated cardiomyopathy' and start the ICD pathway without checking PVC burden — if burden is high, the cardiomyopathy may be entirely reversible by suppressing the PVCs first.</li><li><b>Ablate first → reassess EF</b> — The trap is 'implant an ICD immediately for low EF with frequent PVCs.' That skips the reversible step — you must control the PVCs and reassess EF first, because a normalized EF removes the ICD indication.</li><li><b>Reversible cardiomyopathy</b> — Reversibility is contingent on actually achieving PVC suppression — if ablation fails and burden stays high, the cardiomyopathy persists. Do not promise recovery without confirming the burden has dropped.</li><li><b>Lifestyle / caffeine first</b> — Class IC agents (flecainide) can be used for PVCs ONLY in structurally normal hearts — they are contraindicated if there is coronary or structural disease (CAST). Reaching for an antiarrhythmic before trigger removal/reassurance in a benign case is over-treatment.</li><li><b>MVP + mitral disjunction</b> — Classic 'benign' MVP is low-risk, but do NOT dismiss MVP with frequent complex PVCs, T-wave inversions, and annular disjunction as innocent — that subset warrants arrhythmia risk stratification.</li><li><b>Accelerated idioventricular rhythm (AIVR)</b> — AIVR is usually benign and self-limited — treating it (e.g., with lidocaine) can be harmful because it may be the only escape rhythm; observation is correct. Do not mistake slow AIVR for VT and shock it, nor suppress it when it is acting as the dominant rhythm.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. PVC = early beat</div><div class="rte">A premature ventricular contraction is a single early, wide (&gt;120 ms) QRS arising below the AV node, with no preceding P wave and a discordant T wave. Because the ventricle depolarizes cell-to-cell rather than via the His-Purkinje system, the QRS is bizarre and wide. PVCs are classically followed by a fully compensatory pause (the sinus node is not reset), so the R-R interval surrounding the PVC equals two normal cycles — this distinguishes them from PACs, which usually reset the sinus node and give a non-compensatory (incomplete) pause.</div><div class="rtt">⚠️ Do not confuse a PVC with a PAC with aberrancy: a PAC will have a preceding premature P wave and typically a non-compensatory pause, whereas a true PVC has no preceding P and a full compensatory pause. Calling every wide early beat a PVC is a classic miss.</div></div><div class="rt"><div class="rtl">2. NSVT = ≥3 beats, &lt;30s</div><div class="rte">Nonsustained VT is defined as 3 or more consecutive ventricular beats at a rate &gt;100 bpm that self-terminate in under 30 seconds. If a run lasts ≥30 seconds or causes hemodynamic collapse requiring intervention, it is by definition SUSTAINED VT, not NSVT. The 30-second cutoff is a high-yield board number.</div><div class="rtt">⚠️ The trap answer is 'NSVT must last over 30 seconds' — that is backwards. NSVT is UNDER 30 seconds and self-terminating; ≥30 s (or needing cardioversion) is sustained VT. Also, a run of only 2 ventricular beats is a 'couplet,' not NSVT (which requires ≥3).</div></div><div class="rt"><div class="rtl">3. Outflow tract / idiopathic</div><div class="rte">In a structurally normal heart, most PVCs/NSVT are idiopathic and arise from the right ventricular outflow tract (RVOT), giving an LBBB morphology with an inferior axis (tall R waves in II, III, aVF). These are typically benign and exquisitely catecholamine-sensitive — they worsen with exercise/stress and respond to beta-blockers or ablation. RVOT VT and fascicular (verapamil-sensitive) VT are the classic idiopathic VTs in young patients with normal hearts.</div><div class="rtt">⚠️ Idiopathic RVOT VT in a structurally normal heart is benign and does NOT warrant an ICD; treating it as malignant VT is wrong. Conversely, do not assume an LBBB/inferior-axis wide-complex tachy is always benign RVOT — exclude ARVC, which can mimic it but carries SCD risk.</div></div><div class="rt"><div class="rtl">4. Structurally normal = benign</div><div class="rte">When echo/MRI show a structurally normal heart and the ECG screen is clean, asymptomatic PVCs/NSVT are benign and require no antiarrhythmic suppression — reassurance is the management. The single most important prognostic determinant in ventricular ectopy is the presence or absence of underlying structural heart disease and LV function.</div><div class="rtt">⚠️ The trap is 'all NSVT requires an ICD.' NSVT in a structurally normal heart is benign and needs no device. ICD decisions hinge on EF and structural disease (e.g., EF ≤35%), NOT on the mere presence of NSVT.</div></div><div class="rt"><div class="rtl">5. Structural disease danger</div><div class="rte">PVCs/NSVT in the setting of structural heart disease — prior MI/scar, reduced EF, cardiomyopathy — mark an arrhythmogenic substrate (reentry around scar) and predict increased sudden-cardiac-death risk. Here the ectopy is a prognostic marker, not a benign curiosity, and prompts EF assessment and consideration of ICD per guideline thresholds (e.g., ischemic cardiomyopathy with EF ≤35% on optimal medical therapy for ≥40 days post-MI / ≥90 days post-revascularization).</div><div class="rtt">⚠️ Suppressing PVCs with class I antiarrhythmics (flecainide, encainide) in post-MI structural disease INCREASES mortality — the landmark CAST trial lesson. Avoid class IC agents in coronary/structural disease; beta-blockers and amiodarone are safer choices.</div></div><div class="rt"><div class="rtl">6. Alarm board — red flags</div><div class="rte">High-risk features that turn 'benign' ectopy into a workup trigger: rapid or polymorphic NSVT, short-coupled PVCs (R-on-T phenomenon that can precipitate polymorphic VT/VF), syncope, family history of premature sudden cardiac death, and any abnormal baseline ECG. Any of these mandates structural and genetic/channelopathy evaluation rather than reassurance.</div><div class="rtt">⚠️ Polymorphic or short-coupled NSVT is NOT benign — labeling it as simple idiopathic ectopy and discharging without workup is the error. R-on-T short-coupled PVCs can degenerate to VF and are a red flag.</div></div><div class="rt"><div class="rtl">7. Reassuring vs warning ECGs</div><div class="rte">Always screen the resting 12-lead for inherited arrhythmia substrates: long QT (QTc &gt;480 ms; risk of torsades), Brugada (coved ST elevation in V1-V2), ARVC (epsilon waves, T-wave inversions V1-V3, LBBB/inferior-axis VT), and HCM (LVH with deep septal Q waves). These channelopathies/cardiomyopathies convert innocent-looking ectopy into a high-risk SCD substrate.</div><div class="rtt">⚠️ A normal-appearing echo does NOT exclude a channelopathy (Long QT, Brugada have structurally normal hearts) — the ECG, not just the echo, is essential. Missing a long QT or Brugada pattern because 'the heart looks normal' is a classic trap.</div></div><div class="rt"><div class="rtl">8. PVC cardiomyopathy</div><div class="rte">A chronically high PVC burden — typically &gt;10-15% of total beats on Holter (some sources cite &gt;20% as higher risk) — can cause a dyssynchrony-mediated, reversible LV systolic dysfunction called PVC-induced cardiomyopathy. Suspect it when LV dysfunction is out of proportion to other causes and the patient has frequent monomorphic PVCs.</div><div class="rtt">⚠️ Do not attribute a new low EF to 'idiopathic dilated cardiomyopathy' and start the ICD pathway without checking PVC burden — if burden is high, the cardiomyopathy may be entirely reversible by suppressing the PVCs first.</div></div><div class="rt"><div class="rtl">9. Ablate first → reassess EF</div><div class="rte">For suspected PVC-induced cardiomyopathy, the strategy is to SUPPRESS the PVCs first — catheter ablation (most effective) or a beta-blocker/non-dihydropyridine CCB, and amiodarone if refractory — then reassess EF after a recovery window. EF frequently normalizes, obviating an ICD. The dysfunction is driven by the ectopy itself, so removing the cause is curative.</div><div class="rtt">⚠️ The trap is 'implant an ICD immediately for low EF with frequent PVCs.' That skips the reversible step — you must control the PVCs and reassess EF first, because a normalized EF removes the ICD indication.</div></div><div class="rt"><div class="rtl">10. Reversible cardiomyopathy</div><div class="rte">The hallmark of PVC-induced cardiomyopathy is reversibility: once ectopy is controlled, LV function typically recovers over weeks to months. This distinguishes it from intrinsic ischemic or genetic dilated cardiomyopathy, where the substrate is fixed scar and EF does not recover with rhythm control alone.</div><div class="rtt">⚠️ Reversibility is contingent on actually achieving PVC suppression — if ablation fails and burden stays high, the cardiomyopathy persists. Do not promise recovery without confirming the burden has dropped.</div></div><div class="rt"><div class="rtl">11. Lifestyle / caffeine first</div><div class="rte">For symptomatic benign PVCs in a normal heart: first reassure and remove triggers (caffeine, alcohol, nicotine, stimulants, sympathetic stress, correct hypokalemia/hypomagnesemia). If symptoms persist, a beta-blocker (e.g., metoprolol) or non-dihydropyridine CCB (verapamil/diltiazem) is first-line; catheter ablation is reserved for drug-refractory or high-burden cases.</div><div class="rtt">⚠️ Class IC agents (flecainide) can be used for PVCs ONLY in structurally normal hearts — they are contraindicated if there is coronary or structural disease (CAST). Reaching for an antiarrhythmic before trigger removal/reassurance in a benign case is over-treatment.</div></div><div class="rt"><div class="rtl">12. MVP + mitral disjunction</div><div class="rte">Mitral valve prolapse with mitral annular disjunction, bileaflet prolapse, and complex/polymorphic ventricular ectopy (often with inferolateral T-wave inversions) is the emerging 'arrhythmic MVP' phenotype carrying real SCD risk. The papillary muscle/inferobasal traction is the arrhythmogenic source.</div><div class="rtt">⚠️ Classic 'benign' MVP is low-risk, but do NOT dismiss MVP with frequent complex PVCs, T-wave inversions, and annular disjunction as innocent — that subset warrants arrhythmia risk stratification.</div></div><div class="rt"><div class="rtl">13. Accelerated idioventricular rhythm (AIVR)</div><div class="rte">Accelerated idioventricular rhythm is a wide-complex ventricular rhythm at a rate of roughly 40-120 bpm — faster than the intrinsic ventricular escape rate but slower than true VT. It is the classic benign reperfusion arrhythmia seen after successful thrombolysis or PCI in acute MI, driven by enhanced automaticity of ventricular tissue.</div><div class="rtt">⚠️ AIVR is usually benign and self-limited — treating it (e.g., with lidocaine) can be harmful because it may be the only escape rhythm; observation is correct. Do not mistake slow AIVR for VT and shock it, nor suppress it when it is acting as the dominant rhythm.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="arr_vt_monomorphic.html" title="Arrhythmias — Monomorphic VT (Scar / Structural Disease)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="arr_torsades.html" title="Arrhythmias — Polymorphic VT, Torsades &amp; VF">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

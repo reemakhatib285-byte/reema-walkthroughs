@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Megaloblastic — Diagnosis &amp; Labs</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>MCV &gt;100 opens case</b> — WRONG: treating every high MCV as B12/folate deficiency. Discriminator: non-megaloblastic causes (alcohol, liver, hypothyroidism, MDS) have NORMAL B12/folate and NO hypersegmented neutrophils — confirm with smear + vitamin levels before replacing.</li><li><b>Hypersegmented neutrophil</b> — WRONG: dismissing a few hypersegmented neutrophils when the MCV is normal. Discriminator: hypersegmentation can precede anemia/macrocytosis and persists for days after treatment — it warrants B12/folate testing even with a normal CBC.</li><li><b>Oval macrocytes / anisopoikilo</b> — WRONG: equating round and oval macrocytes. Discriminator: round macrocytes + target cells suggest liver disease/alcohol (non-megaloblastic); oval macrocytes + hypersegmented neutrophils suggest B12/folate deficiency (megaloblastic).</li><li><b>Hypercellular marrow, megaloblasts</b> — WRONG: confusing megaloblastic hypercellular marrow with aplastic anemia. Discriminator: aplastic anemia is HYPOcellular (fatty marrow); megaloblastic anemia is HYPERcellular with megaloblasts and ineffective erythropoiesis (high LDH/indirect bili).</li><li><b>Mimics AML</b> — WRONG (the trap): treating the marrow picture as acute leukemia immediately. Discriminator: megaloblastic change corrects fully with B12/folate replacement, whereas AML does not — a reversible vitamin deficiency must be excluded first to avoid unnecessary chemotherapy.</li><li><b>LDH &amp; indirect bili high</b> — WRONG: diagnosing primary hemolytic anemia from high LDH + indirect bili + low haptoglobin. Discriminator: in megaloblastic anemia the reticulocyte count is LOW (production failure) and the DAT/Coombs is negative, whereas true hemolysis shows a HIGH reticulocyte count.</li><li><b>Serum B12 (suspect 1)</b> — WRONG: relying on serum B12 alone in the borderline range (~150-300 ng/L). Discriminator: in the gray zone, confirm with MMA + homocysteine (both high → B12). Beware false-low B12 (pregnancy, OCP, myeloma) and false-NORMAL B12 in true deficiency (haptocorrin binding).</li><li><b>Serum folate (suspect 2)</b> — WRONG: trusting a normal serum folate to exclude folate deficiency, or a low one to confirm it. Discriminator: use RBC folate (tissue stores) for a more reliable assessment, and remember B12 deficiency can raise serum folate via the methylfolate trap.</li><li><b>RBC folate more reliable</b> — WRONG: using a low RBC folate to confirm folate deficiency specifically. Discriminator: RBC folate is low in B12 deficiency too — check B12 + MMA before labeling it isolated folate deficiency.</li><li><b>MMA high in B12 only</b> — WRONG (key distractor): 'MMA is high in both B12 and folate deficiency.' It is NOT — folate has a NORMAL MMA. Discriminator: high MMA + high homocysteine = B12; normal MMA + high homocysteine = folate.</li><li><b>Homocysteine high in both</b> — WRONG: using homocysteine to distinguish B12 from folate. Discriminator: it rises in both — only MMA (high in B12, normal in folate) makes the distinction. Isolated high homocysteine with normal MMA favors folate (or B6/MTHFR causes).</li><li><b>Borderline → MMA + homocysteine</b> — WRONG: calling a borderline B12 'normal' and stopping. Discriminator: functional deficiency hides in the gray zone — confirm with metabolites (MMA/homocysteine) and treat if elevated, especially when neuro signs are present.</li><li><b>Iron deficiency masks macro</b> — WRONG (trap): 'a normal MCV rules out megaloblastic anemia.' It does NOT. Discriminator: a high RDW, hypersegmented neutrophils, or anemia with a normal MCV should prompt iron studies + B12/folate — combined deficiencies hide behind a normal MCV.</li><li><b>Reticulocyte count low</b> — WRONG: a high LDH + low haptoglobin leading to a primary hemolysis diagnosis. Discriminator: a LOW reticulocyte count plus oval macrocytes and hypersegmented neutrophils points to megaloblastic production failure, not hemolysis (which would show high reticulocytes).</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. MCV &gt;100 opens case</div><div class="rte">Macrocytosis (MCV &gt;100 fL; megaloblastic anemia often &gt;110-115) triggers the workup. First branch: megaloblastic (B12/folate deficiency, antimetabolite drugs) vs non-megaloblastic (alcohol, liver disease, hypothyroidism, MDS, reticulocytosis). The presence of hypersegmented neutrophils points to megaloblastic. Mnemonic: MCV up = open the case, then split mega vs non-mega.</div><div class="rtt">⚠️ WRONG: treating every high MCV as B12/folate deficiency. Discriminator: non-megaloblastic causes (alcohol, liver, hypothyroidism, MDS) have NORMAL B12/folate and NO hypersegmented neutrophils — confirm with smear + vitamin levels before replacing.</div></div><div class="rt"><div class="rtl">2. Hypersegmented neutrophil</div><div class="rte">Hypersegmented neutrophils (≥5 lobes, or any cell with 6+) are an EARLY and relatively specific clue to megaloblastic anemia and can appear before macrocytosis or anemia. They reflect impaired DNA synthesis in the granulocyte line. Mnemonic: 5+ lobes = megaloblastic flag.</div><div class="rtt">⚠️ WRONG: dismissing a few hypersegmented neutrophils when the MCV is normal. Discriminator: hypersegmentation can precede anemia/macrocytosis and persists for days after treatment — it warrants B12/folate testing even with a normal CBC.</div></div><div class="rt"><div class="rtl">3. Oval macrocytes / anisopoikilo</div><div class="rte">The smear shows OVAL macrocytes (macro-ovalocytes) with anisocytosis and poikilocytosis (high RDW). Oval shape helps distinguish megaloblastic macrocytosis from the round macrocytes of liver disease/alcohol. Mnemonic: megaloblastic = oval macrocytes; non-megaloblastic = round macrocytes.</div><div class="rtt">⚠️ WRONG: equating round and oval macrocytes. Discriminator: round macrocytes + target cells suggest liver disease/alcohol (non-megaloblastic); oval macrocytes + hypersegmented neutrophils suggest B12/folate deficiency (megaloblastic).</div></div><div class="rt"><div class="rtl">4. Hypercellular marrow, megaloblasts</div><div class="rte">Marrow is HYPERcellular with megaloblasts (large cells with nuclear-cytoplasmic asynchrony — immature open nucleus in a mature/hemoglobinized cytoplasm) and giant bands/metamyelocytes. Despite the busy marrow, output is poor (ineffective erythropoiesis). Mnemonic: full factory, broken conveyor belt → cells die before shipping.</div><div class="rtt">⚠️ WRONG: confusing megaloblastic hypercellular marrow with aplastic anemia. Discriminator: aplastic anemia is HYPOcellular (fatty marrow); megaloblastic anemia is HYPERcellular with megaloblasts and ineffective erythropoiesis (high LDH/indirect bili).</div></div><div class="rt"><div class="rtl">5. Mimics AML</div><div class="rte">A florid megaloblastic marrow with nuclear-cytoplasmic asynchrony can mimic AML/MDS. ALWAYS check B12, folate, MMA, and homocysteine BEFORE committing to a bone-marrow malignancy diagnosis or chemotherapy. Mnemonic: confirm the vitamins before you call it leukemia.</div><div class="rtt">⚠️ WRONG (the trap): treating the marrow picture as acute leukemia immediately. Discriminator: megaloblastic change corrects fully with B12/folate replacement, whereas AML does not — a reversible vitamin deficiency must be excluded first to avoid unnecessary chemotherapy.</div></div><div class="rt"><div class="rtl">6. LDH &amp; indirect bili high</div><div class="rte">Intramedullary (ineffective) erythropoiesis destroys precursors in the marrow → markedly HIGH LDH, high indirect (unconjugated) bilirubin, low haptoglobin, and increased urobilinogen — a hemolysis-like pattern WITHOUT external bleeding. LDH is often strikingly elevated. Mnemonic: cells die in the marrow → high LDH, high indirect bili, low hapto.</div><div class="rtt">⚠️ WRONG: diagnosing primary hemolytic anemia from high LDH + indirect bili + low haptoglobin. Discriminator: in megaloblastic anemia the reticulocyte count is LOW (production failure) and the DAT/Coombs is negative, whereas true hemolysis shows a HIGH reticulocyte count.</div></div><div class="rt"><div class="rtl">7. Serum B12 (suspect 1)</div><div class="rte">A low serum B12 (roughly &lt;148 pmol/L or &lt;200 pg/mL; clearly deficient often &lt;118-148) supports B12 deficiency, but the assay is imperfect — pregnancy, OCPs, and myeloma can falsely lower it, and high levels occur in liver disease/myeloproliferative states. Mnemonic: low B12 is suggestive, not definitive — there's a borderline gray zone.</div><div class="rtt">⚠️ WRONG: relying on serum B12 alone in the borderline range (~150-300 ng/L). Discriminator: in the gray zone, confirm with MMA + homocysteine (both high → B12). Beware false-low B12 (pregnancy, OCP, myeloma) and false-NORMAL B12 in true deficiency (haptocorrin binding).</div></div><div class="rt"><div class="rtl">8. Serum folate (suspect 2)</div><div class="rte">Serum folate reflects RECENT intake and can normalize after a single good meal or rise paradoxically in B12 deficiency (methylfolate trap). A low serum folate suggests folate deficiency but is a weak standalone test. Mnemonic: serum folate = yesterday's salad, not the body's stores.</div><div class="rtt">⚠️ WRONG: trusting a normal serum folate to exclude folate deficiency, or a low one to confirm it. Discriminator: use RBC folate (tissue stores) for a more reliable assessment, and remember B12 deficiency can raise serum folate via the methylfolate trap.</div></div><div class="rt"><div class="rtl">9. RBC folate more reliable</div><div class="rte">RBC folate reflects tissue folate over the prior ~120 days and is more reliable than serum folate, but it FALLS in both folate AND B12 deficiency (methylfolate trap depletes usable tissue folate). Mnemonic: RBC folate = tissue truth, but it drops in both deficiencies.</div><div class="rtt">⚠️ WRONG: using a low RBC folate to confirm folate deficiency specifically. Discriminator: RBC folate is low in B12 deficiency too — check B12 + MMA before labeling it isolated folate deficiency.</div></div><div class="rt"><div class="rtl">10. MMA high in B12 only</div><div class="rte">Methylmalonic acid (MMA) is HIGH in B12 deficiency (adenosyl-B12 is the cofactor for methylmalonyl-CoA mutase) but NORMAL in folate deficiency — the single most useful test to separate the two and to resolve a borderline B12. Mnemonic: MMA = B12's fingerprint (folate leaves no print).</div><div class="rtt">⚠️ WRONG (key distractor): 'MMA is high in both B12 and folate deficiency.' It is NOT — folate has a NORMAL MMA. Discriminator: high MMA + high homocysteine = B12; normal MMA + high homocysteine = folate.</div></div><div class="rt"><div class="rtl">11. Homocysteine high in both</div><div class="rte">Homocysteine is elevated in BOTH B12 and folate deficiency (both are methionine-synthase cofactors), so it confirms a deficiency exists but cannot tell which vitamin. Pair it with MMA to separate them. Mnemonic: homocysteine = shared road; MMA = the fork.</div><div class="rtt">⚠️ WRONG: using homocysteine to distinguish B12 from folate. Discriminator: it rises in both — only MMA (high in B12, normal in folate) makes the distinction. Isolated high homocysteine with normal MMA favors folate (or B6/MTHFR causes).</div></div><div class="rt"><div class="rtl">12. Borderline → MMA + homocysteine</div><div class="rte">For an equivocal/borderline B12 (~150-300 ng/L), do NOT decide on the level alone — order MMA + homocysteine. BOTH elevated → true B12 deficiency; both normal → B12 deficiency effectively excluded. Mnemonic: gray-zone B12? Let MMA + homocysteine be the tiebreaker.</div><div class="rtt">⚠️ WRONG: calling a borderline B12 'normal' and stopping. Discriminator: functional deficiency hides in the gray zone — confirm with metabolites (MMA/homocysteine) and treat if elevated, especially when neuro signs are present.</div></div><div class="rt"><div class="rtl">13. Iron deficiency masks macro</div><div class="rte">Coexisting iron deficiency (microcytic) offsets the macrocytosis of B12/folate deficiency → a NORMAL MCV but HIGH RDW and a dimorphic smear (both micro- and macrocytes). Mnemonic: micro + macro = normal-looking MCV; the high RDW betrays it.</div><div class="rtt">⚠️ WRONG (trap): 'a normal MCV rules out megaloblastic anemia.' It does NOT. Discriminator: a high RDW, hypersegmented neutrophils, or anemia with a normal MCV should prompt iron studies + B12/folate — combined deficiencies hide behind a normal MCV.</div></div><div class="rt"><div class="rtl">14. Reticulocyte count low</div><div class="rte">Despite the hemolysis-like labs (high LDH/indirect bili), the reticulocyte count is INAPPROPRIATELY LOW because the underlying problem is production failure (ineffective erythropoiesis), not increased peripheral destruction. After treatment, a reticulocyte response peaks at days 5-7. Mnemonic: marrow can't ship cells → low retics now, retic spike after vitamins.</div><div class="rtt">⚠️ WRONG: a high LDH + low haptoglobin leading to a primary hemolysis diagnosis. Discriminator: a LOW reticulocyte count plus oval macrocytes and hypersegmented neutrophils points to megaloblastic production failure, not hemolysis (which would show high reticulocytes).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="megalo_b12_vs_folate.html" title="Megaloblastic — B12 vs Folate Comparison">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="megalo_folate.html" title="Megaloblastic — Folate Sources, Causes &amp; Treatment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

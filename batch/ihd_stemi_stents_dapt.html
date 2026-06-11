@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD / STEMI — stents &amp; DAPT</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>12 months calendar</b> — WRONG: DAPT for only 1 month after ACS. Discriminator: 1 month is a short course reserved for high-bleeding-risk patients with a modern DES — the standard after ACS is 12 months; calling 1 month the default is the trap.</li><li><b>NOT DAPT bottle (lone aspirin)</b> — WRONG: aspirin monotherapy suffices after stenting. Discriminator: in the vulnerable window aspirin alone leaves the patient unprotected against stent thrombosis — dual therapy is mandatory until endothelialization is complete.</li><li><b>Thrombosis bench</b> — WRONG: stent thrombosis risk is unrelated to DAPT. Discriminator: stopping DAPT early is the single biggest modifiable cause of stent thrombosis — the link is causal and heavily tested in perioperative-management questions.</li><li><b>3–9x death/MI risk</b> — WRONG: stent thrombosis is usually benign. Discriminator: stent thrombosis is a medical emergency with high mortality (unlike restenosis) — treating it as a minor event is the error; it presents as acute MI.</li><li><b>Coronary anatomy first horse</b> — WRONG: stent immediately without assessing the full anatomy. Discriminator: in complex/left-main/diabetic multivessel disease, CABG can be superior — reflexively stenting without weighing the anatomy (SYNTAX) misses the PCI-vs-CABG decision.</li><li><b>Stroke-brain (load only ≤?)</b> — WRONG: load every patient with the same potent P2Y12 inhibitor regardless of stroke risk. Discriminator: prasugrel is absolutely contraindicated with prior stroke/TIA — picking it for a patient with cerebrovascular history is a classic harm trap.</li><li><b>BVS / bioresorbable (crossed)</b> — WRONG: bioresorbable scaffolds are first-line. Discriminator: BVS were largely abandoned for higher thrombosis/failure — current first-line is a second-generation drug-eluting stent, not a bioresorbable scaffold.</li><li><b>BMS 10–30% restenosis</b> — WRONG: BMS has lower restenosis than DES. Discriminator: BMS has MORE restenosis than DES — its only relative edge was shorter required DAPT, not better patency.</li><li><b>DES 5–15% restenosis</b> — WRONG: DES has the highest restenosis rate. Discriminator: DES has the LOWEST restenosis (the drug blocks neointimal growth) — it is preferred precisely for that; claiming the opposite reverses the whole rationale.</li><li><b>DES late thrombosis clock</b> — WRONG: DES never cause late thrombosis. Discriminator: the delayed-healing of (especially first-gen) DES is exactly why late stent thrombosis was a concern and DAPT was prolonged — denying any late thrombosis risk is the trap.</li><li><b>Restenosis bench</b> — WRONG: restenosis and stent thrombosis are the same process. Discriminator: restenosis = gradual neointimal regrowth (recurrent angina); thrombosis = acute clot (STEMI) — different mechanism, timeline, and lethality.</li><li><b>Gradual 12 months sign</b> — WRONG: restenosis presents as sudden total occlusion / acute MI. Discriminator: a gradual return of angina over months = restenosis; a sudden STEMI = stent thrombosis — matching the tempo to the diagnosis is the tested point.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. 12 months calendar</div><div class="rte">After ACS (including STEMI) with stenting, the default duration of dual antiplatelet therapy (DAPT) is ~12 months: aspirin 81 mg daily lifelong PLUS a P2Y12 inhibitor for 12 months. Preferred P2Y12 agents after ACS are ticagrelor (90 mg BID) or prasugrel (10 mg daily); clopidogrel (75 mg daily after a 300–600 mg load) is the alternative when potent agents are contraindicated. Duration can be shortened (to 1–6 months) if high bleeding risk, or extended if high ischemic/low bleeding risk.</div><div class="rtt">⚠️ WRONG: DAPT for only 1 month after ACS. Discriminator: 1 month is a short course reserved for high-bleeding-risk patients with a modern DES — the standard after ACS is 12 months; calling 1 month the default is the trap.</div></div><div class="rt"><div class="rtl">2. NOT DAPT bottle (lone aspirin)</div><div class="rte">A single antiplatelet agent alone is inadequate in the early period after stenting — aspirin monotherapy does not prevent stent thrombosis while the struts are re-endothelializing. You need DUAL therapy (aspirin + P2Y12 inhibitor). Only after the DAPT period (≥12 months post-ACS) do you de-escalate to a single agent for life.</div><div class="rtt">⚠️ WRONG: aspirin monotherapy suffices after stenting. Discriminator: in the vulnerable window aspirin alone leaves the patient unprotected against stent thrombosis — dual therapy is mandatory until endothelialization is complete.</div></div><div class="rt"><div class="rtl">3. Thrombosis bench</div><div class="rte">Premature discontinuation of DAPT is the strongest precipitant of acute stent thrombosis — an abrupt, catastrophic thrombotic occlusion of the stented segment presenting as a new STEMI/sudden death. This is why patients must NOT stop DAPT early (e.g., for elective surgery) without cardiology input; elective non-cardiac surgery should be deferred until the minimum DAPT period is met.</div><div class="rtt">⚠️ WRONG: stent thrombosis risk is unrelated to DAPT. Discriminator: stopping DAPT early is the single biggest modifiable cause of stent thrombosis — the link is causal and heavily tested in perioperative-management questions.</div></div><div class="rt"><div class="rtl">4. 3–9x death/MI risk</div><div class="rte">Stent thrombosis is highly lethal: it raises the risk of death/MI several-fold (~3–9x), with mortality roughly 10–40% and a very high rate of MI (30–70%) when it occurs. It is an emergency requiring immediate repeat angiography/PCI. Contrast this acute, dramatic event with restenosis, which is gradual and far less lethal.</div><div class="rtt">⚠️ WRONG: stent thrombosis is usually benign. Discriminator: stent thrombosis is a medical emergency with high mortality (unlike restenosis) — treating it as a minor event is the error; it presents as acute MI.</div></div><div class="rt"><div class="rtl">5. Coronary anatomy first horse</div><div class="rte">Before committing to PCI, define the full coronary anatomy and disease burden — this determines whether PCI or CABG is the better revascularization. CABG is generally favored for left main disease, complex multivessel disease (high SYNTAX score), and diabetics with multivessel disease; PCI suits focal/single-vessel disease and the acute STEMI culprit. Heart-team discussion is standard for complex anatomy.</div><div class="rtt">⚠️ WRONG: stent immediately without assessing the full anatomy. Discriminator: in complex/left-main/diabetic multivessel disease, CABG can be superior — reflexively stenting without weighing the anatomy (SYNTAX) misses the PCI-vs-CABG decision.</div></div><div class="rt"><div class="rtl">6. Stroke-brain (load only ≤?)</div><div class="rte">Choose the P2Y12 agent by bleeding/stroke risk. Prasugrel is CONTRAINDICATED in any prior stroke/TIA (net harm from intracranial bleeding) and is avoided in age ≥75 or weight &lt;60 kg. Ticagrelor is the potent alternative there (but causes dyspnea and requires BID dosing and low-dose aspirin). Clopidogrel is the gentlest option for the highest bleeding-risk patients.</div><div class="rtt">⚠️ WRONG: load every patient with the same potent P2Y12 inhibitor regardless of stroke risk. Discriminator: prasugrel is absolutely contraindicated with prior stroke/TIA — picking it for a patient with cerebrovascular history is a classic harm trap.</div></div><div class="rt"><div class="rtl">7. BVS / bioresorbable (crossed)</div><div class="rte">Older bare scaffolds / balloon angioplasty alone produce high restenosis (~20–50%) from elastic recoil and neointimal hyperplasia. Bioresorbable vascular scaffolds (BVS) were withdrawn from routine use after showing higher rates of scaffold thrombosis and target-lesion failure than modern DES. They are not first-line.</div><div class="rtt">⚠️ WRONG: bioresorbable scaffolds are first-line. Discriminator: BVS were largely abandoned for higher thrombosis/failure — current first-line is a second-generation drug-eluting stent, not a bioresorbable scaffold.</div></div><div class="rt"><div class="rtl">8. BMS 10–30% restenosis</div><div class="rte">Bare-metal stents have higher restenosis (~10–30%) than DES but historically allowed a SHORTER mandatory DAPT duration because they re-endothelialize faster. Their main niche today is patients who cannot tolerate prolonged DAPT (imminent surgery, very high bleeding risk), though modern DES now also permit short DAPT, narrowing this advantage.</div><div class="rtt">⚠️ WRONG: BMS has lower restenosis than DES. Discriminator: BMS has MORE restenosis than DES — its only relative edge was shorter required DAPT, not better patency.</div></div><div class="rt"><div class="rtl">9. DES 5–15% restenosis</div><div class="rte">Drug-eluting stents elute an antiproliferative agent (e.g., everolimus, zotarolimus, sirolimus) that suppresses neointimal hyperplasia, giving the lowest restenosis rate (~5–15%). They are the preferred stent for nearly all PCI today. Second-generation DES also have low thrombosis rates and now permit shortened DAPT when bleeding risk is high.</div><div class="rtt">⚠️ WRONG: DES has the highest restenosis rate. Discriminator: DES has the LOWEST restenosis (the drug blocks neointimal growth) — it is preferred precisely for that; claiming the opposite reverses the whole rationale.</div></div><div class="rt"><div class="rtl">10. DES late thrombosis clock</div><div class="rte">First-generation DES delayed endothelialization, raising LATE/very-late stent thrombosis risk — which is why prolonged DAPT became important with DES. Second-generation DES (everolimus/zotarolimus) markedly reduced this, so late thrombosis with modern stents is now low and DAPT can sometimes be shortened.</div><div class="rtt">⚠️ WRONG: DES never cause late thrombosis. Discriminator: the delayed-healing of (especially first-gen) DES is exactly why late stent thrombosis was a concern and DAPT was prolonged — denying any late thrombosis risk is the trap.</div></div><div class="rt"><div class="rtl">11. Restenosis bench</div><div class="rte">Restenosis is gradual re-narrowing of the stented segment from neointimal hyperplasia (smooth-muscle proliferation), evolving over months. It is a distinct process from stent thrombosis: restenosis is a slow re-stenosis presenting as recurrent stable angina, whereas thrombosis is an abrupt clot causing acute MI. DAPT prevents thrombosis, not restenosis.</div><div class="rtt">⚠️ WRONG: restenosis and stent thrombosis are the same process. Discriminator: restenosis = gradual neointimal regrowth (recurrent angina); thrombosis = acute clot (STEMI) — different mechanism, timeline, and lethality.</div></div><div class="rt"><div class="rtl">12. Gradual 12 months sign</div><div class="rte">Restenosis typically presents GRADUALLY over months (commonly 3–12 months post-PCI) as recurrent exertional/stable angina, not as sudden collapse. The slow tempo (vs the abrupt presentation of stent thrombosis) is the clinical discriminator on exam questions.</div><div class="rtt">⚠️ WRONG: restenosis presents as sudden total occlusion / acute MI. Discriminator: a gradual return of angina over months = restenosis; a sudden STEMI = stent thrombosis — matching the tempo to the diagnosis is the tested point.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_stemi_reperfusion.html" title="IHD / STEMI — reperfusion (PCI vs fibrinolysis)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_treatment.html" title="IHD — Antianginal Treatment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

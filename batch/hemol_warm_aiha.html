@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hemolytic Anemia — Autoimmune (Warm AIHA, Cold Agglutinin, PCH)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Warm AIHA = 37C</b> — WRONG: warm AIHA is mediated by IgM. Discriminator — WARM = IgG (active at 37°C, extravascular/splenic); IgM is the COLD agglutinin antibody (active at 0–4°C, complement-fixing). Mnemonic: warm = IgG (Greatest at body temp), cold = IgM (Most active in the cold).</li><li><b>IgG coats RBC</b> — WRONG: warm AIHA destroys RBCs mainly inside blood vessels via the membrane attack complex. Discriminator — IgG-mediated clearance is EXTRAVASCULAR (Fc-receptor phagocytosis in the spleen); complement/MAC-driven intravascular hemolysis is the cold-agglutinin/PNH pattern, not warm AIHA.</li><li><b>Spherocytes formed</b> — WRONG: warm AIHA shows schistocytes on the smear. Discriminator — warm AIHA shows SPHEROCYTES (membrane nibbled in the spleen); SCHISTOCYTES (fragmented RBCs) indicate a microangiopathic process (TTP/HUS, DIC, mechanical valve), which is Coombs-NEGATIVE — a completely different workup.</li><li><b>DAT (Coombs) positive</b> — WRONG: warm AIHA is Coombs/DAT negative. Discriminator — warm AIHA is DAT POSITIVE (IgG ± C3); a Coombs-NEGATIVE spherocytic hemolytic anemia points to hereditary spherocytosis instead. The DAT is THE test that separates the two look-alikes.</li><li><b>Secondary: CLL/SLE/drugs</b> — WRONG: warm AIHA is always idiopathic, so no malignancy workup is needed. Discriminator — roughly half are SECONDARY; new warm AIHA (especially in an older patient) requires a workup for CLL/lymphoma and SLE — missing an underlying lymphoproliferative disorder is the trap.</li><li><b>Treatment: steroids first</b> — WRONG: first-line warm AIHA management is keep-warm measures/avoiding cold. Discriminator — keep-warm is the treatment for COLD agglutinin disease; warm AIHA (IgG, 37°C) responds to STEROIDS first, then rituximab/splenectomy. Steroids are notably INEFFECTIVE in cold agglutinin disease — swapping them is the classic mistake.</li><li><b>Cold agglutinin 4-30C</b> — WRONG: cold agglutinin disease is mediated by IgG. Discriminator — CAD = IgM (the large pentamer that agglutinates and fixes complement at cold temperatures); IgG is the WARM antibody. Reversing them flips the entire diagnosis and treatment.</li><li><b>IgM + complement</b> — WRONG: in cold agglutinin disease the DAT is IgG-positive. Discriminator — CAD DAT is C3d-positive, IgG-NEGATIVE (the IgM dissociates at 37°C, leaving only complement on the cell); an IgG-positive DAT points to warm AIHA instead.</li><li><b>Mycoplasma / EBV</b> — WRONG: post-Mycoplasma cold agglutinin hemolysis needs lifelong rituximab. Discriminator — INFECTION-associated cold agglutinins (Mycoplasma, EBV) are typically transient/self-limited needing only supportive keep-warm care; chronic/clonal (Waldenström) CAD is what may warrant rituximab-based therapy.</li><li><b>Keep warm + rituximab</b> — WRONG: steroids and splenectomy are effective for cold agglutinin disease just like warm AIHA. Discriminator — steroids and SPLENECTOMY DO NOT work in CAD (hemolysis is complement-mediated and clearance is HEPATIC, not splenic); the mainstays are keep-warm, rituximab, and complement inhibition (sutimlimab).</li><li><b>Spleen not the site (cold)</b> — WRONG: splenectomy benefits cold agglutinin disease because that's where the cells are removed. Discriminator — cold agglutinin clearance is HEPATIC (Kupffer cells); the spleen is bypassed, so splenectomy is INEFFECTIVE — a reliably tested contrast with warm (splenic) AIHA.</li><li><b>PCH Donath-Landsteiner</b> — WRONG: PCH is caused by a cold IgM, like cold agglutinin disease. Discriminator — PCH is a BIPHASIC IgG anti-P (binds cold, lyses on warming) — the only AIHA where IgG fixes complement intravascularly; cold agglutinin disease is IgM. Different antibody, different test (Donath-Landsteiner).</li><li><b>Drug-induced immune HA</b> — WRONG: drug-induced immune hemolytic anemia needs lifelong immunosuppression. Discriminator — the cornerstone is STOPPING the culprit drug; hemolysis usually resolves once it's withdrawn (steroids are only for severe cases). Continuing the drug while escalating immunosuppression is the error.</li><li><b>Evans syndrome</b> — WRONG: anemia plus thrombocytopenia with schistocytes and a Coombs-negative smear is Evans syndrome. Discriminator — Evans is Coombs/DAT POSITIVE autoimmune (AIHA + ITP); a Coombs-NEGATIVE anemia + thrombocytopenia with SCHISTOCYTES is a microangiopathy (TTP/HUS/DIC) — a medical emergency needing plasma exchange, not steroids.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Warm AIHA = 37C</div><div class="rte">Warm autoimmune hemolytic anemia (warm AIHA) is the most common AIHA. The autoantibody is IgG with maximal binding at body/'warm' temperature (37°C) — hence the courtroom thermometer at 37. IgG-coated cells are not lysed in the bloodstream; instead the spleen removes them (extravascular). It is idiopathic in ~half; the rest are secondary (CLL/lymphoma, SLE, drugs, immunodeficiency). Diagnosis rests on Coombs-positive hemolysis at 37°C.</div><div class="rtt">⚠️ WRONG: warm AIHA is mediated by IgM. Discriminator — WARM = IgG (active at 37°C, extravascular/splenic); IgM is the COLD agglutinin antibody (active at 0–4°C, complement-fixing). Mnemonic: warm = IgG (Greatest at body temp), cold = IgM (Most active in the cold).</div></div><div class="rt"><div class="rtl">2. IgG coats RBC</div><div class="rte">IgG opsonizes the RBC surface; splenic macrophages bear Fc-gamma receptors that recognize the IgG Fc tail, so the cell is destroyed EXTRAVASCULARLY in the spleen. Because IgG is a poor complement fixer, intravascular lysis is uncommon — labs show high indirect bilirubin, high LDH, low haptoglobin, reticulocytosis, but typically NO hemoglobinuria. This Fc-mediated mechanism is exactly why steroids, rituximab, and splenectomy work.</div><div class="rtt">⚠️ WRONG: warm AIHA destroys RBCs mainly inside blood vessels via the membrane attack complex. Discriminator — IgG-mediated clearance is EXTRAVASCULAR (Fc-receptor phagocytosis in the spleen); complement/MAC-driven intravascular hemolysis is the cold-agglutinin/PNH pattern, not warm AIHA.</div></div><div class="rt"><div class="rtl">3. Spherocytes formed</div><div class="rte">Splenic macrophages take 'bites' of the IgG-coated membrane rather than swallowing the whole cell; each bite removes surface area, so the cell rounds up into a SPHEROCYTE (same physics as hereditary spherocytosis). Spherocytes on the smear of an acquired hemolytic anemia are a strong clue to warm AIHA — and the DAT separates it from HS. Look also for polychromasia/nucleated RBCs from brisk reticulocytosis.</div><div class="rtt">⚠️ WRONG: warm AIHA shows schistocytes on the smear. Discriminator — warm AIHA shows SPHEROCYTES (membrane nibbled in the spleen); SCHISTOCYTES (fragmented RBCs) indicate a microangiopathic process (TTP/HUS, DIC, mechanical valve), which is Coombs-NEGATIVE — a completely different workup.</div></div><div class="rt"><div class="rtl">4. DAT (Coombs) positive</div><div class="rte">The DIRECT antiglobulin test (DAT/direct Coombs) is the diagnostic anchor: in warm AIHA it is POSITIVE for IgG, with or without C3d. (The indirect Coombs detects free serum antibody.) A positive DAT for IgG with spherocytic hemolysis = warm AIHA. Note: rare DAT-negative AIHA exists (antibody below detection threshold) — diagnosed clinically. The DAT pattern also subtypes AIHA: IgG ± C3 = warm; C3 only = cold agglutinin.</div><div class="rtt">⚠️ WRONG: warm AIHA is Coombs/DAT negative. Discriminator — warm AIHA is DAT POSITIVE (IgG ± C3); a Coombs-NEGATIVE spherocytic hemolytic anemia points to hereditary spherocytosis instead. The DAT is THE test that separates the two look-alikes.</div></div><div class="rt"><div class="rtl">5. Secondary: CLL/SLE/drugs</div><div class="rte">Always hunt for a secondary cause of warm AIHA: lymphoproliferative disease (CLL is classic, also non-Hodgkin lymphoma), autoimmune disease (SLE foremost), drugs, primary immunodeficiency (CVID), and immune-checkpoint inhibitors (an increasingly tested immunotherapy toxicity). New warm AIHA in an older adult mandates evaluation for CLL/lymphoma (peripheral flow cytometry, exam for lymphadenopathy). Treating the underlying disease often controls the hemolysis.</div><div class="rtt">⚠️ WRONG: warm AIHA is always idiopathic, so no malignancy workup is needed. Discriminator — roughly half are SECONDARY; new warm AIHA (especially in an older patient) requires a workup for CLL/lymphoma and SLE — missing an underlying lymphoproliferative disorder is the trap.</div></div><div class="rt"><div class="rtl">6. Treatment: steroids first</div><div class="rte">First-line for warm AIHA = CORTICOSTEROIDS (prednisone ~1 mg/kg/day), which reduce autoantibody production and dampen splenic Fc-receptor phagocytosis; most respond in days to weeks, then taper. Second-line = RITUXIMAB (anti-CD20) and/or SPLENECTOMY (removes the site of destruction). IVIG gives a transient boost in urgent settings. Add folate; transfuse cautiously (least-incompatible units) for life-threatening anemia — never withhold a needed transfusion over cross-match difficulty.</div><div class="rtt">⚠️ WRONG: first-line warm AIHA management is keep-warm measures/avoiding cold. Discriminator — keep-warm is the treatment for COLD agglutinin disease; warm AIHA (IgG, 37°C) responds to STEROIDS first, then rituximab/splenectomy. Steroids are notably INEFFECTIVE in cold agglutinin disease — swapping them is the classic mistake.</div></div><div class="rt"><div class="rtl">7. Cold agglutinin 4-30C</div><div class="rte">Cold agglutinin disease (CAD): the autoantibody is IgM, maximally active in the cold (thermal amplitude ~0–4°C, agglutinating up to ~30°C in peripheral/acral cool tissues). Clinically — acrocyanosis/Raynaud-like changes of ears, nose, fingers in the cold, plus chronic hemolysis. The high cold titer agglutinates cells in the lab (clumping on the smear, spuriously high MCV) and on cooling of the patient's extremities.</div><div class="rtt">⚠️ WRONG: cold agglutinin disease is mediated by IgG. Discriminator — CAD = IgM (the large pentamer that agglutinates and fixes complement at cold temperatures); IgG is the WARM antibody. Reversing them flips the entire diagnosis and treatment.</div></div><div class="rt"><div class="rtl">8. IgM + complement</div><div class="rte">IgM is a strong complement activator: in cool peripheral blood IgM binds RBCs and fixes C1 → C3b deposition; as cells return to the warm core the IgM falls off but C3b remains, so cells are cleared by hepatic Kupffer cells (C3b receptors) — and brisk complement activation can drive some INTRAVASCULAR hemolysis (hemoglobinuria). The DAT is positive for C3d ONLY (the IgM has eluted), distinguishing CAD from warm AIHA.</div><div class="rtt">⚠️ WRONG: in cold agglutinin disease the DAT is IgG-positive. Discriminator — CAD DAT is C3d-positive, IgG-NEGATIVE (the IgM dissociates at 37°C, leaving only complement on the cell); an IgG-positive DAT points to warm AIHA instead.</div></div><div class="rt"><div class="rtl">9. Mycoplasma / EBV</div><div class="rte">Cold agglutinin causes: acute/secondary forms follow infection — Mycoplasma pneumoniae (anti-I specificity) and EBV/infectious mononucleosis (anti-i specificity); these are usually self-limited. Chronic/primary CAD is a clonal B-cell (lymphoproliferative) disorder, classically Waldenström macroglobulinemia/IgM monoclonal gammopathy producing a monoclonal cold agglutinin. Mnemonic: 'Mycoplasma = anti-I (capital I, adult cells), infectious Mono/EBV = anti-i (little i, fetal/cord cells).'</div><div class="rtt">⚠️ WRONG: post-Mycoplasma cold agglutinin hemolysis needs lifelong rituximab. Discriminator — INFECTION-associated cold agglutinins (Mycoplasma, EBV) are typically transient/self-limited needing only supportive keep-warm care; chronic/clonal (Waldenström) CAD is what may warrant rituximab-based therapy.</div></div><div class="rt"><div class="rtl">10. Keep warm + rituximab</div><div class="rte">Cold agglutinin disease management: AVOID COLD (keep the patient and infused fluids/blood warm) is foundational. For significant chronic hemolysis, RITUXIMAB-based therapy (± bendamustine) targets the clonal B cells; sutimlimab (anti-C1s complement inhibitor) is a newer option; plasmapheresis is a temporizing measure (IgM is mostly intravascular) for severe acute hemolysis or pre-op. Treat any underlying lymphoma/infection.</div><div class="rtt">⚠️ WRONG: steroids and splenectomy are effective for cold agglutinin disease just like warm AIHA. Discriminator — steroids and SPLENECTOMY DO NOT work in CAD (hemolysis is complement-mediated and clearance is HEPATIC, not splenic); the mainstays are keep-warm, rituximab, and complement inhibition (sutimlimab).</div></div><div class="rt"><div class="rtl">11. Spleen not the site (cold)</div><div class="rte">In CAD the extravascular clearance occurs in the LIVER (Kupffer cells via C3b receptors), not the spleen — this is precisely why splenectomy fails in cold agglutinin disease. (Contrast warm AIHA: IgG-coated cells cleared in the SPLEEN, so splenectomy helps.) The site of destruction maps directly onto which therapies work.</div><div class="rtt">⚠️ WRONG: splenectomy benefits cold agglutinin disease because that's where the cells are removed. Discriminator — cold agglutinin clearance is HEPATIC (Kupffer cells); the spleen is bypassed, so splenectomy is INEFFECTIVE — a reliably tested contrast with warm (splenic) AIHA.</div></div><div class="rt"><div class="rtl">12. PCH Donath-Landsteiner</div><div class="rte">Paroxysmal cold hemoglobinuria (PCH): a BIPHASIC IgG autoantibody with anti-P specificity (the Donath-Landsteiner antibody) binds RBCs in the COLD periphery and then fixes complement on REWARMING in the core → acute intravascular hemolysis with hemoglobinuria. Classically follows a viral illness in young CHILDREN and is usually self-limited. The Donath-Landsteiner test (cold-incubate then warm) is diagnostic.</div><div class="rtt">⚠️ WRONG: PCH is caused by a cold IgM, like cold agglutinin disease. Discriminator — PCH is a BIPHASIC IgG anti-P (binds cold, lyses on warming) — the only AIHA where IgG fixes complement intravascularly; cold agglutinin disease is IgM. Different antibody, different test (Donath-Landsteiner).</div></div><div class="rt"><div class="rtl">13. Drug-induced immune HA</div><div class="rte">Drug-induced immune hemolytic anemia by mechanism: (1) HAPTEN/drug-adsorption — penicillins, cephalosporins (drug coats RBC, antibody attacks the drug; DAT IgG+); (2) autoantibody induction — methyldopa (and fludarabine) trigger a true warm-type autoantibody indistinguishable from idiopathic warm AIHA; (3) immune-complex/'innocent bystander' — classically cefotetan, ceftriaxone, quinidine (can cause brisk intravascular hemolysis, DAT C3+). Management: STOP the offending drug; most resolve.</div><div class="rtt">⚠️ WRONG: drug-induced immune hemolytic anemia needs lifelong immunosuppression. Discriminator — the cornerstone is STOPPING the culprit drug; hemolysis usually resolves once it's withdrawn (steroids are only for severe cases). Continuing the drug while escalating immunosuppression is the error.</div></div><div class="rt"><div class="rtl">14. Evans syndrome</div><div class="rte">Evans syndrome = warm AIHA combined with immune thrombocytopenia (ITP), ± immune neutropenia — simultaneous or sequential autoimmune cytopenias. It is frequently SECONDARY (SLE, CLL/lymphoma, common variable immunodeficiency, ALPS in children), so a secondary-cause workup is mandatory. It tends to be chronic and relapsing; treatment mirrors warm AIHA (steroids, then rituximab) and ITP.</div><div class="rtt">⚠️ WRONG: anemia plus thrombocytopenia with schistocytes and a Coombs-negative smear is Evans syndrome. Discriminator — Evans is Coombs/DAT POSITIVE autoimmune (AIHA + ITP); a Coombs-NEGATIVE anemia + thrombocytopenia with SCHISTOCYTES is a microangiopathy (TTP/HUS/DIC) — a medical emergency needing plasma exchange, not steroids.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="megalo_workup_pharmacy.html" title="Megaloblastic — Workup &amp; Pharmacy Overview">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hemol_classification.html" title="Hemolytic Anemia — Classification Crossroads">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Plasma Cell — Relapsed/Refractory &amp; Novel Immunotherapy</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>2nd-gen PI carfilzomib</b> — WRONG answer: 'switch to carfilzomib to AVOID cardiac toxicity / monitor for worsening neuropathy.' Reversed: carfilzomib's hazard is CARDIOTOXICITY (get baseline echo, control BP, watch for new dyspnea/HF), while it is bortezomib that causes neuropathy. Discriminator: new dyspnea/edema on carfilzomib = cardiac toxicity workup; new stocking-glove numbness points to a bortezomib/thalidomide problem instead.</li><li><b>3rd-gen IMiD pomalidomide</b> — WRONG answer: 'if a patient is refractory to lenalidomide, all IMiDs are useless.' Pomalidomide works specifically AFTER lenalidomide failure. Discriminator: 'lenalidomide-refractory' on the boards is the cue to choose pomalidomide-based therapy, not to abandon the IMiD class — and don't forget thromboprophylaxis when you start it.</li><li><b>1st oral PI ixazomib</b> — WRONG answer: 'bortezomib is the only orally available proteasome inhibitor.' Bortezomib is given SUBCUTANEOUSLY/IV, not orally — IXAZOMIB is the oral PI. Discriminator: if a question stresses an 'all-oral regimen' for a proteasome inhibitor, the answer is ixazomib (IRd), not bortezomib.</li><li><b>Anti-CD38 daratumumab</b> — WRONG answer: 'an unexpected positive antibody screen / pan-reactive antibody panel before transfusion means a new alloantibody — delay transfusion to identify it.' Anti-CD38 binds CD38 on reagent RBCs causing a FALSE pan-agglutination on the indirect Coombs/antibody screen, and it co-migrates with IgG-kappa on immunofixation (can mimic/mask the M-spike). Discriminator: treat RBCs with DTT (or use a known anti-CD38 history) for type-and-screen; phenotype/genotype the patient BEFORE starting daratumumab.</li><li><b>SLAMF7 elotuzumab</b> — WRONG answer: 'use elotuzumab as monotherapy in a frail relapsed patient who can't tolerate combinations.' Elotuzumab is INACTIVE as a single agent — it requires a partner (an IMiD) to work via NK-cell activation. Discriminator: contrast with daratumumab, which DOES have single-agent activity; if the stem demands monotherapy efficacy among antibodies, elotuzumab is the wrong choice.</li><li><b>NK cells</b> — WRONG answer: 'monoclonal antibodies in myeloma work mainly through T cells.' The classic naked antibodies (dara, isa, elo) act largely via NK-cell ADCC/innate effectors — it is the BISPECIFICS and CAR-T that redirect T cells. Discriminator: T-cell engagement (CRS, ICANS) is the fingerprint of bispecifics/CAR-T, whereas naked-antibody toxicity is infusion reactions, not CRS.</li><li><b>BCMA target</b> — WRONG answer: 'BCMA-directed therapy can only be given once because it permanently eliminates the target.' Sequencing of BCMA agents is an active strategy, though prior BCMA exposure can reduce efficacy of subsequent BCMA therapy (antigen loss/low BCMA). Discriminator: GPRC5D (talquetamab) and CD38 are alternative non-BCMA targets used to overcome BCMA escape.</li><li><b>ADC belantamab</b> — WRONG answer: 'a relapsed myeloma patient on therapy with new blurry vision/keratopathy — this is cataracts or unrelated, continue treatment.' Keratopathy is the hallmark adverse effect of BELANTAMAB and mandates ophthalmology evaluation and dose modification/hold. Discriminator: ocular toxicity points specifically to belantamab (anti-BCMA ADC), not to CAR-T, bispecifics, or proteasome inhibitors.</li><li><b>CAR-T ide-cel/cilta-cel</b> — WRONG answer: 'CAR-T is an off-the-shelf, immediately available option for rapidly progressing disease.' CAR-T is AUTOLOGOUS and requires apheresis plus weeks of manufacturing — there is a real delay, and patients may need bridging therapy. Discriminator: if the question needs an IMMEDIATELY available T-cell therapy, choose a BISPECIFIC (off-the-shelf), not CAR-T.</li><li><b>CRS / neurotoxicity</b> — WRONG answer: 'treat ICANS/neurotoxicity with tocilizumab.' Tocilizumab is for CRS; isolated ICANS is treated primarily with CORTICOSTEROIDS (tocilizumab can worsen CNS by raising CNS IL-6). Discriminator: hypotension/fever/hypoxia after CAR-T or bispecific = CRS → tocilizumab; confusion/aphasia/seizure = ICANS → dexamethasone.</li><li><b>Bispecific antibodies</b> — WRONG answer: 'all bispecifics in myeloma target BCMA, so prior BCMA CAR-T failure rules them all out.' TALQUETAMAB targets GPRC5D (a DIFFERENT antigen), so it remains an option after BCMA-directed failure. Discriminator: talquetamab's unique toxicities — dysgeusia/taste changes, dysphagia, skin rash, and nail changes — flag the GPRC5D target rather than BCMA.</li><li><b>Off-the-shelf advantage</b> — WRONG answer: 'choose CAR-T for the patient who is decompensating and cannot wait.' The manufacturing lag makes CAR-T unsuitable when time is critical — pick the off-the-shelf BISPECIFIC. Discriminator: 'rapidly progressive / cannot wait weeks' = bispecific; 'wants a single, durable one-time treatment and can tolerate the wait + bridging' = CAR-T.</li><li><b>Selinexor (XPO1)</b> — WRONG answer: 'selinexor works by inhibiting the proteasome / is interchangeable with bortezomib.' Its mechanism is XPO1 NUCLEAR EXPORT inhibition, a distinct pathway. Discriminator: significant GI toxicity (nausea, weight loss), thrombocytopenia, and hyponatremia in a heavily-pretreated patient on an oral agent point to selinexor.</li><li><b>Melflufen</b> — WRONG answer: 'melflufen is a novel targeted antibody/immunotherapy.' It is fundamentally an ALKYLATOR (a melphalan delivery system), not an immunotherapy. Discriminator: its toxicity profile and mechanism mirror conventional alkylator/melphalan (cytopenias), unlike the CRS/ICANS of T-cell engagers.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. 2nd-gen PI carfilzomib</div><div class="rte">Carfilzomib is a second-generation, IRREVERSIBLE proteasome inhibitor (binds the 20S chymotrypsin-like site covalently) used in relapsed/refractory disease, classically in KRd (carfilzomib-lenalidomide-dexamethasone) or Kd. Its key advantage over bortezomib is that it spares peripheral nerves (little/no neuropathy), but its signature toxicity is CARDIOVASCULAR — heart failure, hypertension, and pulmonary hypertension — plus infusion reactions. Mnemonic: K = the heavy battleship that shells the heart, not the nerves.</div><div class="rtt">⚠️ WRONG answer: 'switch to carfilzomib to AVOID cardiac toxicity / monitor for worsening neuropathy.' Reversed: carfilzomib's hazard is CARDIOTOXICITY (get baseline echo, control BP, watch for new dyspnea/HF), while it is bortezomib that causes neuropathy. Discriminator: new dyspnea/edema on carfilzomib = cardiac toxicity workup; new stocking-glove numbness points to a bortezomib/thalidomide problem instead.</div></div><div class="rt"><div class="rtl">2. 3rd-gen IMiD pomalidomide</div><div class="rte">Pomalidomide is a third-generation immunomodulatory drug (IMiD) that retains activity even after the disease becomes refractory to lenalidomide, making it a relapse workhorse (e.g., Pd, or pomalidomide + bortezomib/dara + dex). Like all IMiDs it requires VTE thromboprophylaxis and is strictly teratogenic (REMS/pregnancy-prevention). Mnemonic: P = the ship that still sails when lenalidomide has run aground.</div><div class="rtt">⚠️ WRONG answer: 'if a patient is refractory to lenalidomide, all IMiDs are useless.' Pomalidomide works specifically AFTER lenalidomide failure. Discriminator: 'lenalidomide-refractory' on the boards is the cue to choose pomalidomide-based therapy, not to abandon the IMiD class — and don't forget thromboprophylaxis when you start it.</div></div><div class="rt"><div class="rtl">3. 1st oral PI ixazomib</div><div class="rte">Ixazomib is the FIRST ORAL proteasome inhibitor (reversible 20S inhibitor), enabling fully oral relapse regimens such as IRd (ixazomib-lenalidomide-dexamethasone). Its appeal is convenience (no infusion/injection); it has less neuropathy than IV bortezomib, with GI toxicity and thrombocytopenia. Mnemonic: I = the all-oral capsule, the pill you can take at home.</div><div class="rtt">⚠️ WRONG answer: 'bortezomib is the only orally available proteasome inhibitor.' Bortezomib is given SUBCUTANEOUSLY/IV, not orally — IXAZOMIB is the oral PI. Discriminator: if a question stresses an 'all-oral regimen' for a proteasome inhibitor, the answer is ixazomib (IRd), not bortezomib.</div></div><div class="rt"><div class="rtl">4. Anti-CD38 daratumumab</div><div class="rte">Daratumumab is an anti-CD38 monoclonal antibody (CD38 is highly expressed on plasma cells) that kills via ADCC, ADCP, CDC, and direct apoptosis; isatuximab is a related anti-CD38 antibody. It is a backbone of many relapse combinations (DRd, DVd, DPd) and increasingly frontline. Premedicate to reduce infusion reactions. Mnemonic: CD38 helicopters bombard the plasma-cell castle.</div><div class="rtt">⚠️ WRONG answer: 'an unexpected positive antibody screen / pan-reactive antibody panel before transfusion means a new alloantibody — delay transfusion to identify it.' Anti-CD38 binds CD38 on reagent RBCs causing a FALSE pan-agglutination on the indirect Coombs/antibody screen, and it co-migrates with IgG-kappa on immunofixation (can mimic/mask the M-spike). Discriminator: treat RBCs with DTT (or use a known anti-CD38 history) for type-and-screen; phenotype/genotype the patient BEFORE starting daratumumab.</div></div><div class="rt"><div class="rtl">5. SLAMF7 elotuzumab</div><div class="rte">Elotuzumab is a monoclonal antibody against SLAMF7 (CS1), expressed on myeloma cells AND on NK cells — so it both tags tumor cells and directly activates NK-mediated ADCC. It has essentially NO single-agent activity and must be combined, typically with lenalidomide-dexamethasone (Elo-Rd) or pomalidomide-dex. Mnemonic: SLAMF7 helicopter only flies in formation (with an IMiD).</div><div class="rtt">⚠️ WRONG answer: 'use elotuzumab as monotherapy in a frail relapsed patient who can't tolerate combinations.' Elotuzumab is INACTIVE as a single agent — it requires a partner (an IMiD) to work via NK-cell activation. Discriminator: contrast with daratumumab, which DOES have single-agent activity; if the stem demands monotherapy efficacy among antibodies, elotuzumab is the wrong choice.</div></div><div class="rt"><div class="rtl">6. NK cells</div><div class="rte">Natural killer (NK) cells are the effector arm for much antibody therapy in myeloma: anti-CD38 (daratumumab/isatuximab) and anti-SLAMF7 (elotuzumab) recruit NK cells to perform antibody-dependent cellular cytotoxicity (ADCC). Elotuzumab additionally engages SLAMF7 ON the NK cell to boost its activity directly. Mnemonic: NK-cell soldiers are the ground troops the antibodies call in.</div><div class="rtt">⚠️ WRONG answer: 'monoclonal antibodies in myeloma work mainly through T cells.' The classic naked antibodies (dara, isa, elo) act largely via NK-cell ADCC/innate effectors — it is the BISPECIFICS and CAR-T that redirect T cells. Discriminator: T-cell engagement (CRS, ICANS) is the fingerprint of bispecifics/CAR-T, whereas naked-antibody toxicity is infusion reactions, not CRS.</div></div><div class="rt"><div class="rtl">7. BCMA target</div><div class="rte">BCMA (B-cell maturation antigen, TNFRSF17) is the dominant plasma-cell-restricted target in heavily pretreated myeloma and is hit by THREE modalities: CAR-T (ide-cel, cilta-cel), bispecific T-cell engagers (teclistamab, elranatamab), and the ADC belantamab mafodotin. Its near-exclusive expression on plasma cells gives a wide therapeutic window. Mnemonic: BCMA flags mark every plasma-cell target the commandos aim at.</div><div class="rtt">⚠️ WRONG answer: 'BCMA-directed therapy can only be given once because it permanently eliminates the target.' Sequencing of BCMA agents is an active strategy, though prior BCMA exposure can reduce efficacy of subsequent BCMA therapy (antigen loss/low BCMA). Discriminator: GPRC5D (talquetamab) and CD38 are alternative non-BCMA targets used to overcome BCMA escape.</div></div><div class="rt"><div class="rtl">8. ADC belantamab</div><div class="rte">Belantamab mafodotin is an anti-BCMA antibody-drug conjugate carrying the microtubule toxin MMAF (monomethyl auristatin F). Its signature, dose-limiting toxicity is OCULAR — keratopathy ('microcyst-like epithelial changes'), blurred vision, and dry eye — requiring baseline and serial slit-lamp eye exams (REMS) and dose holds. Mnemonic: the ADC mortar fires the payload but the warning sign says EYE EXAM.</div><div class="rtt">⚠️ WRONG answer: 'a relapsed myeloma patient on therapy with new blurry vision/keratopathy — this is cataracts or unrelated, continue treatment.' Keratopathy is the hallmark adverse effect of BELANTAMAB and mandates ophthalmology evaluation and dose modification/hold. Discriminator: ocular toxicity points specifically to belantamab (anti-BCMA ADC), not to CAR-T, bispecifics, or proteasome inhibitors.</div></div><div class="rt"><div class="rtl">9. CAR-T ide-cel/cilta-cel</div><div class="rte">Anti-BCMA CAR-T cells — idecabtagene vicleucel (ide-cel) and ciltacabtagene autoleucel (cilta-cel) — are autologous T cells engineered to express a BCMA-targeting chimeric antigen receptor; cilta-cel shows the deepest, most durable responses in triple-class-refractory disease. Requires lymphodepleting chemotherapy before infusion. Mnemonic: the CAR-T paratroopers are elite commandos dropped in for the toughest battles.</div><div class="rtt">⚠️ WRONG answer: 'CAR-T is an off-the-shelf, immediately available option for rapidly progressing disease.' CAR-T is AUTOLOGOUS and requires apheresis plus weeks of manufacturing — there is a real delay, and patients may need bridging therapy. Discriminator: if the question needs an IMMEDIATELY available T-cell therapy, choose a BISPECIFIC (off-the-shelf), not CAR-T.</div></div><div class="rt"><div class="rtl">10. CRS / neurotoxicity</div><div class="rte">T-cell-redirecting therapies (CAR-T and bispecifics) cause CYTOKINE RELEASE SYNDROME (fever, hypotension, hypoxia; IL-6 driven — treat with tocilizumab ± steroids) and NEUROTOXICITY/ICANS (confusion, aphasia, seizures — treated with steroids, not tocilizumab if isolated CNS). They also cause prolonged cytopenias and hypogammaglobulinemia/infection risk. Mnemonic: the CRS warning sign hangs over the T-cell drop zone.</div><div class="rtt">⚠️ WRONG answer: 'treat ICANS/neurotoxicity with tocilizumab.' Tocilizumab is for CRS; isolated ICANS is treated primarily with CORTICOSTEROIDS (tocilizumab can worsen CNS by raising CNS IL-6). Discriminator: hypotension/fever/hypoxia after CAR-T or bispecific = CRS → tocilizumab; confusion/aphasia/seizure = ICANS → dexamethasone.</div></div><div class="rt"><div class="rtl">11. Bispecific antibodies</div><div class="rte">Bispecific T-cell engagers physically bridge a CD3+ T cell to a myeloma antigen: teclistamab and elranatamab target BCMA, while talquetamab targets GPRC5D. They are OFF-THE-SHELF (no patient-specific manufacturing) and given with step-up dosing to limit CRS. Like CAR-T they cause CRS, ICANS, cytopenias, and infections (hypogammaglobulinemia). Mnemonic: a two-armed antibody grabs a T cell with one hand and the plasma cell with the other.</div><div class="rtt">⚠️ WRONG answer: 'all bispecifics in myeloma target BCMA, so prior BCMA CAR-T failure rules them all out.' TALQUETAMAB targets GPRC5D (a DIFFERENT antigen), so it remains an option after BCMA-directed failure. Discriminator: talquetamab's unique toxicities — dysgeusia/taste changes, dysphagia, skin rash, and nail changes — flag the GPRC5D target rather than BCMA.</div></div><div class="rt"><div class="rtl">12. Off-the-shelf advantage</div><div class="rte">The key practical contrast: BISPECIFICS are ready immediately ('off-the-shelf,' no engineering wait), whereas CAR-T requires apheresis and weeks of manufacturing. For a patient with rapidly progressing disease who cannot wait for CAR-T production, a bispecific is the more feasible choice; CAR-T trades that delay for potentially deeper, one-time durable responses. Mnemonic: the banner reads 'OFF-THE-SHELF — NO ENGINEERING WAIT.'</div><div class="rtt">⚠️ WRONG answer: 'choose CAR-T for the patient who is decompensating and cannot wait.' The manufacturing lag makes CAR-T unsuitable when time is critical — pick the off-the-shelf BISPECIFIC. Discriminator: 'rapidly progressive / cannot wait weeks' = bispecific; 'wants a single, durable one-time treatment and can tolerate the wait + bridging' = CAR-T.</div></div><div class="rt"><div class="rtl">13. Selinexor (XPO1)</div><div class="rte">Selinexor is an oral SINE (Selective Inhibitor of Nuclear Export) that blocks XPO1/exportin-1, trapping tumor-suppressor proteins (p53, etc.) and reducing oncoprotein translation inside the nucleus — used in penta-refractory disease (e.g., XVd: selinexor-bortezomib-dex). Prominent toxicities: nausea/anorexia/weight loss, thrombocytopenia, hyponatremia, fatigue. Mnemonic: Weapon 1 in the novel-agents tent jams the nuclear EXPORT door.</div><div class="rtt">⚠️ WRONG answer: 'selinexor works by inhibiting the proteasome / is interchangeable with bortezomib.' Its mechanism is XPO1 NUCLEAR EXPORT inhibition, a distinct pathway. Discriminator: significant GI toxicity (nausea, weight loss), thrombocytopenia, and hyponatremia in a heavily-pretreated patient on an oral agent point to selinexor.</div></div><div class="rt"><div class="rtl">14. Melflufen</div><div class="rte">Melflufen (melphalan flufenamide) is a peptide-conjugated alkylating prodrug: lipophilic uptake into plasma cells, where aminopeptidases (enriched in myeloma cells) cleave it to release MELPHALAN intracellularly, concentrating DNA-alkylating damage in the tumor. Reserved for relapsed/refractory disease; myelosuppression is the main toxicity. Mnemonic: the melflufen 'smart bomb' delivers melphalan inside the cell.</div><div class="rtt">⚠️ WRONG answer: 'melflufen is a novel targeted antibody/immunotherapy.' It is fundamentally an ALKYLATOR (a melphalan delivery system), not an immunotherapy. Discriminator: its toxicity profile and mechanism mirror conventional alkylator/melphalan (cytopenias), unlike the CRS/ICANS of T-cell engagers.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcd_poems.html" title="Plasma Cell — POEMS Syndrome">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcd_antibody_factory.html" title="Plasma Cell — The Antibody Factory (Immunoglobulin Structure)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

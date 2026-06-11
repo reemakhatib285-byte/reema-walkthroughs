@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Eosinophilic Pneumonia — Drug-Induced</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>17</em></summary><ol class="traps"><li><b>NSAIDs = #1 cause</b> — WRONG answer: blaming the lung disease on infection and adding antibiotics while continuing the NSAID. The discriminator is the temporal link to a culprit drug — recognizing NSAID exposure and stopping it is what reverses the disease.</li><li><b>Recent new drug</b> — WRONG answer: anchoring on idiopathic AEP/CEP without taking a drug history. The presence of a recent new drug is exactly what defines the drug-induced category — failing to ask about medications misses a reversible, withdrawal-treated cause.</li><li><b>Nitrofurantoin step 1</b> — WRONG answer: continuing nitrofurantoin and adding a second antibiotic for presumed pneumonia. Nitrofurantoin pulmonary toxicity worsens if the drug is continued — the first and most important step is to STOP the drug, not escalate antibiotics.</li><li><b>Stop the drug first</b> — WRONG answer: jumping straight to corticosteroids while leaving the drug on board. Steroids without withdrawing the culprit treat the symptom while the cause persists — discontinue the drug FIRST; reserve steroids for severe cases.</li><li><b>Steroids only if severe</b> — WRONG answer: giving every patient steroids regardless of severity. Mild drug-induced eosinophilic pneumonia resolves with drug withdrawal alone — steroids are reserved for severe/refractory disease, after the drug is stopped.</li><li><b>Don't continue + steroid</b> — WRONG answer (explicitly): 'continue the drug and add a corticosteroid.' This is the trap distractor — never keep the offending drug on board. Remove the drug first; steroids only if severe.</li><li><b>MTX — not primary eos</b> — WRONG answer: choosing methotrexate as the prototypical eosinophilic-pneumonia drug. MTX lung disease is an ILD/hypersensitivity pneumonitis pattern, not primarily eosinophilic — NSAIDs, nitrofurantoin, and sulfonamides are the higher-yield eosinophilic culprits.</li><li><b>Amiodarone — not first</b> — WRONG answer: picking amiodarone for drug-induced EOSINOPHILIC pneumonia. Amiodarone lung toxicity shows foamy macrophages, not eosinophils — it is the wrong answer for an eosinophilic-pattern question.</li><li><b>Allopurinol — less common</b> — WRONG answer: ranking allopurinol above NSAIDs/nitrofurantoin as the leading drug cause. It is real but less common — and when allopurinol causes eosinophilia with rash/fever/organ injury, think DRESS rather than isolated eosinophilic pneumonia.</li><li><b>BAL eos elevated</b> — WRONG answer: requiring a lung biopsy to confirm. BAL eosinophilia plus the drug-exposure history and resolution after stopping the drug usually establish the diagnosis — biopsy is rarely needed.</li><li><b>Stop drug + remove machine</b> — WRONG answer: rechallenging with the drug 'to confirm' once the patient improves. Deliberate rechallenge risks a more severe reaction; avoidance is the durable management, and the agent should be flagged to prevent future exposure.</li><li><b>Add steroids if severe</b> — WRONG answer: starting high-dose steroids before/instead of stopping the drug. The order is fixed — withdraw the drug first; steroids are added only for severe respiratory compromise.</li><li><b>Acute HP mimic</b> — WRONG answer: calling drug-induced eosinophilic pneumonia 'HP.' HP BAL is lymphocytic; drug-induced eosinophilic pneumonia has BAL eosinophilia — the lavage cell type is the discriminator.</li><li><b>AEP mimic</b> — WRONG answer: labeling a clearly drug-triggered case as idiopathic AEP. The presence of a temporally related offending drug moves it out of the idiopathic AEP category — management adds drug withdrawal, not just steroids.</li><li><b>Hypereosinophilic syndrome</b> — WRONG answer: diagnosing HES off a single episode of drug-related pulmonary eosinophilia. HES requires persistent eosinophilia &gt;1500 with multiorgan involvement — a transient, drug-linked, lung-limited process that resolves on withdrawal is drug-induced eosinophilic pneumonia, not HES.</li><li><b>Larva migrans</b> — WRONG answer: giving corticosteroids for presumed drug-induced disease without excluding Strongyloides in an at-risk patient. Steroids can trigger fatal Strongyloides hyperinfection/disseminated strongyloidiasis — screen and, if indicated, treat with ivermectin first.</li><li><b>Drug = #1 of all eos infiltrates</b> — WRONG answer: defaulting to an idiopathic or parasitic cause without reviewing medications. In the US the most common identifiable cause is drugs — the medication history is the highest-yield first step and points to a reversible diagnosis.</li></ol></details><details class="panel"><summary>📖 Read-through — all 17 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. NSAIDs = #1 cause</div><div class="rte">NSAIDs (ibuprofen is the prototype) are the single most common drug cause of drug-induced eosinophilic pneumonia in the US. The mechanism is a hypersensitivity reaction with eosinophil recruitment to the alveoli days to weeks after starting (or re-exposure to) the drug. Presentation overlaps with AEP/CEP — cough, dyspnea, fever, pulmonary infiltrates, often with peripheral and BAL eosinophilia.</div><div class="rtt">⚠️ WRONG answer: blaming the lung disease on infection and adding antibiotics while continuing the NSAID. The discriminator is the temporal link to a culprit drug — recognizing NSAID exposure and stopping it is what reverses the disease.</div></div><div class="rt"><div class="rtl">2. Recent new drug</div><div class="rte">The key history is a newly started medication temporally linked to the onset of respiratory symptoms (typically within days to a few weeks). A careful medication reconciliation — including OTC drugs, antibiotics, and supplements — is essential; the diagnosis is largely clinical and rests on this temporal association plus eosinophilia and resolution after withdrawal.</div><div class="rtt">⚠️ WRONG answer: anchoring on idiopathic AEP/CEP without taking a drug history. The presence of a recent new drug is exactly what defines the drug-induced category — failing to ask about medications misses a reversible, withdrawal-treated cause.</div></div><div class="rt"><div class="rtl">3. Nitrofurantoin step 1</div><div class="rte">Nitrofurantoin (classic, often after recurrent-UTI prophylaxis) and sulfonamides are textbook antibiotic causes of pulmonary eosinophilia; nitrofurantoin can cause both acute eosinophilic and chronic fibrotic lung reactions. Step 1 of management for any drug-induced eosinophilic pneumonia is stopping the offending drug.</div><div class="rtt">⚠️ WRONG answer: continuing nitrofurantoin and adding a second antibiotic for presumed pneumonia. Nitrofurantoin pulmonary toxicity worsens if the drug is continued — the first and most important step is to STOP the drug, not escalate antibiotics.</div></div><div class="rt"><div class="rtl">4. Stop the drug first</div><div class="rte">The first and most important therapeutic step is to STOP the offending drug. In mild cases, drug withdrawal alone leads to resolution within days to weeks. Removing the culprit is both diagnostic (confirms the link by resolution) and therapeutic, and it prevents recurrence on re-exposure.</div><div class="rtt">⚠️ WRONG answer: jumping straight to corticosteroids while leaving the drug on board. Steroids without withdrawing the culprit treat the symptom while the cause persists — discontinue the drug FIRST; reserve steroids for severe cases.</div></div><div class="rt"><div class="rtl">5. Steroids only if severe</div><div class="rte">Corticosteroids are added only when the respiratory illness is severe (hypoxemia, respiratory failure, or no improvement after withdrawal). The sequence is fixed: (1) stop the drug, (2) add steroids (e.g., prednisone ~0.5 mg/kg/day) if severe. Mild cases need only drug withdrawal.</div><div class="rtt">⚠️ WRONG answer: giving every patient steroids regardless of severity. Mild drug-induced eosinophilic pneumonia resolves with drug withdrawal alone — steroids are reserved for severe/refractory disease, after the drug is stopped.</div></div><div class="rt"><div class="rtl">6. Don't continue + steroid</div><div class="rte">Continuing the offending drug while adding steroids is the classic WRONG management. The culprit must be removed; masking ongoing exposure with steroids risks progression and recurrence. Drug removal is the mainstay; steroids are adjunctive and severity-dependent.</div><div class="rtt">⚠️ WRONG answer (explicitly): 'continue the drug and add a corticosteroid.' This is the trap distractor — never keep the offending drug on board. Remove the drug first; steroids only if severe.</div></div><div class="rt"><div class="rtl">7. MTX — not primary eos</div><div class="rte">Methotrexate causes a well-known pneumonitis/ILD (hypersensitivity-type, sometimes with peripheral eosinophilia) but it is not classically a primarily eosinophilic pneumonia — so it ranks lower as the 'eosinophilic' answer. MTX pneumonitis is managed by stopping MTX and giving steroids.</div><div class="rtt">⚠️ WRONG answer: choosing methotrexate as the prototypical eosinophilic-pneumonia drug. MTX lung disease is an ILD/hypersensitivity pneumonitis pattern, not primarily eosinophilic — NSAIDs, nitrofurantoin, and sulfonamides are the higher-yield eosinophilic culprits.</div></div><div class="rt"><div class="rtl">8. Amiodarone — not first</div><div class="rte">Amiodarone causes chronic pulmonary toxicity (interstitial pneumonitis/fibrosis, organizing pneumonia) characterized by lipid-laden foamy macrophages on BAL — NOT an eosinophilic pattern. It is dose/duration-related; manage by stopping the drug (long half-life) plus steroids for significant disease.</div><div class="rtt">⚠️ WRONG answer: picking amiodarone for drug-induced EOSINOPHILIC pneumonia. Amiodarone lung toxicity shows foamy macrophages, not eosinophils — it is the wrong answer for an eosinophilic-pattern question.</div></div><div class="rt"><div class="rtl">9. Allopurinol — less common</div><div class="rte">Allopurinol is a recognized but less-common cause of drug-induced eosinophilic pneumonia and can be part of DRESS (drug reaction with eosinophilia and systemic symptoms), which itself features marked eosinophilia, rash, fever, and organ involvement. Stop the drug; treat severe/systemic reactions with steroids.</div><div class="rtt">⚠️ WRONG answer: ranking allopurinol above NSAIDs/nitrofurantoin as the leading drug cause. It is real but less common — and when allopurinol causes eosinophilia with rash/fever/organ injury, think DRESS rather than isolated eosinophilic pneumonia.</div></div><div class="rt"><div class="rtl">10. BAL eos elevated</div><div class="rte">Diagnosis is supported by elevated BAL eosinophils (&gt;25%) and/or peripheral eosinophilia after the drug exposure, with infiltrates on imaging. BAL also excludes infection. The clincher remains the temporal link to the drug and resolution on withdrawal.</div><div class="rtt">⚠️ WRONG answer: requiring a lung biopsy to confirm. BAL eosinophilia plus the drug-exposure history and resolution after stopping the drug usually establish the diagnosis — biopsy is rarely needed.</div></div><div class="rt"><div class="rtl">11. Stop drug + remove machine</div><div class="rte">Drug/antigen avoidance — removing and then permanently avoiding the culprit — is the mainstay of management and prevents recurrence. Document the offending agent as an allergy/adverse reaction so it is not re-prescribed, since re-exposure can trigger a more severe relapse.</div><div class="rtt">⚠️ WRONG answer: rechallenging with the drug 'to confirm' once the patient improves. Deliberate rechallenge risks a more severe reaction; avoidance is the durable management, and the agent should be flagged to prevent future exposure.</div></div><div class="rt"><div class="rtl">12. Add steroids if severe</div><div class="rte">Reserve systemic corticosteroids (prednisone ~0.5 mg/kg/day, tapered over weeks) for respiratory-severe cases — significant hypoxemia, respiratory failure, or failure to improve after drug withdrawal. Mild cases recover on withdrawal alone, so steroids are severity-driven, not automatic.</div><div class="rtt">⚠️ WRONG answer: starting high-dose steroids before/instead of stopping the drug. The order is fixed — withdraw the drug first; steroids are added only for severe respiratory compromise.</div></div><div class="rt"><div class="rtl">13. Acute HP mimic</div><div class="rte">Differential: acute hypersensitivity pneumonitis (HP) follows an inhaled antigen and shows BAL LYMPHOCYTOSIS (CD8-predominant), not eosinophilia. Both are exposure-related hypersensitivity reactions, so the BAL cell differential separates them.</div><div class="rtt">⚠️ WRONG answer: calling drug-induced eosinophilic pneumonia 'HP.' HP BAL is lymphocytic; drug-induced eosinophilic pneumonia has BAL eosinophilia — the lavage cell type is the discriminator.</div></div><div class="rt"><div class="rtl">14. AEP mimic</div><div class="rte">Differential: idiopathic acute eosinophilic pneumonia (AEP) looks identical (acute febrile illness, BAL eosinophilia, steroid-responsive) but by definition lacks a drug trigger and is linked instead to new smoking/vaping or dust. Here there IS a culprit drug, which categorizes it as drug-induced.</div><div class="rtt">⚠️ WRONG answer: labeling a clearly drug-triggered case as idiopathic AEP. The presence of a temporally related offending drug moves it out of the idiopathic AEP category — management adds drug withdrawal, not just steroids.</div></div><div class="rt"><div class="rtl">15. Hypereosinophilic syndrome</div><div class="rte">Differential: hypereosinophilic syndrome (HES) — persistent peripheral eosinophilia &gt;1500 cells/µL for ≥6 months with multiorgan damage (heart/endomyocardial fibrosis, skin, GI, neuro). Unlike a single-organ drug reaction, HES is systemic and persistent; treat with steroids and, if FIP1L1-PDGFRA-positive, imatinib.</div><div class="rtt">⚠️ WRONG answer: diagnosing HES off a single episode of drug-related pulmonary eosinophilia. HES requires persistent eosinophilia &gt;1500 with multiorgan involvement — a transient, drug-linked, lung-limited process that resolves on withdrawal is drug-induced eosinophilic pneumonia, not HES.</div></div><div class="rt"><div class="rtl">16. Larva migrans</div><div class="rte">Differential: parasitic eosinophilic lung disease (Loffler syndrome / larva migrans) from transpulmonary migration of helminths — Ascaris, Strongyloides, hookworm — causing transient migratory infiltrates with eosinophilia. Ask about travel, soil/exposure, and check stool O&amp;P and Strongyloides serology, especially before giving steroids (which can precipitate Strongyloides hyperinfection).</div><div class="rtt">⚠️ WRONG answer: giving corticosteroids for presumed drug-induced disease without excluding Strongyloides in an at-risk patient. Steroids can trigger fatal Strongyloides hyperinfection/disseminated strongyloidiasis — screen and, if indicated, treat with ivermectin first.</div></div><div class="rt"><div class="rtl">17. Drug = #1 of all eos infiltrates</div><div class="rte">Board pearl: drug-induced disease is the leading identifiable cause of pulmonary eosinophilic infiltrates in the US. The practical takeaway in any eosinophilic-pneumonia vignette is to scrutinize the medication list first — drugs are common and the cause is reversible by withdrawal.</div><div class="rtt">⚠️ WRONG answer: defaulting to an idiopathic or parasitic cause without reviewing medications. In the US the most common identifiable cause is drugs — the medication history is the highest-yield first step and points to a reversible diagnosis.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="eos_chronic.html" title="Eosinophilic Pneumonia — Chronic (CEP)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hp_overview.html" title="Hypersensitivity Pneumonitis — Exposures, Imaging, Dx &amp; Treatment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

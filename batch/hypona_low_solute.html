@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyponatremia — Low Solute (Beer Potomania &amp; Tea-and-Toast)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Off the tree, not AVP</b> — Stem: thin alcoholic or frail elder with Na 120, urine osm 70; a choice says 'SIADH, start fluid restriction and a vaptan.' WRONG — in SIADH ADH is inappropriately HIGH with concentrated urine (Uosm &gt;100, usually &gt;300); here ADH is OFF and urine is maximally DILUTE. The fix is solute/protein, not a vaptan; vaptans (which block ADH) do nothing when ADH is already suppressed.</li><li><b>Kidney cannot excrete water</b> — A choice frames the kidney as 'failing to make dilute urine.' WRONG — the kidney IS making maximally dilute urine; it simply runs out of solute to obligate further water loss. The limiting step is solute delivery, not urinary concentrating/diluting ability — so the answer is feeding/solute, and the danger after feeding is too-rapid autocorrection.</li><li><b>AVP off appropriately</b> — Treating it 'like SIADH' by giving hypertonic saline or a vaptan to 'turn off ADH.' WRONG on mechanism — ADH is ALREADY off, so a vaptan adds nothing and hypertonic saline plus the impending solute-driven water diuresis is a recipe for overcorrection/ODS. Correct answer is cautious solute repletion with frequent Na checks.</li><li><b>Beer potomania</b> — Beer-potomania patient given aggressive 3% saline or strict fluid restriction alone as the primary fix. WRONG — restriction misses that the real deficit is SOLUTE, and once you feed the patient the kidney's now-available solute triggers a brisk water diuresis that, on top of saline, overcorrects Na → ODS. The point of beer potomania on boards is the OVERCORRECTION risk during refeeding.</li><li><b>Tea and toast</b> — Frail elder with Na 122 on a tea-and-toast diet labeled 'chronic SIADH.' WRONG — the discriminator is URINE OSM: low (dilute) here vs inappropriately high in SIADH. Also rule out a contributing thiazide. Management is improved nutrition/solute, not a vaptan, and watch for autocorrection once she eats.</li><li><b>Low Uosm 100-200</b> — Seeing Uosm 150 and still picking 'SIADH.' WRONG — SIADH cannot make maximally dilute urine; a low Uosm essentially excludes it and points to low solute or primary polydipsia. (Subtlety: primary polydipsia from psychiatric water-loading also gives low Uosm — distinguish by intake history; both share the suppressed-ADH/low-Uosm pattern.)</li><li><b>Low Una 10-20</b> — Interpreting low urine Na as proof of hypovolemia and pouring in saline. Be careful — in low-solute states low urine Na reflects low solute INTAKE, and the patient is euvolemic; large saline loads can hasten overcorrection once solute is restored. Combine urine Na with urine osm and volume exam rather than reading urine Na alone.</li><li><b>No solute, no free water out</b> — A choice claims 'the kidney is retaining water because of high ADH.' WRONG — ADH is OFF and the urine is dilute; water is retained purely because there isn't enough solute to obligate its excretion. The treatment lever is therefore solute (food/protein/salt), and the hazard is the rapid diuresis when solute returns.</li><li><b>Rapid autocorrection / ODS risk</b> — After refeeding, urine pours out and Na jumps 12 mEq in 8 hours; a choice says 'continue, this is recovery.' WRONG — that's overcorrection heading toward ODS. Proactively cap with DDAVP (clamp the water diuresis) and give D5W to re-lower; in high-risk low-solute patients the safe ceiling is 4–6 mEq/24h, not the usual 8.</li><li><b>Cautious solute repletion</b> — Withholding all treatment for fear of overcorrection, or conversely refeeding aggressively. WRONG either way — the patient DOES need solute/nutrition, but unguarded refeeding overshoots. The correct posture is cautious repletion WITH a plan (frequent Na, DDAVP ± D5W) to keep the rise capped.</li><li><b>Watch hourly</b> — Checking Na only q12–24h 'because it's chronic.' WRONG — the rate of RISE is the danger, and in low-solute states it can spike between routine draws; infrequent monitoring lets you blow past the 4–6/24h limit unnoticed. Frequent checks (and acting on a rapid trajectory with D5W/DDAVP) prevent ODS.</li><li><b>DDx trap: looks euvolemic</b> — Diagnosing SIADH in an alcoholic or poor-intake elder simply because they're euvolemic with low Na. WRONG — the dilute urine (low Uosm) and the dietary history point to low solute, and the treatment diverges sharply (feed solute &amp; guard against overcorrection vs restrict fluids for SIADH). Always anchor the euvolemic branch on urine osmolality.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Off the tree, not AVP</div><div class="rte">Low-solute hyponatremia is NOT an ADH/AVP problem — ADH is appropriately SUPPRESSED. The defect is a lack of dietary solute (protein → urea, and salt → Na/K) needed to carry water out of the body. Free-water excretion is limited by minimum urine osmolality (~50–100 mOsm/kg): to excrete water you must excrete solute with it. Daily solute load ÷ minimum Uosm = max water you can clear. With almost no solute intake, that ceiling collapses, and any modest water intake exceeds it → water retained → Na falls.</div><div class="rtt">⚠️ Stem: thin alcoholic or frail elder with Na 120, urine osm 70; a choice says 'SIADH, start fluid restriction and a vaptan.' WRONG — in SIADH ADH is inappropriately HIGH with concentrated urine (Uosm &gt;100, usually &gt;300); here ADH is OFF and urine is maximally DILUTE. The fix is solute/protein, not a vaptan; vaptans (which block ADH) do nothing when ADH is already suppressed.</div></div><div class="rt"><div class="rtl">2. Kidney cannot excrete water</div><div class="rte">Quantitative crux: max free-water clearance = daily solute excretion / minimum urine osmolality. A normal diet generates ~600–900 mOsm/day, so at Uosm 50 you can clear ~12–18 L/day of water. On a beer or tea-and-toast diet solute can fall to ~100–250 mOsm/day, cutting the ceiling to ~2–4 L/day; ordinary fluid intake then overwhelms it and dilutes serum Na. Treatment = restore solute (protein, normal diet, IV/oral salt), NOT just water restriction.</div><div class="rtt">⚠️ A choice frames the kidney as 'failing to make dilute urine.' WRONG — the kidney IS making maximally dilute urine; it simply runs out of solute to obligate further water loss. The limiting step is solute delivery, not urinary concentrating/diluting ability — so the answer is feeding/solute, and the danger after feeding is too-rapid autocorrection.</div></div><div class="rt"><div class="rtl">3. AVP off appropriately</div><div class="rte">ADH is correctly suppressed (low serum osm should suppress it), so the collecting duct stays impermeable to water and urine is maximally dilute (Uosm 50–100). This is the single biggest contrast with SIADH, where ADH is inappropriately present. Because ADH is already off, the moment you restore solute the retained free water pours out rapidly — set up monitoring before you feed.</div><div class="rtt">⚠️ Treating it 'like SIADH' by giving hypertonic saline or a vaptan to 'turn off ADH.' WRONG on mechanism — ADH is ALREADY off, so a vaptan adds nothing and hypertonic saline plus the impending solute-driven water diuresis is a recipe for overcorrection/ODS. Correct answer is cautious solute repletion with frequent Na checks.</div></div><div class="rt"><div class="rtl">4. Beer potomania</div><div class="rte">Beer potomania: heavy beer intake (high water + carbohydrate, almost NO protein or salt) delivers minimal solute to the kidney while loading large volumes of free water. Ethanol can transiently inhibit ADH too, but the dominant problem is the solute-limited water-excretion ceiling. Classic stem: malnourished man, binge beer drinking, Na ~118, Uosm &lt;100, urine Na &lt;20. Fix: stop the beer, feed protein/salt, give isotonic fluid cautiously — Na often self-corrects (and can overshoot).</div><div class="rtt">⚠️ Beer-potomania patient given aggressive 3% saline or strict fluid restriction alone as the primary fix. WRONG — restriction misses that the real deficit is SOLUTE, and once you feed the patient the kidney's now-available solute triggers a brisk water diuresis that, on top of saline, overcorrects Na → ODS. The point of beer potomania on boards is the OVERCORRECTION risk during refeeding.</div></div><div class="rt"><div class="rtl">5. Tea and toast</div><div class="rte">Tea-and-toast = the elderly/poor-intake analog of beer potomania: a diet of mostly carbohydrate and water with little protein or salt → low daily solute → low free-water excretion ceiling → dilutional hyponatremia. Often compounded by thiazides, low GFR of aging, or mild SIADH-like factors. Same pathophysiology and same overcorrection caveat as beer potomania.</div><div class="rtt">⚠️ Frail elder with Na 122 on a tea-and-toast diet labeled 'chronic SIADH.' WRONG — the discriminator is URINE OSM: low (dilute) here vs inappropriately high in SIADH. Also rule out a contributing thiazide. Management is improved nutrition/solute, not a vaptan, and watch for autocorrection once she eats.</div></div><div class="rt"><div class="rtl">6. Low Uosm 100-200</div><div class="rte">Urine osmolality is LOW (maximally dilute, ~50–200 mOsm/kg) — the signature of ADH-suppressed states: low-solute diet and primary polydipsia. It is the mirror image of SIADH (Uosm &gt;100, characteristically &gt;300). A Uosm &lt;100 means the kidney is correctly diluting and the problem is intake/solute, not inappropriate ADH.</div><div class="rtt">⚠️ Seeing Uosm 150 and still picking 'SIADH.' WRONG — SIADH cannot make maximally dilute urine; a low Uosm essentially excludes it and points to low solute or primary polydipsia. (Subtlety: primary polydipsia from psychiatric water-loading also gives low Uosm — distinguish by intake history; both share the suppressed-ADH/low-Uosm pattern.)</div></div><div class="rt"><div class="rtl">7. Low Una 10-20</div><div class="rte">Urine Na is LOW (10–20 mEq/L) because little Na is being ingested or delivered — consistent with low total solute intake. (Note: patients are clinically euvolemic, so the low urine Na here reflects low intake, not the volume-depletion avidity seen in hypovolemic hyponatremia.) Low urine Na + low Uosm + euvolemia + poor-intake history nails the diagnosis.</div><div class="rtt">⚠️ Interpreting low urine Na as proof of hypovolemia and pouring in saline. Be careful — in low-solute states low urine Na reflects low solute INTAKE, and the patient is euvolemic; large saline loads can hasten overcorrection once solute is restored. Combine urine Na with urine osm and volume exam rather than reading urine Na alone.</div></div><div class="rt"><div class="rtl">8. No solute, no free water out</div><div class="rte">The mechanistic one-liner: water excretion is obligately coupled to solute excretion. Even with ADH fully off and urine maximally dilute, the kidney can only excrete water in proportion to the solute it has to excrete (water clearance = solute load / minimum Uosm). No solute in → no free water out → retained water dilutes serum Na.</div><div class="rtt">⚠️ A choice claims 'the kidney is retaining water because of high ADH.' WRONG — ADH is OFF and the urine is dilute; water is retained purely because there isn't enough solute to obligate its excretion. The treatment lever is therefore solute (food/protein/salt), and the hazard is the rapid diuresis when solute returns.</div></div><div class="rt"><div class="rtl">9. Rapid autocorrection / ODS risk</div><div class="rte">This is the WHOLE board point of low-solute hyponatremia. As soon as solute/protein is provided (or isotonic fluid given), the kidney finally has solute to excrete; with ADH already off it produces a massive dilute water diuresis and serum Na can shoot up far faster than intended → osmotic demyelination syndrome (ODS / central pontine myelinolysis). These patients (alcoholic, malnourished, often hypokalemic) are MAXIMALLY high-risk; target only 4–6 mEq/L/24h.</div><div class="rtt">⚠️ After refeeding, urine pours out and Na jumps 12 mEq in 8 hours; a choice says 'continue, this is recovery.' WRONG — that's overcorrection heading toward ODS. Proactively cap with DDAVP (clamp the water diuresis) and give D5W to re-lower; in high-risk low-solute patients the safe ceiling is 4–6 mEq/24h, not the usual 8.</div></div><div class="rt"><div class="rtl">10. Cautious solute repletion</div><div class="rte">Treatment = correct the deficit (protein/salt/normal diet, repletion of K and other electrolytes) but do it SLOWLY and pre-emptively control the diuresis. Practical approach: limit free water, anticipate autocorrection, check Na frequently, and keep D5W + DDAVP ready. A common proactive strategy is the 'DDAVP clamp' to hold Na rise within 4–6 mEq/24h while you replete nutrition.</div><div class="rtt">⚠️ Withholding all treatment for fear of overcorrection, or conversely refeeding aggressively. WRONG either way — the patient DOES need solute/nutrition, but unguarded refeeding overshoots. The correct posture is cautious repletion WITH a plan (frequent Na, DDAVP ± D5W) to keep the rise capped.</div></div><div class="rt"><div class="rtl">11. Watch hourly</div><div class="rte">Monitor serum Na very frequently (q1–4h during active correction) because the solute-driven water diuresis can be abrupt and unpredictable. Track urine output and urine osm too — a sudden drop in Uosm with rising output heralds a brisk diuresis and impending overcorrection.</div><div class="rtt">⚠️ Checking Na only q12–24h 'because it's chronic.' WRONG — the rate of RISE is the danger, and in low-solute states it can spike between routine draws; infrequent monitoring lets you blow past the 4–6/24h limit unnoticed. Frequent checks (and acting on a rapid trajectory with D5W/DDAVP) prevent ODS.</div></div><div class="rt"><div class="rtl">12. DDx trap: looks euvolemic</div><div class="rte">Low-solute states are clinically EUVOLEMIC, so they fall in the same branch as SIADH and are easily confused. The decisive discriminator is URINE OSMOLALITY: LOW (&lt;100) in low-solute/primary polydipsia vs inappropriately HIGH (&gt;100, usually &gt;300) in SIADH. Also check the diet/alcohol history and that ADH-driven causes (cortisol/thyroid) are excluded.</div><div class="rtt">⚠️ Diagnosing SIADH in an alcoholic or poor-intake elder simply because they're euvolemic with low Na. WRONG — the dilute urine (low Uosm) and the dietary history point to low solute, and the treatment diverges sharply (feed solute &amp; guard against overcorrection vs restrict fluids for SIADH). Always anchor the euvolemic branch on urine osmolality.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hypona_hypovolemic.html" title="Hyponatremia — Hypovolemic (Renal vs Extrarenal, Urine Na)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hypona_osmolality.html" title="Hyponatremia — Serum Osmolality First (Rule Out Pseudo)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

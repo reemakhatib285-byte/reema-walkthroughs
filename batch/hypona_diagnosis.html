@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyponatremia — Diagnostic Algorithm (Osm → Mimics → UOsm → UNa → Volume)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Work the algorithm</b> — WRONG: labeling a euvolemic hyponatremic patient "SIADH" on first glance. SIADH cannot be diagnosed until hypothyroidism, adrenal/glucocorticoid insufficiency, thiazides, and low-solute states are excluded. The discriminator: SIADH requires normal thyroid/adrenal function and no recent thiazide.</li><li><b>Order of steps</b> — WRONG: starting with volume status (the classic textbook tree) before checking osmolality. If you skip the osmometer you can mistreat isotonic pseudohyponatremia or hypertonic hyperglycemic hyponatremia as if it were true hypotonic hyponatremia.</li><li><b>Osmometer step 1</b> — WRONG: treating every low Na as water excess. If serum osm is normal or high, the problem is not free-water retention — it is a lipid/protein artifact or an osmotic solute. Measure osmolality before committing to any treatment.</li><li><b>Pseudo (isotonic)</b> — WRONG: aggressively correcting a "sodium of 128" in a myeloma or hypertriglyceridemia patient with a normal serum osm. There is no real hyponatremia to treat — the fix is to recognize the artifact (or use a direct ISE/whole-blood gas analyzer), not to give hypertonic saline.</li><li><b>Hyperglycemia +1.6/2.4</b> — WRONG: giving hypertonic saline for the "Na 126" in a DKA patient with glucose 600. The corrected Na is actually ~134 (near normal); the real treatment is insulin and fluids for the glucose. Forgetting the correction leads to dangerous overtreatment.</li><li><b>Cortisol mimic</b> — WRONG: managing adrenal-insufficiency hyponatremia with fluid restriction like SIADH. It will not correct and can precipitate adrenal crisis — the answer is glucocorticoid replacement (hydrocortisone). Primary adrenal insufficiency also gives high K + low Na, a clue SIADH never produces.</li><li><b>TSH mimic</b> — WRONG: diagnosing SIADH without thyroid studies. A myxedematous patient's hyponatremia responds to thyroid hormone replacement, not to fluid restriction alone; SIADH requires documented euthyroid status.</li><li><b>K high/Na low = adrenal</b> — WRONG: calling hyperkalemic hyponatremia SIADH. The hyperkalemia is the giveaway for aldosterone deficiency (Addison's) — order cortisol/cosyntropin and give hydrocortisone, do not fluid-restrict.</li><li><b>Low urate = SIADH</b> — WRONG: ignoring uric acid when distinguishing SIADH from hypovolemia. An elevated urate in a hyponatremic patient should steer you AWAY from SIADH and toward volume depletion (and away from fluid restriction toward isotonic saline).</li><li><b>Urine osm gauge</b> — WRONG: diagnosing SIADH with a maximally dilute urine. If Uosm is &lt;100, ADH is suppressed and the problem is excess water intake or low solute — SIADH requires INAPPROPRIATELY concentrated urine (&gt;100) despite hypotonic plasma.</li><li><b>Dry / primary polydipsia</b> — WRONG: fluid restriction is correct, but beware OVER-rapid autocorrection. Once water intake stops, the kidney rapidly dumps free water and Na can rise too fast — risking osmotic demyelination. Monitor closely and consider DDAVP clamp if Na overcorrects.</li><li><b>Euvolemic mid Uosm</b> — WRONG: equating "euvolemic + concentrated urine" with SIADH without finishing the exclusion. Hypothyroidism, glucocorticoid deficiency, thiazides, and reset osmostat can all look identical — the diagnosis is only secure once these are ruled out.</li><li><b>Urine Na step</b> — WRONG: interpreting urine Na in a patient on diuretics. Diuretics force renal Na loss and make Una high regardless of the true cause, masking hypovolemia. Always check the medication list and ideally interpret Una off diuretics.</li><li><b>Thiazide mimic 1-2wk</b> — WRONG: diagnosing SIADH in a patient currently on a thiazide. The thiazide must be discontinued and the patient reassessed — many "SIADH" cases resolve completely once the drug is stopped. Loops, by contrast, impair concentrating ability and rarely cause hyponatremia.</li><li><b>Beer / low solute</b> — WRONG: confusing low-solute hyponatremia with SIADH and fluid-restricting hard. Uosm is LOW here (ADH off), so the mechanism is solute-limited excretion. Beware rapid autocorrection/overcorrection once the patient eats — restrict the rate of Na rise to avoid osmotic demyelination.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Work the algorithm</div><div class="rte">Hyponatremia (Na &lt;135) demands a fixed stepwise workup, because SIADH is a diagnosis of EXCLUSION. The sequence is: serum osmolality → exclude mimics (pseudohyponatremia, hyperglycemia) → urine osmolality → urine sodium → clinical volume status. Each step narrows the differential; jumping straight to SIADH skips treatable mimics like adrenal insufficiency and hypothyroidism.</div><div class="rtt">⚠️ WRONG: labeling a euvolemic hyponatremic patient "SIADH" on first glance. SIADH cannot be diagnosed until hypothyroidism, adrenal/glucocorticoid insufficiency, thiazides, and low-solute states are excluded. The discriminator: SIADH requires normal thyroid/adrenal function and no recent thiazide.</div></div><div class="rt"><div class="rtl">2. Order of steps</div><div class="rte">Memorize the order: serum OSM → MIMICS → urine OSM → urine Na → VOLUME. Osmolality first sorts hypotonic (true) from isotonic (pseudo) and hypertonic (glucose/mannitol). Urine osm then tells you whether ADH is on (&gt;100) or off (&lt;100), urine Na localizes renal vs extrarenal, and volume status finalizes the category and treatment.</div><div class="rtt">⚠️ WRONG: starting with volume status (the classic textbook tree) before checking osmolality. If you skip the osmometer you can mistreat isotonic pseudohyponatremia or hypertonic hyperglycemic hyponatremia as if it were true hypotonic hyponatremia.</div></div><div class="rt"><div class="rtl">3. Osmometer step 1</div><div class="rte">Step 1 is always measured serum osmolality (normal ~275–295 mOsm/kg). LOW osm (&lt;275) = true hypotonic hyponatremia, the only category needing the full volume-status algorithm. NORMAL osm = isotonic pseudohyponatremia (lab artifact). HIGH osm (&gt;295) = hypertonic hyponatremia (hyperglycemia, mannitol) where osmotically active solute pulls water out of cells, diluting Na.</div><div class="rtt">⚠️ WRONG: treating every low Na as water excess. If serum osm is normal or high, the problem is not free-water retention — it is a lipid/protein artifact or an osmotic solute. Measure osmolality before committing to any treatment.</div></div><div class="rt"><div class="rtl">4. Pseudo (isotonic)</div><div class="rte">Isotonic pseudohyponatremia is a laboratory artifact of older flame-photometry/indirect-ISE methods caused by severe hyperlipidemia (high triglycerides/cholesterol) or paraproteinemia (multiple myeloma, Waldenström). The solid phase displaces plasma water; serum osmolality is NORMAL and there is no true sodium or water disturbance.</div><div class="rtt">⚠️ WRONG: aggressively correcting a "sodium of 128" in a myeloma or hypertriglyceridemia patient with a normal serum osm. There is no real hyponatremia to treat — the fix is to recognize the artifact (or use a direct ISE/whole-blood gas analyzer), not to give hypertonic saline.</div></div><div class="rt"><div class="rtl">5. Hyperglycemia +1.6/2.4</div><div class="rte">Hyperglycemia causes hypertonic (translocational) hyponatremia: glucose draws water into the vascular space, diluting Na. Correct measured Na UP by 1.6 mEq/L (or ~2.4 above glucose ~400) for every 100 mg/dL glucose over 100. Serum osm is HIGH. Treating the hyperglycemia restores Na.</div><div class="rtt">⚠️ WRONG: giving hypertonic saline for the "Na 126" in a DKA patient with glucose 600. The corrected Na is actually ~134 (near normal); the real treatment is insulin and fluids for the glucose. Forgetting the correction leads to dangerous overtreatment.</div></div><div class="rt"><div class="rtl">6. Cortisol mimic</div><div class="rte">Glucocorticoid (cortisol) deficiency — primary adrenal insufficiency or secondary/central hypopituitarism — causes euvolemic hyponatremia. Low cortisol removes feedback inhibition of CRH/ADH and impairs free-water excretion, mimicking SIADH. Check a morning cortisol and/or cosyntropin stimulation test before diagnosing SIADH.</div><div class="rtt">⚠️ WRONG: managing adrenal-insufficiency hyponatremia with fluid restriction like SIADH. It will not correct and can precipitate adrenal crisis — the answer is glucocorticoid replacement (hydrocortisone). Primary adrenal insufficiency also gives high K + low Na, a clue SIADH never produces.</div></div><div class="rt"><div class="rtl">7. TSH mimic</div><div class="rte">Severe hypothyroidism (especially myxedema) causes euvolemic hyponatremia via reduced cardiac output and GFR with non-osmotic ADH release. It is a mandatory SIADH mimic to exclude — order TSH and free T4. Unlike adrenal insufficiency, potassium is NORMAL in hypothyroid hyponatremia.</div><div class="rtt">⚠️ WRONG: diagnosing SIADH without thyroid studies. A myxedematous patient's hyponatremia responds to thyroid hormone replacement, not to fluid restriction alone; SIADH requires documented euthyroid status.</div></div><div class="rt"><div class="rtl">8. K high/Na low = adrenal</div><div class="rte">The combination of LOW sodium + HIGH potassium (± metabolic acidosis, hypotension, hyperpigmentation) points to PRIMARY adrenal insufficiency (Addison) from combined gluco- and mineralocorticoid (aldosterone) loss. SIADH never causes hyperkalemia — it is a pure water problem with normal K.</div><div class="rtt">⚠️ WRONG: calling hyperkalemic hyponatremia SIADH. The hyperkalemia is the giveaway for aldosterone deficiency (Addison's) — order cortisol/cosyntropin and give hydrocortisone, do not fluid-restrict.</div></div><div class="rt"><div class="rtl">9. Low urate = SIADH</div><div class="rte">SIADH characteristically lowers serum uric acid (&lt;4 mg/dL) through dilution and ADH/volume-mediated uricosuria. A low urate supports SIADH; a HIGH urate (&gt;5–6) argues for volume depletion/hypovolemia, where the kidney avidly reabsorbs urate. This is a high-yield discriminator between euvolemic SIADH and hypovolemic hyponatremia.</div><div class="rtt">⚠️ WRONG: ignoring uric acid when distinguishing SIADH from hypovolemia. An elevated urate in a hyponatremic patient should steer you AWAY from SIADH and toward volume depletion (and away from fluid restriction toward isotonic saline).</div></div><div class="rt"><div class="rtl">10. Urine osm gauge</div><div class="rte">After confirming hypotonicity, urine osmolality reveals ADH activity. Uosm &lt;100 mOsm/kg = ADH appropriately OFF, dilute urine (primary polydipsia, low-solute beer potomania/tea-and-toast). Uosm &gt;100 = ADH ON, inappropriately concentrated urine (SIADH, hypovolemia, edematous states, thiazides).</div><div class="rtt">⚠️ WRONG: diagnosing SIADH with a maximally dilute urine. If Uosm is &lt;100, ADH is suppressed and the problem is excess water intake or low solute — SIADH requires INAPPROPRIATELY concentrated urine (&gt;100) despite hypotonic plasma.</div></div><div class="rt"><div class="rtl">11. Dry / primary polydipsia</div><div class="rte">Primary (psychogenic) polydipsia: massive water intake (often &gt;10 L/day, classically in psychiatric patients) overwhelms renal free-water excretion. ADH is correctly suppressed, so urine is maximally dilute (Uosm &lt;100, often &lt;50–60). Treatment is water restriction; correction can be rapid (autocorrection risk).</div><div class="rtt">⚠️ WRONG: fluid restriction is correct, but beware OVER-rapid autocorrection. Once water intake stops, the kidney rapidly dumps free water and Na can rise too fast — risking osmotic demyelination. Monitor closely and consider DDAVP clamp if Na overcorrects.</div></div><div class="rt"><div class="rtl">12. Euvolemic mid Uosm</div><div class="rte">A clinically euvolemic patient (no edema, no dryness/orthostasis) with inappropriately concentrated urine (Uosm &gt;100), urine Na &gt;30, low uric acid, and normal thyroid/adrenal function = SIADH. It is the endpoint of the euvolemic arm AFTER all mimics are excluded.</div><div class="rtt">⚠️ WRONG: equating "euvolemic + concentrated urine" with SIADH without finishing the exclusion. Hypothyroidism, glucocorticoid deficiency, thiazides, and reset osmostat can all look identical — the diagnosis is only secure once these are ruled out.</div></div><div class="rt"><div class="rtl">13. Urine Na step</div><div class="rte">Urine sodium localizes the lesion. Una &lt;20 mEq/L = kidney conserving Na = extrarenal/hypovolemic loss (vomiting, diarrhea, third-spacing) or edematous states (HF, cirrhosis). Una &gt;30–40 = renal Na leak (SIADH, diuretics, salt-wasting nephropathy, adrenal insufficiency, RTA).</div><div class="rtt">⚠️ WRONG: interpreting urine Na in a patient on diuretics. Diuretics force renal Na loss and make Una high regardless of the true cause, masking hypovolemia. Always check the medication list and ideally interpret Una off diuretics.</div></div><div class="rt"><div class="rtl">14. Thiazide mimic 1-2wk</div><div class="rte">Thiazides (not loops) classically cause a euvolemic, SIADH-indistinguishable hyponatremia: they impair urinary dilution at the distal tubule while sparing concentrating ability, and frequently affect elderly women within weeks of starting. Management: STOP the thiazide and recheck Na in 1–2 weeks before labeling SIADH.</div><div class="rtt">⚠️ WRONG: diagnosing SIADH in a patient currently on a thiazide. The thiazide must be discontinued and the patient reassessed — many "SIADH" cases resolve completely once the drug is stopped. Loops, by contrast, impair concentrating ability and rarely cause hyponatremia.</div></div><div class="rt"><div class="rtl">15. Beer / low solute</div><div class="rte">Low-solute states — beer potomania and tea-and-toast diet — cause hyponatremia from inadequate dietary solute (protein/salt) limiting free-water excretion despite suppressed ADH. Labs show LOW Uosm (&lt;100–200) and LOW Una. Correction is with solute/protein (and saline if depleted); free water dumps rapidly once solute is given.</div><div class="rtt">⚠️ WRONG: confusing low-solute hyponatremia with SIADH and fluid-restricting hard. Uosm is LOW here (ADH off), so the mechanism is solute-limited excretion. Beware rapid autocorrection/overcorrection once the patient eats — restrict the rate of Na rise to avoid osmotic demyelination.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="htn_emergency.html" title="Hypertension — Urgency, Emergency &amp; Special Populations">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hypona_euvolemic_siadh.html" title="Hyponatremia — Euvolemic &amp; SIADH (Rule Out Mimics)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

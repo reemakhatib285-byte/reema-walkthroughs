@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DM — Scene 1 — Diabetes Pharmacology: The Liver-Pancreas Workshop</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Metformin blacksmith (1st line)</b> — Wrong answer: 'start a sulfonylurea or insulin as routine first-line therapy in uncomplicated new T2DM.' Discriminator — metformin is foundational first-line (efficacy, weight-neutral, no hypoglycemia, low cost); secretagogues/insulin are not the default initial agents unless the patient is markedly symptomatic/catabolic.</li><li><b>No hypo badge</b> — Wrong answer: 'attribute a metformin-monotherapy patient's hypoglycemia to the metformin.' Discriminator — metformin alone does not cause hypoglycemia; look for a co-prescribed secretagogue (sulfonylurea/meglitinide) or insulin as the true cause.</li><li><b>eGFR &lt; 30 contraindication</b> — Wrong answer: 'continue full-dose metformin in a patient with eGFR 22 (advanced CKD).' Discriminator — eGFR &lt;30 is a contraindication due to lactic acidosis risk; the drug must be stopped, not merely monitored, at this level of renal function.</li><li><b>B12 deficiency</b> — Wrong answer: 'assume new peripheral neuropathy in a long-term metformin user is purely diabetic neuropathy.' Discriminator — metformin-induced B12 deficiency can cause/worsen neuropathy; check a B12 level before attributing it solely to diabetes.</li><li><b>GI side effect</b> — Wrong answer: 'abandon metformin entirely at the first sign of GI upset.' Discriminator — GI effects are usually transient and dose-related; slow titration, dosing with food, or extended-release formulation often resolves them before considering an alternative agent.</li><li><b>Lactic acidosis (alcohol/contrast)</b> — Wrong answer: 'give IV contrast for the CT and continue metformin unchanged in a patient with borderline renal function.' Discriminator — contrast plus impaired renal clearance can precipitate metformin accumulation and lactic acidosis; hold metformin peri-contrast and reassess renal function before resuming.</li><li><b>Sulfonylurea monk + KATP key</b> — Wrong answer: 'a sulfonylurea works by reducing insulin resistance.' Discriminator — sulfonylureas STIMULATE insulin secretion (secretagogues); the insulin-sensitizers are metformin and the TZDs.</li><li><b>HYPO pit (sulfonylurea risk)</b> — Wrong answer: 'a sulfonylurea is a hypoglycemia-safe choice for an elderly patient with CKD.' Discriminator — sulfonylureas (especially glyburide) are a leading cause of severe, prolonged hypoglycemia in the elderly/CKD; safer alternatives or short-acting glipizide are preferred.</li><li><b>Weight gain scale (SU)</b> — Wrong answer: 'choose a sulfonylurea for an obese T2DM patient who needs to lose weight.' Discriminator — sulfonylureas promote weight GAIN; in obesity, prefer a weight-losing agent (GLP-1 RA) or weight-neutral agent (metformin, SGLT2 inhibitor).</li><li><b>Metformin weight neutral scale</b> — Wrong answer: 'avoid metformin in an obese diabetic because oral diabetes drugs all cause weight gain.' Discriminator — metformin is weight-neutral/mildly weight-losing; the weight-gaining oral agents are sulfonylureas and TZDs, not metformin.</li><li><b>TZD / PPAR-gamma figure</b> — Wrong answer: 'a TZD causes hypoglycemia like a sulfonylurea.' Discriminator — TZDs are insulin sensitizers acting via PPAR-gamma and do not cause hypoglycemia as monotherapy; the secretagogues (sulfonylureas/meglitinides) and insulin do.</li><li><b>TZD edema / heart failure</b> — Wrong answer: 'add pioglitazone for an HFrEF patient with poorly controlled diabetes.' Discriminator — TZD-induced fluid retention worsens heart failure (contraindicated in symptomatic HF); choose an SGLT2 inhibitor, which is HF-protective, instead.</li><li><b>TZD macular edema (eye)</b> — Wrong answer: 'attribute new macular edema in a TZD-treated patient solely to diabetic retinopathy.' Discriminator — TZDs are a recognized cause of macular edema; the drug should be considered (and possibly stopped) rather than assuming it is purely diabetic retinopathy.</li><li><b>TZD bone fracture</b> — Wrong answer: 'pioglitazone has no skeletal effects, so it's a fine choice for an osteoporotic postmenopausal woman.' Discriminator — TZDs increase fracture risk and accelerate bone loss; avoid them in patients with osteoporosis or high fracture risk.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Metformin blacksmith (1st line)</div><div class="rte">Metformin is the typical first-line pharmacotherapy for T2DM. Its primary mechanism is reducing hepatic gluconeogenesis (it activates AMPK), with secondary improvement in peripheral insulin sensitivity. It lowers A1c ~1-1.5%, is weight-neutral/mildly weight-losing, inexpensive, and does not cause hypoglycemia as monotherapy. Start low and titrate to limit GI effects.</div><div class="rtt">⚠️ Wrong answer: 'start a sulfonylurea or insulin as routine first-line therapy in uncomplicated new T2DM.' Discriminator — metformin is foundational first-line (efficacy, weight-neutral, no hypoglycemia, low cost); secretagogues/insulin are not the default initial agents unless the patient is markedly symptomatic/catabolic.</div></div><div class="rt"><div class="rtl">2. No hypo badge</div><div class="rte">Metformin does not cause hypoglycemia when used alone because it works independently of insulin secretion (it suppresses hepatic glucose output rather than stimulating insulin release). Hypoglycemia can still occur if it is combined with a sulfonylurea or insulin.</div><div class="rtt">⚠️ Wrong answer: 'attribute a metformin-monotherapy patient's hypoglycemia to the metformin.' Discriminator — metformin alone does not cause hypoglycemia; look for a co-prescribed secretagogue (sulfonylurea/meglitinide) or insulin as the true cause.</div></div><div class="rt"><div class="rtl">3. eGFR &lt; 30 contraindication</div><div class="rte">Stop/avoid metformin when eGFR &lt;30 mL/min/1.73m² because of lactic acidosis risk from drug accumulation; use caution and do not initiate when eGFR is 30-45 (reduce dose / monitor). Also hold around iodinated contrast in at-risk patients and during acute kidney injury.</div><div class="rtt">⚠️ Wrong answer: 'continue full-dose metformin in a patient with eGFR 22 (advanced CKD).' Discriminator — eGFR &lt;30 is a contraindication due to lactic acidosis risk; the drug must be stopped, not merely monitored, at this level of renal function.</div></div><div class="rt"><div class="rtl">4. B12 deficiency</div><div class="rte">Long-term metformin use causes vitamin B12 deficiency by impairing ileal B12 absorption. This can produce macrocytic anemia and/or peripheral neuropathy — the latter easily mistaken for diabetic neuropathy. Periodically check B12 in long-term users, especially with neuropathy or anemia.</div><div class="rtt">⚠️ Wrong answer: 'assume new peripheral neuropathy in a long-term metformin user is purely diabetic neuropathy.' Discriminator — metformin-induced B12 deficiency can cause/worsen neuropathy; check a B12 level before attributing it solely to diabetes.</div></div><div class="rt"><div class="rtl">5. GI side effect</div><div class="rte">GI upset (diarrhea, nausea, abdominal discomfort, metallic taste) is metformin's most common adverse effect and the leading reason for intolerance. Mitigate by starting low, titrating slowly, taking with food, or switching to extended-release (XR), which is better tolerated.</div><div class="rtt">⚠️ Wrong answer: 'abandon metformin entirely at the first sign of GI upset.' Discriminator — GI effects are usually transient and dose-related; slow titration, dosing with food, or extended-release formulation often resolves them before considering an alternative agent.</div></div><div class="rt"><div class="rtl">6. Lactic acidosis (alcohol/contrast)</div><div class="rte">Metformin-associated lactic acidosis is rare but serious; risk rises with conditions causing lactate accumulation or drug retention — renal failure, hypoxia/sepsis, heart failure, hepatic dysfunction, heavy alcohol use, and iodinated contrast. Hold metformin around contrast administration and in any acute illness threatening renal perfusion.</div><div class="rtt">⚠️ Wrong answer: 'give IV contrast for the CT and continue metformin unchanged in a patient with borderline renal function.' Discriminator — contrast plus impaired renal clearance can precipitate metformin accumulation and lactic acidosis; hold metformin peri-contrast and reassess renal function before resuming.</div></div><div class="rt"><div class="rtl">7. Sulfonylurea monk + KATP key</div><div class="rte">Sulfonylureas (glipizide, glyburide, glimepiride) are insulin SECRETAGOGUES: they close the beta-cell ATP-sensitive potassium (KATP) channel, causing membrane depolarization, calcium influx, and insulin release — independent of glucose level. They lower A1c ~1-1.5% but require functioning beta cells. Meglitinides (repaglinide, nateglinide) act on the same channel with faster, shorter action for postprandial control.</div><div class="rtt">⚠️ Wrong answer: 'a sulfonylurea works by reducing insulin resistance.' Discriminator — sulfonylureas STIMULATE insulin secretion (secretagogues); the insulin-sensitizers are metformin and the TZDs.</div></div><div class="rt"><div class="rtl">8. HYPO pit (sulfonylurea risk)</div><div class="rte">Because sulfonylureas drive insulin release independent of glucose, hypoglycemia is their hallmark adverse effect — and it can be prolonged and severe. Risk is greatest in the elderly and in renal impairment; glyburide is the worst offender (long-acting, renally cleared active metabolites) and should be avoided in older/CKD patients in favor of glipizide.</div><div class="rtt">⚠️ Wrong answer: 'a sulfonylurea is a hypoglycemia-safe choice for an elderly patient with CKD.' Discriminator — sulfonylureas (especially glyburide) are a leading cause of severe, prolonged hypoglycemia in the elderly/CKD; safer alternatives or short-acting glipizide are preferred.</div></div><div class="rt"><div class="rtl">9. Weight gain scale (SU)</div><div class="rte">Sulfonylureas cause weight gain (from increased insulin secretion and anabolic effect), which is a disadvantage in overweight/obese T2DM patients. Insulin and TZDs likewise add weight, whereas metformin and SGLT2 inhibitors are weight-neutral/losing and GLP-1 RAs cause weight loss.</div><div class="rtt">⚠️ Wrong answer: 'choose a sulfonylurea for an obese T2DM patient who needs to lose weight.' Discriminator — sulfonylureas promote weight GAIN; in obesity, prefer a weight-losing agent (GLP-1 RA) or weight-neutral agent (metformin, SGLT2 inhibitor).</div></div><div class="rt"><div class="rtl">10. Metformin weight neutral scale</div><div class="rte">Metformin is weight-neutral and often mildly weight-losing, one reason it is favored as the foundational agent — particularly in overweight/obese T2DM. This contrasts with the weight-gaining sulfonylureas, TZDs, and insulin.</div><div class="rtt">⚠️ Wrong answer: 'avoid metformin in an obese diabetic because oral diabetes drugs all cause weight gain.' Discriminator — metformin is weight-neutral/mildly weight-losing; the weight-gaining oral agents are sulfonylureas and TZDs, not metformin.</div></div><div class="rt"><div class="rtl">11. TZD / PPAR-gamma figure</div><div class="rte">Thiazolidinediones (TZDs; pioglitazone, rosiglitazone) are PPAR-gamma agonists that enhance peripheral insulin sensitivity in muscle/adipose tissue (insulin sensitizers, not secretagogues). They lower A1c ~1%, do not cause hypoglycemia alone, and have a slow onset (weeks). Pioglitazone is the preferred TZD and may benefit NASH; rosiglitazone has had CV concerns.</div><div class="rtt">⚠️ Wrong answer: 'a TZD causes hypoglycemia like a sulfonylurea.' Discriminator — TZDs are insulin sensitizers acting via PPAR-gamma and do not cause hypoglycemia as monotherapy; the secretagogues (sulfonylureas/meglitinides) and insulin do.</div></div><div class="rt"><div class="rtl">12. TZD edema / heart failure</div><div class="rte">TZDs cause sodium/fluid retention leading to peripheral edema and weight gain, and they can precipitate or worsen heart failure — TZDs are contraindicated in NYHA class III-IV HF. The fluid retention can also potentiate edema when combined with insulin.</div><div class="rtt">⚠️ Wrong answer: 'add pioglitazone for an HFrEF patient with poorly controlled diabetes.' Discriminator — TZD-induced fluid retention worsens heart failure (contraindicated in symptomatic HF); choose an SGLT2 inhibitor, which is HF-protective, instead.</div></div><div class="rt"><div class="rtl">13. TZD macular edema (eye)</div><div class="rte">TZDs can cause macular edema (related to their fluid-retention effect), presenting with blurred or decreased vision. Consider drug-induced macular edema in a TZD-treated patient with new visual changes and refer for ophthalmologic evaluation.</div><div class="rtt">⚠️ Wrong answer: 'attribute new macular edema in a TZD-treated patient solely to diabetic retinopathy.' Discriminator — TZDs are a recognized cause of macular edema; the drug should be considered (and possibly stopped) rather than assuming it is purely diabetic retinopathy.</div></div><div class="rt"><div class="rtl">14. TZD bone fracture</div><div class="rte">TZDs increase the risk of bone fractures (especially distal limb fractures in postmenopausal women) by promoting adipogenesis over osteoblastogenesis, reducing bone formation. Weigh this against benefits in patients at high fracture risk/osteoporosis.</div><div class="rtt">⚠️ Wrong answer: 'pioglitazone has no skeletal effects, so it's a fine choice for an osteoporotic postmenopausal woman.' Discriminator — TZDs increase fracture risk and accelerate bone loss; avoid them in patients with osteoporosis or high fracture risk.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_dx_threshold.html" title="DM — Scene 1 — DM Pathophys &amp; Dx: The Diagnostic Threshold Crossing">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_hyperglycemic_treatment.html" title="DM — Scene 2 — Acute Hyperglycemic Treatment: DKA/HHS Management">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

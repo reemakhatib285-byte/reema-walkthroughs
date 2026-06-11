@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Plasma Cell — Myeloma Emergencies &amp; Complications</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Bone disease</b> — WRONG to order a technetium bone scan to find or follow myeloma bone lesions — it is falsely negative because osteoblasts are suppressed (no reactive uptake). Discriminator: use whole-body low-dose CT, whole-body MRI, or FDG-PET/CT; the bone scan is the classic distractor answer.</li><li><b>Denosumab option</b> — WRONG to keep using zoledronate in a myeloma patient with CrCl &lt;30–35 mL/min. Switch to denosumab (no renal dosing) but pre-empt hypocalcemia. Discriminator: renal function picks the agent — denosumab for renal impairment, bisphosphonate when renal function is adequate; both require dental clearance for ONJ.</li><li><b>RT for pain/cord</b> — WRONG to irradiate large marrow-containing fields routinely — excessive RT damages marrow reserve and compromises ability to deliver systemic chemo/transplant. Discriminator: use focal low-dose RT for localized pain/cord/plasmacytoma; systemic therapy (not broad RT) treats the disease as a whole.</li><li><b>Hypercalcemia Rx</b> — WRONG to start a thiazide diuretic — thiazides INCREASE distal calcium reabsorption and worsen hypercalcemia. Loop diuretics are not first-line either and only have a role AFTER full volume repletion if there is volume overload. Discriminator: saline first, never lead with diuretics; thiazide is always the wrong answer in hypercalcemia.</li><li><b>Calcitonin bridge</b> — WRONG to rely on calcitonin as definitive hypercalcemia therapy. Its effect is small and transient (tachyphylaxis), so it must be paired with the slower, durable bisphosphonate/denosumab plus saline. Discriminator: calcitonin = fast but fleeting bridge; the bisphosphonate provides the sustained calcium control.</li><li><b>Steroids for HyperCa</b> — WRONG to use steroids as first-line for parathyroid (primary HPT) or solid-tumor PTHrP hypercalcemia — they do not work there. Discriminator: steroids lower calcium specifically in calcitriol-mediated (granulomatous/lymphoma) and tumor-lytic (myeloma) hypercalcemia, not in PTH/PTHrP-driven hypercalcemia.</li><li><b>Bortezomib in renal failure</b> — WRONG to give full-dose lenalidomide in renal impairment. Lenalidomide IS renally cleared and requires dose reduction by CrCl (and dialysis dosing). Discriminator: bortezomib needs no renal adjustment and is the renal-failure backbone; lenalidomide must be dose-reduced. Also watch bortezomib's peripheral neuropathy — give it weekly and subcutaneously to limit it.</li><li><b>HZV prophylaxis</b> — WRONG to omit antiviral prophylaxis when starting bortezomib or daratumumab. Untreated, herpes zoster reactivation (including disseminated/ophthalmic) is common and preventable. Discriminator: every proteasome inhibitor or anti-CD38 patient gets acyclovir/valacyclovir VZV prophylaxis.</li><li><b>DVT prophylaxis</b> — WRONG to start an IMiD without VTE prophylaxis or to default everyone to aspirin. High-risk patients need LMWH/DOAC, not aspirin. Discriminator: IMiD + dex (or EPO) mandates risk-stratified thromboprophylaxis; high thrombotic risk overrides the convenience of aspirin.</li><li><b>Infection / vaccines</b> — WRONG to interpret a high total serum protein as evidence of intact immunity. The M-protein is one useless monoclonal antibody while normal polyclonal Ig is suppressed (immunoparesis), so patients are functionally immunodeficient despite hypergammaglobulinemia. Discriminator: check uninvolved/quantitative Ig levels — high total protein with low normal Ig = vaccinate, prophylax, and treat infection aggressively.</li><li><b>Anemia / EPO</b> — WRONG to reflexively transfuse or give iron without a workup, or to ignore that effective anti-myeloma therapy is the best anemia treatment. EPO also adds VTE risk on top of IMiDs. Discriminator: anemia is multifactorial — treat the clone, correct true deficiencies, and weigh EPO's thrombosis risk before starting it.</li><li><b>Cord compression ALERT</b> — WRONG to delay steroids until MRI confirms compression. If the exam suggests cord compression, give dexamethasone first — do not wait for imaging. Discriminator: steroids are time-critical and started on clinical suspicion; the MRI confirms but should not gate the first dose.</li><li><b>Hyperviscosity ALERT</b> — WRONG to wait for a specific serum viscosity number before treating, or to assume myeloma when the M-protein is IgM. Treat the clinical syndrome with plasmapheresis regardless of the exact viscosity value, and remember IgM-driven hyperviscosity = Waldenström macroglobulinemia, not classic myeloma. Discriminator: clinical hyperviscosity (retina + bleeding + neuro) → plasmapheresis now; IgM points to Waldenström.</li><li><b>Response assessment</b> — WRONG to call a patient in complete response based on a normal SPEP alone. SPEP can be normal while immunofixation still shows residual M-protein, and MRD testing detects disease below IFE. Discriminator: deeper response definitions (IFE-negative &gt; SPEP-normal; MRD-negative &gt; IFE-negative) — and serum FLC is required to track light-chain/oligosecretory disease.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Bone disease</div><div class="rte">Myeloma drives RANKL-mediated osteoclast activation and DKK1/sclerostin-mediated osteoblast suppression → pure lytic lesions, fractures, and hypercalcemia. Give a bone-modifying agent (zoledronate 4 mg IV q3–4 weeks, or denosumab) to ALL patients with bone disease to reduce skeletal-related events. Supplement calcium + vitamin D and screen dental health before bisphosphonate/denosumab (osteonecrosis of the jaw risk).</div><div class="rtt">⚠️ WRONG to order a technetium bone scan to find or follow myeloma bone lesions — it is falsely negative because osteoblasts are suppressed (no reactive uptake). Discriminator: use whole-body low-dose CT, whole-body MRI, or FDG-PET/CT; the bone scan is the classic distractor answer.</div></div><div class="rt"><div class="rtl">2. Denosumab option</div><div class="rte">Denosumab is a fully human anti-RANKL monoclonal antibody (120 mg SC monthly for bone disease) that blocks osteoclast activation. It is NOT renally cleared, making it the preferred bone agent in renal impairment where zoledronate is contraindicated/nephrotoxic. Monitor for hypocalcemia (ensure adequate Ca/vitamin D) and osteonecrosis of the jaw; avoid abrupt discontinuation (rebound bone loss).</div><div class="rtt">⚠️ WRONG to keep using zoledronate in a myeloma patient with CrCl &lt;30–35 mL/min. Switch to denosumab (no renal dosing) but pre-empt hypocalcemia. Discriminator: renal function picks the agent — denosumab for renal impairment, bisphosphonate when renal function is adequate; both require dental clearance for ONJ.</div></div><div class="rt"><div class="rtl">3. RT for pain/cord</div><div class="rte">Low-dose external-beam radiotherapy (typically 8 Gy single fraction or 20–30 Gy fractionated) gives rapid relief of focal uncontrolled bone pain, treats solitary plasmacytoma, and is part of cord-compression management. Vertebroplasty/kyphoplasty stabilizes painful compression fractures. Myeloma is highly radiosensitive.</div><div class="rtt">⚠️ WRONG to irradiate large marrow-containing fields routinely — excessive RT damages marrow reserve and compromises ability to deliver systemic chemo/transplant. Discriminator: use focal low-dose RT for localized pain/cord/plasmacytoma; systemic therapy (not broad RT) treats the disease as a whole.</div></div><div class="rt"><div class="rtl">4. Hypercalcemia Rx</div><div class="rte">Hypercalcemia of malignancy (corrected Ca &gt;11; severe &gt;14 mg/dL or symptomatic): step 1 is aggressive IV isotonic saline (200–300 mL/hr, correcting the near-universal volume depletion); step 2 is an IV bisphosphonate (zoledronate 4 mg, onset 2–4 days, peak ~4–7 days); calcitonin (4 IU/kg q12h) is a rapid bridge for the first 24–48 hr. Denosumab is an option in renal failure or refractory cases.</div><div class="rtt">⚠️ WRONG to start a thiazide diuretic — thiazides INCREASE distal calcium reabsorption and worsen hypercalcemia. Loop diuretics are not first-line either and only have a role AFTER full volume repletion if there is volume overload. Discriminator: saline first, never lead with diuretics; thiazide is always the wrong answer in hypercalcemia.</div></div><div class="rt"><div class="rtl">5. Calcitonin bridge</div><div class="rte">Calcitonin lowers calcium quickly (within hours) by inhibiting osteoclastic resorption and increasing renal Ca excretion, but tachyphylaxis develops in 48–72 hr (downregulated receptors), so it serves only as a short bridge while saline + bisphosphonate take effect. Modest effect (drops Ca ~1–2 mg/dL).</div><div class="rtt">⚠️ WRONG to rely on calcitonin as definitive hypercalcemia therapy. Its effect is small and transient (tachyphylaxis), so it must be paired with the slower, durable bisphosphonate/denosumab plus saline. Discriminator: calcitonin = fast but fleeting bridge; the bisphosphonate provides the sustained calcium control.</div></div><div class="rt"><div class="rtl">6. Steroids for HyperCa</div><div class="rte">Corticosteroids (e.g., dexamethasone) lower calcium in myeloma by direct anti-plasma-cell (tumor-lytic) effect and by reducing intestinal calcium absorption. They are also the targeted treatment for hypercalcemia from lymphoma and granulomatous disease (sarcoid/TB), where they cut 1-alpha-hydroxylase-driven calcitriol production by macrophages.</div><div class="rtt">⚠️ WRONG to use steroids as first-line for parathyroid (primary HPT) or solid-tumor PTHrP hypercalcemia — they do not work there. Discriminator: steroids lower calcium specifically in calcitriol-mediated (granulomatous/lymphoma) and tumor-lytic (myeloma) hypercalcemia, not in PTH/PTHrP-driven hypercalcemia.</div></div><div class="rt"><div class="rtl">7. Bortezomib in renal failure</div><div class="rte">Bortezomib (a proteasome inhibitor) requires NO renal dose adjustment, is not dialyzed off significantly, and rapidly lowers the light-chain burden — making bortezomib-based regimens (e.g., VCd or VRd) the preferred initial therapy to reverse cast nephropathy/AKI in newly diagnosed myeloma with renal failure. Pair with aggressive hydration and avoid nephrotoxins/contrast.</div><div class="rtt">⚠️ WRONG to give full-dose lenalidomide in renal impairment. Lenalidomide IS renally cleared and requires dose reduction by CrCl (and dialysis dosing). Discriminator: bortezomib needs no renal adjustment and is the renal-failure backbone; lenalidomide must be dose-reduced. Also watch bortezomib's peripheral neuropathy — give it weekly and subcutaneously to limit it.</div></div><div class="rt"><div class="rtl">8. HZV prophylaxis</div><div class="rte">Proteasome inhibitors (bortezomib, carfilzomib, ixazomib) and anti-CD38 antibodies (daratumumab) markedly increase varicella-zoster reactivation risk → give acyclovir (or valacyclovir) prophylaxis throughout treatment. Anti-CD38 also necessitates blood-bank notification (interferes with indirect Coombs/crossmatch — use DTT-treated cells) and can cause infusion reactions (premedicate).</div><div class="rtt">⚠️ WRONG to omit antiviral prophylaxis when starting bortezomib or daratumumab. Untreated, herpes zoster reactivation (including disseminated/ophthalmic) is common and preventable. Discriminator: every proteasome inhibitor or anti-CD38 patient gets acyclovir/valacyclovir VZV prophylaxis.</div></div><div class="rt"><div class="rtl">9. DVT prophylaxis</div><div class="rte">Immunomodulatory drugs (thalidomide, lenalidomide, pomalidomide) — especially combined with dexamethasone and/or erythropoietin — substantially raise venous thromboembolism risk. Stratify: low-risk patients → aspirin 81–325 mg; high-risk (prior VTE, immobility, central line, high-dose dex, EPO use) → prophylactic LMWH or a DOAC.</div><div class="rtt">⚠️ WRONG to start an IMiD without VTE prophylaxis or to default everyone to aspirin. High-risk patients need LMWH/DOAC, not aspirin. Discriminator: IMiD + dex (or EPO) mandates risk-stratified thromboprophylaxis; high thrombotic risk overrides the convenience of aspirin.</div></div><div class="rt"><div class="rtl">10. Infection / vaccines</div><div class="rte">Infection is a LEADING cause of death in myeloma due to functional hypogammaglobulinemia (immunoparesis), neutropenia, and treatment immunosuppression — encapsulated organisms (S. pneumoniae, H. influenzae) and gram-negatives predominate. Vaccinate (pneumococcal PCV then PPSV23, influenza, COVID; avoid live vaccines), consider IVIG for recurrent severe infections with low IgG, and PCP prophylaxis with high-dose steroids.</div><div class="rtt">⚠️ WRONG to interpret a high total serum protein as evidence of intact immunity. The M-protein is one useless monoclonal antibody while normal polyclonal Ig is suppressed (immunoparesis), so patients are functionally immunodeficient despite hypergammaglobulinemia. Discriminator: check uninvolved/quantitative Ig levels — high total protein with low normal Ig = vaccinate, prophylax, and treat infection aggressively.</div></div><div class="rt"><div class="rtl">11. Anemia / EPO</div><div class="rte">Normocytic anemia (the 'A' of CRAB) is multifactorial: marrow plasma-cell infiltration, IL-6/hepcidin-driven anemia of inflammation, and renal EPO deficiency from cast nephropathy. Rouleaux formation on smear (stacked RBCs) and a high ESR reflect the paraprotein. Work up reversible causes (iron, B12, folate), treat the myeloma, and consider EPO for symptomatic anemia.</div><div class="rtt">⚠️ WRONG to reflexively transfuse or give iron without a workup, or to ignore that effective anti-myeloma therapy is the best anemia treatment. EPO also adds VTE risk on top of IMiDs. Discriminator: anemia is multifactorial — treat the clone, correct true deficiencies, and weigh EPO's thrombosis risk before starting it.</div></div><div class="rt"><div class="rtl">12. Cord compression ALERT</div><div class="rte">Malignant spinal cord compression (back pain, then weakness, sensory level, bowel/bladder dysfunction) is a TRUE emergency. Give high-dose dexamethasone IMMEDIATELY on clinical suspicion, obtain urgent whole-spine MRI, then definitive RT (myeloma is radiosensitive) or surgical decompression if unstable/structural. Outcome depends on neurologic status at treatment — early action preserves function.</div><div class="rtt">⚠️ WRONG to delay steroids until MRI confirms compression. If the exam suggests cord compression, give dexamethasone first — do not wait for imaging. Discriminator: steroids are time-critical and started on clinical suspicion; the MRI confirms but should not gate the first dose.</div></div><div class="rt"><div class="rtl">13. Hyperviscosity ALERT</div><div class="rte">Hyperviscosity syndrome = mucosal bleeding (epistaxis, gingival), visual changes, headache/confusion, and the classic 'sausage-link'/dilated tortuous retinal veins on fundoscopy. Emergent treatment is plasmapheresis (plasma exchange) to rapidly remove the paraprotein, followed by chemotherapy for the underlying clone. Most common with large IgM (Waldenström) &gt; IgA &gt; IgG.</div><div class="rtt">⚠️ WRONG to wait for a specific serum viscosity number before treating, or to assume myeloma when the M-protein is IgM. Treat the clinical syndrome with plasmapheresis regardless of the exact viscosity value, and remember IgM-driven hyperviscosity = Waldenström macroglobulinemia, not classic myeloma. Discriminator: clinical hyperviscosity (retina + bleeding + neuro) → plasmapheresis now; IgM points to Waldenström.</div></div><div class="rt"><div class="rtl">14. Response assessment</div><div class="rte">Response depth predicts outcome: stringent complete response and especially MRD-negativity (by next-gen flow or sequencing, sensitivity 10^-5 to 10^-6) correlate with longer PFS and OS. Immunofixation (IFE)-negative complete response is deeper than SPEP normalization. Monitor with SPEP/UPEP, serum free light chains, and IFE; use the involved FLC for oligosecretory disease.</div><div class="rtt">⚠️ WRONG to call a patient in complete response based on a normal SPEP alone. SPEP can be normal while immunofixation still shows residual M-protein, and MRD testing detects disease below IFE. Discriminator: deeper response definitions (IFE-negative &gt; SPEP-normal; MRD-negative &gt; IFE-negative) — and serum FLC is required to track light-chain/oligosecretory disease.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcd_bone_disease_pathophys.html" title="Plasma Cell — Myeloma Bone Disease &amp; Microenvironment">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcd_poems.html" title="Plasma Cell — POEMS Syndrome">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

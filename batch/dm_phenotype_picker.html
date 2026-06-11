@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Diabetes — Scene 2: T2DM Phenotype Picker's Pharmacy</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Phenotype picks the drug</b> — Wrong answer: 'choose the agent that lowers A1c the most.' Discriminator — once a patient has ASCVD/HF/CKD, you choose a drug with proven organ benefit (SGLT2i or GLP-1 RA) regardless of A1c, not the most potent glucose-lowering agent. The boards reward outcome-driven, not glucose-driven, selection.</li><li><b>ASCVD counter</b> — Wrong answer: 'add a sulfonylurea or DPP-4 inhibitor because A1c is still high.' Discriminator — SU and DPP-4i are CV-NEUTRAL (saxagliptin even raised HF hospitalization in SAVOR-TIMI). In a patient with ASCVD you must pick a class with demonstrated MACE reduction (GLP-1 RA or SGLT2i).</li><li><b>HF counter — SGLT2</b> — Wrong answer: 'pioglitazone, since it improves insulin sensitivity.' Discriminator — TZDs (rosi- AND pioglitazone) are contraindicated in symptomatic NYHA III–IV HF because PPAR-γ activation causes fluid retention and edema. Never pick a TZD for the HF phenotype; pick an SGLT2i.</li><li><b>CKD / albuminuria counter</b> — Wrong answer: 'continue glyburide and titrate up.' Discriminator — glyburide has active renally-cleared metabolites that accumulate in CKD and cause prolonged hypoglycemia; it is the worst SU in renal impairment. Choose SGLT2i ± GLP-1 RA and, if a secretagogue is unavoidable, use glipizide (hepatic metabolism).</li><li><b>Obesity counter</b> — Wrong answer: 'add basal insulin or a sulfonylurea to bring glucose down faster.' Discriminator — insulin, SU, glinides, and TZDs all cause WEIGHT GAIN, the opposite of the goal. In the obese patient pick a GLP-1 RA or tirzepatide; reserve insulin for severe hyperglycemia/catabolism.</li><li><b>Hypo-risk counter</b> — Wrong answer: 'glyburide is fine, it's cheap and effective.' Discriminator — sulfonylureas and glinides close the K-ATP channel and force insulin secretion regardless of glucose, so they (and insulin) carry the HIGHEST hypoglycemia risk. They are the wrong pick for any hypo-vulnerable patient.</li><li><b>Contraindications wall</b> — Wrong answer: 'start a GLP-1 RA in a patient with a thyroid nodule and family history of medullary thyroid cancer.' Discriminator — personal/family MTC or MEN2 is an absolute contraindication to GLP-1 RAs (and tirzepatide) due to the C-cell tumor signal; choose SGLT2i or another class instead.</li><li><b>Avoid TZD — fluid</b> — Wrong answer: 'TZD edema is just cosmetic, keep the drug and add a thiazide.' Discriminator — TZD fluid retention is mechanistically distal-nephron and resistant to thiazides/loops; the correct action is to STOP the TZD, especially in any patient with HF or volume sensitivity. Do not pick a TZD when fluid status matters.</li><li><b>Stop SGLT2 if eGFR &lt;30 / avoid glyburide</b> — Wrong answer: 'expect a big A1c drop from an SGLT2i started at eGFR 25.' Discriminator — at low eGFR the SGLT2i barely lowers glucose (you keep it for kidney/heart protection, not A1c). If you need glycemic control there, lean on insulin or a GLP-1 RA, and never reach for glyburide.</li><li><b>Glyburide — worst</b> — Wrong answer: 'glyburide for an 80-year-old with CKD because it's inexpensive.' Discriminator — age &gt;65 and CKD both amplify glyburide hypoglycemia; the Beers list flags it. Pick glipizide if a secretagogue is needed, or better, a low-hypo agent (DPP-4i, GLP-1 RA, SGLT2i).</li><li><b>Cheap vs expensive</b> — Wrong answer: 'cost should never influence the choice.' Discriminator — when there is NO compelling comorbidity and budget is limited, a cheap SU added to metformin is acceptable; but when ASCVD/HF/CKD is present, the outcome benefit of SGLT2i/GLP-1 RA outweighs cost. Tailor to both the phenotype and access.</li><li><b>No combo — same pathway</b> — Wrong answer: 'add sitagliptin to a patient already on semaglutide to boost the incretin effect.' Discriminator — DPP-4i + GLP-1 RA is the classic redundant combination; discontinue the DPP-4i when starting a GLP-1 RA. The correct add-on is a different mechanism (metformin, SGLT2i, etc.).</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Phenotype picks the drug</div><div class="rte">Modern ADA/EASD algorithm: metformin is no longer mandatory first if a compelling comorbidity exists, but in practice it remains the cheap backbone. After (or alongside) metformin, the patient's dominant comorbidity — established ASCVD, heart failure, CKD/albuminuria, obesity, or hypoglycemia risk — selects the second agent INDEPENDENT of how high the A1c is. The overall glycemic target is A1c &lt;7% for most adults (relaxed to &lt;8% in frail/elderly, tightened to &lt;6.5% in young/short-duration if achievable without hypoglycemia). Mnemonic: 'pick the organ you most want to protect, then pick its drug.'</div><div class="rtt">⚠️ Wrong answer: 'choose the agent that lowers A1c the most.' Discriminator — once a patient has ASCVD/HF/CKD, you choose a drug with proven organ benefit (SGLT2i or GLP-1 RA) regardless of A1c, not the most potent glucose-lowering agent. The boards reward outcome-driven, not glucose-driven, selection.</div></div><div class="rt"><div class="rtl">2. ASCVD counter</div><div class="rte">Established atherosclerotic CV disease (prior MI, stroke, PAD, or significant stenosis): both GLP-1 RA and SGLT2i reduce MACE, but GLP-1 RA is favored for atherosclerotic events (LEADER liraglutide, SUSTAIN-6 semaglutide, REWIND dulaglutide all showed MACE reduction). GLP-1 RAs work partly via anti-atherosclerotic and weight/BP effects. SGLT2i (EMPA-REG empagliflozin, CANVAS canagliflozin) also cut CV death, with their edge being heart-failure/renal outcomes. Mnemonic: 'arteries → GLP-1; pump/kidney → SGLT2.'</div><div class="rtt">⚠️ Wrong answer: 'add a sulfonylurea or DPP-4 inhibitor because A1c is still high.' Discriminator — SU and DPP-4i are CV-NEUTRAL (saxagliptin even raised HF hospitalization in SAVOR-TIMI). In a patient with ASCVD you must pick a class with demonstrated MACE reduction (GLP-1 RA or SGLT2i).</div></div><div class="rt"><div class="rtl">3. HF counter — SGLT2</div><div class="rte">Heart failure (HFrEF AND HFpEF) → SGLT2i is the agent of choice. Empagliflozin (EMPEROR-Reduced/Preserved) and dapagliflozin (DAPA-HF/DELIVER) reduce HF hospitalization and CV death even in NON-diabetics, which is why SGLT2is are now part of the four-pillar HF regimen. GLP-1 RAs do NOT carry this HF benefit. TZDs cause sodium/water retention and worsen HF. Mnemonic: 'failing pump loves a flozin.'</div><div class="rtt">⚠️ Wrong answer: 'pioglitazone, since it improves insulin sensitivity.' Discriminator — TZDs (rosi- AND pioglitazone) are contraindicated in symptomatic NYHA III–IV HF because PPAR-γ activation causes fluid retention and edema. Never pick a TZD for the HF phenotype; pick an SGLT2i.</div></div><div class="rt"><div class="rtl">4. CKD / albuminuria counter</div><div class="rte">Diabetic kidney disease, especially with albuminuria → SGLT2i is renoprotective (CREDENCE canagliflozin, DAPA-CKD dapagliflozin slowed progression to ESRD and reduced albuminuria via afferent arteriolar constriction lowering intraglomerular pressure). Can INITIATE SGLT2i down to eGFR ~20–25 for renal protection even though glucose-lowering wanes below ~45; the renal indication differs from the glycemic one. Add GLP-1 RA if more glucose lowering or CV/weight benefit is needed. Mnemonic: 'flozin for the failing filter.'</div><div class="rtt">⚠️ Wrong answer: 'continue glyburide and titrate up.' Discriminator — glyburide has active renally-cleared metabolites that accumulate in CKD and cause prolonged hypoglycemia; it is the worst SU in renal impairment. Choose SGLT2i ± GLP-1 RA and, if a secretagogue is unavoidable, use glipizide (hepatic metabolism).</div></div><div class="rt"><div class="rtl">5. Obesity counter</div><div class="rte">Obese phenotype → GLP-1 RA (semaglutide ~10–15% weight loss; liraglutide) or the dual GIP/GLP-1 agonist tirzepatide (SURMOUNT: up to ~20% weight loss, the most potent). These slow gastric emptying and act on hypothalamic satiety. SGLT2i give modest weight loss (~2–3 kg via glucosuria). Mnemonic: 'tirzepatide = two incretins, top weight loss.'</div><div class="rtt">⚠️ Wrong answer: 'add basal insulin or a sulfonylurea to bring glucose down faster.' Discriminator — insulin, SU, glinides, and TZDs all cause WEIGHT GAIN, the opposite of the goal. In the obese patient pick a GLP-1 RA or tirzepatide; reserve insulin for severe hyperglycemia/catabolism.</div></div><div class="rt"><div class="rtl">6. Hypo-risk counter</div><div class="rte">When hypoglycemia is dangerous (elderly, frail, commercial drivers, lives alone, CKD) → choose agents that do NOT cause hypoglycemia as monotherapy: metformin, SGLT2i, GLP-1 RA, DPP-4i, and TZD. These either reduce hepatic glucose, increase glucosuria, or stimulate insulin GLUCOSE-DEPENDENTLY (incretins). Mnemonic: 'incretins are smart — they only push insulin when sugar is high.'</div><div class="rtt">⚠️ Wrong answer: 'glyburide is fine, it's cheap and effective.' Discriminator — sulfonylureas and glinides close the K-ATP channel and force insulin secretion regardless of glucose, so they (and insulin) carry the HIGHEST hypoglycemia risk. They are the wrong pick for any hypo-vulnerable patient.</div></div><div class="rt"><div class="rtl">7. Contraindications wall</div><div class="rte">Class-specific contraindications: SGLT2i — euglycemic DKA risk (hold for surgery/illness/dehydration, avoid in T1DM, glucose-lowering limited at very low eGFR); TZD — symptomatic CHF, prior bladder cancer concern (pioglitazone), high fracture risk; GLP-1 RA — personal/family history of medullary thyroid carcinoma or MEN2 (rodent C-cell tumors), prior pancreatitis; metformin — eGFR &lt;30, IV contrast, sepsis/hypoperfusion (lactic acidosis). Mnemonic: 'GLP-1 hates the thyroid C-cell; flozin hates dehydration; TZD hates the failing heart.'</div><div class="rtt">⚠️ Wrong answer: 'start a GLP-1 RA in a patient with a thyroid nodule and family history of medullary thyroid cancer.' Discriminator — personal/family MTC or MEN2 is an absolute contraindication to GLP-1 RAs (and tirzepatide) due to the C-cell tumor signal; choose SGLT2i or another class instead.</div></div><div class="rt"><div class="rtl">8. Avoid TZD — fluid</div><div class="rte">TZDs (pioglitazone, rosiglitazone) activate PPAR-γ, which upregulates renal ENaC sodium reabsorption causing fluid retention, peripheral edema, weight gain, and precipitation/worsening of heart failure. Effect is dose-dependent and worse when combined with insulin. Mnemonic: 'PPAR-γ → puddles (edema).'</div><div class="rtt">⚠️ Wrong answer: 'TZD edema is just cosmetic, keep the drug and add a thiazide.' Discriminator — TZD fluid retention is mechanistically distal-nephron and resistant to thiazides/loops; the correct action is to STOP the TZD, especially in any patient with HF or volume sensitivity. Do not pick a TZD when fluid status matters.</div></div><div class="rt"><div class="rtl">9. Stop SGLT2 if eGFR &lt;30 / avoid glyburide</div><div class="rte">SGLT2i glucose-lowering efficacy depends on filtered glucose load, so it falls as eGFR declines (minimal glycemic effect below ~45); however renal/CV protection persists and they may be continued/initiated to lower eGFR thresholds for those indications. Glyburide is renally cleared with active metabolites → accumulation and prolonged hypoglycemia in CKD/elderly. Mnemonic: 'flozin = weak sugar drug but strong organ drug at low GFR; glyburide = land mine in CKD.'</div><div class="rtt">⚠️ Wrong answer: 'expect a big A1c drop from an SGLT2i started at eGFR 25.' Discriminator — at low eGFR the SGLT2i barely lowers glucose (you keep it for kidney/heart protection, not A1c). If you need glycemic control there, lean on insulin or a GLP-1 RA, and never reach for glyburide.</div></div><div class="rt"><div class="rtl">10. Glyburide — worst</div><div class="rte">Among sulfonylureas, glyburide (glibenclamide) is the worst for hypoglycemia: long-acting, renally cleared, with active metabolites — high risk in the elderly and in CKD (severe, prolonged, sometimes overnight hypoglycemia). If a SU must be used, prefer glipizide (short-acting, hepatic metabolism) or glimepiride. Mnemonic: 'glyBURIDE buries the elderly.'</div><div class="rtt">⚠️ Wrong answer: 'glyburide for an 80-year-old with CKD because it's inexpensive.' Discriminator — age &gt;65 and CKD both amplify glyburide hypoglycemia; the Beers list flags it. Pick glipizide if a secretagogue is needed, or better, a low-hypo agent (DPP-4i, GLP-1 RA, SGLT2i).</div></div><div class="rt"><div class="rtl">11. Cheap vs expensive</div><div class="rte">Cost/benefit tradeoff: GLP-1 RAs, SGLT2is, and tirzepatide are expensive but deliver CV/renal/weight benefit with low hypoglycemia; metformin, sulfonylureas, and older human insulins (NPH/regular) are cheap but SU/insulin bring weight gain and hypoglycemia. Mnemonic: 'cheap = secretagogues (gain + hypo); pricey = protectors (lose weight, low hypo).'</div><div class="rtt">⚠️ Wrong answer: 'cost should never influence the choice.' Discriminator — when there is NO compelling comorbidity and budget is limited, a cheap SU added to metformin is acceptable; but when ASCVD/HF/CKD is present, the outcome benefit of SGLT2i/GLP-1 RA outweighs cost. Tailor to both the phenotype and access.</div></div><div class="rt"><div class="rtl">12. No combo — same pathway</div><div class="rte">Never combine two drugs that hit the same target. DPP-4 inhibitors raise endogenous GLP-1/GIP, so adding them to an injectable GLP-1 RA gives no extra benefit (the GLP-1 RA already supraphysiologically activates the receptor) — redundant and wasteful. Likewise, don't stack two insulin secretagogues (SU + glinide) or a secretagogue + prandial insulin (additive hypoglycemia). Mnemonic: 'one knob per pathway.'</div><div class="rtt">⚠️ Wrong answer: 'add sitagliptin to a patient already on semaglutide to boost the incretin effect.' Discriminator — DPP-4i + GLP-1 RA is the classic redundant combination; discontinue the DPP-4i when starting a GLP-1 RA. The correct add-on is a different mechanism (metformin, SGLT2i, etc.).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_severity_triage.html" title="Diabetes — Scene 1: T2DM Severity Triage Gate">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_incretins.html" title="Diabetes — Scene 3 Incretins: GLP-1 / GIP Harbor">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

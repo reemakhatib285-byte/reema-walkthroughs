@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hemolytic Anemia — Enzyme Defects (Pyruvate Kinase &amp; Glycolysis)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>No mitochondria — glycolysis only</b> — WRONG answer: "RBCs generate most of their ATP through oxidative phosphorylation in mitochondria." Discriminator: mature erythrocytes are anucleate and amitochondrial — they depend entirely on anaerobic glycolysis for ATP, which is exactly why glycolytic enzyme defects like PK deficiency cause hemolysis.</li><li><b>Pyruvate kinase (PK) engine</b> — WRONG answer: "G6PD is a glycolytic enzyme, so G6PD deficiency and PK deficiency cause the same kind of hemolysis." Discriminator: G6PD is in the HMP shunt (NADPH/antioxidant arm), causing episodic OXIDATIVE hemolysis with Heinz bodies and bite cells; PK is in glycolysis (ATP arm), causing CHRONIC non-spherocytic hemolysis with a normal-looking smear and no Heinz bodies.</li><li><b>ATP depletion</b> — WRONG answer: "PK deficiency causes brisk INTRAVASCULAR hemolysis with hemoglobinuria during oxidant exposure." Discriminator: PK deficiency is CHRONIC EXTRAVASCULAR hemolysis from ATP-starved rigid cells cleared by the spleen — intravascular hemolysis with dark urine after an oxidant trigger describes G6PD deficiency, not PK.</li><li><b>High 2,3-BPG</b> — WRONG answer: "PK deficiency raises hemoglobin's oxygen affinity (left-shifted curve), so tissue oxygen delivery is impaired." Discriminator: PK deficiency accumulates 2,3-BPG, which RIGHT-shifts the curve and LOWERS O2 affinity — patients are unusually well-compensated for their degree of anemia; a left shift / high O2 affinity is the wrong direction.</li><li><b>Autosomal recessive</b> — WRONG answer: "PK deficiency is X-linked recessive, so it predominantly affects males like G6PD deficiency." Discriminator: PK deficiency is autosomal recessive (equal sex distribution, carrier parents); the X-linked male-predominant pattern belongs to G6PD deficiency. Pedigree pattern is a fast way to separate the two enzymopathies.</li><li><b>Mediterranean/malaria</b> — WRONG answer: "Malaria-protective selection only operates for hemoglobinopathies like sickle trait, never for enzyme defects." Discriminator: malaria protection is a recurring theme across multiple RBC defects — G6PD deficiency, thalassemia, sickle, SAO, and to some degree PK deficiency — all selected as balanced polymorphisms in endemic regions, not hemoglobinopathies alone.</li><li><b>Chronic non-spherocytic HA</b> — WRONG answer: "PK deficiency produces numerous spherocytes and a positive direct Coombs test." Discriminator: PK deficiency is Coombs-NEGATIVE with a near-normal smear (non-spherocytic) — spherocytes point to hereditary spherocytosis or warm AIHA, and a positive Coombs points to autoimmune hemolysis, both of which exclude PK deficiency.</li><li><b>Enzyme assay diagnostic</b> — WRONG answer: "A normal PK enzyme activity level fully excludes PK deficiency." Discriminator: young reticulocytes contain abundant PK, so during reticulocytosis the assay can read falsely normal — interpret PK activity relative to the reticulocyte count (or confirm with PKLR sequencing), analogous to how a G6PD level can read falsely normal during a crisis.</li><li><b>Mitapivat (PK activator)</b> — WRONG answer: "Mitapivat is a PK INHIBITOR used to suppress hemolysis." Discriminator: mitapivat is an allosteric PK ACTIVATOR — it increases residual enzyme function (best with missense variants), raising ATP and Hb; calling it an inhibitor inverts the entire mechanism.</li><li><b>Transfusion / exchange</b> — WRONG answer: "A child with PK deficiency must be transfused to a normal hemoglobin because they cannot oxygenate tissues at low Hb." Discriminator: the elevated 2,3-BPG (right-shifted curve) means PK patients oxygenate tissues relatively well at low Hb, so transfusion is symptom-driven and thresholds are lower than the absolute Hb would otherwise suggest.</li><li><b>Iron overload / no transfusion</b> — WRONG answer: "Iron overload in PK deficiency happens only in patients who receive chronic transfusions." Discriminator: in PK deficiency, increased intestinal iron absorption from chronic hemolysis causes iron overload even WITHOUT transfusion — ferritin should be monitored in all patients, not just the transfused ones.</li><li><b>Splenectomy / BMT / gene therapy</b> — WRONG answer: "Splenectomy cures PK deficiency by correcting the underlying enzyme defect." Discriminator: splenectomy only removes the major site of destruction (palliative — it reduces hemolysis and transfusion need); the PKLR enzyme defect persists. Only allogeneic stem-cell transplant or gene therapy is potentially curative.</li><li><b>Other rare housekeeping enzymes</b> — WRONG answer: "All glycolytic enzyme deficiencies are autosomal recessive and confined to the red cell." Discriminator: there are exceptions — PGK deficiency is X-linked, and several (PFK/Tarui, TPI, PGK) cause prominent MYOPATHY or NEUROLOGIC disease beyond hemolysis; TPI in particular is the most severe with neurodegeneration and early mortality.</li><li><b>P5N deficiency basophilic stippling</b> — WRONG answer: "Coarse basophilic stippling on the smear is specific for lead poisoning and rules out an inherited enzyme defect." Discriminator: basophilic stippling is shared by lead poisoning AND hereditary P5N deficiency (lead inhibits P5N — it is a phenocopy); also seen in thalassemia and sideroblastic anemia. Confirm with a lead level rather than assuming the diagnosis from stippling alone.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. No mitochondria — glycolysis only</div><div class="rte">Mature RBCs have NO mitochondria and no nucleus, so they cannot do oxidative phosphorylation or the TCA cycle — all ATP comes from anaerobic (Embden–Meyerhof) glycolysis, and reducing power (NADPH) comes from the parallel hexose-monophosphate shunt. ATP is needed to run the Na+/K+ and Ca2+ pumps that maintain cell shape and deformability; NADPH (via G6PD) defends against oxidative stress. A defect in the glycolytic ATP arm causes chronic hemolysis (e.g., PK deficiency); a defect in the HMP/NADPH arm causes oxidative hemolysis (G6PD).</div><div class="rtt">⚠️ WRONG answer: "RBCs generate most of their ATP through oxidative phosphorylation in mitochondria." Discriminator: mature erythrocytes are anucleate and amitochondrial — they depend entirely on anaerobic glycolysis for ATP, which is exactly why glycolytic enzyme defects like PK deficiency cause hemolysis.</div></div><div class="rt"><div class="rtl">2. Pyruvate kinase (PK) engine</div><div class="rte">Pyruvate kinase (PKLR gene) catalyzes the final, ATP-generating step of glycolysis (phosphoenolpyruvate → pyruvate, making ATP). PK deficiency is the MOST COMMON glycolytic (Embden–Meyerhof) enzymopathy causing hereditary hemolytic anemia — overall, G6PD deficiency is the most common RBC enzyme defect, but among the glycolytic-pathway enzymes PK is number one. Low PK starves the cell of ATP. Mnemonic: PK = the engine that makes the ATP; lose it and the pumps stall.</div><div class="rtt">⚠️ WRONG answer: "G6PD is a glycolytic enzyme, so G6PD deficiency and PK deficiency cause the same kind of hemolysis." Discriminator: G6PD is in the HMP shunt (NADPH/antioxidant arm), causing episodic OXIDATIVE hemolysis with Heinz bodies and bite cells; PK is in glycolysis (ATP arm), causing CHRONIC non-spherocytic hemolysis with a normal-looking smear and no Heinz bodies.</div></div><div class="rt"><div class="rtl">3. ATP depletion</div><div class="rte">Loss of PK → loss of ATP → the ATP-dependent Na+/K+ and Ca2+ membrane pumps fail, so the RBC loses K+ and water, becomes rigid and dehydrated, and is trapped and destroyed primarily EXTRAVASCULARLY in the spleen and liver (macrophages). This is a chronic hemolysis: jaundice, splenomegaly, gallstones, and a high reticulocyte count. There are no Heinz bodies (that is the oxidative/G6PD pathway) and no spherocytes.</div><div class="rtt">⚠️ WRONG answer: "PK deficiency causes brisk INTRAVASCULAR hemolysis with hemoglobinuria during oxidant exposure." Discriminator: PK deficiency is CHRONIC EXTRAVASCULAR hemolysis from ATP-starved rigid cells cleared by the spleen — intravascular hemolysis with dark urine after an oxidant trigger describes G6PD deficiency, not PK.</div></div><div class="rt"><div class="rtl">4. High 2,3-BPG</div><div class="rte">Because the PK block is at the very end of glycolysis, upstream intermediates accumulate — including 2,3-bisphosphoglycerate (2,3-BPG). High 2,3-BPG right-shifts the oxygen–hemoglobin dissociation curve (DECREASED O2 affinity), so hemoglobin unloads O2 to tissues more readily. The clinical payoff: patients tolerate anemia better than the Hb number predicts ("high tolerance"). Mnemonic: PK block backs up the line → 2,3-BPG piles up → curve shifts RIGHT → better O2 delivery.</div><div class="rtt">⚠️ WRONG answer: "PK deficiency raises hemoglobin's oxygen affinity (left-shifted curve), so tissue oxygen delivery is impaired." Discriminator: PK deficiency accumulates 2,3-BPG, which RIGHT-shifts the curve and LOWERS O2 affinity — patients are unusually well-compensated for their degree of anemia; a left shift / high O2 affinity is the wrong direction.</div></div><div class="rt"><div class="rtl">5. Autosomal recessive</div><div class="rte">PK deficiency (PKLR) is autosomal RECESSIVE — affected patients are homozygous or compound heterozygous, affected males and females are equal, and the parents are usually asymptomatic carriers. This is the key inheritance contrast with G6PD deficiency, which is X-linked recessive (male-predominant pedigree). On boards, AR + chronic non-spherocytic hemolysis + normal smear + Coombs-negative = pyruvate kinase deficiency until proven otherwise.</div><div class="rtt">⚠️ WRONG answer: "PK deficiency is X-linked recessive, so it predominantly affects males like G6PD deficiency." Discriminator: PK deficiency is autosomal recessive (equal sex distribution, carrier parents); the X-linked male-predominant pattern belongs to G6PD deficiency. Pedigree pattern is a fast way to separate the two enzymopathies.</div></div><div class="rt"><div class="rtl">6. Mediterranean/malaria</div><div class="rte">PK deficiency occurs worldwide and is the most common glycolytic enzymopathy; like several RBC defects (G6PD, thalassemia, sickle, SAO) it shows some geographic clustering with partial malaria-protective selection, as the metabolically stressed RBC is a poorer host for Plasmodium. The Amish (a founder population) have a notable cluster. The takeaway is conceptual — RBC metabolic defects recur as balanced polymorphisms in malaria-endemic regions.</div><div class="rtt">⚠️ WRONG answer: "Malaria-protective selection only operates for hemoglobinopathies like sickle trait, never for enzyme defects." Discriminator: malaria protection is a recurring theme across multiple RBC defects — G6PD deficiency, thalassemia, sickle, SAO, and to some degree PK deficiency — all selected as balanced polymorphisms in endemic regions, not hemoglobinopathies alone.</div></div><div class="rt"><div class="rtl">7. Chronic non-spherocytic HA</div><div class="rte">PK deficiency is the prototype of CHRONIC NON-SPHEROCYTIC hemolytic anemia: the direct antiglobulin (Coombs) test is NEGATIVE (it is not immune-mediated), and the peripheral smear morphology is essentially NORMAL — no spherocytes, no Heinz bodies, occasionally echinocytes/burr cells especially after splenectomy. You get the usual hemolysis labs (high reticulocytes, high indirect bilirubin and LDH, low haptoglobin) without a distinctive RBC shape, which is the diagnostic clue.</div><div class="rtt">⚠️ WRONG answer: "PK deficiency produces numerous spherocytes and a positive direct Coombs test." Discriminator: PK deficiency is Coombs-NEGATIVE with a near-normal smear (non-spherocytic) — spherocytes point to hereditary spherocytosis or warm AIHA, and a positive Coombs points to autoimmune hemolysis, both of which exclude PK deficiency.</div></div><div class="rt"><div class="rtl">8. Enzyme assay diagnostic</div><div class="rte">Diagnosis of PK deficiency is confirmed by a QUANTITATIVE PK enzyme activity assay (and increasingly PKLR genetic testing), after a Coombs-negative, non-spherocytic hemolytic anemia is identified. Caveat: reticulocytes are rich in PK, so a very high reticulocyte count can spuriously raise measured activity toward normal — leukocyte contamination must be removed and results interpreted against the reticulocyte count, or read genetic testing as confirmation.</div><div class="rtt">⚠️ WRONG answer: "A normal PK enzyme activity level fully excludes PK deficiency." Discriminator: young reticulocytes contain abundant PK, so during reticulocytosis the assay can read falsely normal — interpret PK activity relative to the reticulocyte count (or confirm with PKLR sequencing), analogous to how a G6PD level can read falsely normal during a crisis.</div></div><div class="rt"><div class="rtl">9. Mitapivat (PK activator)</div><div class="rte">Mitapivat is the first targeted therapy for PK deficiency — an oral ALLOSTERIC ACTIVATOR of pyruvate kinase that boosts residual enzyme activity, raising Hb, increasing ATP, and lowering 2,3-BPG. It works best in patients with MISSENSE mutations (some residual enzyme to activate) rather than null/non-missense alleles. Typical dosing is started at 5 mg twice daily and titrated up to 50 mg twice daily; it is approved for transfusion-eligible/non-transfusion PK-deficiency adults.</div><div class="rtt">⚠️ WRONG answer: "Mitapivat is a PK INHIBITOR used to suppress hemolysis." Discriminator: mitapivat is an allosteric PK ACTIVATOR — it increases residual enzyme function (best with missense variants), raising ATP and Hb; calling it an inhibitor inverts the entire mechanism.</div></div><div class="rt"><div class="rtl">10. Transfusion / exchange</div><div class="rte">Severe PK deficiency may require RBC transfusion support, especially in infancy/early childhood and during aplastic (parvovirus B19) crises; exchange transfusion can be used for severe neonatal hyperbilirubinemia. Many patients, however, tolerate surprisingly low Hb values because the high 2,3-BPG right-shifts the O2 curve and improves tissue O2 delivery — so transfusion thresholds are individualized to symptoms, not a fixed Hb number.</div><div class="rtt">⚠️ WRONG answer: "A child with PK deficiency must be transfused to a normal hemoglobin because they cannot oxygenate tissues at low Hb." Discriminator: the elevated 2,3-BPG (right-shifted curve) means PK patients oxygenate tissues relatively well at low Hb, so transfusion is symptom-driven and thresholds are lower than the absolute Hb would otherwise suggest.</div></div><div class="rt"><div class="rtl">11. Iron overload / no transfusion</div><div class="rte">Chronic hemolysis in PK deficiency drives complications independent of transfusion: IRON OVERLOAD (from increased GI iron absorption and any transfusions — monitor ferritin and consider chelation/phlebotomy), pigment GALLSTONES (cholecystectomy if symptomatic), and folate consumption by the hyperactive marrow (give folic acid ~1 mg/day). Importantly, iron overload can occur even in non-transfused patients, so iron status must be tracked regardless of transfusion history.</div><div class="rtt">⚠️ WRONG answer: "Iron overload in PK deficiency happens only in patients who receive chronic transfusions." Discriminator: in PK deficiency, increased intestinal iron absorption from chronic hemolysis causes iron overload even WITHOUT transfusion — ferritin should be monitored in all patients, not just the transfused ones.</div></div><div class="rt"><div class="rtl">12. Splenectomy / BMT / gene therapy</div><div class="rte">For severe transfusion-dependent PK deficiency, SPLENECTOMY is the main intervention — it reduces extravascular destruction and transfusion need (Hb typically rises and the reticulocyte count climbs further as more cells survive in circulation). Pre-splenectomy give encapsulated-organism vaccines and counsel on OPSI; post-splenectomy thrombosis risk warrants vigilance. Allogeneic hematopoietic stem-cell transplant (HLA-matched sibling) is potentially curative, and PKLR gene therapy is in trials.</div><div class="rtt">⚠️ WRONG answer: "Splenectomy cures PK deficiency by correcting the underlying enzyme defect." Discriminator: splenectomy only removes the major site of destruction (palliative — it reduces hemolysis and transfusion need); the PKLR enzyme defect persists. Only allogeneic stem-cell transplant or gene therapy is potentially curative.</div></div><div class="rt"><div class="rtl">13. Other rare housekeeping enzymes</div><div class="rte">Beyond PK, rare glycolytic ('housekeeping') enzymopathies each have a board hook: GPI deficiency (2nd most common glycolytic defect after PK); PFK deficiency = Tarui disease / glycogen storage disease VII (also a muscle myopathy); triosephosphate isomerase (TPI) deficiency = the MOST SEVERE, with progressive NEUROMUSCULAR/neurodegenerative disease and early death; phosphoglycerate kinase (PGK) deficiency = X-LINKED with hemolysis, myopathy, and CNS involvement. Most are autosomal recessive and present as chronic non-spherocytic hemolysis.</div><div class="rtt">⚠️ WRONG answer: "All glycolytic enzyme deficiencies are autosomal recessive and confined to the red cell." Discriminator: there are exceptions — PGK deficiency is X-linked, and several (PFK/Tarui, TPI, PGK) cause prominent MYOPATHY or NEUROLOGIC disease beyond hemolysis; TPI in particular is the most severe with neurodegeneration and early mortality.</div></div><div class="rt"><div class="rtl">14. P5N deficiency basophilic stippling</div><div class="rte">Pyrimidine-5'-nucleotidase (P5N) deficiency impairs degradation of RNA-derived pyrimidine nucleotides, which accumulate and produce coarse BASOPHILIC STIPPLING on the smear with chronic hemolysis (autosomal recessive). The high-yield link: LEAD POISONING inhibits P5N (and ALA dehydratase/ferrochelatase), so lead is an acquired phenocopy with the same coarse basophilic stippling — always check a lead level when you see stippling plus hemolysis, especially in a child or occupational exposure.</div><div class="rtt">⚠️ WRONG answer: "Coarse basophilic stippling on the smear is specific for lead poisoning and rules out an inherited enzyme defect." Discriminator: basophilic stippling is shared by lead poisoning AND hereditary P5N deficiency (lead inhibits P5N — it is a phenocopy); also seen in thalassemia and sideroblastic anemia. Confirm with a lead level rather than assuming the diagnosis from stippling alone.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hemol_elliptocytosis.html" title="Hemolytic Anemia — Elliptocytosis &amp; Stomatocytosis (Museum of Shapes)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hemol_g6pd.html" title="Hemolytic Anemia — G6PD Deficiency (Shield System)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

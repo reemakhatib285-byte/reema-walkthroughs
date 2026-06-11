@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Adrenal — Imaging War Room &amp; Pathology Lab</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>8</em></summary><ol class="traps"><li><b>Radiographic differential panel</b> — A markedly T2-hyperintense or hypervascular mass is pheo until proven otherwise — don't catalog it as a generic adenoma and don't proceed to biopsy.</li><li><b>HU thermometer</b> — LOW HU is the reassuring one. The common reversal trap is treating high attenuation as benign — &gt;20 HU raises malignancy concern, not lowers it.</li><li><b>Size ruler</b> — Size alone is not diagnostic — combine with HU/phenotype. But a &gt;4 cm lesion should never be dismissed without characterization, and rapid interval growth is a red flag.</li><li><b>&gt;4cm + &gt;20 HU = ACC</b> — Virilization + a large heterogeneous adrenal mass = ACC until proven otherwise — don't mislabel as a benign androgen-secreting adenoma.</li><li><b>Biopsy rules — never biopsy</b> — Don't biopsy a suspected ACC (downstages/seeds, doesn't even diagnose). And never biopsy any adrenal mass before excluding pheo — needling can trigger a hypertensive crisis.</li><li><b>Always exclude pheo first</b> — The number-one safety trap: manipulating/biopsying/operating on an adrenal mass without first ruling out pheo — phenoxybenzamine alpha-blockade must precede any beta-blocker.</li><li><b>Weiss score ≥3 = malignant</b> — Weiss requires the WHOLE specimen — this is exactly why biopsy/FNA cannot diagnose ACC.</li><li><b>Metastatic map</b> — Don't confuse direction: a solitary adrenal mass in a patient with known lung/breast cancer is usually a metastasis (biopsy-able after pheo exclusion), not a new ACC.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Imaging war room</div><div class="rte">Cross-sectional imaging answers the malignancy question for an adrenal mass; UNENHANCED (non-contrast) CT is the first and most important test because intracytoplasmic LIPID in benign adenomas lowers attenuation. If non-contrast CT is indeterminate, add a CT washout study or MRI chemical-shift imaging.</div></div><div class="rt"><div class="rtl">2. Radiographic differential panel</div><div class="rte">The radiographic differential ranks lesions: small (&lt;4 cm) low-HU homogeneous = adenoma; large (&gt;4–6 cm), heterogeneous, irregular = ACC; macroscopic fat = myelolipoma; markedly T2-bright/'light-bulb' on MRI or very vascular = pheochromocytoma — which must ALWAYS be excluded biochemically before any intervention.</div><div class="rtt">⚠️ A markedly T2-hyperintense or hypervascular mass is pheo until proven otherwise — don't catalog it as a generic adenoma and don't proceed to biopsy.</div></div><div class="rt"><div class="rtl">3. HU thermometer</div><div class="rte">Non-contrast attenuation is the single most useful number: ≤10 HU = LIPID-RICH benign adenoma (high specificity, no further workup). 10–20 HU is indeterminate (lipid-poor adenoma vs other) and needs washout/MRI; &gt;20 HU is suspicious for malignancy/ACC, pheo, or metastasis. On CT WASHOUT, an adenoma shows absolute washout &gt;60% or relative washout &gt;40% even if lipid-poor.</div><div class="rtt">⚠️ LOW HU is the reassuring one. The common reversal trap is treating high attenuation as benign — &gt;20 HU raises malignancy concern, not lowers it.</div></div><div class="rt"><div class="rtl">4. Size ruler</div><div class="rte">Size correlates with ACC risk: &lt;4 cm overwhelmingly benign; &gt;4 cm raises concern; &gt;6 cm carries a substantial malignancy probability and generally warrants resection regardless of function. Size plus attenuation (and growth &gt;0.8–1 cm over follow-up) drive the surgical decision.</div><div class="rtt">⚠️ Size alone is not diagnostic — combine with HU/phenotype. But a &gt;4 cm lesion should never be dismissed without characterization, and rapid interval growth is a red flag.</div></div><div class="rt"><div class="rtl">5. &gt;4cm + &gt;20 HU = ACC</div><div class="rte">The classic ACC imaging signature: &gt;4 cm, non-contrast &gt;20 HU (often &gt;40), HETEROGENEOUS with central necrosis/hemorrhage and calcification, irregular margins, and delayed/poor contrast washout. Many ACCs are hormonally active (cortisol ± androgens → virilization, or mixed). Such a lesion should go to a multidisciplinary team for resection, not biopsy.</div><div class="rtt">⚠️ Virilization + a large heterogeneous adrenal mass = ACC until proven otherwise — don't mislabel as a benign androgen-secreting adenoma.</div></div><div class="rt"><div class="rtl">6. Local/vascular invasion</div><div class="rte">Invasion of adjacent organs (kidney, liver) or tumor thrombus in the adrenal/renal vein or IVC is a definitive sign of MALIGNANCY (ACC) and upstages disease. It also dictates an OPEN operation by an experienced surgeon to avoid capsule violation and tumor spillage.</div></div><div class="rt"><div class="rtl">7. FDG-PET avid</div><div class="rte">On FDG-PET, malignant lesions (ACC, metastases) are FDG-avid with adrenal-to-liver SUV ratio above background, whereas benign adenomas are typically not. PET is most useful for indeterminate lesions, staging ACC, and detecting metastases; (18F-FDG for ACC/mets; 18F-FDOPA or MIBG for pheo/paraganglioma).</div></div><div class="rt"><div class="rtl">8. Biopsy rules — never biopsy</div><div class="rte">Adrenal biopsy is rarely indicated and is CONTRAINDICATED for suspected ACC or pheo: cytology cannot reliably distinguish adenoma from carcinoma (that requires the whole resected specimen and Weiss score), and needling risks NEEDLE-TRACK SEEDING and capsule violation that worsens prognosis. Biopsy is reserved for a suspected METASTASIS in a patient with known extra-adrenal cancer, and only AFTER pheo is biochemically excluded.</div><div class="rtt">⚠️ Don't biopsy a suspected ACC (downstages/seeds, doesn't even diagnose). And never biopsy any adrenal mass before excluding pheo — needling can trigger a hypertensive crisis.</div></div><div class="rt"><div class="rtl">9. Always exclude pheo first</div><div class="rte">Before ANY procedure (biopsy or surgery) on an adrenal mass, biochemically exclude pheochromocytoma with plasma free or 24-h urinary fractionated metanephrines. An unsuspected pheo can release catecholamines during manipulation → lethal hypertensive crisis; if confirmed, pretreat with alpha-blockade (phenoxybenzamine/doxazosin) before beta-blockade.</div><div class="rtt">⚠️ The number-one safety trap: manipulating/biopsying/operating on an adrenal mass without first ruling out pheo — phenoxybenzamine alpha-blockade must precede any beta-blocker.</div></div><div class="rt"><div class="rtl">10. Weiss score ≥3 = malignant</div><div class="rte">The Weiss system is the HISTOLOGIC criterion for adrenocortical malignancy (assessable only on the resected tumor): 9 features including high nuclear grade, &gt;5 mitoses/50 HPF, atypical mitoses, &lt;25% clear cells, diffuse architecture, necrosis, and venous/sinusoidal/capsular invasion. A score ≥3 indicates carcinoma.</div><div class="rtt">⚠️ Weiss requires the WHOLE specimen — this is exactly why biopsy/FNA cannot diagnose ACC.</div></div><div class="rt"><div class="rtl">11. Ki-67 prognostic</div><div class="rte">Ki-67 is a proliferation index in ACC: it guides adjuvant treatment and prognosis — roughly &lt;10% lower risk, ≥10% poor prognosis (some thresholds use &gt;20% for high risk). Higher Ki-67 favors adjuvant mitotane ± chemotherapy.</div></div><div class="rt"><div class="rtl">12. ENSAT/TNM staging tower</div><div class="rte">ACC is staged by ENSAT/TNM (I–IV): I ≤5 cm confined, II &gt;5 cm confined, III local invasion/regional nodes/vein thrombus, IV distant METASTASES. Stage drives therapy and prognosis — complete R0 resection is the only curative option; adjuvant mitotane for high-risk; advanced disease gets EDP-mitotane (etoposide, doxorubicin, cisplatin).</div></div><div class="rt"><div class="rtl">13. Metastatic map</div><div class="rte">ACC metastasizes hematogenously most often to LIVER and LUNG, then bone; this defines stage IV (ENSAT IV). Conversely, the adrenal is a frequent recipient of metastases FROM lung, breast, melanoma, renal and GI primaries — so in a known-cancer patient a new adrenal lesion is more likely a metastasis than a primary ACC.</div><div class="rtt">⚠️ Don't confuse direction: a solitary adrenal mass in a patient with known lung/breast cancer is usually a metastasis (biopsy-able after pheo exclusion), not a new ACC.</div></div><div class="rt"><div class="rtl">14. Clinical pearl</div><div class="rte">Lock the bottom line: &gt;20 HU + &gt;4 cm + heterogeneous = ACC; never biopsy a suspected ACC or any mass before excluding pheo; Weiss ≥3 confirms malignancy on resection; Ki-67 ≥10% portends poor prognosis; ACC mets favor liver and lung.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="adr_cushing_clinical.html" title="Adrenal — Cushingoid Patient Clinic">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="adr_mass_review.html" title="Adrenal — Mass Review: Imaging &amp; Surgical Decision Tree">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

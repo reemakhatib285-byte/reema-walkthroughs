@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IHD — Exercise Stress Test: Interpretation &amp; High-Risk Findings</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Sensitivity ~75%</b> — WRONG: a negative exercise stress test rules out significant CAD. Discriminator: with only ~75% sensitivity, a normal result cannot exclude CAD — especially in high pretest-probability patients or a submaximal study (HR &lt;85% predicted), where further testing is warranted.</li><li><b>Positive = ≥1 mm ST dep</b> — WRONG: upsloping ST depression counts as a positive result. Discriminator: only flat/horizontal or downsloping ≥1 mm ST depression is diagnostic — upsloping depression is non-diagnostic/normal, and calling it positive overreads the test.</li><li><b>Upsloping ≠ positive</b> — WRONG: upsloping ST depression is a positive (ischemic) finding. Discriminator: the morphology matters — upsloping = benign/non-diagnostic; horizontal or downsloping = positive. This morphology distinction is the single most common interpretation error tested.</li><li><b>Bruce protocol treadmill</b> — WRONG: stopping the test as soon as the patient is mildly tired (before adequate HR/workload) still yields a valid negative. Discriminator: a submaximal study that never reaches 85% predicted HR is non-diagnostic, not reassuring — low METs/early termination is itself a high-risk sign, not a normal test.</li><li><b>ST recovery &gt;5 min = high risk</b> — WRONG: ST changes that linger into recovery are reassuring because the patient 'cooled down.' Discriminator: prolonged recovery-phase ST depression (&gt;5 min) signals more severe ischemia, not resolution — it triggers angiography, not reassurance.</li><li><b>BP drop &gt;10 = high risk / stop</b> — WRONG: a drop in blood pressure during exercise is a benign vasovagal response. Discriminator: exertional hypotension reflects severe LV dysfunction / critical (left main, 3-vessel) disease — it is a danger sign mandating test termination, not a normal finding.</li><li><b>Stage II incomplete = high risk</b> — WRONG: as long as no ST changes occurred, an aborted low-workload test is negative/reassuring. Discriminator: poor functional capacity (early termination, low METs) is a high-risk finding on its own — the absence of ST changes does not make a low-workload test reassuring.</li><li><b>Large/multiple perfusion defects</b> — WRONG: a single small reversible defect and large multivessel defects carry the same prognosis. Discriminator: defect SIZE and NUMBER drive risk — large/multiple reversible defects mean extensive ischemia and high risk, unlike an isolated small defect.</li><li><b>Pulmonary uptake = worst sign</b> — WRONG: pulmonary tracer uptake is an attenuation artifact / soft-tissue overlap and can be ignored. Discriminator: increased lung uptake is a real, high-risk prognostic sign of LV dysfunction — never dismiss it as artifact.</li><li><b>Stage III + normal = very low risk</b> — WRONG: even a normal high-workload study requires confirmatory invasive angiography. Discriminator: completing a high workload with a normal scan confers very low risk (&lt;1%/yr) — invasive angiography is not indicated and would add only procedural risk and false positives.</li><li><b>SPECT (thallium/sestamibi)</b> — WRONG: a fixed defect represents active inducible ischemia needing revascularization. Discriminator: fixed = scar (non-viable, won't benefit from revascularization); only REVERSIBLE defects represent ischemia that revascularization can relieve.</li><li><b>CMR transmural extent</b> — WRONG: transmural late-gadolinium scar will recover function once the vessel is reopened. Discriminator: transmural (&gt;50% thickness) scar is non-viable and won't recover with revascularization — only segments with limited subendocardial scar (viable) improve.</li><li><b>Cannot exercise → pharm injector</b> — WRONG: a patient who can't exercise should still attempt a treadmill test and a submaximal result is acceptable. Discriminator: inability to reach target workload makes exercise ECG non-diagnostic — switch to pharmacologic stress rather than accepting an inadequate exercise study.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Sensitivity ~75%</div><div class="rte">Exercise ECG has only ~68–75% sensitivity and ~70–80% specificity for obstructive CAD, so a normal test does not fully exclude significant disease. Sensitivity climbs when the patient reaches ≥85% of age-predicted maximum heart rate (220 − age) — a submaximal test (failure to reach target HR) is non-diagnostic, not reassuring. Pretest probability still governs interpretation (Bayes): a negative test in a high-risk patient may still be a false negative.</div><div class="rtt">⚠️ WRONG: a negative exercise stress test rules out significant CAD. Discriminator: with only ~75% sensitivity, a normal result cannot exclude CAD — especially in high pretest-probability patients or a submaximal study (HR &lt;85% predicted), where further testing is warranted.</div></div><div class="rt"><div class="rtl">2. Positive = ≥1 mm ST dep</div><div class="rte">A positive exercise ECG = ≥1 mm (0.1 mV) of HORIZONTAL or DOWNSLOPING ST depression measured 80 ms (0.08 s) after the J point, in ≥1 lead. The depression reflects subendocardial ischemia. ST ELEVATION in a non-infarct lead is an even more ominous (and rarer) marker localizing transmural ischemia.</div><div class="rtt">⚠️ WRONG: upsloping ST depression counts as a positive result. Discriminator: only flat/horizontal or downsloping ≥1 mm ST depression is diagnostic — upsloping depression is non-diagnostic/normal, and calling it positive overreads the test.</div></div><div class="rt"><div class="rtl">3. Upsloping ≠ positive</div><div class="rte">Upsloping ST depression is a normal or non-diagnostic exercise response and should NOT be labeled ischemia. Only horizontal or downsloping ST depression ≥1 mm meets criteria. Treating upsloping changes as a positive result generates false positives and unnecessary downstream angiography.</div><div class="rtt">⚠️ WRONG: upsloping ST depression is a positive (ischemic) finding. Discriminator: the morphology matters — upsloping = benign/non-diagnostic; horizontal or downsloping = positive. This morphology distinction is the single most common interpretation error tested.</div></div><div class="rt"><div class="rtl">4. Bruce protocol treadmill</div><div class="rte">The standard Bruce protocol is a graded treadmill test increasing speed and incline every 3 minutes; the goal is to reach ≥85% of age-predicted max HR. Workload is reported in METs, and exercise capacity (METs achieved) is itself a powerful prognostic marker — &lt;5 METs portends a worse prognosis. The Duke treadmill score combines exercise time, ST deviation, and angina to risk-stratify.</div><div class="rtt">⚠️ WRONG: stopping the test as soon as the patient is mildly tired (before adequate HR/workload) still yields a valid negative. Discriminator: a submaximal study that never reaches 85% predicted HR is non-diagnostic, not reassuring — low METs/early termination is itself a high-risk sign, not a normal test.</div></div><div class="rt"><div class="rtl">5. ST recovery &gt;5 min = high risk</div><div class="rte">ST depression that persists more than 5 minutes into the recovery phase is a HIGH-RISK finding suggesting severe/multivessel disease — prolonged ischemia that is slow to resolve. Other high-risk markers: ST depression ≥2 mm, depression at low workload (&lt;5 METs / early in stage I–II), ST elevation, and exertional hypotension. High-risk results warrant invasive coronary angiography.</div><div class="rtt">⚠️ WRONG: ST changes that linger into recovery are reassuring because the patient 'cooled down.' Discriminator: prolonged recovery-phase ST depression (&gt;5 min) signals more severe ischemia, not resolution — it triggers angiography, not reassurance.</div></div><div class="rt"><div class="rtl">6. BP drop &gt;10 = high risk / stop</div><div class="rte">A FALL in systolic BP with exercise (exertional hypotension, drop ≥10 mmHg below baseline or failure to rise) signals severe ischemia or LV systolic dysfunction / left main or 3-vessel disease — it is a high-risk finding and an indication to STOP the test. Normally systolic BP rises with exertion; a drop means the failing left ventricle cannot augment cardiac output.</div><div class="rtt">⚠️ WRONG: a drop in blood pressure during exercise is a benign vasovagal response. Discriminator: exertional hypotension reflects severe LV dysfunction / critical (left main, 3-vessel) disease — it is a danger sign mandating test termination, not a normal finding.</div></div><div class="rt"><div class="rtl">7. Stage II incomplete = high risk</div><div class="rte">Low exercise capacity — inability to complete early stages, early termination, or achieving &lt;5 METs — is itself a strong high-risk/poor-prognosis marker independent of ST changes. Functional capacity is one of the most powerful predictors of cardiovascular outcomes; a patient who fails at low workload needs further evaluation even if the ECG is unrevealing.</div><div class="rtt">⚠️ WRONG: as long as no ST changes occurred, an aborted low-workload test is negative/reassuring. Discriminator: poor functional capacity (early termination, low METs) is a high-risk finding on its own — the absence of ST changes does not make a low-workload test reassuring.</div></div><div class="rt"><div class="rtl">8. Large/multiple perfusion defects</div><div class="rte">On stress perfusion imaging, large or multiple REVERSIBLE perfusion defects indicate extensive jeopardized myocardium (multivessel ischemia) and are high-risk, favoring angiography ± revascularization. A reversible defect (present on stress, fills in at rest) = inducible ischemia; a fixed defect (absent on both) = prior scar/infarct.</div><div class="rtt">⚠️ WRONG: a single small reversible defect and large multivessel defects carry the same prognosis. Discriminator: defect SIZE and NUMBER drive risk — large/multiple reversible defects mean extensive ischemia and high risk, unlike an isolated small defect.</div></div><div class="rt"><div class="rtl">9. Pulmonary uptake = worst sign</div><div class="rte">Increased LUNG uptake of radiotracer on nuclear (thallium) imaging reflects exercise-induced LV dysfunction with elevated pulmonary capillary pressure — it is among the most ominous prognostic findings, signaling severe/extensive (often left main or 3-vessel) disease. Transient ischemic dilation (TID) of the LV cavity on stress images is a similarly high-risk marker of balanced multivessel ischemia.</div><div class="rtt">⚠️ WRONG: pulmonary tracer uptake is an attenuation artifact / soft-tissue overlap and can be ignored. Discriminator: increased lung uptake is a real, high-risk prognostic sign of LV dysfunction — never dismiss it as artifact.</div></div><div class="rt"><div class="rtl">10. Stage III + normal = very low risk</div><div class="rte">A patient who completes a high workload (e.g., Bruce stage III–IV, ≥10 METs) with a NORMAL perfusion scan and no ST changes has an excellent prognosis — annual cardiac event rate &lt;1%. Good functional capacity with a normal study is among the most reassuring results and generally needs no further testing.</div><div class="rtt">⚠️ WRONG: even a normal high-workload study requires confirmatory invasive angiography. Discriminator: completing a high workload with a normal scan confers very low risk (&lt;1%/yr) — invasive angiography is not indicated and would add only procedural risk and false positives.</div></div><div class="rt"><div class="rtl">11. SPECT (thallium/sestamibi)</div><div class="rte">SPECT myocardial perfusion imaging (thallium-201 or Tc-99m sestamibi/tetrofosmin) localizes and quantifies ischemia by comparing stress and rest images. A REVERSIBLE defect (perfusion deficit on stress that normalizes at rest) = inducible ischemia (viable, jeopardized myocardium); a FIXED defect (deficit on both) = scar/prior infarct. Add imaging to ECG when the baseline ECG is uninterpretable.</div><div class="rtt">⚠️ WRONG: a fixed defect represents active inducible ischemia needing revascularization. Discriminator: fixed = scar (non-viable, won't benefit from revascularization); only REVERSIBLE defects represent ischemia that revascularization can relieve.</div></div><div class="rt"><div class="rtl">12. CMR transmural extent</div><div class="rte">Cardiac MRI with late gadolinium enhancement grades the TRANSMURAL extent of scar to predict recovery after revascularization. Scar involving &lt;50% of wall thickness is likely viable and will recover function; full-thickness (transmural) late enhancement = non-viable myocardium that will NOT recover after revascularization. CMR also provides high-resolution wall-motion and perfusion data.</div><div class="rtt">⚠️ WRONG: transmural late-gadolinium scar will recover function once the vessel is reopened. Discriminator: transmural (&gt;50% thickness) scar is non-viable and won't recover with revascularization — only segments with limited subendocardial scar (viable) improve.</div></div><div class="rt"><div class="rtl">13. Cannot exercise → pharm injector</div><div class="rte">Patients who cannot exercise adequately (deconditioning, arthritis, PAD, amputation, neurologic limits) get PHARMACOLOGIC stress instead: vasodilators (adenosine, dipyridamole, regadenoson) for PERFUSION imaging, or dobutamine for WALL-MOTION stress echo. Pharmacologic stress is preferred because a submaximal exercise test is non-diagnostic — you must achieve adequate stress to read the study.</div><div class="rtt">⚠️ WRONG: a patient who can't exercise should still attempt a treadmill test and a submaximal result is acceptable. Discriminator: inability to reach target workload makes exercise ECG non-diagnostic — switch to pharmacologic stress rather than accepting an inadequate exercise study.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_beta_blocker.html" title="IHD — Beta-Blockers &amp; Antianginal Safety">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ihd_pretest.html" title="IHD — Pretest Probability &amp; Triage">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

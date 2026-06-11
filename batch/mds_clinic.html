@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">MDS — The MDS Clinic (Presentation, Workup &amp; Exclusions)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>16</em></summary><ol class="traps"><li><b>Elderly patients</b> — Elderly patient, MCV 105, persistent anemia, normal B12/folate/TSH. WRONG answer: settle on 'anemia of chronic disease' or aging. Discriminator: ACD is typically normocytic/microcytic with high ferritin and low TIBC; a persistent macrocytic, hypoproliferative cytopenia in the elderly after excluding B12/folate/thyroid/drugs warrants marrow evaluation for MDS.</li><li><b>VEXAS</b> — Older man with relapsing polychondritis, fevers, macrocytic anemia not responding to steroids; ANCA negative. WRONG answer: chase another classic vasculitis/connective-tissue disease. Discriminator: precursor vacuoles + macrocytic anemia + steroid-refractory autoinflammation in an older male = test UBA1 for VEXAS rather than continuing empiric rheumatology workups.</li><li><b>UBA1</b> — A man with VEXAS phenotype but the lab ordered only germline genetics. WRONG answer: rule out VEXAS because no germline mutation found. Discriminator: UBA1 in VEXAS is a SOMATIC mutation restricted to myeloid cells — test peripheral blood/marrow myeloid DNA, not germline (e.g., skin fibroblasts), or you will miss the diagnosis.</li><li><b>GATA2 / RUNX1</b> — A 24-year-old with MDS; team assumes it must be therapy-related. WRONG answer: label it secondary/therapy-related without exposure history. Discriminator: young-onset MDS with no chemo/radiation history, plus features like familial thrombocytopenia, recurrent atypical infections, or lymphedema, points to inherited GATA2/RUNX1 predisposition — which also mandates germline testing of a sibling before using them as a transplant donor.</li><li><b>Sweet's</b> — Recurrent Sweet syndrome in an older adult treated with steroids alone. WRONG answer: idiopathic dermatosis, no further workup. Discriminator: malignancy-associated Sweet syndrome (often atypical/bullous, recurrent, cytopenic rather than neutrophilic) should trigger a CBC and marrow to exclude underlying MDS/AML.</li><li><b>Swollen joints</b> — Older patient with seronegative inflammatory arthritis, cytopenias, and constitutional symptoms not responding to DMARDs. WRONG answer: escalate rheumatologic therapy indefinitely. Discriminator: refractory 'rheumatic' disease in an older adult with unexplained cytopenias should prompt hematologic evaluation (CBC, marrow, UBA1) for MDS/VEXAS as the true driver.</li><li><b>Incidental CBC</b> — Incidental MCV 108 with mild anemia, normal B12/folate; clinician repeats the CBC indefinitely without action. WRONG answer: keep watching a persistent macrocytic anemia without explanation. Discriminator: persistent unexplained macrocytosis/cytopenia after excluding B12, folate, thyroid, alcohol, and drugs is itself an indication for marrow examination, not indefinite observation.</li><li><b>Chemo Hx</b> — New pancytopenia 6 years after CHOP + radiation for lymphoma; called 'marrow suppression from old chemo.' WRONG answer: dismiss as benign late myelosuppression. Discriminator: cytopenias years after alkylator/radiation with dysplasia and adverse cytogenetics = therapy-related MDS, which is prognostically worse than de novo and should be staged and referred for transplant, not observed.</li><li><b>Modest splenomegaly</b> — Older patient with anemia, dysplasia, monocytosis, and a large spleen; labeled standard MDS. WRONG answer: classify as ordinary MDS. Discriminator: persistent monocytosis ≥1×10⁹/L plus splenomegaly defines CMML (MDS/MPN overlap), not pure MDS; massive splenomegaly should also raise myelofibrosis.</li><li><b>20% blasts → AML</b> — Marrow with 22% blasts described as 'very high-risk MDS.' WRONG answer: keep calling it MDS and start an HMA for low-risk disease. Discriminator: ≥20% blasts (or an AML-defining genetic lesion at any count) IS AML, which mandates AML-directed therapy/induction or HMA+venetoclax — not the MDS supportive-care pathway.</li><li><b>Exclude B12 / folate</b> — Pancytopenia, MCV 112, hypercellular marrow with dysplasia; marrow read as MDS before nutritional labs return. WRONG answer: diagnose and treat MDS immediately. Discriminator: B12/folate deficiency mimics MDS morphology exactly — replete and recheck the CBC/blood film first; a brisk reticulocyte and count recovery proves it was nutritional, not clonal MDS.</li><li><b>Exclude copper / zinc / B6</b> — Anemia + neutropenia with ring sideroblasts and a spastic gait, recent gastric bypass. WRONG answer: diagnose MDS-RS (ring-sideroblast MDS). Discriminator: ring sideroblasts are NOT specific for MDS — copper deficiency (often zinc-induced, post-bariatric, with neuropathy), alcohol, lead, and drugs (linezolid, INH) must be excluded; copper repletion reverses the cytopenias.</li><li><b>Bone marrow biopsy</b> — Peripheral cytopenia with a packed hypercellular marrow; clinician expects an empty marrow to confirm a 'failure' state. WRONG answer: a cellular marrow rules out a bone-marrow failure disorder. Discriminator: the MDS PARADOX is cytopenia WITH a hypercellular marrow (cells die before release) — a hypercellular marrow supports MDS, whereas an empty/fatty marrow points to aplastic anemia.</li><li><b>Dysplastic vs fatty marrow</b> — Pancytopenia, hypocellular fatty marrow, no clear dysplasia, normal cytogenetics in a young patient. WRONG answer: diagnose hypoplastic MDS. Discriminator: a fatty, hypocellular marrow WITHOUT convincing dysplasia or clonal markers favors aplastic anemia; only definite dysplasia or clonal cytogenetics reclassifies it as hypoplastic MDS.</li><li><b>Dysplastic inclusions</b> — Hypogranular bilobed neutrophils called a left shift or artifact. WRONG answer: dismiss pseudo-Pelger-Huët cells as benign. Discriminator: acquired pseudo-Pelger-Huët (hypolobated, hypogranular neutrophils) is a key dysplastic finding of MDS — distinguish from the benign inherited Pelger-Huët anomaly and from a reactive left shift by its association with other dysplasia and cytopenias.</li><li><b>Flow cytometry</b> — Flow shows 4% CD34+ blasts and the team concludes the marrow blast count is definitively 4% for staging. WRONG answer: use flow blast % as the official count. Discriminator: the diagnostic/prognostic blast percentage in MDS is determined by MORPHOLOGY on a 500-cell aspirate differential — flow can under- or over-estimate blasts (dilution, gating), so it complements but does not substitute for the manual count.</li></ol></details><details class="panel"><summary>📖 Read-through — all 16 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Elderly patients</div><div class="rte">MDS is fundamentally a disease of aging hematopoiesis — median age at diagnosis ~70, incidence rising sharply after 60. The typical presentation is an asymptomatic or fatigued older adult with unexplained, persistent cytopenia(s), most often a macrocytic anemia with a low reticulocyte count. Always anchor the differential for chronic, unexplained cytopenia in an elderly patient on MDS once reversible causes are excluded.</div><div class="rtt">⚠️ Elderly patient, MCV 105, persistent anemia, normal B12/folate/TSH. WRONG answer: settle on 'anemia of chronic disease' or aging. Discriminator: ACD is typically normocytic/microcytic with high ferritin and low TIBC; a persistent macrocytic, hypoproliferative cytopenia in the elderly after excluding B12/folate/thyroid/drugs warrants marrow evaluation for MDS.</div></div><div class="rt"><div class="rtl">2. VEXAS</div><div class="rte">VEXAS (Vacuoles, E1 enzyme, X-linked, Autoinflammatory, Somatic) is a recently described syndrome from somatic UBA1 mutations in myeloid precursors. It affects older men with treatment-refractory inflammation (fevers, chondritis, vasculitis, skin lesions, VTE) plus macrocytic anemia and cytoplasmic vacuoles in myeloid/erythroid precursors; ~50% have or progress to MDS. It links autoinflammation and clonal myeloid disease.</div><div class="rtt">⚠️ Older man with relapsing polychondritis, fevers, macrocytic anemia not responding to steroids; ANCA negative. WRONG answer: chase another classic vasculitis/connective-tissue disease. Discriminator: precursor vacuoles + macrocytic anemia + steroid-refractory autoinflammation in an older male = test UBA1 for VEXAS rather than continuing empiric rheumatology workups.</div></div><div class="rt"><div class="rtl">3. UBA1</div><div class="rte">UBA1 encodes the E1 ubiquitin-activating enzyme; a somatic UBA1 mutation (commonly at p.Met41) in hematopoietic precursors is the defining driver of VEXAS. The defective ubiquitylation triggers innate-immune/autoinflammatory activation while seeding clonal, dysplastic myelopoiesis — mechanistically tying systemic inflammation to MDS-like marrow changes.</div><div class="rtt">⚠️ A man with VEXAS phenotype but the lab ordered only germline genetics. WRONG answer: rule out VEXAS because no germline mutation found. Discriminator: UBA1 in VEXAS is a SOMATIC mutation restricted to myeloid cells — test peripheral blood/marrow myeloid DNA, not germline (e.g., skin fibroblasts), or you will miss the diagnosis.</div></div><div class="rt"><div class="rtl">4. GATA2 / RUNX1</div><div class="rte">Germline predisposition syndromes cause familial MDS/AML. GATA2 deficiency: monocytopenia, B/NK-cell lymphopenia, disseminated mycobacterial/HPV infections, lymphedema (Emberger), pulmonary alveolar proteinosis, with MDS in young adults. RUNX1 germline: familial platelet disorder with thrombocytopenia/bleeding and lifelong MDS/AML risk. Suspect these in young MDS or a positive family history — and screen related stem-cell donors.</div><div class="rtt">⚠️ A 24-year-old with MDS; team assumes it must be therapy-related. WRONG answer: label it secondary/therapy-related without exposure history. Discriminator: young-onset MDS with no chemo/radiation history, plus features like familial thrombocytopenia, recurrent atypical infections, or lymphedema, points to inherited GATA2/RUNX1 predisposition — which also mandates germline testing of a sibling before using them as a transplant donor.</div></div><div class="rt"><div class="rtl">5. Sweet's</div><div class="rte">Sweet syndrome (acute febrile neutrophilic dermatosis) — tender, edematous, red plaques with fever, neutrophilia, and dense dermal neutrophil infiltrate — is a paraneoplastic association of myeloid malignancy, especially MDS/AML. Other immune phenomena (relapsing polychondritis, vasculitis, neutrophilic dermatoses) can herald or accompany MDS. It responds to corticosteroids but should prompt evaluation of the underlying clone.</div><div class="rtt">⚠️ Recurrent Sweet syndrome in an older adult treated with steroids alone. WRONG answer: idiopathic dermatosis, no further workup. Discriminator: malignancy-associated Sweet syndrome (often atypical/bullous, recurrent, cytopenic rather than neutrophilic) should trigger a CBC and marrow to exclude underlying MDS/AML.</div></div><div class="rt"><div class="rtl">6. Swollen joints</div><div class="rte">MDS (and especially VEXAS) can present with systemic inflammatory/rheumatologic manifestations — inflammatory arthritis, polychondritis, vasculitis, and seronegative arthropathies — as paraneoplastic immune dysregulation rather than a primary rheumatic disease. These can predate the hematologic diagnosis and are frequently refractory to standard immunosuppression.</div><div class="rtt">⚠️ Older patient with seronegative inflammatory arthritis, cytopenias, and constitutional symptoms not responding to DMARDs. WRONG answer: escalate rheumatologic therapy indefinitely. Discriminator: refractory 'rheumatic' disease in an older adult with unexplained cytopenias should prompt hematologic evaluation (CBC, marrow, UBA1) for MDS/VEXAS as the true driver.</div></div><div class="rt"><div class="rtl">7. Incidental CBC</div><div class="rte">MDS is very commonly discovered INCIDENTALLY on a routine CBC: an isolated macrocytic anemia, neutropenia, thrombocytopenia, or monocytosis in an otherwise well older adult. The macrocytosis is hypoproliferative (low/inappropriately normal reticulocyte response), distinguishing it from hemolysis. Persistent unexplained cytopenia (lasting months) is the entry point to the MDS workup.</div><div class="rtt">⚠️ Incidental MCV 108 with mild anemia, normal B12/folate; clinician repeats the CBC indefinitely without action. WRONG answer: keep watching a persistent macrocytic anemia without explanation. Discriminator: persistent unexplained macrocytosis/cytopenia after excluding B12, folate, thyroid, alcohol, and drugs is itself an indication for marrow examination, not indefinite observation.</div></div><div class="rt"><div class="rtl">8. Chemo Hx</div><div class="rte">A history of cytotoxic therapy is pivotal: alkylating agents/radiation cause therapy-related MDS at ~5–7 years (with −5/−7, complex karyotype, TP53), while topoisomerase-II inhibitors cause it at ~1–3 years (with 11q23/KMT2A). Therapy-related MDS is a distinct, poor-prognosis category with high AML transformation risk and chemo-resistance. Always document prior cancer treatment in any new cytopenia.</div><div class="rtt">⚠️ New pancytopenia 6 years after CHOP + radiation for lymphoma; called 'marrow suppression from old chemo.' WRONG answer: dismiss as benign late myelosuppression. Discriminator: cytopenias years after alkylator/radiation with dysplasia and adverse cytogenetics = therapy-related MDS, which is prognostically worse than de novo and should be staged and referred for transplant, not observed.</div></div><div class="rt"><div class="rtl">9. Modest splenomegaly</div><div class="rte">In pure MDS the spleen is usually normal or only modestly enlarged. Prominent splenomegaly, leukocytosis with monocytosis, or marrow fibrosis suggests an MDS/MPN overlap — chronic myelomonocytic leukemia (CMML), defined by persistent monocytosis ≥1×10⁹/L (≥10% of WBC) — or primary myelofibrosis. The degree of splenomegaly is a useful bedside discriminator.</div><div class="rtt">⚠️ Older patient with anemia, dysplasia, monocytosis, and a large spleen; labeled standard MDS. WRONG answer: classify as ordinary MDS. Discriminator: persistent monocytosis ≥1×10⁹/L plus splenomegaly defines CMML (MDS/MPN overlap), not pure MDS; massive splenomegaly should also raise myelofibrosis.</div></div><div class="rt"><div class="rtl">10. 20% blasts → AML</div><div class="rte">The blast count separates MDS from AML: MDS requires &lt;20% myeloblasts in blood and marrow; ≥20% defines AML. MDS-with-excess-blasts is subdivided (IB1 5–9%, IB2 10–19% marrow blasts). Auer rods or AML-defining genetics (t(8;21), inv(16), PML-RARA, KMT2A) can establish AML even below 20% blasts.</div><div class="rtt">⚠️ Marrow with 22% blasts described as 'very high-risk MDS.' WRONG answer: keep calling it MDS and start an HMA for low-risk disease. Discriminator: ≥20% blasts (or an AML-defining genetic lesion at any count) IS AML, which mandates AML-directed therapy/induction or HMA+venetoclax — not the MDS supportive-care pathway.</div></div><div class="rt"><div class="rtl">11. Exclude B12 / folate</div><div class="rte">B12 and folate deficiency must be excluded before diagnosing MDS because megaloblastic anemia produces near-identical findings: macro-ovalocytosis, hypersegmented neutrophils, megaloblastoid erythroids, and even pancytopenia with a hypercellular marrow. Check serum B12 and folate; if borderline, confirm with methylmalonic acid (↑ in B12 deficiency) and homocysteine. These are reversible with repletion.</div><div class="rtt">⚠️ Pancytopenia, MCV 112, hypercellular marrow with dysplasia; marrow read as MDS before nutritional labs return. WRONG answer: diagnose and treat MDS immediately. Discriminator: B12/folate deficiency mimics MDS morphology exactly — replete and recheck the CBC/blood film first; a brisk reticulocyte and count recovery proves it was nutritional, not clonal MDS.</div></div><div class="rt"><div class="rtl">12. Exclude copper / zinc / B6</div><div class="rte">Several reversible deficiencies/toxins cause secondary dysplasia and sideroblasts. Copper deficiency (from zinc excess — denture cream, supplements, bariatric surgery) causes anemia + neutropenia with ring sideroblasts and vacuolated precursors, often with a myeloneuropathy. B6 (pyridoxine) deficiency, alcohol, lead, and isoniazid/linezolid also produce sideroblastic/dysplastic changes. Check copper, zinc, ceruloplasmin, B6, and a careful drug/alcohol history.</div><div class="rtt">⚠️ Anemia + neutropenia with ring sideroblasts and a spastic gait, recent gastric bypass. WRONG answer: diagnose MDS-RS (ring-sideroblast MDS). Discriminator: ring sideroblasts are NOT specific for MDS — copper deficiency (often zinc-induced, post-bariatric, with neuropathy), alcohol, lead, and drugs (linezolid, INH) must be excluded; copper repletion reverses the cytopenias.</div></div><div class="rt"><div class="rtl">13. Bone marrow biopsy</div><div class="rte">Diagnosis requires marrow aspirate + biopsy with cytogenetics and increasingly NGS. Classic findings: a HYPERcellular (occasionally normocellular) marrow with morphologic dysplasia in ≥10% of cells of at least one lineage, plus a blast count &lt;20%, despite peripheral cytopenia(s) — the hallmark ineffective hematopoiesis. An iron stain quantifies ring sideroblasts; cytogenetics/FISH and IPSS-R risk follow.</div><div class="rtt">⚠️ Peripheral cytopenia with a packed hypercellular marrow; clinician expects an empty marrow to confirm a 'failure' state. WRONG answer: a cellular marrow rules out a bone-marrow failure disorder. Discriminator: the MDS PARADOX is cytopenia WITH a hypercellular marrow (cells die before release) — a hypercellular marrow supports MDS, whereas an empty/fatty marrow points to aplastic anemia.</div></div><div class="rt"><div class="rtl">14. Dysplastic vs fatty marrow</div><div class="rte">Marrow cellularity discriminates entities: typical MDS is hypercellular and dysplastic, whereas a hypocellular/fatty marrow (cellularity well below age-adjusted norm, ~100−age%) suggests aplastic anemia. Hypoplastic MDS is the rarer overlap variant — a hypocellular marrow that nonetheless shows definite dysplasia and/or clonal cytogenetics.</div><div class="rtt">⚠️ Pancytopenia, hypocellular fatty marrow, no clear dysplasia, normal cytogenetics in a young patient. WRONG answer: diagnose hypoplastic MDS. Discriminator: a fatty, hypocellular marrow WITHOUT convincing dysplasia or clonal markers favors aplastic anemia; only definite dysplasia or clonal cytogenetics reclassifies it as hypoplastic MDS.</div></div><div class="rt"><div class="rtl">15. Dysplastic inclusions</div><div class="rte">Morphologic dysplasia is the diagnostic hallmark across lineages: granulocytic — hypogranular, hyposegmented pseudo-Pelger-Huët (bilobed 'pince-nez') neutrophils; erythroid — megaloblastoid maturation, nuclear budding/irregularity, ring sideroblasts on iron stain; megakaryocytic — small mono-/hypolobated micromegakaryocytes. Dysplasia must involve ≥10% of cells in a lineage to count toward diagnosis.</div><div class="rtt">⚠️ Hypogranular bilobed neutrophils called a left shift or artifact. WRONG answer: dismiss pseudo-Pelger-Huët cells as benign. Discriminator: acquired pseudo-Pelger-Huët (hypolobated, hypogranular neutrophils) is a key dysplastic finding of MDS — distinguish from the benign inherited Pelger-Huët anomaly and from a reactive left shift by its association with other dysplasia and cytopenias.</div></div><div class="rt"><div class="rtl">16. Flow cytometry</div><div class="rte">Flow cytometry supports diagnosis and risk by quantifying blasts (CD34+ progenitors) and detecting aberrant maturation/antigen expression (e.g., abnormal CD13/CD16 granulocyte patterns, aberrant CD7/CD56). It cannot replace morphology and cytogenetics for diagnosis, but the blast percentage it helps establish feeds directly into IPSS-R/IPSS-M prognostic scoring.</div><div class="rtt">⚠️ Flow shows 4% CD34+ blasts and the team concludes the marrow blast count is definitively 4% for staging. WRONG answer: use flow blast % as the official count. Discriminator: the diagnostic/prognostic blast percentage in MDS is determined by MORPHOLOGY on a 500-cell aspirate differential — flow can under- or over-estimate blasts (dilution, gating), so it complements but does not substitute for the manual count.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="mds_assembly_line.html" title="MDS — The Dysplastic Assembly Line, Classification &amp; Cytogenetics Vault">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="mds_prognosis_treatment.html" title="MDS — The MDS Scoreboard &amp; Arsenal (Prognosis &amp; Treatment)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

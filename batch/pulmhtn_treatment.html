@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pulmonary Hypertension — PAH Treatment &amp; CTEPH</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>16</em></summary><ol class="traps"><li><b>AMBITION combo</b> — A vignette of newly diagnosed WHO-FC II–III idiopathic PAH (non-vasoreactive) and the wrong answer is 'start sildenafil monotherapy and reassess in 3 months.' Modern guidelines reject sequential monotherapy for most treatment-naive PAH — the discriminator is that combination therapy (ERA + PDE5i) is now first-line, and delaying the second agent loses ground in a progressive disease.</li><li><b>Riociguat throne</b> — The classic killer: combining riociguat with ANY PDE5 inhibitor (sildenafil/tadalafil) — both raise cGMP, causing dangerous, sometimes fatal, hypotension. This combination is absolutely contraindicated. Riociguat is also contraindicated in pregnancy (teratogen, REMS program). The wrong answer adds riociguat to a patient already on sildenafil.</li><li><b>Riociguat for CTEPH</b> — Choosing CT pulmonary angiography as the screening test 'to rule out CTEPH' — the discriminator is that a normal V/Q scan, not CT, excludes CTEPH (V/Q is the screening test of choice). Another trap: labeling drug therapy as first-line for CTEPH when the patient is actually operable.</li><li><b>PEA = gold standard</b> — A patient with proximal, surgically accessible CTEPH and the wrong answer is 'start riociguat' or 'start an ERA.' The discriminator: in OPERABLE CTEPH, surgery (PEA) is curative and first-line — medical therapy is only for inoperable or post-PEA residual disease. Defaulting to drugs in an operable patient is the trap.</li><li><b>Riociguat when PEA not possible</b> — Offering riociguat to an operable CTEPH patient 'because it's approved for CTEPH.' The discriminator is operability status — approval does not mean it replaces curative surgery. The drug's niche is specifically the inoperable/residual subset.</li><li><b>No ERA/PDE5i in CTEPH</b> — A CTEPH stem where the wrong answer is 'start bosentan' or 'start epoprostenol.' The discriminator: these are Group 1 PAH drugs; in Group 4 the curative/approved pathway is PEA then riociguat. Reflexively giving a PAH drug to any pulmonary hypertension is the error.</li><li><b>Vasoreactive = CCB</b> — Empirically starting a CCB without performing vasoreactivity testing first, or testing a non-Group-1 patient. The discriminator: CCBs only after a documented positive acute vasodilator test in Group 1 PAH. Also a trap: using verapamil (cardiodepressant) instead of nifedipine/diltiazem/amlodipine.</li><li><b>CCBs only if reactive</b> — Giving high-dose nifedipine to a vasoreactivity-NEGATIVE PAH patient. The discriminator and the harm: in non-responders CCBs drop systemic pressure and can crash the failing right ventricle — so a negative test means NO CCB. Choosing a CCB without (or despite) the test result is the trap.</li><li><b>No ACEi/ARB in PAH</b> — A PAH stem offering 'lisinopril' or 'losartan' as treatment — pattern-matching PAH to systemic heart failure. The discriminator: RAAS blockade and beta-blockers are for LEFT heart failure; in Group 1 PAH they are not indicated and may drop preload-dependent cardiac output. Treating pulmonary vascular disease like systemic HTN/HFrEF is the error.</li><li><b>IV epoprostenol</b> — In WHO-FC IV high-risk PAH, choosing oral monotherapy or even oral triple therapy instead of IV epoprostenol. The discriminator: parenteral prostacyclin is the survival-proven, guideline-mandated choice for severe/high-risk disease. A second trap: abruptly stopping the infusion — rebound PH and death — so it is never simply 'held.'</li><li><b>Severe/high-risk PAH</b> — Managing a WHO-FC IV patient with an estimated 1-year mortality in the high-risk band using oral combination therapy. The discriminator: high-risk PAH mandates an IV/SC prostacyclin in the initial regimen plus transplant referral — escalation is dictated by objective risk score, not symptoms alone.</li><li><b>Treprostinil routes</b> — Relying on oral treprostinil or inhaled treprostinil for a high-risk/FC IV patient. The discriminator: the oral and inhaled prostacyclin formulations are insufficient for severe disease — parenteral (IV/SC) prostacyclin is required when risk is high. Picking a non-parenteral route for advanced disease is the trap.</li><li><b>PA pressure 60 mmHg</b> — Diagnosing or staging PAH on echocardiography alone — echo only estimates pressures and screens. The discriminator: right heart catheterization is required to confirm pre-capillary PAH (mPAP &gt;20, PVR &gt;2 WU, wedge ≤15) and to distinguish it from Group 2 (post-capillary, wedge &gt;15). Skipping the RHC is the error.</li><li><b>Group 3 = treat lung dz</b> — Starting systemic ERAs/PDE5 inhibitors for Group 3 PH 'because the pressures are high.' The discriminator: in Group 3 you treat the lung disease and hypoxia (oxygen); systemic vasodilators can worsen hypoxemia by abolishing hypoxic pulmonary vasoconstriction. Inhaled treprostinil for PH-ILD is the lone approved exception, not systemic PAH drugs.</li><li><b>Group 2 = treat heart dz, NO PAH drugs</b> — Giving sildenafil or an ERA to a patient with HFpEF/HFrEF and 'pulmonary hypertension' on echo. The discriminator: a wedge pressure &gt;15 mmHg means post-capillary Group 2 disease — PAH drugs are contraindicated because they can cause acute pulmonary edema. Treat the left heart, do not vasodilate the lungs.</li><li><b>Escalate by risk</b> — Treating PAH as a 'pick one drug' problem rather than a dynamic, risk-driven escalation. The discriminator: therapy is layered by serial risk assessment (dual oral → add parenteral prostacyclin → transplant), and failure to escalate an intermediate/high-risk patient who isn't at goal is the error. Diuretics are supportive, never the PAH-specific treatment.</li></ol></details><details class="panel"><summary>📖 Read-through — all 16 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. AMBITION combo</div><div class="rte">Group 1 PAH is the only WHO group treated with PAH-specific drugs, and current guidelines favor UPFRONT oral combination therapy for low/intermediate-risk patients. The AMBITION trial showed initial ambrisentan (endothelin receptor antagonist) + tadalafil (PDE5 inhibitor) cut the composite clinical-failure endpoint by ~50% versus either drug alone. The two oral classes hit complementary pathways: the endothelin pathway (vasoconstriction/proliferation) and the NO–cGMP pathway (vasodilation). Mnemonic: 'A+T from the start' for intermediate-risk PAH.</div><div class="rtt">⚠️ A vignette of newly diagnosed WHO-FC II–III idiopathic PAH (non-vasoreactive) and the wrong answer is 'start sildenafil monotherapy and reassess in 3 months.' Modern guidelines reject sequential monotherapy for most treatment-naive PAH — the discriminator is that combination therapy (ERA + PDE5i) is now first-line, and delaying the second agent loses ground in a progressive disease.</div></div><div class="rt"><div class="rtl">2. Riociguat throne</div><div class="rte">Riociguat is a soluble guanylate cyclase (sGC) STIMULATOR — distinct from PDE5 inhibitors: it both sensitizes sGC to endogenous NO and directly stimulates it independent of NO, raising cGMP to cause pulmonary vasodilation. It is the one oral agent approved for BOTH Group 1 PAH and Group 4 CTEPH (PATENT and CHEST trials). Starting dose 1 mg TID titrated to a max of 2.5 mg TID by blood pressure.</div><div class="rtt">⚠️ The classic killer: combining riociguat with ANY PDE5 inhibitor (sildenafil/tadalafil) — both raise cGMP, causing dangerous, sometimes fatal, hypotension. This combination is absolutely contraindicated. Riociguat is also contraindicated in pregnancy (teratogen, REMS program). The wrong answer adds riociguat to a patient already on sildenafil.</div></div><div class="rt"><div class="rtl">3. Riociguat for CTEPH</div><div class="rte">CTEPH (Group 4) results from organized, non-resolving thromboembolic material obstructing the pulmonary arteries; it is the one form of PH that can be CURED surgically. Riociguat is the only drug with an approved indication for CTEPH and is reserved for INOPERABLE disease or persistent/recurrent PH after pulmonary endarterectomy. All suspected CTEPH needs lifelong anticoagulation and a V/Q scan (more sensitive than CT for screening) plus referral to an expert center for operability assessment.</div><div class="rtt">⚠️ Choosing CT pulmonary angiography as the screening test 'to rule out CTEPH' — the discriminator is that a normal V/Q scan, not CT, excludes CTEPH (V/Q is the screening test of choice). Another trap: labeling drug therapy as first-line for CTEPH when the patient is actually operable.</div></div><div class="rt"><div class="rtl">4. PEA = gold standard</div><div class="rte">Pulmonary endarterectomy (PEA, also called pulmonary thromboendarterectomy/PTE) is the potentially CURATIVE gold-standard treatment for operable CTEPH — it surgically removes the organized fibrotic clot/intima from the proximal pulmonary arteries. Every CTEPH patient must be evaluated for operability at an expert center before any medical therapy is considered. Balloon pulmonary angioplasty (BPA) is an option for distal, technically inoperable lesions.</div><div class="rtt">⚠️ A patient with proximal, surgically accessible CTEPH and the wrong answer is 'start riociguat' or 'start an ERA.' The discriminator: in OPERABLE CTEPH, surgery (PEA) is curative and first-line — medical therapy is only for inoperable or post-PEA residual disease. Defaulting to drugs in an operable patient is the trap.</div></div><div class="rt"><div class="rtl">5. Riociguat when PEA not possible</div><div class="rte">Medical therapy with riociguat is reserved for CTEPH that is technically INOPERABLE, or for persistent/recurrent pulmonary hypertension AFTER endarterectomy. The decision sequence is fixed: anticoagulate everyone → assess operability → PEA if operable → riociguat (and consider BPA) if inoperable or residual. Riociguat improves 6-minute walk distance and pulmonary vascular resistance in this group (CHEST-1 trial).</div><div class="rtt">⚠️ Offering riociguat to an operable CTEPH patient 'because it's approved for CTEPH.' The discriminator is operability status — approval does not mean it replaces curative surgery. The drug's niche is specifically the inoperable/residual subset.</div></div><div class="rt"><div class="rtl">6. No ERA/PDE5i in CTEPH</div><div class="rte">The PAH-specific agents licensed for Group 1 — endothelin receptor antagonists (bosentan, ambrisentan, macitentan), PDE5 inhibitors (sildenafil, tadalafil), and prostacyclins (epoprostenol, treprostinil, iloprost) — do NOT carry an approved CTEPH indication and are not the primary answer for Group 4. For CTEPH the answer is PEA (operable) or riociguat (inoperable/residual).</div><div class="rtt">⚠️ A CTEPH stem where the wrong answer is 'start bosentan' or 'start epoprostenol.' The discriminator: these are Group 1 PAH drugs; in Group 4 the curative/approved pathway is PEA then riociguat. Reflexively giving a PAH drug to any pulmonary hypertension is the error.</div></div><div class="rt"><div class="rtl">7. Vasoreactive = CCB</div><div class="rte">Only the small subset (~5–10% of idiopathic/heritable/drug-induced PAH) who are acute vasoresponders during right-heart-catheter vasoreactivity testing should get high-dose calcium channel blockers: nifedipine, diltiazem, or amlodipine (NOT verapamil — its negative inotropy harms the RV). A positive test = fall in mean PAP ≥10 mmHg to an absolute mPAP ≤40 mmHg with preserved/increased cardiac output. Even responders need reassessment, as only about half maintain a durable CCB response.</div><div class="rtt">⚠️ Empirically starting a CCB without performing vasoreactivity testing first, or testing a non-Group-1 patient. The discriminator: CCBs only after a documented positive acute vasodilator test in Group 1 PAH. Also a trap: using verapamil (cardiodepressant) instead of nifedipine/diltiazem/amlodipine.</div></div><div class="rt"><div class="rtl">8. CCBs only if reactive</div><div class="rte">CCBs are first-line ONLY in confirmed acute vasoresponders with idiopathic/heritable/drug-induced PAH. In non-responders, high-dose CCBs are ineffective and can be dangerous — precipitating systemic hypotension, syncope, and right-ventricular failure/cardiogenic shock. Non-responders should instead receive standard PAH-specific therapy (ERA + PDE5i combination, escalating to prostacyclins by risk).</div><div class="rtt">⚠️ Giving high-dose nifedipine to a vasoreactivity-NEGATIVE PAH patient. The discriminator and the harm: in non-responders CCBs drop systemic pressure and can crash the failing right ventricle — so a negative test means NO CCB. Choosing a CCB without (or despite) the test result is the trap.</div></div><div class="rt"><div class="rtl">9. No ACEi/ARB in PAH</div><div class="rte">Standard left-heart-failure neurohormonal drugs — ACE inhibitors, ARBs, beta-blockers, ARNIs — have NO established role in treating Group 1 PAH and can be harmful by blunting the systemic and RV compensatory response. PAH therapy targets the three pulmonary vascular pathways (endothelin, NO–cGMP, prostacyclin), not the systemic RAAS. Supportive measures are diuretics for RV volume overload, oxygen for hypoxemia, and anticoagulation only in selected idiopathic PAH.</div><div class="rtt">⚠️ A PAH stem offering 'lisinopril' or 'losartan' as treatment — pattern-matching PAH to systemic heart failure. The discriminator: RAAS blockade and beta-blockers are for LEFT heart failure; in Group 1 PAH they are not indicated and may drop preload-dependent cardiac output. Treating pulmonary vascular disease like systemic HTN/HFrEF is the error.</div></div><div class="rt"><div class="rtl">10. IV epoprostenol</div><div class="rte">Epoprostenol is a continuous-infusion IV prostacyclin (PGI2 analog) — the only PAH therapy proven to improve SURVIVAL in severe disease, and the agent of choice for WHO functional class IV / high-risk PAH. It has a very short half-life (~3–5 minutes), so abrupt interruption (line problem, pump failure) can cause life-threatening rebound pulmonary hypertension. It requires a tunneled central line and continuous cold-chain/pump management.</div><div class="rtt">⚠️ In WHO-FC IV high-risk PAH, choosing oral monotherapy or even oral triple therapy instead of IV epoprostenol. The discriminator: parenteral prostacyclin is the survival-proven, guideline-mandated choice for severe/high-risk disease. A second trap: abruptly stopping the infusion — rebound PH and death — so it is never simply 'held.'</div></div><div class="rt"><div class="rtl">11. Severe/high-risk PAH</div><div class="rte">Risk stratification (e.g., ESC/ERS or REVEAL: WHO functional class, 6-minute walk distance, BNP/NT-proBNP, right-atrial pressure and cardiac index on RHC) drives therapy intensity. High-risk or WHO-FC IV patients require initial triple therapy that INCLUDES a parenteral (IV/SC) prostacyclin, not oral agents alone, and should be evaluated for lung transplantation if they remain high-risk.</div><div class="rtt">⚠️ Managing a WHO-FC IV patient with an estimated 1-year mortality in the high-risk band using oral combination therapy. The discriminator: high-risk PAH mandates an IV/SC prostacyclin in the initial regimen plus transplant referral — escalation is dictated by objective risk score, not symptoms alone.</div></div><div class="rt"><div class="rtl">12. Treprostinil routes</div><div class="rte">Treprostinil is a longer-acting prostacyclin analog available in multiple routes: subcutaneous (continuous, infusion-site pain is the main issue), intravenous, inhaled (for FC III), and oral. Route choice tracks severity — parenteral (SC/IV) treprostinil for high-risk disease, inhaled/oral as add-ons in less severe disease. Selexipag is a related ORAL selective prostacyclin (IP) receptor agonist used to delay disease progression.</div><div class="rtt">⚠️ Relying on oral treprostinil or inhaled treprostinil for a high-risk/FC IV patient. The discriminator: the oral and inhaled prostacyclin formulations are insufficient for severe disease — parenteral (IV/SC) prostacyclin is required when risk is high. Picking a non-parenteral route for advanced disease is the trap.</div></div><div class="rt"><div class="rtl">13. PA pressure 60 mmHg</div><div class="rte">Pulmonary hypertension is hemodynamically defined on right heart catheterization (the gold-standard diagnostic test) as mean PAP &gt;20 mmHg; PAH (pre-capillary) additionally requires PVR &gt;2 Wood units and PCWP ≤15 mmHg. A markedly elevated mPAP (~60 mmHg) with advanced functional class signals severe disease and drives escalation toward parenteral prostacyclin therapy and transplant evaluation.</div><div class="rtt">⚠️ Diagnosing or staging PAH on echocardiography alone — echo only estimates pressures and screens. The discriminator: right heart catheterization is required to confirm pre-capillary PAH (mPAP &gt;20, PVR &gt;2 WU, wedge ≤15) and to distinguish it from Group 2 (post-capillary, wedge &gt;15). Skipping the RHC is the error.</div></div><div class="rt"><div class="rtl">14. Group 3 = treat lung dz</div><div class="rte">Group 3 PH is due to chronic lung disease/hypoxia (COPD, ILD, OSA). Management targets the UNDERLYING disease and corrects hypoxemia with supplemental oxygen — PAH-specific drugs are generally not used and can worsen V/Q mismatch and oxygenation. The one exception: inhaled treprostinil is approved specifically for PH associated with interstitial lung disease (INCREASE trial) as an add-on.</div><div class="rtt">⚠️ Starting systemic ERAs/PDE5 inhibitors for Group 3 PH 'because the pressures are high.' The discriminator: in Group 3 you treat the lung disease and hypoxia (oxygen); systemic vasodilators can worsen hypoxemia by abolishing hypoxic pulmonary vasoconstriction. Inhaled treprostinil for PH-ILD is the lone approved exception, not systemic PAH drugs.</div></div><div class="rt"><div class="rtl">15. Group 2 = treat heart dz, NO PAH drugs</div><div class="rte">Group 2 is the MOST COMMON cause of pulmonary hypertension overall and is post-capillary (PCWP &gt;15 mmHg) from left heart disease — HFrEF, HFpEF, or valvular disease. Treatment is optimization of the underlying left heart condition (diuresis, guideline-directed HF therapy, valve repair). PAH-specific vasodilators are NOT used and are potentially HARMFUL — pulmonary vasodilation increases flow into a stiff/failing left heart and can precipitate flash pulmonary edema.</div><div class="rtt">⚠️ Giving sildenafil or an ERA to a patient with HFpEF/HFrEF and 'pulmonary hypertension' on echo. The discriminator: a wedge pressure &gt;15 mmHg means post-capillary Group 2 disease — PAH drugs are contraindicated because they can cause acute pulmonary edema. Treat the left heart, do not vasodilate the lungs.</div></div><div class="rt"><div class="rtl">16. Escalate by risk</div><div class="rte">The Group 1 PAH treatment ladder is risk-stratified: low/intermediate risk → initial DUAL oral therapy (ERA + PDE5i, e.g., ambrisentan + tadalafil per AMBITION); high risk or inadequate response → TRIPLE therapy adding a parenteral prostacyclin and transplant referral. Diuretics manage RV volume overload, oxygen treats hypoxemia, and patients are reassessed periodically with risk scores to escalate or de-escalate.</div><div class="rtt">⚠️ Treating PAH as a 'pick one drug' problem rather than a dynamic, risk-driven escalation. The discriminator: therapy is layered by serial risk assessment (dual oral → add parenteral prostacyclin → transplant), and failure to escalate an intermediate/high-risk patient who isn't at goal is the error. Diuretics are supportive, never the PAH-specific treatment.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pulmhtn_diagnosis.html" title="Pulmonary Hypertension — Diagnostic Workup &amp; Vasoreactivity">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="bronchiectasis_causes.html" title="Bronchiectasis — Causes &amp; Distribution">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

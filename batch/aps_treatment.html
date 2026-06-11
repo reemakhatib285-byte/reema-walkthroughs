@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">APS — Treatment, Pregnancy &amp; Catastrophic APS (Warfarin Armory / Maternity Ward / CAPS Bunker)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Warfarin throne (first-line)</b> — DOACs (rivaroxaban, apixaban) are the wrong answer for thrombotic APS — the TRAPS trial showed significantly higher arterial recurrence with rivaroxaban, especially in triple-positive (lupus anticoagulant + anticardiolipin + anti-β2GP1) patients.</li><li><b>Lifelong banner</b> — Stopping anticoagulation at a fixed 3-6 months (the rule for a provoked clot) is the classic trap — in confirmed APS the antibodies persist, so the clot is effectively 'unprovoked' and treatment continues indefinitely.</li><li><b>Venous target (INR 2-3)</b> — Reflexively pushing INR to 3-4 for any APS clot is wrong for venous events — trials (Crowther 2003) found high-intensity warfarin gave no extra protection and more bleeding for venous disease.</li><li><b>Arterial / higher-intensity risk shelf</b> — Treating an arterial APS stroke with antiplatelet monotherapy (aspirin alone) is a common wrong answer — anticoagulation, often intensified or combined with aspirin, is needed; aspirin alone underprotects against recurrent arterial thrombosis.</li><li><b>DOAC graveyard (banned)</b> — Switching a stable APS patient to a DOAC for 'convenience' or to avoid INR monitoring is the signature board trap — especially in triple-positive or arterial disease, where DOACs raise recurrence.</li><li><b>Asymptomatic shelf</b> — Putting an asymptomatic aPL carrier on full therapeutic anticoagulation is over-treatment — they have never clotted, so the benefit-to-bleed ratio favors at most low-dose aspirin, not warfarin.</li><li><b>Warfarin teratogenic (no in pregnancy)</b> — Continuing warfarin into pregnancy is the trap — it causes fetal warfarin syndrome; the correct move is to switch to heparin/LMWH (heparins are large and do not cross the placenta).</li><li><b>Obstetric bed — no prior clot</b> — Aspirin alone is insufficient for obstetric APS — the heparin-plus-aspirin combination is what raises live-birth rates; choosing aspirin monotherapy is the undertreatment trap.</li><li><b>Thrombotic bed — prior clot</b> — Dropping a prior-clot patient to prophylactic LMWH during pregnancy is the trap — a history of thrombosis demands therapeutic dosing; prophylactic dosing leaves them under-anticoagulated.</li><li><b>Refractory bed — escalate</b> — Abandoning anticoagulation or jumping straight to high-dose chronic steroids is wrong — escalation builds ON the LMWH/aspirin backbone with HCQ first, not instead of it.</li><li><b>CAPS definition board</b> — CAPS is a microvascular small-vessel thrombotic storm — confusing it with the usual single large-vessel APS event (one DVT/stroke) misses the diagnosis; CAPS is the 'all organs at once' catastrophe.</li><li><b>CAPS DDx flags (TTP/HUS/DIC/HIT)</b> — Mislabeling CAPS as DIC is a key trap — in DIC fibrinogen falls and bleeding dominates, whereas CAPS is primarily a thrombotic storm with aPL positivity; the wrong label delays immunosuppression and plasma exchange.</li><li><b>Triple therapy station</b> — Anticoagulation alone is inadequate in CAPS — the trap is treating it like a routine clot; you must add immunosuppression (steroids) plus PLEX/IVIG to halt the cytokine-and-antibody-driven storm.</li><li><b>Treat triggers</b> — Treating only the thrombosis while ignoring an underlying infection or subtherapeutic/withdrawn anticoagulation misses the driver — failure to remove the trigger lets the storm continue despite anticoagulation.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Warfarin throne (first-line)</div><div class="rte">Warfarin (a vitamin-K antagonist) is first-line for thrombotic APS because it provides durable anticoagulation that DOACs cannot reliably match in this antibody-driven hypercoagulable state. Standard target INR is 2-3 after a venous event; warfarin inhibits VKORC1, depleting factors II, VII, IX, X and proteins C and S. Always bridge with heparin/LMWH at initiation to cover the transient protein-C-driven procoagulant window.</div><div class="rtt">⚠️ DOACs (rivaroxaban, apixaban) are the wrong answer for thrombotic APS — the TRAPS trial showed significantly higher arterial recurrence with rivaroxaban, especially in triple-positive (lupus anticoagulant + anticardiolipin + anti-β2GP1) patients.</div></div><div class="rt"><div class="rtl">2. Lifelong banner</div><div class="rte">Anticoagulation after a thrombotic APS event is indefinite/lifelong, unlike a provoked VTE which stops at 3-6 months. The persistent antiphospholipid antibodies represent an ongoing prothrombotic driver, so recurrence risk stays high if therapy is withdrawn. Mnemonic: APS clot = 'A Permanent Script' for anticoagulation.</div><div class="rtt">⚠️ Stopping anticoagulation at a fixed 3-6 months (the rule for a provoked clot) is the classic trap — in confirmed APS the antibodies persist, so the clot is effectively 'unprovoked' and treatment continues indefinitely.</div></div><div class="rt"><div class="rtl">3. Venous target (INR 2-3)</div><div class="rte">After a venous thrombosis, target INR is 2-3 with warfarin — the same intensity used for standard VTE. Higher-intensity warfarin (INR 3-4) was studied and showed NO benefit over INR 2-3 for venous disease while increasing bleeding. So for venous APS, conventional intensity wins.</div><div class="rtt">⚠️ Reflexively pushing INR to 3-4 for any APS clot is wrong for venous events — trials (Crowther 2003) found high-intensity warfarin gave no extra protection and more bleeding for venous disease.</div></div><div class="rt"><div class="rtl">4. Arterial / higher-intensity risk shelf</div><div class="rte">Arterial APS events (stroke, MI) often warrant either higher-intensity warfarin (target INR ~3, range 3-4) or warfarin (INR 2-3) PLUS low-dose aspirin. Triple-positivity and recurrent thrombosis push toward more aggressive regimens. The arterial bed is more prone to recurrence, so single-agent low-intensity therapy is frequently inadequate.</div><div class="rtt">⚠️ Treating an arterial APS stroke with antiplatelet monotherapy (aspirin alone) is a common wrong answer — anticoagulation, often intensified or combined with aspirin, is needed; aspirin alone underprotects against recurrent arterial thrombosis.</div></div><div class="rt"><div class="rtl">5. DOAC graveyard (banned)</div><div class="rte">DOACs (rivaroxaban, apixaban, dabigatran, edoxaban) are avoided/contraindicated in high-risk thrombotic APS. The 2019 EULAR guidance recommends against DOACs in triple-positive patients and after arterial events. Mechanism rationale: factor Xa/IIa inhibition appears insufficient against the multi-hit antibody-mediated thrombogenesis.</div><div class="rtt">⚠️ Switching a stable APS patient to a DOAC for 'convenience' or to avoid INR monitoring is the signature board trap — especially in triple-positive or arterial disease, where DOACs raise recurrence.</div></div><div class="rt"><div class="rtl">6. Asymptomatic shelf</div><div class="rte">Asymptomatic aPL carriers (positive antibodies, no clot) may receive low-dose aspirin 81 mg for primary prophylaxis, especially with a high-risk profile (triple-positive, persistent lupus anticoagulant) or coexisting SLE, where hydroxychloroquine adds protection. Risk-factor modification (avoid estrogen, treat HTN/dyslipidemia) is essential.</div><div class="rtt">⚠️ Putting an asymptomatic aPL carrier on full therapeutic anticoagulation is over-treatment — they have never clotted, so the benefit-to-bleed ratio favors at most low-dose aspirin, not warfarin.</div></div><div class="rt"><div class="rtl">7. Warfarin teratogenic (no in pregnancy)</div><div class="rte">Warfarin crosses the placenta and is teratogenic — first-trimester exposure causes warfarin embryopathy (nasal hypoplasia, stippled epiphyses/chondrodysplasia punctata) and later CNS/bleeding complications. It must be stopped before conception or as soon as pregnancy is confirmed and replaced with LMWH, which does not cross the placenta. Mnemonic: 'Warfarin Wrecks the Womb.'</div><div class="rtt">⚠️ Continuing warfarin into pregnancy is the trap — it causes fetal warfarin syndrome; the correct move is to switch to heparin/LMWH (heparins are large and do not cross the placenta).</div></div><div class="rt"><div class="rtl">8. Obstetric bed — no prior clot</div><div class="rte">Obstetric APS without prior thrombosis (recurrent miscarriage/late fetal loss/severe pre-eclampsia) is treated with PROPHYLACTIC-dose LMWH (e.g., enoxaparin 40 mg daily) PLUS low-dose aspirin 81 mg, ideally started preconception/early pregnancy. This combination improves live-birth rates by preventing placental microthrombosis.</div><div class="rtt">⚠️ Aspirin alone is insufficient for obstetric APS — the heparin-plus-aspirin combination is what raises live-birth rates; choosing aspirin monotherapy is the undertreatment trap.</div></div><div class="rt"><div class="rtl">9. Thrombotic bed — prior clot</div><div class="rte">A pregnant APS patient with a prior thrombosis needs THERAPEUTIC (full-dose) LMWH (e.g., enoxaparin 1 mg/kg BID) plus low-dose aspirin throughout pregnancy, then transition back to warfarin postpartum (warfarin is safe in breastfeeding). They were on lifelong anticoagulation already, so pregnancy converts warfarin to full-dose LMWH, not prophylactic dosing.</div><div class="rtt">⚠️ Dropping a prior-clot patient to prophylactic LMWH during pregnancy is the trap — a history of thrombosis demands therapeutic dosing; prophylactic dosing leaves them under-anticoagulated.</div></div><div class="rt"><div class="rtl">10. Refractory bed — escalate</div><div class="rte">Refractory obstetric APS (pregnancy loss despite LMWH + aspirin) is escalated by adding hydroxychloroquine (immunomodulatory, lowers antibody titers and stabilizes placental function) and/or low-dose prednisone in the first trimester; IVIG/plasmapheresis are last-resort. HCQ is increasingly favored adjunctively in APS pregnancies.</div><div class="rtt">⚠️ Abandoning anticoagulation or jumping straight to high-dose chronic steroids is wrong — escalation builds ON the LMWH/aspirin backbone with HCQ first, not instead of it.</div></div><div class="rt"><div class="rtl">11. CAPS definition board</div><div class="rte">Catastrophic APS (CAPS, 'Asherson syndrome') = involvement of ≥3 organs/systems developing simultaneously over &lt;1 week, with histopathologic confirmation of small-vessel occlusion and laboratory aPL positivity. It is rare (&lt;1% of APS) but carries ~30-50% mortality. Kidneys, lungs, brain, heart, and skin are commonly hit.</div><div class="rtt">⚠️ CAPS is a microvascular small-vessel thrombotic storm — confusing it with the usual single large-vessel APS event (one DVT/stroke) misses the diagnosis; CAPS is the 'all organs at once' catastrophe.</div></div><div class="rt"><div class="rtl">12. CAPS DDx flags (TTP/HUS/DIC/HIT)</div><div class="rte">CAPS must be distinguished from other thrombotic microangiopathies: TTP (ADAMTS13 &lt;10%, treat with PLEX), HUS (Shiga toxin/complement, schistocytes), DIC (consumptive coagulopathy with low fibrinogen and prolonged PT/PTT), and HIT (platelet drop 5-10 days after heparin, positive PF4 antibody). aPL positivity plus multi-organ small-vessel thrombi points to CAPS.</div><div class="rtt">⚠️ Mislabeling CAPS as DIC is a key trap — in DIC fibrinogen falls and bleeding dominates, whereas CAPS is primarily a thrombotic storm with aPL positivity; the wrong label delays immunosuppression and plasma exchange.</div></div><div class="rt"><div class="rtl">13. Triple therapy station</div><div class="rte">First-line CAPS therapy is TRIPLE therapy: therapeutic anticoagulation (IV heparin) + high-dose glucocorticoids (e.g., methylprednisolone 1 g IV pulse x3 days) + plasma exchange and/or IVIG. Refractory cases add rituximab or eculizumab (complement blockade). The combination targets clot, inflammation, and circulating antibodies simultaneously.</div><div class="rtt">⚠️ Anticoagulation alone is inadequate in CAPS — the trap is treating it like a routine clot; you must add immunosuppression (steroids) plus PLEX/IVIG to halt the cytokine-and-antibody-driven storm.</div></div><div class="rt"><div class="rtl">14. Treat triggers</div><div class="rte">CAPS is precipitated in ~half of cases by an identifiable trigger — most commonly infection, but also surgery/trauma, anticoagulation withdrawal, malignancy, and pregnancy/puerperium. Aggressively identifying and treating the precipitant (e.g., antibiotics for infection) is part of management alongside triple therapy.</div><div class="rtt">⚠️ Treating only the thrombosis while ignoring an underlying infection or subtherapeutic/withdrawn anticoagulation misses the driver — failure to remove the trigger lets the storm continue despite anticoagulation.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aps_definition_dx.html" title="APS — Definition, Antibodies, Clinical &amp; Diagnosis (Pirate Ship &amp; Harbors)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="warf_inr_reversal.html" title="Warfarin — INR Targets &amp; Reversal">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

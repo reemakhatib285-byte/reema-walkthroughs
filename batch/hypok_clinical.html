@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypokalemia — clinical features</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Low K breaks 5 systems</b> — WRONG: assuming a mildly low K is harmless in everyone. Discriminator — even modest hypokalemia is dangerous in patients on digoxin, with cardiac disease, or with QT-prolonging drugs; risk is context-dependent, not just number-dependent.</li><li><b>Heart — most dangerous</b> — WRONG: waiting for muscle weakness before worrying. Discriminator — fatal arrhythmia can occur before any neuromuscular symptom; cardiac monitoring and prompt K repletion take priority in severe/symptomatic hypokalemia.</li><li><b>ECG changes</b> — WRONG ANSWER: calling 'peaked T waves' a sign of hypokalemia. Why wrong — peaked/tented T waves are HYPERkalemia. Discriminator — hypokalemia = flat T + U wave + ST depression; hyperkalemia = peaked T + wide QRS. Don't swap them.</li><li><b>Low K + digoxin toxicity</b> — WRONG: in a digoxin patient with new arrhythmia, focusing only on the digoxin level. Discriminator — a 'therapeutic' dig level can still be toxic if K is low; check and correct K (and Mg) — hypokalemia is the hidden trigger.</li><li><b>Muscle — hyperpolarized</b> — WRONG: assuming low K, like low Ca, causes hyperexcitability/tetany. Discriminator — hypokalemia HYPERpolarizes → weakness/hypotonia; it is hypocalcemia that causes tetany. Different ion, opposite clinical picture.</li><li><b>Weakness / paralysis / rhabdo</b> — WRONG: dismissing severe hypokalemia as 'just mild weakness.' Discriminator — K &lt;2.5 can cause respiratory muscle paralysis and rhabdomyolysis; this is a medical emergency requiring IV K and monitoring, not oral repletion alone.</li><li><b>Periodic paralysis clue</b> — WRONG: aggressively repleting K in periodic paralysis as if it were a true deficit. Discriminator — the K is shifted, not lost; over-repletion causes rebound HYPERkalemia when cells release it. Give small doses and treat the cause (e.g. control hyperthyroidism).</li><li><b>Gut — quiet/ileus</b> — WRONG: attributing a stubborn postoperative ileus solely to opioids/surgery. Discriminator — check the K in any unexplained or refractory ileus; hypokalemia is a correctable cause of gut paralysis.</li><li><b>GI symptoms</b> — WRONG: continuing to push oral potassium in a patient with an ileus. Discriminator — with ileus/poor gut motility, enteral absorption is unreliable; use IV repletion until the gut recovers.</li><li><b>Kidney — damage paradox</b> — WRONG: ignoring the K when working up new polyuria. Discriminator — hypokalemia is a reversible cause of nephrogenic DI; it should be on the differential for polyuria alongside hypercalcemia and lithium.</li><li><b>Nephrogenic DI / polyuria</b> — WRONG: giving desmopressin for the polyuria of hypokalemic nephrogenic DI. Discriminator — nephrogenic DI is ADH-RESISTANT, so DDAVP won't work; the fix is correcting the potassium (and removing causes).</li><li><b>Chronic TIN / cysts / ESRD</b> — WRONG: assuming hypokalemic kidney injury is always fully reversible. Discriminator — brief hypokalemia is reversible, but chronic hypokalemic nephropathy (laxative/eating-disorder patients) can produce permanent tubulointerstitial damage and CKD.</li><li><b>CV — systemic / HTN</b> — WRONG ANSWER: workup of HTN + spontaneous hypokalemia stopping at 'essential hypertension.' Discriminator — unprovoked hypokalemia with HTN points to mineralocorticoid excess (primary hyperaldosteronism, etc.); pursue renin/aldosterone testing rather than calling it essential.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Low K breaks 5 systems</div><div class="rte">Hypokalemia (serum K &lt;3.5 mEq/L; severe &lt;2.5) is a state of membrane electrical instability hitting five systems: heart (arrhythmia), skeletal muscle (weakness/rhabdo), GI smooth muscle (ileus), kidney (nephrogenic DI), and cardiovascular/BP (HTN). Most patients are asymptomatic until K &lt;3.0; symptoms track severity and rate of fall. Mnemonic: 'Heart, Muscle, Gut, Kidney, BP.'</div><div class="rtt">⚠️ WRONG: assuming a mildly low K is harmless in everyone. Discriminator — even modest hypokalemia is dangerous in patients on digoxin, with cardiac disease, or with QT-prolonging drugs; risk is context-dependent, not just number-dependent.</div></div><div class="rt"><div class="rtl">2. Heart — most dangerous</div><div class="rte">Cardiac toxicity is the lethal effect and the reason hypokalemia is an emergency. Low K delays repolarization and increases automaticity → atrial and ventricular ectopy, AF, VT/VF, and Torsades, especially with concomitant digoxin, hypomagnesemia, or QT-prolonging drugs. Continuous ECG monitoring is mandatory in severe or symptomatic cases.</div><div class="rtt">⚠️ WRONG: waiting for muscle weakness before worrying. Discriminator — fatal arrhythmia can occur before any neuromuscular symptom; cardiac monitoring and prompt K repletion take priority in severe/symptomatic hypokalemia.</div></div><div class="rt"><div class="rtl">3. ECG changes</div><div class="rte">ECG sequence with falling K: flattened/inverted T waves, ST-segment depression, prominent U waves, apparent QT (really QU) prolongation, then VT/Torsades. Get an ECG when K &lt;2.7. The U wave (a deflection after the T) is the signature finding. Coexisting hypomagnesemia amplifies all of these.</div><div class="rtt">⚠️ WRONG ANSWER: calling 'peaked T waves' a sign of hypokalemia. Why wrong — peaked/tented T waves are HYPERkalemia. Discriminator — hypokalemia = flat T + U wave + ST depression; hyperkalemia = peaked T + wide QRS. Don't swap them.</div></div><div class="rt"><div class="rtl">4. Low K + digoxin toxicity</div><div class="rte">Potassium and digoxin compete for the same binding site on the Na/K-ATPase. Low K means less competition → more digoxin bound → enhanced effect and toxicity even at therapeutic digoxin levels. So hypokalemia (and hypomagnesemia) precipitates digoxin toxicity arrhythmias; correcting K is part of treating dig toxicity.</div><div class="rtt">⚠️ WRONG: in a digoxin patient with new arrhythmia, focusing only on the digoxin level. Discriminator — a 'therapeutic' dig level can still be toxic if K is low; check and correct K (and Mg) — hypokalemia is the hidden trigger.</div></div><div class="rt"><div class="rtl">5. Muscle — hyperpolarized</div><div class="rte">Low extracellular K raises the K gradient and hyperpolarizes the resting membrane (makes it more negative), so a larger stimulus is needed to reach threshold → impaired depolarization and muscle weakness. This is the unifying mechanism behind the neuromuscular and smooth-muscle features.</div><div class="rtt">⚠️ WRONG: assuming low K, like low Ca, causes hyperexcitability/tetany. Discriminator — hypokalemia HYPERpolarizes → weakness/hypotonia; it is hypocalcemia that causes tetany. Different ion, opposite clinical picture.</div></div><div class="rt"><div class="rtl">6. Weakness / paralysis / rhabdo</div><div class="rte">Skeletal-muscle effects scale with severity: cramps and fatigue → proximal then ascending weakness → flaccid paralysis (can involve respiratory muscles) at K &lt;2.5. Severe hypokalemia impairs exercise-induced vasodilation in muscle → ischemia → rhabdomyolysis, which then releases K and can mask the deficit.</div><div class="rtt">⚠️ WRONG: dismissing severe hypokalemia as 'just mild weakness.' Discriminator — K &lt;2.5 can cause respiratory muscle paralysis and rhabdomyolysis; this is a medical emergency requiring IV K and monitoring, not oral repletion alone.</div></div><div class="rt"><div class="rtl">7. Periodic paralysis clue</div><div class="rte">Episodic flaccid paralysis with hypokalemia from transcellular SHIFT (not total-body loss) = periodic paralysis: hypokalemic familial (channelopathy) or thyrotoxic periodic paralysis (TPP, classically young Asian males after carbohydrate/exercise). Treat cautiously with low-dose K (and beta-blocker in TPP) because K rebounds as it shifts back out.</div><div class="rtt">⚠️ WRONG: aggressively repleting K in periodic paralysis as if it were a true deficit. Discriminator — the K is shifted, not lost; over-repletion causes rebound HYPERkalemia when cells release it. Give small doses and treat the cause (e.g. control hyperthyroidism).</div></div><div class="rt"><div class="rtl">8. Gut — quiet/ileus</div><div class="rte">GI smooth muscle also hyperpolarizes → hypomotility: constipation, abdominal distension, decreased/absent bowel sounds, and paralytic ileus. The gut goes 'quiet' — the smooth-muscle parallel to skeletal weakness.</div><div class="rtt">⚠️ WRONG: attributing a stubborn postoperative ileus solely to opioids/surgery. Discriminator — check the K in any unexplained or refractory ileus; hypokalemia is a correctable cause of gut paralysis.</div></div><div class="rt"><div class="rtl">9. GI symptoms</div><div class="rte">The constellation — constipation, distension, ileus, reduced bowel sounds — all stems from smooth-muscle hypomotility. Severe ileus can in turn impair oral intake and worsen the electrolyte picture, so repletion plus addressing the cause is needed.</div><div class="rtt">⚠️ WRONG: continuing to push oral potassium in a patient with an ileus. Discriminator — with ileus/poor gut motility, enteral absorption is unreliable; use IV repletion until the gut recovers.</div></div><div class="rt"><div class="rtl">10. Kidney — damage paradox</div><div class="rte">Renal effects: hypokalemia causes ADH resistance (nephrogenic DI → polyuria/polydipsia) and increased renal ammoniagenesis plus enhanced bicarbonate reabsorption, which generates/maintains a metabolic alkalosis. Chronically it injures the tubules. The 'paradox': low K both results from and then perpetuates a renal-driven alkalosis.</div><div class="rtt">⚠️ WRONG: ignoring the K when working up new polyuria. Discriminator — hypokalemia is a reversible cause of nephrogenic DI; it should be on the differential for polyuria alongside hypercalcemia and lithium.</div></div><div class="rt"><div class="rtl">11. Nephrogenic DI / polyuria</div><div class="rte">Chronic hypokalemia downregulates aquaporin-2 channels → kidney cannot concentrate urine despite ADH (ADH-resistant nephrogenic DI) → polyuria, nocturia, polydipsia. Simultaneously increased ammoniagenesis and HCO3 retention help sustain a metabolic alkalosis, linking the renal and acid-base effects.</div><div class="rtt">⚠️ WRONG: giving desmopressin for the polyuria of hypokalemic nephrogenic DI. Discriminator — nephrogenic DI is ADH-RESISTANT, so DDAVP won't work; the fix is correcting the potassium (and removing causes).</div></div><div class="rt"><div class="rtl">12. Chronic TIN / cysts / ESRD</div><div class="rte">Prolonged severe hypokalemia (classically chronic laxative abuse, eating disorders, or long-standing diuretic use) causes tubular vacuolization, chronic tubulointerstitial nephritis, renal cysts, and progressive CKD that can reach ESRD. This is the structural end-stage of the renal damage paradox.</div><div class="rtt">⚠️ WRONG: assuming hypokalemic kidney injury is always fully reversible. Discriminator — brief hypokalemia is reversible, but chronic hypokalemic nephropathy (laxative/eating-disorder patients) can produce permanent tubulointerstitial damage and CKD.</div></div><div class="rt"><div class="rtl">13. CV — systemic / HTN</div><div class="rte">Low potassium promotes renal sodium retention and impairs vasodilation → higher blood pressure; population data link low-K/high-Na diets to HTN, heart failure, and stroke. Conversely, increasing dietary K lowers BP (DASH diet rationale). In mineralocorticoid-excess states, HTN and hypokalemia appear together.</div><div class="rtt">⚠️ WRONG ANSWER: workup of HTN + spontaneous hypokalemia stopping at 'essential hypertension.' Discriminator — unprovoked hypokalemia with HTN points to mineralocorticoid excess (primary hyperaldosteronism, etc.); pursue renin/aldosterone testing rather than calling it essential.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hypok_gi_loss.html" title="Hypokalemia — GI / extrarenal loss">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hypok_diagnosis.html" title="Hypokalemia — diagnosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

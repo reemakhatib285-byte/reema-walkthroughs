@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">NHL — NHL Registry (census bureau)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>NO-HODGWIG sign</b> — Reed-Sternberg cells (CD15+, CD30+, 'owl-eye') indicate HODGKIN, not NHL — putting RS cells in an NHL stem is the trap. NHL also tends to skip nodal regions (non-contiguous spread) and involve extranodal sites, whereas Hodgkin spreads contiguously node-to-node.</li><li><b>Census 80,550</b> — Assuming most lymphomas are T-cell is the trap — NHL is predominantly B-cell (~85-90%). T-cell lymphomas are the minority and tend to be more aggressive and harder to treat (e.g., peripheral T-cell lymphoma, ATLL, cutaneous T-cell lymphoma).</li><li><b>DLBCL 31% (left)</b> — Calling follicular lymphoma the most common aggressive NHL is the trap — FL is the most common INDOLENT NHL, while DLBCL is the most common aggressive one (and most common overall). Rapid growth + high LDH + curable-with-R-CHOP describes DLBCL, not indolent FL.</li><li><b>FL 22% (right)</b> — Labeling FL aggressive/curable like DLBCL is the trap — FL is indolent and generally incurable; the goal is disease control, not cure. A follicular patient with sudden rapid growth and rising LDH suggests transformation to DLBCL and warrants re-biopsy.</li><li><b>Big B 90%</b> — Forgetting that most NHL is CD20+ B-cell (and thus rituximab-responsive) is the trap — T-cell lymphomas do NOT express CD20, so rituximab is ineffective for them, and they generally carry a worse prognosis than their B-cell counterparts.</li><li><b>4% banner</b> — Overlooking immunosuppression/HIV as a major NHL risk factor is the trap — HIV-associated lymphomas (DLBCL, Burkitt, primary CNS lymphoma, primary effusion lymphoma) are AIDS-defining, and autoimmune disease raises risk of specific lymphomas (e.g., Sjögren → MALT/parotid lymphoma).</li><li><b>74% 5-yr survival</b> — Reading survival statistics as if all NHL behaves the same is the trap — prognosis and treatment intent are subtype-specific. Telling a patient with indolent FL they will be 'cured,' or telling a DLBCL patient their disease is merely chronic, both misstate the biology.</li><li><b>Rogues' Gallery — EBV</b> — Forgetting EBV behind PTLD is the trap — in a transplant recipient with new adenopathy/mass, reducing immunosuppression (± rituximab) is first-line because the EBV-driven proliferation may regress. Also note sporadic (Western) Burkitt is usually EBV-NEGATIVE, unlike endemic Burkitt.</li><li><b>HTLV-1</b> — Attributing ATLL hypercalcemia to bony metastasis rather than tumor-driven (PTHrP/cytokine) mechanisms is the trap. Also, HTLV-1 causes a T-CELL malignancy — confusing it with the B-cell lymphomas is an error, and its hypercalcemia + flower cells + endemic geography are the giveaways.</li><li><b>HCV</b> — Going straight to chemotherapy for an HCV-positive marginal-zone lymphoma is the trap — antiviral therapy alone can produce remission and is first-line in HCV-driven disease. Missing the HCV link means missing a non-cytotoxic, potentially curative option.</li><li><b>H. pylori</b> — Treating t(11;18)-POSITIVE gastric MALT with antibiotics alone is the trap — those tumors do not respond to eradication and need radiation or systemic therapy. Antibiotic cure applies only to early-stage, H. pylori-positive, t(11;18)-negative gastric MALT.</li><li><b>HHV-8</b> — Working up an HIV patient's lymphomatous effusion as routine malignant effusion and missing primary effusion lymphoma (HHV-8-driven, often EBV co-infected, no nodal mass) is the trap. HHV-8 is the same virus behind Kaposi sarcoma, a useful linking clue.</li><li><b>Ann Arbor staging map</b> — Counting pruritus, fatigue, or alcohol-induced pain as 'B symptoms' is the trap — only fever, drenching night sweats, and &gt;10% weight loss qualify. Staging upstages disease that crosses the diaphragm or involves extranodal/marrow sites, which changes treatment intensity.</li><li><b>HBV screen mandatory</b> — Giving rituximab without HBV screening is a high-yield safety trap — anti-HBc-positive patients (even with cleared surface antigen) can reactivate. The correct action is screen first and start antiviral prophylaxis in those at risk, not simply proceed.</li><li><b>IPI / FLIPI scores</b> — Applying the IPI to follicular lymphoma (or vice versa) is the trap — use FLIPI for follicular, MIPI for mantle cell, and IPI for DLBCL. Each index uses different weighted variables, so the wrong tool gives the wrong prognosis.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. NO-HODGWIG sign</div><div class="rte">Non-Hodgkin lymphoma is a heterogeneous family of lymphoid malignancies of B-, T-, and NK-cell origin — far more common and more biologically varied than Hodgkin lymphoma. Unlike Hodgkin (Reed-Sternberg cells, contiguous nodal spread, bimodal age peaks), NHL spreads non-contiguously/hematogenously, more often involves extranodal sites, and frequently presents at advanced stage. Mnemonic: 'No Reed-Sternberg, no Hodgkin' — NHL is everything else, mostly B-cell.</div><div class="rtt">⚠️ Reed-Sternberg cells (CD15+, CD30+, 'owl-eye') indicate HODGKIN, not NHL — putting RS cells in an NHL stem is the trap. NHL also tends to skip nodal regions (non-contiguous spread) and involve extranodal sites, whereas Hodgkin spreads contiguously node-to-node.</div></div><div class="rt"><div class="rtl">2. Census 80,550</div><div class="rte">NHL is among the most common cancers (roughly 80,000+ new US cases per year and a top-10 cancer by incidence). The overwhelming majority — about 85-90% — are of B-cell lineage, with T-cell and NK-cell lymphomas making up the minority. Risk rises with age, immunosuppression, autoimmune disease, and certain infections. Mnemonic: the census counts tens of thousands a year, and ~9 in 10 are B-cell.</div><div class="rtt">⚠️ Assuming most lymphomas are T-cell is the trap — NHL is predominantly B-cell (~85-90%). T-cell lymphomas are the minority and tend to be more aggressive and harder to treat (e.g., peripheral T-cell lymphoma, ATLL, cutaneous T-cell lymphoma).</div></div><div class="rt"><div class="rtl">3. DLBCL 31% (left)</div><div class="rte">Diffuse large B-cell lymphoma is the MOST COMMON aggressive NHL and the most common NHL overall (~30%). It presents as a rapidly enlarging nodal or extranodal mass, often with elevated LDH and B symptoms, and is potentially CURABLE with R-CHOP immunochemotherapy (cures ~60%). Cell-of-origin (GCB vs ABC) and double-hit (MYC + BCL2/BCL6) status refine prognosis. Mnemonic: DLBCL = Big aggressive lymphoma, R-CHOP its cure.</div><div class="rtt">⚠️ Calling follicular lymphoma the most common aggressive NHL is the trap — FL is the most common INDOLENT NHL, while DLBCL is the most common aggressive one (and most common overall). Rapid growth + high LDH + curable-with-R-CHOP describes DLBCL, not indolent FL.</div></div><div class="rt"><div class="rtl">4. FL 22% (right)</div><div class="rte">Follicular lymphoma is the MOST COMMON indolent NHL (~20-22%) and second most common NHL overall. It is driven by t(14;18)/BCL2 overexpression (defective apoptosis), follows a waxing-and-waning, INCURABLE but indolent course, and is managed by watch-and-wait when low-burden or rituximab ± chemo when symptomatic. It transforms to DLBCL at ~3%/year. Mnemonic: FL = the slow grower, t(14;18), incurable but indolent.</div><div class="rtt">⚠️ Labeling FL aggressive/curable like DLBCL is the trap — FL is indolent and generally incurable; the goal is disease control, not cure. A follicular patient with sudden rapid growth and rising LDH suggests transformation to DLBCL and warrants re-biopsy.</div></div><div class="rt"><div class="rtl">5. Big B 90%</div><div class="rte">About 85-90% of NHL is of B-cell lineage; the major B-cell entities are DLBCL, follicular, mantle cell, marginal-zone/MALT, Burkitt, and CLL/SLL. T/NK-cell lymphomas (peripheral T-cell lymphoma, ATLL, anaplastic large-cell, cutaneous T-cell/mycosis fungoides, extranodal NK/T nasal) are the aggressive minority. Most B-cell lymphomas express CD20, the target of rituximab. Mnemonic: B for Big majority — and B for the CD20 target of rituximab.</div><div class="rtt">⚠️ Forgetting that most NHL is CD20+ B-cell (and thus rituximab-responsive) is the trap — T-cell lymphomas do NOT express CD20, so rituximab is ineffective for them, and they generally carry a worse prognosis than their B-cell counterparts.</div></div><div class="rt"><div class="rtl">6. 4% banner</div><div class="rte">NHL incidence has risen over recent decades, driven partly by an aging population and by immunosuppression. Key risk states: HIV/AIDS, post-transplant immunosuppression (PTLD), congenital immunodeficiency, autoimmune disease (Sjögren, Hashimoto, celiac, rheumatoid arthritis), and chronic infections/antigen stimulation. Mnemonic: immune dysregulation + age = rising NHL.</div><div class="rtt">⚠️ Overlooking immunosuppression/HIV as a major NHL risk factor is the trap — HIV-associated lymphomas (DLBCL, Burkitt, primary CNS lymphoma, primary effusion lymphoma) are AIDS-defining, and autoimmune disease raises risk of specific lymphomas (e.g., Sjögren → MALT/parotid lymphoma).</div></div><div class="rt"><div class="rtl">7. 74% 5-yr survival</div><div class="rte">Overall 5-year survival for NHL is favorable (~70%+), but this aggregate masks subtype-driven differences in the curability paradox: aggressive lymphomas (DLBCL, Burkitt) are potentially CURED with chemo, while indolent lymphomas (follicular, mantle cell) are typically INCURABLE but slow and relapsing. Mnemonic: good odds overall, but the path differs — aggressive=cure-or-fail, indolent=control-and-relapse.</div><div class="rtt">⚠️ Reading survival statistics as if all NHL behaves the same is the trap — prognosis and treatment intent are subtype-specific. Telling a patient with indolent FL they will be 'cured,' or telling a DLBCL patient their disease is merely chronic, both misstate the biology.</div></div><div class="rt"><div class="rtl">8. Rogues' Gallery — EBV</div><div class="rte">Epstein-Barr virus is linked to multiple lymphomas: endemic Burkitt (~95% EBV+), HIV-associated lymphomas and primary CNS lymphoma, post-transplant lymphoproliferative disorder (PTLD), extranodal NK/T-cell lymphoma (nasal type), and EBV+ DLBCL. EBV immortalizes B cells via latent membrane proteins, especially when T-cell surveillance is impaired. Mnemonic: EBV = Burkitt (endemic), PTLD, CNS lymphoma, NK/T nasal.</div><div class="rtt">⚠️ Forgetting EBV behind PTLD is the trap — in a transplant recipient with new adenopathy/mass, reducing immunosuppression (± rituximab) is first-line because the EBV-driven proliferation may regress. Also note sporadic (Western) Burkitt is usually EBV-NEGATIVE, unlike endemic Burkitt.</div></div><div class="rt"><div class="rtl">9. HTLV-1</div><div class="rte">Human T-lymphotropic virus type 1 causes Adult T-cell leukemia/lymphoma (ATLL), endemic to southwestern Japan, the Caribbean, and parts of Africa. Classic features: CD4+ T-cell malignancy, HYPERCALCEMIA (lytic bone lesions), skin lesions, lymphadenopathy, and circulating 'flower cells' (multilobated nuclei). Mnemonic: HTLV-1 → ATLL → T cells, hypercalcemia, flower cells.</div><div class="rtt">⚠️ Attributing ATLL hypercalcemia to bony metastasis rather than tumor-driven (PTHrP/cytokine) mechanisms is the trap. Also, HTLV-1 causes a T-CELL malignancy — confusing it with the B-cell lymphomas is an error, and its hypercalcemia + flower cells + endemic geography are the giveaways.</div></div><div class="rt"><div class="rtl">10. HCV</div><div class="rte">Hepatitis C virus is associated with marginal-zone lymphomas, especially splenic marginal-zone lymphoma, through chronic B-cell antigen stimulation; it also causes mixed cryoglobulinemia. Eradicating HCV with direct-acting antivirals can induce lymphoma regression, so HCV testing is part of the lymphoma workup. Mnemonic: HCV → splenic/marginal-zone lymphoma — treat the virus, shrink the tumor.</div><div class="rtt">⚠️ Going straight to chemotherapy for an HCV-positive marginal-zone lymphoma is the trap — antiviral therapy alone can produce remission and is first-line in HCV-driven disease. Missing the HCV link means missing a non-cytotoxic, potentially curative option.</div></div><div class="rt"><div class="rtl">11. H. pylori</div><div class="rte">Helicobacter pylori drives gastric MALT (extranodal marginal-zone) lymphoma via chronic antigenic stimulation. For early-stage, H. pylori-positive gastric MALT, antibiotic ERADICATION (triple/quadruple therapy) alone induces regression/cure in most patients. Mnemonic: H. pylori → gastric MALT → kill the bug, cure the lymphoma.</div><div class="rtt">⚠️ Treating t(11;18)-POSITIVE gastric MALT with antibiotics alone is the trap — those tumors do not respond to eradication and need radiation or systemic therapy. Antibiotic cure applies only to early-stage, H. pylori-positive, t(11;18)-negative gastric MALT.</div></div><div class="rt"><div class="rtl">12. HHV-8</div><div class="rte">Human herpesvirus 8 (KSHV) causes primary effusion lymphoma (a body-cavity lymphoma presenting as malignant pleural/pericardial/peritoneal effusions WITHOUT a mass, usually in HIV/AIDS) and is also linked to Kaposi sarcoma and multicentric Castleman disease. Mnemonic: HHV-8 → primary effusion lymphoma + Kaposi + Castleman.</div><div class="rtt">⚠️ Working up an HIV patient's lymphomatous effusion as routine malignant effusion and missing primary effusion lymphoma (HHV-8-driven, often EBV co-infected, no nodal mass) is the trap. HHV-8 is the same virus behind Kaposi sarcoma, a useful linking clue.</div></div><div class="rt"><div class="rtl">13. Ann Arbor staging map</div><div class="rte">Ann Arbor (Lugano-modified) staging: I = one nodal region; II = ≥2 regions same side of diaphragm; III = both sides of diaphragm; IV = disseminated/extranodal (marrow, liver, lung). The suffix 'B' denotes B symptoms — fever &gt;38°C, drenching NIGHT SWEATS, and unexplained WEIGHT LOSS &gt;10% over 6 months — which worsen prognosis; 'A' means none. PET-CT is standard for staging FDG-avid lymphomas. Mnemonic: I-II-III-IV by diaphragm sides; 'B' for the bad symptoms.</div><div class="rtt">⚠️ Counting pruritus, fatigue, or alcohol-induced pain as 'B symptoms' is the trap — only fever, drenching night sweats, and &gt;10% weight loss qualify. Staging upstages disease that crosses the diaphragm or involves extranodal/marrow sites, which changes treatment intensity.</div></div><div class="rt"><div class="rtl">14. HBV screen mandatory</div><div class="rte">Hepatitis B screening (HBsAg, anti-HBc) is MANDATORY before rituximab or other anti-CD20 therapy: depleting B cells can REACTIVATE latent HBV and cause fulminant hepatitis and death. Patients who are HBsAg-positive or anti-HBc-positive should receive antiviral prophylaxis (e.g., entecavir or tenofovir) during and after therapy. Mnemonic: before rituximab, check Hep B — or risk fulminant reactivation.</div><div class="rtt">⚠️ Giving rituximab without HBV screening is a high-yield safety trap — anti-HBc-positive patients (even with cleared surface antigen) can reactivate. The correct action is screen first and start antiviral prophylaxis in those at risk, not simply proceed.</div></div><div class="rt"><div class="rtl">15. IPI / FLIPI scores</div><div class="rte">The International Prognostic Index (IPI) risk-stratifies aggressive lymphoma (DLBCL) using five factors — Age &gt;60, LDH elevated, ECOG performance status ≥2, Stage III/IV, and Extranodal sites &gt;1 ('APLES'). FLIPI is the follicular-specific index (factors: Age, LDH, Hemoglobin, Stage/nodal areas), and MIPI is the mantle-cell index. Mnemonic: IPI 'APLES' for aggressive DLBCL; FLIPI for Follicular; MIPI for Mantle.</div><div class="rtt">⚠️ Applying the IPI to follicular lymphoma (or vice versa) is the trap — use FLIPI for follicular, MIPI for mantle cell, and IPI for DLBCL. Each index uses different weighted variables, so the wrong tool gives the wrong prognosis.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nhl_treatment.html" title="NHL — NHL Arsenal (armory)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nhl_tcell.html" title="NHL — T-Cell Underground (subway system)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

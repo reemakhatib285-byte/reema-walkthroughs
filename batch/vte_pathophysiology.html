@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">VTE — Pathophysiology: Virchow's Triad, Thrombophilias &amp; Inflammation</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Stasis</b> — WRONG: 'Venous thrombi are platelet-rich and prevented mainly by antiplatelet agents like aspirin.' Venous (stasis) thrombi are fibrin/coagulation-driven 'red clots' best prevented by anticoagulants; platelet-rich 'white clots' are the ARTERIAL/high-shear mechanism — confusing the two leads to the wrong prophylaxis.</li><li><b>Hypercoagulability</b> — WRONG: 'Order a full inherited thrombophilia panel during an acute clot while on heparin/warfarin.' Acute thrombosis and anticoagulants alter levels (e.g., antithrombin consumed by heparin, protein C/S lowered by warfarin and acute illness), giving false results — defer testing and reserve it for cases that would change management.</li><li><b>Endothelial injury</b> — WRONG: 'An upper-extremity DVT in a patient with a PICC/central line is unusual and probably not a real clot.' Catheter-associated endothelial injury is the leading cause of upper-extremity DVT — it is a genuine VTE requiring anticoagulation, not a benign finding.</li><li><b>Factor V Leiden</b> — WRONG: 'Antithrombin deficiency is the most common inherited thrombophilia.' Antithrombin deficiency is the RAREST inherited thrombophilia (but one of the most thrombogenic) — Factor V Leiden is the most common; don't pick the rare-but-severe one for 'most common.'</li><li><b>Prothrombin mutation</b> — WRONG: 'Prothrombin G20210A causes a low prothrombin level and a bleeding tendency.' It is a gain-of-function that INCREASES prothrombin and causes CLOTTING (thrombophilia), not bleeding — the mechanism direction is the discriminator.</li><li><b>Antithrombin / Protein C&amp;S deficiency</b> — WRONG: 'Start warfarin alone for the first clot in a known protein C–deficient patient.' Warfarin acutely depletes protein C (short half-life) faster than the procoagulant factors, precipitating warfarin-induced skin necrosis — always bridge with heparin/LMWH and overlap until INR is therapeutic.</li><li><b>Antiphospholipid syndrome</b> — WRONG: 'Treat antiphospholipid syndrome VTE long-term with a DOAC like rivaroxaban.' The TRAPS trial showed excess arterial events with rivaroxaban in APS — vitamin K antagonist (warfarin, INR 2–3) is standard; DOACs are inferior/contraindicated in high-risk (triple-positive) APS.</li><li><b>Active cancer / Trousseau</b> — WRONG: 'Manage cancer-associated VTE the same as low-risk provoked VTE — anticoagulate for 3 months then stop.' Cancer is an ongoing prothrombotic driver: anticoagulation continues for as long as the cancer is active/treated (indefinite), not a fixed 3-month course.</li><li><b>Immobility / surgery / pregnancy</b> — WRONG: 'A DVT after major surgery (a transient provoker) needs lifelong anticoagulation.' VTE provoked by a transient major risk factor is treated ~3 months then stopped if the provoker has resolved — indefinite therapy is for unprovoked, recurrent, or cancer-associated VTE.</li><li><b>Inflammation furnace</b> — WRONG: 'A hospitalized IBD patient in flare doesn't need VTE prophylaxis because GI bleeding makes it too risky.' Active IBD is a strong independent VTE risk factor and hospitalized flare patients generally warrant pharmacologic prophylaxis (bleeding is usually not a contraindication) — withholding it is a common, harmful error.</li><li><b>Obesity / metabolic syndrome</b> — WRONG: 'Standard fixed-dose VTE prophylaxis is adequate for every morbidly obese inpatient.' Markedly obese patients may need weight-adjusted/higher prophylactic dosing and anti-Xa monitoring — assuming one fixed dose fits all underdoses them.</li><li><b>DVT embolizes</b> — WRONG: 'A small isolated calf (distal) DVT always requires the same full anticoagulation course as a proximal DVT.' Selected low-risk isolated distal DVTs (no severe symptoms, no risk for extension) may be managed with serial ultrasound surveillance — proximal DVTs are the ones that mandate anticoagulation; treat them differently.</li><li><b>Post-thrombotic syndrome</b> — WRONG: 'New leg swelling and pain months after a DVT must be a recurrent acute DVT — start fresh anticoagulation immediately.' PTS mimics recurrent DVT; confirm with compression ultrasound (and D-dimer) before assuming recurrence — chronic post-thrombotic changes are common and don't require renewed full-course anticoagulation by themselves.</li><li><b>CTEPH</b> — WRONG: 'Screen for CTEPH with CTPA as the first-line test.' V/Q scanning is the preferred screening test (higher sensitivity for chronic/organized thrombus); a normal V/Q essentially excludes CTEPH, whereas CTPA can miss distal organized disease — confirm hemodynamics with right heart catheterization.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Stasis</div><div class="rte">Stasis is the first arm of Virchow's triad: sluggish venous flow (immobility, long-haul flights, paralysis, prolonged bed rest, hospitalization, heart failure, casted limb) lets activated clotting factors accumulate and platelets contact the endothelium instead of being washed away. Venous (red) thrombi are fibrin- and RBC-rich, reflecting this low-flow, coagulation-driven mechanism. Mnemonic: 'Slow blood = sludge that clots.'</div><div class="rtt">⚠️ WRONG: 'Venous thrombi are platelet-rich and prevented mainly by antiplatelet agents like aspirin.' Venous (stasis) thrombi are fibrin/coagulation-driven 'red clots' best prevented by anticoagulants; platelet-rich 'white clots' are the ARTERIAL/high-shear mechanism — confusing the two leads to the wrong prophylaxis.</div></div><div class="rt"><div class="rtl">2. Hypercoagulability</div><div class="rte">Hypercoagulability is the second arm: an imbalance favoring clotting, either inherited (Factor V Leiden, prothrombin G20210A, antithrombin/protein C/protein S deficiency) or acquired (malignancy, pregnancy, estrogen/OCPs, nephrotic syndrome, antiphospholipid syndrome, HIT). It explains unprovoked, recurrent, or unusual-site thromboses. Mnemonic: 'Too much clot factory, too few brakes.'</div><div class="rtt">⚠️ WRONG: 'Order a full inherited thrombophilia panel during an acute clot while on heparin/warfarin.' Acute thrombosis and anticoagulants alter levels (e.g., antithrombin consumed by heparin, protein C/S lowered by warfarin and acute illness), giving false results — defer testing and reserve it for cases that would change management.</div></div><div class="rt"><div class="rtl">3. Endothelial injury</div><div class="rte">Endothelial injury is the third arm: damage from surgery, major trauma, indwelling central venous catheters, prior DVT, smoking, or vasculitis exposes subendothelial tissue factor and collagen, triggering coagulation and platelet adhesion. This is why postoperative and catheter-associated thromboses occur. Mnemonic: 'Cracked wall = clot magnet.'</div><div class="rtt">⚠️ WRONG: 'An upper-extremity DVT in a patient with a PICC/central line is unusual and probably not a real clot.' Catheter-associated endothelial injury is the leading cause of upper-extremity DVT — it is a genuine VTE requiring anticoagulation, not a benign finding.</div></div><div class="rt"><div class="rtl">4. Factor V Leiden</div><div class="rte">Factor V Leiden is the MOST COMMON inherited thrombophilia (~5% of Caucasians); a point mutation makes factor Va resistant to cleavage by activated protein C, so thrombin generation continues unchecked. Heterozygotes have a modest (~3–8×) VTE risk increase; risk multiplies with estrogen/OCPs or pregnancy. Screen with the activated protein C resistance assay, confirm by genetic testing. Mnemonic: 'Five Leiden = Five percent = most common.'</div><div class="rtt">⚠️ WRONG: 'Antithrombin deficiency is the most common inherited thrombophilia.' Antithrombin deficiency is the RAREST inherited thrombophilia (but one of the most thrombogenic) — Factor V Leiden is the most common; don't pick the rare-but-severe one for 'most common.'</div></div><div class="rt"><div class="rtl">5. Prothrombin mutation</div><div class="rte">The prothrombin G20210A gene mutation is the 2nd most common inherited thrombophilia (~2% of population); it increases prothrombin (factor II) levels, raising thrombin generation and VTE risk modestly. Like Factor V Leiden it is a relatively low-risk gain-of-function, with risk amplified by estrogen exposure. Diagnosed by genetic testing. Mnemonic: 'G20210A = factor II = #2 most common.'</div><div class="rtt">⚠️ WRONG: 'Prothrombin G20210A causes a low prothrombin level and a bleeding tendency.' It is a gain-of-function that INCREASES prothrombin and causes CLOTTING (thrombophilia), not bleeding — the mechanism direction is the discriminator.</div></div><div class="rt"><div class="rtl">6. Antithrombin / Protein C&amp;S deficiency</div><div class="rte">Deficiencies of the natural anticoagulants — antithrombin (cofactor for heparin), protein C, and protein S — are rare but confer HIGH thrombotic risk (loss of the body's 'brakes'). Antithrombin deficiency can cause apparent heparin resistance. Protein C/S deficiency predisposes to warfarin-induced skin necrosis when warfarin is started without heparin bridging. Mnemonic: 'Lose the brakes (ATIII, C, S) = rare but dangerous clots.'</div><div class="rtt">⚠️ WRONG: 'Start warfarin alone for the first clot in a known protein C–deficient patient.' Warfarin acutely depletes protein C (short half-life) faster than the procoagulant factors, precipitating warfarin-induced skin necrosis — always bridge with heparin/LMWH and overlap until INR is therapeutic.</div></div><div class="rt"><div class="rtl">7. Antiphospholipid syndrome</div><div class="rte">Antiphospholipid syndrome is an ACQUIRED autoimmune thrombophilia (lupus anticoagulant, anti-cardiolipin, anti-β2-glycoprotein-I antibodies) causing BOTH venous and ARTERIAL thrombosis plus recurrent pregnancy loss. Paradoxically it prolongs the aPTT in vitro yet clots in vivo. Long-term treatment is warfarin (INR 2–3), and DOACs are inferior, especially in triple-positive disease. Mnemonic: 'APS: clots everywhere, long aPTT, treat with warfarin.'</div><div class="rtt">⚠️ WRONG: 'Treat antiphospholipid syndrome VTE long-term with a DOAC like rivaroxaban.' The TRAPS trial showed excess arterial events with rivaroxaban in APS — vitamin K antagonist (warfarin, INR 2–3) is standard; DOACs are inferior/contraindicated in high-risk (triple-positive) APS.</div></div><div class="rt"><div class="rtl">8. Active cancer / Trousseau</div><div class="rte">Active malignancy is a major acquired hypercoagulable state (tumor tissue factor and mucin release); Trousseau syndrome is migratory superficial thrombophlebitis, classically with pancreatic, gastric, and other adenocarcinomas. Cancer-associated VTE is treated with LMWH or a DOAC (apixaban/rivaroxaban/edoxaban), favoring LMWH with luminal GI/GU tumors. An unprovoked VTE may be the presenting sign of occult cancer. Mnemonic: 'Trousseau's migratory clots = hunt for adenocarcinoma.'</div><div class="rtt">⚠️ WRONG: 'Manage cancer-associated VTE the same as low-risk provoked VTE — anticoagulate for 3 months then stop.' Cancer is an ongoing prothrombotic driver: anticoagulation continues for as long as the cancer is active/treated (indefinite), not a fixed 3-month course.</div></div><div class="rt"><div class="rtl">9. Immobility / surgery / pregnancy</div><div class="rte">Common acquired, often transient, provoking risk factors: recent major surgery (especially orthopedic — hip/knee), prolonged immobility/hospitalization, pregnancy and the postpartum period, estrogen-containing OCPs/HRT, and long-haul air travel. A VTE with a transient major provoker is treated for ~3 months; an unprovoked VTE warrants consideration of extended/indefinite anticoagulation. Mnemonic: 'Provoked &amp; transient = 3 months; unprovoked = think indefinite.'</div><div class="rtt">⚠️ WRONG: 'A DVT after major surgery (a transient provoker) needs lifelong anticoagulation.' VTE provoked by a transient major risk factor is treated ~3 months then stopped if the provoker has resolved — indefinite therapy is for unprovoked, recurrent, or cancer-associated VTE.</div></div><div class="rt"><div class="rtl">10. Inflammation furnace</div><div class="rte">Chronic inflammation links to thrombosis ('thromboinflammation'): inflammatory bowel disease, rheumatoid arthritis, SLE, and psoriasis upregulate tissue factor, increase fibrinogen and factor VIII, impair fibrinolysis, and drive neutrophil extracellular traps (NETs) and platelet activation, all amplifying thrombin generation. IBD flares in particular markedly raise VTE risk. Mnemonic: 'Inflammation stokes the clotting furnace.'</div><div class="rtt">⚠️ WRONG: 'A hospitalized IBD patient in flare doesn't need VTE prophylaxis because GI bleeding makes it too risky.' Active IBD is a strong independent VTE risk factor and hospitalized flare patients generally warrant pharmacologic prophylaxis (bleeding is usually not a contraindication) — withholding it is a common, harmful error.</div></div><div class="rt"><div class="rtl">11. Obesity / metabolic syndrome</div><div class="rte">Obesity and metabolic syndrome are independent prothrombotic contributors via increased PAI-1 (impaired fibrinolysis), elevated fibrinogen/factor VIII, chronic low-grade inflammation, and venous stasis from reduced mobility. They compound other risks (e.g., OCPs, surgery). Mnemonic: 'More adipose = more PAI-1 = more clots.'</div><div class="rtt">⚠️ WRONG: 'Standard fixed-dose VTE prophylaxis is adequate for every morbidly obese inpatient.' Markedly obese patients may need weight-adjusted/higher prophylactic dosing and anti-Xa monitoring — assuming one fixed dose fits all underdoses them.</div></div><div class="rt"><div class="rtl">12. DVT embolizes</div><div class="rte">PE arises when a venous thrombus breaks loose and travels through the right heart to the pulmonary arteries. PROXIMAL DVT (popliteal, femoral, iliac) carries the highest embolic risk and is treated as VTE; isolated distal/calf DVT has lower embolic risk and may sometimes be surveilled rather than immediately anticoagulated in low-risk patients. Mnemonic: 'Above the knee, set it free (to embolize).'</div><div class="rtt">⚠️ WRONG: 'A small isolated calf (distal) DVT always requires the same full anticoagulation course as a proximal DVT.' Selected low-risk isolated distal DVTs (no severe symptoms, no risk for extension) may be managed with serial ultrasound surveillance — proximal DVTs are the ones that mandate anticoagulation; treat them differently.</div></div><div class="rt"><div class="rtl">13. Post-thrombotic syndrome</div><div class="rte">Post-thrombotic syndrome (PTS) is a chronic sequela of proximal DVT: valvular damage and persistent venous hypertension cause leg pain, heaviness, edema, hyperpigmentation/stasis dermatitis, and ultimately venous ulcers. It affects up to a third of DVT patients. Prevention rests on adequate anticoagulation; graduated compression stockings treat symptoms. Mnemonic: 'Damaged valves → venous HTN → swollen, pigmented, ulcerated leg.'</div><div class="rtt">⚠️ WRONG: 'New leg swelling and pain months after a DVT must be a recurrent acute DVT — start fresh anticoagulation immediately.' PTS mimics recurrent DVT; confirm with compression ultrasound (and D-dimer) before assuming recurrence — chronic post-thrombotic changes are common and don't require renewed full-course anticoagulation by themselves.</div></div><div class="rt"><div class="rtl">14. CTEPH</div><div class="rte">Chronic thromboembolic pulmonary hypertension (CTEPH, WHO Group 4 PH) results from organized, unresolved thromboembolic material obstructing pulmonary arteries after acute PE, presenting with progressive exertional dyspnea months later. Screen with a V/Q scan (more sensitive than CTPA for chronic clot), confirm with right heart catheterization, and treat the operable disease with pulmonary thromboendarterectomy (potentially curative). Mnemonic: 'Clot that never cleared → V/Q screen → cath → thromboendarterectomy.'</div><div class="rtt">⚠️ WRONG: 'Screen for CTEPH with CTPA as the first-line test.' V/Q scanning is the preferred screening test (higher sensitivity for chronic/organized thrombus); a normal V/Q essentially excludes CTEPH, whereas CTPA can miss distal organized disease — confirm hemodynamics with right heart catheterization.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="vte_pe_pathophysiology_shock.html" title="VTE — How PE Kills: V/Q Mismatch, RV Strain &amp; Shock">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="vte_risk_duration_prophylaxis.html" title="VTE — Risk Stratification, Treatment Duration &amp; Prophylaxis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

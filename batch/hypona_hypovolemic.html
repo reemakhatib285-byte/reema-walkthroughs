@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyponatremia — Hypovolemic (Renal vs Extrarenal, Urine Na)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Low volume turns AVP on</b> — Q stem shows a dry, tachycardic, orthostatic patient with Na 124 and the answer choice says 'ADH should be suppressed.' WRONG — in hypovolemia ADH is appropriately ON despite low osm because the baroreceptor (volume) stimulus dominates the osmotic one. Discriminator: dry mucous membranes, flat neck veins, BUN/Cr &gt;20, high uric acid and high BUN all confirm volume depletion driving the ADH.</li><li><b>Split by urine Na</b> — Stem gives a hypovolemic patient and asks for the BEST initial diagnostic step; distractors include 'fluid restrict' or 'check TSH/cortisol first.' WRONG — fluid restriction worsens hypovolemia, and the highest-yield discriminating test is urine Na (then urine Cl). Order osmolality → volume → urine Na; restriction is for euvolemic/hypervolemic states, not the dry patient.</li><li><b>Extrarenal gate UNa&lt;20</b> — Stem: patient with profuse diarrhea, Na 126, urine Na 8 — a choice labels this 'renal salt wasting' or 'SIADH.' WRONG — a LOW urine Na means the kidney is working correctly and conserving Na, i.e., the loss is extrarenal. SIADH has urine Na typically &gt;30 and is euvolemic, not dry.</li><li><b>Renal gate UNa&gt;20</b> — Hypovolemic patient with urine Na 45 and a distractor says 'extrarenal GI loss.' WRONG — high urine Na in a dry patient means the kidney itself is the source (renal salt wasting). Top board causes to scan for: thiazides (most common drug), Addison's (look for hyperkalemia + hypotension), and CSW after recent CNS event.</li><li><b>Vomiting</b> — Vomiting patient, Na 128, urine Na 35 → distractor calls it 'renal salt wasting.' WRONG — in vomiting the high urine Na is driven by bicarbonaturia, not true renal wasting. Discriminator: check urine Cl (&lt;20 = volume depletion / chloride-responsive metabolic alkalosis). Urine Na alone is unreliable in the vomiting patient.</li><li><b>Diarrhea</b> — Stem pairs hyponatremia + non-gap metabolic acidosis + low urine Na and a choice says 'type 2 RTA.' Be careful — both diarrhea and proximal RTA give non-gap acidosis, but diarrhea has LOW urine Na (volume-avid) and an appropriately NEGATIVE urine anion gap, whereas RTA wastes Na renally with urine Na &gt;20.</li><li><b>Sweat / burns</b> — Marathon runner or burn patient with hyponatremia and a choice attributes it to 'SIADH.' WRONG — these are hypovolemic skin losses with a dry exam and low urine Na; the fix is volume/Na repletion, not fluid restriction. (Exercise-associated hyponatremia is actually most often from excessive hypotonic fluid intake — still NOT a restriction-then-no-volume answer.)</li><li><b>Pancreatitis / third space</b> — Pancreatitis patient looks puffy/third-spaced and a choice says 'hypervolemic — fluid restrict.' WRONG — the EFFECTIVE arterial volume is LOW (fluid is sequestered, not circulating), so this behaves as hypovolemic hyponatremia needing volume, not restriction. Judge by effective circulating volume, not total body water.</li><li><b>Thiazide (renal)</b> — Elderly woman recently started on HCTZ, Na 118, looks near-euvolemic; distractor is 'SIADH.' WRONG — thiazide hyponatremia masquerades as euvolemic but is a renal salt-loser with mild volume depletion. The discriminator/treatment is STOP the thiazide (and the picture, including low uric acid sometimes, can mimic SIADH) — you would never diagnose SIADH without first removing a thiazide.</li><li><b>Addison (adrenal)</b> — Hyponatremia + HYPERkalemia + hypotension and a choice says 'SIADH.' WRONG — SIADH is euvolemic with NORMAL or low K; hyperkalemia points away from SIADH and toward adrenal insufficiency. Confirm with a cosyntropin (ACTH stimulation) test and give hydrocortisone — don't fluid-restrict an Addisonian crisis.</li><li><b>CSW cerebral salt wasting</b> — Patient 5 days post-SAH with Na 125, urine Na 60; choices are SIADH (restrict fluids) vs CSW (give salt/volume). The board discriminator is VOLUME STATUS: CSW = hypovolemic/dry (give salt &amp; fluid); SIADH = euvolemic (restrict). Choosing fluid restriction in a truly hypovolemic CSW patient worsens cerebral perfusion and is the classic wrong answer.</li><li><b>RTA / bicarb / ketonuria</b> — DKA patient with hyponatremia and urine Na high — a choice calls it 'SIADH.' WRONG twice: (1) the ketoanion/osmotic diuresis is causing renal Na loss with volume depletion, and (2) hyperglycemia itself causes translocational/pseudo-low Na — you must CORRECT the measured Na for glucose (+~1.6–2.4 mEq/L per 100 mg/dL &gt;100) before calling it true hyponatremia.</li><li><b>K high + Na low = adrenal</b> — The hyperkalemia gets blamed on 'renal failure' or 'SIADH.' WRONG — with normal renal function, the Na-low/K-high pairing is the adrenal-insufficiency signature. SIADH keeps K normal/low (dilution), and pure volume depletion alone doesn't usually raise K unless aldosterone is deficient. Don't skip the ACTH-stimulation test.</li><li><b>Give NS, watch overcorrection</b> — After NS the urine output surges and Na climbs 10–12 mEq in a few hours; a choice says 'continue NS, this is expected recovery.' WRONG — that pace risks osmotic demyelination syndrome (ODS / central pontine myelinolysis). Switch to free water (D5W) and add DDAVP to re-lower/clamp the diuresis; the goal is a CONTROLLED &lt;8 mEq/24h rise, not maximal speed.</li><li><b>Urate high in hypovolemia</b> — Two near-identical euvolemic-appearing stems differ only by uric acid; a choice ignores it. Use it: LOW uric acid (&lt;4) + low BUN supports SIADH/euvolemia; HIGH uric acid + high BUN supports hypovolemia (or post-correction in any cause). It's a high-yield, cheap test to separate SIADH from volume depletion when the exam is equivocal.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Low volume turns AVP on</div><div class="rte">Hypovolemia is a NON-osmotic (baroreceptor-mediated) stimulus for ADH/AVP: when effective circulating volume drops, carotid/aortic baroreceptors override the normal osmotic shutoff and the posterior pituitary keeps releasing ADH even though serum osmolality is already low. ADH then drives free-water retention at the V2 receptor (aquaporin-2 insertion in the collecting duct), diluting serum Na. This is the unifying mechanism for ALL hypovolemic hyponatremia: true Na/water loss → low volume → ADH stays on → water retained &gt; Na. Mnemonic: 'volume beats osmolality' — the body defends pressure before it defends tonicity.</div><div class="rtt">⚠️ Q stem shows a dry, tachycardic, orthostatic patient with Na 124 and the answer choice says 'ADH should be suppressed.' WRONG — in hypovolemia ADH is appropriately ON despite low osm because the baroreceptor (volume) stimulus dominates the osmotic one. Discriminator: dry mucous membranes, flat neck veins, BUN/Cr &gt;20, high uric acid and high BUN all confirm volume depletion driving the ADH.</div></div><div class="rt"><div class="rtl">2. Split by urine Na</div><div class="rte">Once true hypotonic hyponatremia + hypovolemia is established, the single best next test is URINE SODIUM: &lt;20 mEq/L = extrarenal loss (kidney is appropriately Na-avid), &gt;20 mEq/L = renal loss (kidney is inappropriately wasting Na). Treatment is the same category — isotonic 0.9% NaCl (154 mEq/L Na) to restore volume — but cause-finding differs. Once volume is repleted the baroreceptor stimulus disappears, ADH switches off, and a brisk water diuresis begins, so anticipate and cap overcorrection at &lt;8 mEq/L/24h.</div><div class="rtt">⚠️ Stem gives a hypovolemic patient and asks for the BEST initial diagnostic step; distractors include 'fluid restrict' or 'check TSH/cortisol first.' WRONG — fluid restriction worsens hypovolemia, and the highest-yield discriminating test is urine Na (then urine Cl). Order osmolality → volume → urine Na; restriction is for euvolemic/hypervolemic states, not the dry patient.</div></div><div class="rt"><div class="rtl">3. Extrarenal gate UNa&lt;20</div><div class="rte">Extrarenal losses (GI, skin, third-space) → the kidney's response is appropriate: it maximally conserves Na, so urine Na is &lt;20 mEq/L (often &lt;10) and FENa &lt;1%. Causes: vomiting, diarrhea, sweating, burns, pancreatitis/ileus third-spacing. The 'locked door' = nephron clamping shut on Na. Urine is also concentrated (high Uosm) because ADH is on.</div><div class="rtt">⚠️ Stem: patient with profuse diarrhea, Na 126, urine Na 8 — a choice labels this 'renal salt wasting' or 'SIADH.' WRONG — a LOW urine Na means the kidney is working correctly and conserving Na, i.e., the loss is extrarenal. SIADH has urine Na typically &gt;30 and is euvolemic, not dry.</div></div><div class="rt"><div class="rtl">4. Renal gate UNa&gt;20</div><div class="rte">Renal losses → urine Na inappropriately &gt;20 mEq/L despite hypovolemia (the kidney is the leak). Causes: thiazide/loop diuretics, cerebral salt wasting, primary adrenal insufficiency (Addison), salt-losing nephropathy, type 2 (proximal) RTA bicarbonaturia, ketonuria, and osmotic diuresis (glucose, mannitol, urea). The 'unlocked door' = nephron can't hold Na. Stop the offending drug, replace Na/volume with NS, and screen cortisol/aldosterone if cause unclear.</div><div class="rtt">⚠️ Hypovolemic patient with urine Na 45 and a distractor says 'extrarenal GI loss.' WRONG — high urine Na in a dry patient means the kidney itself is the source (renal salt wasting). Top board causes to scan for: thiazides (most common drug), Addison's (look for hyperkalemia + hypotension), and CSW after recent CNS event.</div></div><div class="rt"><div class="rtl">5. Vomiting</div><div class="rte">Vomiting is an extrarenal cause but a classic exception on urine studies: loss of gastric HCl → metabolic alkalosis → filtered bicarbonate spills into urine and obligates Na excretion (to maintain electroneutrality), so urine Na can be PARADOXICALLY &gt;20 early even though the patient is volume-depleted. The unmasking test is urine CHLORIDE, which is low (&lt;20) and correctly reveals the volume-avid kidney and chloride-responsive alkalosis.</div><div class="rtt">⚠️ Vomiting patient, Na 128, urine Na 35 → distractor calls it 'renal salt wasting.' WRONG — in vomiting the high urine Na is driven by bicarbonaturia, not true renal wasting. Discriminator: check urine Cl (&lt;20 = volume depletion / chloride-responsive metabolic alkalosis). Urine Na alone is unreliable in the vomiting patient.</div></div><div class="rt"><div class="rtl">6. Diarrhea</div><div class="rte">Diarrhea = extrarenal GI loss of isotonic-to-hypotonic fluid; the kidney conserves Na, so urine Na &lt;20 and urine Cl is also low. Diarrhea typically produces a NON-anion-gap (hyperchloremic) metabolic acidosis from stool bicarbonate loss — the mirror image of vomiting's alkalosis — useful for telling the two GI causes apart.</div><div class="rtt">⚠️ Stem pairs hyponatremia + non-gap metabolic acidosis + low urine Na and a choice says 'type 2 RTA.' Be careful — both diarrhea and proximal RTA give non-gap acidosis, but diarrhea has LOW urine Na (volume-avid) and an appropriately NEGATIVE urine anion gap, whereas RTA wastes Na renally with urine Na &gt;20.</div></div><div class="rt"><div class="rtl">7. Sweat / burns</div><div class="rte">Sweat and burns lose hypotonic fluid through the skin (sweat Na ~30–60 mEq/L, hypotonic relative to plasma) → free-water and Na loss with effective hypovolemia and appropriate renal Na avidity (urine Na &lt;20). Extensive burns lose plasma into the wound/interstitium (a third-space effect too). Replace with isotonic crystalloid; burn resuscitation uses weight/%BSA-based formulas (e.g., Parkland) rather than treating the Na number in isolation.</div><div class="rtt">⚠️ Marathon runner or burn patient with hyponatremia and a choice attributes it to 'SIADH.' WRONG — these are hypovolemic skin losses with a dry exam and low urine Na; the fix is volume/Na repletion, not fluid restriction. (Exercise-associated hyponatremia is actually most often from excessive hypotonic fluid intake — still NOT a restriction-then-no-volume answer.)</div></div><div class="rt"><div class="rtl">8. Pancreatitis / third space</div><div class="rte">Third-spacing (acute pancreatitis, bowel obstruction/ileus, peritonitis, major trauma, crush injury) sequesters large volumes of fluid into the gut wall, peritoneum, or interstitium. Intravascular (effective) volume falls even though total body water may be normal/high → baroreceptor-driven ADH → hyponatremia with avid Na retention (urine Na &lt;20). Treat the underlying process and replete intravascular volume with isotonic fluid.</div><div class="rtt">⚠️ Pancreatitis patient looks puffy/third-spaced and a choice says 'hypervolemic — fluid restrict.' WRONG — the EFFECTIVE arterial volume is LOW (fluid is sequestered, not circulating), so this behaves as hypovolemic hyponatremia needing volume, not restriction. Judge by effective circulating volume, not total body water.</div></div><div class="rt"><div class="rtl">9. Thiazide (renal)</div><div class="rte">Thiazides (HCTZ, chlorthalidone) are the #1 DRUG cause of hyponatremia. They block the Na-Cl cotransporter (NCC) in the distal convoluted tubule — the diluting segment — so the kidney loses Na yet, crucially, can still CONCENTRATE urine via an intact medulla/ADH, impairing free-water excretion. Volume contraction also adds a baroreceptor ADH stimulus. Classic victim: small, elderly woman started on a thiazide; can develop severe hyponatremia within days to weeks. Loop diuretics cause it far less because they blunt the medullary gradient.</div><div class="rtt">⚠️ Elderly woman recently started on HCTZ, Na 118, looks near-euvolemic; distractor is 'SIADH.' WRONG — thiazide hyponatremia masquerades as euvolemic but is a renal salt-loser with mild volume depletion. The discriminator/treatment is STOP the thiazide (and the picture, including low uric acid sometimes, can mimic SIADH) — you would never diagnose SIADH without first removing a thiazide.</div></div><div class="rt"><div class="rtl">10. Addison (adrenal)</div><div class="rte">Primary adrenal insufficiency (Addison): mineralocorticoid (aldosterone) deficiency → renal Na wasting (urine Na &gt;20), hyperkalemia, and a non-gap or mild metabolic acidosis; glucocorticoid (cortisol) deficiency → loss of cortisol's tonic inhibition of CRH/ADH → ADH excess → water retention. The combination produces hypovolemic hyponatremia + HYPERkalemia + hypotension, often with hyperpigmentation and an adrenal-crisis presentation. Treat with stress-dose hydrocortisone and IV NS.</div><div class="rtt">⚠️ Hyponatremia + HYPERkalemia + hypotension and a choice says 'SIADH.' WRONG — SIADH is euvolemic with NORMAL or low K; hyperkalemia points away from SIADH and toward adrenal insufficiency. Confirm with a cosyntropin (ACTH stimulation) test and give hydrocortisone — don't fluid-restrict an Addisonian crisis.</div></div><div class="rt"><div class="rtl">11. CSW cerebral salt wasting</div><div class="rte">Cerebral salt wasting: after a CNS insult (subarachnoid hemorrhage, TBI, neurosurgery, meningitis) the kidney inappropriately wastes Na (urine Na &gt;20–40), causing HYPOVOLEMIC hyponatremia — the patient is genuinely DRY (negative fluid balance, low CVP, weight loss). Mechanism implicated: natriuretic peptide (BNP/'brain' natriuretic) excess ± sympathetic dysregulation. Treatment is OPPOSITE to SIADH: give salt and volume (isotonic or hypertonic saline, fludrocortisone), NOT restriction.</div><div class="rtt">⚠️ Patient 5 days post-SAH with Na 125, urine Na 60; choices are SIADH (restrict fluids) vs CSW (give salt/volume). The board discriminator is VOLUME STATUS: CSW = hypovolemic/dry (give salt &amp; fluid); SIADH = euvolemic (restrict). Choosing fluid restriction in a truly hypovolemic CSW patient worsens cerebral perfusion and is the classic wrong answer.</div></div><div class="rt"><div class="rtl">12. RTA / bicarb / ketonuria</div><div class="rte">Anion-driven (osmotic) renal Na loss: filtered anions that can't be reabsorbed obligate Na excretion to stay electroneutral — bicarbonate (proximal/type-2 RTA, or post-vomiting alkalosis), ketoanions (DKA, alcoholic/starvation ketosis), and osmotic diuresis (glucosuria, mannitol, high urea). Result: renal hypovolemic hyponatremia with urine Na &gt;20. Fix the underlying anion problem and replete volume.</div><div class="rtt">⚠️ DKA patient with hyponatremia and urine Na high — a choice calls it 'SIADH.' WRONG twice: (1) the ketoanion/osmotic diuresis is causing renal Na loss with volume depletion, and (2) hyperglycemia itself causes translocational/pseudo-low Na — you must CORRECT the measured Na for glucose (+~1.6–2.4 mEq/L per 100 mg/dL &gt;100) before calling it true hyponatremia.</div></div><div class="rt"><div class="rtl">13. K high + Na low = adrenal</div><div class="rte">Memory hook: in a hypovolemic patient, HYPERkalemia + hyponatremia = think ADRENAL (primary adrenal insufficiency / hypoaldosteronism). Aldosterone normally drives Na reabsorption and K/H secretion in the distal nephron; without it you waste Na (low Na) and retain K (high K) and H+ (acidosis). Next steps: AM cortisol, cosyntropin stim, renin/aldosterone; treat with hydrocortisone + NS.</div><div class="rtt">⚠️ The hyperkalemia gets blamed on 'renal failure' or 'SIADH.' WRONG — with normal renal function, the Na-low/K-high pairing is the adrenal-insufficiency signature. SIADH keeps K normal/low (dilution), and pure volume depletion alone doesn't usually raise K unless aldosterone is deficient. Don't skip the ACTH-stimulation test.</div></div><div class="rt"><div class="rtl">14. Give NS, watch overcorrection</div><div class="rte">0.9% NaCl (154 mEq/L) restores effective volume and removes the baroreceptor ADH stimulus. The danger: once volume is repleted, ADH switches OFF and the kidney dumps the retained free water as a brisk dilute diuresis (autocorrection), so serum Na can rise FAST. Cap the rise at &lt;8 mEq/L/24h (4–6 in high-risk: alcoholic, malnourished, hypokalemic, Na &lt;105, liver disease). Monitor Na q2–4h and urine output; if rising too fast, give D5W ± DDAVP.</div><div class="rtt">⚠️ After NS the urine output surges and Na climbs 10–12 mEq in a few hours; a choice says 'continue NS, this is expected recovery.' WRONG — that pace risks osmotic demyelination syndrome (ODS / central pontine myelinolysis). Switch to free water (D5W) and add DDAVP to re-lower/clamp the diuresis; the goal is a CONTROLLED &lt;8 mEq/24h rise, not maximal speed.</div></div><div class="rt"><div class="rtl">15. Urate high in hypovolemia</div><div class="rte">Serum URIC ACID is a slick discriminator: hypovolemia → avid proximal tubular reabsorption of urate (and BUN) → HIGH uric acid (often &gt;4 mg/dL) and elevated BUN/Cr ratio. SIADH does the opposite — volume expansion suppresses proximal reabsorption → LOW uric acid (&lt;4 mg/dL, FEurate &gt;12%) and low/low-normal BUN. So high urate + high BUN points to a dry, ADH-driven hypovolemic state.</div><div class="rtt">⚠️ Two near-identical euvolemic-appearing stems differ only by uric acid; a choice ignores it. Use it: LOW uric acid (&lt;4) + low BUN supports SIADH/euvolemia; HIGH uric acid + high BUN supports hypovolemia (or post-correction in any cause). It's a high-yield, cheap test to separate SIADH from volume depletion when the exam is equivocal.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hypona_hypervolemic.html" title="Hyponatremia — Hypervolemic (Edematous States)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hypona_low_solute.html" title="Hyponatremia — Low Solute (Beer Potomania &amp; Tea-and-Toast)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

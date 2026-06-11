@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pneumonia — Organisms (typical, atypical, epidemiologic clues &amp; CA-MRSA)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>H. influenzae</b> — Classic board trap: H. influenzae is grouped with the 'typicals' even though its name sounds like 'atypical' — it DOES gram-stain and culture on standard (enriched) media, unlike Mycoplasma/Chlamydia/Legionella. Don't reflexively drop beta-lactams; instead worry about beta-lactamase production (use amox-clavulanate, not plain amoxicillin).</li><li><b>S. pneumoniae</b> — Every empiric CAP regimen MUST cover pneumococcus — picking an atypical-only regimen (e.g., azithromycin alone in a high-resistance area, or doxycycline alone for a sick patient) is a classic wrong answer. Remember the resistance is PBP-mediated, so adding a beta-lactamase inhibitor does nothing; raise the dose instead.</li><li><b>K. pneumoniae</b> — Cavitation/abscess in an alcoholic is Klebsiella (or anaerobes), NOT classic uncomplicated pneumococcal lobar pneumonia, which rarely cavitates. Also keep ESBL/carbapenem-resistant Klebsiella on the differential in healthcare-associated or recently-hospitalized patients.</li><li><b>S. aureus</b> — Post-influenza clinical worsening with new cavities is a bacterial superinfection (S. aureus or pneumococcus), NOT a relapse of the original viral pneumonia — add empiric anti-staph (and anti-MRSA if PVL/necrotizing features). Beta-lactams like ceftriaxone do NOT cover MRSA.</li><li><b>P. aeruginosa</b> — Do NOT add routine anti-pseudomonal coverage for ordinary CAP — it is reserved for documented risk factors (structural lung disease, recent antibiotics/hospitalization, prior Pseudomonas isolation). Over-covering low-risk patients is a common wrong answer and drives resistance.</li><li><b>Epidemiologic clue grid</b> — When the vignette gives a strong, specific exposure, match the bug to the clue rather than defaulting to pneumococcus — that's the whole point of the question. Conversely, an exposure clue does not exclude routine pneumococcal coverage; cover both when treating empirically.</li><li><b>Mycoplasma pneumoniae</b> — Beta-lactams fail Mycoplasma because it has no cell wall — treat with a macrolide, tetracycline (doxycycline), or respiratory fluoroquinolone. A patient who 'looks too well for the CXR' plus cold agglutinins is the buzzword setup.</li><li><b>Chlamydia pneumoniae</b> — As an atypical it will NOT respond to beta-lactams. Distinguish from C. psittaci (bird/parrot exposure, more severe) — the board uses the avian exposure as the discriminator.</li><li><b>Legionella spp.</b> — Severe atypical-feeling pneumonia with hyponatremia + diarrhea + recent water/travel exposure is Legionella — cover with a respiratory fluoroquinolone or a macrolide (azithromycin), NOT a beta-lactam alone. A NEGATIVE urinary antigen does not exclude non-serogroup-1 Legionella, so culture/PCR may still be needed if suspicion is high.</li><li><b>Respiratory viruses</b> — A confirmed viral etiology does NOT exclude bacterial co-infection — the classic post-influenza biphasic course (initial improvement, then worsening with focal consolidation) demands empiric antibacterials, especially anti-staph/anti-MRSA. Don't withhold antibiotics just because a viral PCR is positive.</li><li><b>Atypicals = beta-lactam resistant</b> — Never treat suspected atypical CAP with a beta-lactam alone — and never assume a 'failure to improve on ceftriaxone' is resistance when the real issue is an uncovered atypical (add a macrolide/doxycycline or switch to a respiratory FQ).</li><li><b>HCAP abandoned</b> — Do NOT reflexively give broad MDR/anti-MRSA/anti-pseudomonal coverage just because a patient came from a nursing home or had recent healthcare contact — risk-stratify each patient. Choosing 'treat as HCAP with vancomycin + piperacillin-tazobactam' for a stable nursing-home patient with no specific MDR risk is now a wrong answer.</li><li><b>CA-MRSA features</b> — Standard CAP beta-lactams (including ceftriaxone) do NOT cover MRSA — escalate to vancomycin or linezolid. A young, previously healthy post-influenza patient with rapidly cavitating, hemoptysis-heavy pneumonia and leukopenia is CA-MRSA, not ordinary S. aureus or pneumococcus.</li><li><b>CA-MRSA susceptibilities</b> — Beta-lactams — including ceftriaxone and other cephalosporins (except the anti-MRSA ceftaroline) — do NOT cover MRSA, so 'add ceftriaxone' is wrong for MRSA pneumonia. Also, oral TMP-SMX/doxycycline are fine for outpatient SSTI but are NOT first-line for severe MRSA pneumonia — use IV vancomycin/linezolid.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. H. influenzae</div><div class="rte">H. influenzae is a 'typical' gram-negative coccobacillus that gram-stains and grows on chocolate agar (needs factors X/hemin and V/NAD). It is a leading CAP organism in COPD/smokers and the elderly, where loss of mucociliary clearance lets it colonize and infect. Empiric beta-lactams (amox-clavulanate, 3rd-gen cephalosporins) cover it; nontypeable strains may be beta-lactamase producers.</div><div class="rtt">⚠️ Classic board trap: H. influenzae is grouped with the 'typicals' even though its name sounds like 'atypical' — it DOES gram-stain and culture on standard (enriched) media, unlike Mycoplasma/Chlamydia/Legionella. Don't reflexively drop beta-lactams; instead worry about beta-lactamase production (use amox-clavulanate, not plain amoxicillin).</div></div><div class="rt"><div class="rtl">2. S. pneumoniae</div><div class="rte">S. pneumoniae is the #1 bacterial cause of CAP — a lancet-shaped, alpha-hemolytic, optochin-sensitive, bile-soluble gram-positive diplococcus with a polysaccharide capsule (the key virulence factor and vaccine target). It classically causes lobar pneumonia with rust-colored sputum and is the most common cause of bacteremic/pneumococcal pneumonia. Resistance is via altered penicillin-binding proteins (not beta-lactamase), so it is overcome by high-dose amoxicillin (1 g TID).</div><div class="rtt">⚠️ Every empiric CAP regimen MUST cover pneumococcus — picking an atypical-only regimen (e.g., azithromycin alone in a high-resistance area, or doxycycline alone for a sick patient) is a classic wrong answer. Remember the resistance is PBP-mediated, so adding a beta-lactamase inhibitor does nothing; raise the dose instead.</div></div><div class="rt"><div class="rtl">3. K. pneumoniae</div><div class="rte">Klebsiella is a heavily encapsulated (mucoid) gram-negative rod that causes severe lobar pneumonia in alcoholics, diabetics, and aspiration. The classic buzzwords are 'currant-jelly' sputum, bulging fissure sign on CXR, and early cavitation/necrosis with high mortality. Treat per susceptibilities (3rd-gen cephalosporin or carbapenem if ESBL); the capsule resists phagocytosis.</div><div class="rtt">⚠️ Cavitation/abscess in an alcoholic is Klebsiella (or anaerobes), NOT classic uncomplicated pneumococcal lobar pneumonia, which rarely cavitates. Also keep ESBL/carbapenem-resistant Klebsiella on the differential in healthcare-associated or recently-hospitalized patients.</div></div><div class="rt"><div class="rtl">4. S. aureus</div><div class="rte">S. aureus causes necrotizing, often cavitary pneumonia, classically as a post-influenza superinfection and in IV drug users (septic emboli). Radiographic clues are pneumatoceles, multilobar infiltrates, and rapid cavitation. MSSA is treated with nafcillin/cefazolin; MRSA requires vancomycin or linezolid.</div><div class="rtt">⚠️ Post-influenza clinical worsening with new cavities is a bacterial superinfection (S. aureus or pneumococcus), NOT a relapse of the original viral pneumonia — add empiric anti-staph (and anti-MRSA if PVL/necrotizing features). Beta-lactams like ceftriaxone do NOT cover MRSA.</div></div><div class="rt"><div class="rtl">5. P. aeruginosa</div><div class="rte">Pseudomonas is an oxidase-positive, non-lactose-fermenting gram-negative rod that infects patients with structural lung disease (bronchiectasis, cystic fibrosis, severe COPD), prior broad-spectrum antibiotics, frequent steroids, or recent hospitalization. Empiric coverage uses an antipseudomonal beta-lactam (piperacillin-tazobactam, cefepime, meropenem); severe disease may warrant a second antipseudomonal agent until susceptibilities return.</div><div class="rtt">⚠️ Do NOT add routine anti-pseudomonal coverage for ordinary CAP — it is reserved for documented risk factors (structural lung disease, recent antibiotics/hospitalization, prior Pseudomonas isolation). Over-covering low-risk patients is a common wrong answer and drives resistance.</div></div><div class="rt"><div class="rtl">6. Epidemiologic clue grid</div><div class="rte">The exposure history fingerprints the pathogen: hotel/cruise/water → Legionella; birds (parrots) → Chlamydia psittaci; farm animals/parturient cattle → Coxiella burnetii (Q fever); cats (parturient) → also Coxiella; Southwest US deserts → Coccidioides; Ohio/Mississippi valleys + caves/bats → Histoplasma; rabbits → Francisella (tularemia). Always ask about travel, animals, and occupation when the stem highlights an exposure.</div><div class="rtt">⚠️ When the vignette gives a strong, specific exposure, match the bug to the clue rather than defaulting to pneumococcus — that's the whole point of the question. Conversely, an exposure clue does not exclude routine pneumococcal coverage; cover both when treating empirically.</div></div><div class="rt"><div class="rtl">7. Mycoplasma pneumoniae</div><div class="rte">Mycoplasma is the classic 'walking pneumonia' of young, otherwise healthy adults (teens, military, dorms), causing mild diffuse/interstitial infiltrates out of proportion to a well-appearing patient. It has NO cell wall (so it cannot be gram-stained and beta-lactams are useless) and is hard to culture. Extrapulmonary clues: cold-agglutinin hemolytic anemia, bullous myringitis, and erythema multiforme/Stevens-Johnson.</div><div class="rtt">⚠️ Beta-lactams fail Mycoplasma because it has no cell wall — treat with a macrolide, tetracycline (doxycycline), or respiratory fluoroquinolone. A patient who 'looks too well for the CXR' plus cold agglutinins is the buzzword setup.</div></div><div class="rt"><div class="rtl">8. Chlamydia pneumoniae</div><div class="rte">Chlamydophila (Chlamydia) pneumoniae is an obligate intracellular atypical causing mild, often biphasic CAP (pharyngitis/hoarseness preceding the cough) in young adults; it accounts for &lt;1% of CAP. Like other atypicals it is cell-wall-deficient intracellularly and intrinsically resistant to beta-lactams. Treat with a macrolide, doxycycline, or respiratory fluoroquinolone.</div><div class="rtt">⚠️ As an atypical it will NOT respond to beta-lactams. Distinguish from C. psittaci (bird/parrot exposure, more severe) — the board uses the avian exposure as the discriminator.</div></div><div class="rt"><div class="rtl">9. Legionella spp.</div><div class="rte">Legionella pneumophila is a fastidious gram-negative atypical (needs buffered charcoal yeast extract agar) acquired from aerosolized water — cooling towers, hot tubs, hotels/cruises, hospital plumbing. The classic syndrome is severe CAP with high fever, relative bradycardia, GI symptoms (diarrhea), hyponatremia, elevated LFTs/transaminases, and confusion. Diagnose rapidly with a urinary antigen (detects serogroup 1).</div><div class="rtt">⚠️ Severe atypical-feeling pneumonia with hyponatremia + diarrhea + recent water/travel exposure is Legionella — cover with a respiratory fluoroquinolone or a macrolide (azithromycin), NOT a beta-lactam alone. A NEGATIVE urinary antigen does not exclude non-serogroup-1 Legionella, so culture/PCR may still be needed if suspicion is high.</div></div><div class="rt"><div class="rtl">10. Respiratory viruses</div><div class="rte">Respiratory viruses (influenza, RSV, parainfluenza, human metapneumovirus, coronaviruses including SARS-CoV-2) cause roughly 20-30% of CAP and damage the respiratory epithelium, predisposing to bacterial superinfection. Influenza specifically primes the airway for post-viral S. aureus (including MRSA) and pneumococcal pneumonia. PCR multiplex panels identify the virus; treat influenza with oseltamivir when indicated.</div><div class="rtt">⚠️ A confirmed viral etiology does NOT exclude bacterial co-infection — the classic post-influenza biphasic course (initial improvement, then worsening with focal consolidation) demands empiric antibacterials, especially anti-staph/anti-MRSA. Don't withhold antibiotics just because a viral PCR is positive.</div></div><div class="rt"><div class="rtl">11. Atypicals = beta-lactam resistant</div><div class="rte">The 'atypicals' (Mycoplasma, Chlamydia/Chlamydophila, Legionella) are intrinsically resistant to ALL beta-lactams because they lack a conventional cell-wall target (no peptidoglycan synthesis for the drug to block) or are intracellular. They require agents that penetrate cells and act on protein/DNA synthesis: macrolides, tetracyclines, or respiratory fluoroquinolones. This is exactly why empiric CAP regimens pair a beta-lactam WITH a macrolide (or use a respiratory FQ alone) to cover atypicals.</div><div class="rtt">⚠️ Never treat suspected atypical CAP with a beta-lactam alone — and never assume a 'failure to improve on ceftriaxone' is resistance when the real issue is an uncovered atypical (add a macrolide/doxycycline or switch to a respiratory FQ).</div></div><div class="rt"><div class="rtl">12. HCAP abandoned</div><div class="rte">The healthcare-associated pneumonia (HCAP) category was abandoned in the 2016/2019 IDSA/ATS guidelines because labeling patients by healthcare contact (nursing home, dialysis, recent hospitalization) led to massive antibiotic overtreatment without improving outcomes. Pneumonia is now classified as CAP, HAP (≥48 h after admission), or VAP (≥48 h after intubation). MDR risk is now assessed by individual risk factors (prior IV antibiotics within 90 days, prior MDR isolation, local resistance) rather than the HCAP label.</div><div class="rtt">⚠️ Do NOT reflexively give broad MDR/anti-MRSA/anti-pseudomonal coverage just because a patient came from a nursing home or had recent healthcare contact — risk-stratify each patient. Choosing 'treat as HCAP with vancomycin + piperacillin-tazobactam' for a stable nursing-home patient with no specific MDR risk is now a wrong answer.</div></div><div class="rt"><div class="rtl">13. CA-MRSA features</div><div class="rte">Community-acquired MRSA carries the SCCmec type IV cassette (mecA gene → altered PBP2a) and frequently the Panton-Valentine leukocidin (PVL) toxin, which destroys neutrophils and causes necrotizing, cavitary pneumonia with gross hemoptysis, profound leukopenia, and high mortality, often after influenza in young healthy hosts. PVL is a pore-forming exotoxin driving the tissue destruction. Severe disease is treated with vancomycin or linezolid (linezolid also suppresses toxin production).</div><div class="rtt">⚠️ Standard CAP beta-lactams (including ceftriaxone) do NOT cover MRSA — escalate to vancomycin or linezolid. A young, previously healthy post-influenza patient with rapidly cavitating, hemoptysis-heavy pneumonia and leukopenia is CA-MRSA, not ordinary S. aureus or pneumococcus.</div></div><div class="rt"><div class="rtl">14. CA-MRSA susceptibilities</div><div class="rte">CA-MRSA is generally MORE susceptible than hospital MRSA — often covered by TMP-SMX, clindamycin, or tetracyclines for skin/soft-tissue disease. However, for serious necrotizing pneumonia or bacteremia the answer is vancomycin or linezolid; linezolid and clindamycin add the benefit of suppressing toxin (PVL) production. Always check clindamycin D-test (inducible erm resistance) before relying on it.</div><div class="rtt">⚠️ Beta-lactams — including ceftriaxone and other cephalosporins (except the anti-MRSA ceftaroline) — do NOT cover MRSA, so 'add ceftriaxone' is wrong for MRSA pneumonia. Also, oral TMP-SMX/doxycycline are fine for outpatient SSTI but are NOT first-line for severe MRSA pneumonia — use IV vancomycin/linezolid.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pneumonia_3.html" title="Pneumonia — CAP severity (CURB-65, ICU criteria) &amp; diagnostics">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pneumonia_2.html" title="Pneumonia — Resistance &amp; empiric antibiotic treatment armory">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

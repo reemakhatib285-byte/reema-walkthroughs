@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">AML — Favorable Genetics (Classification)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>FAVORABLE banner</b> — Favorable risk means you AVOID allo-HCT in CR1 — transplant exposes a curable patient to needless transplant-related mortality. Risk is set by genetics, not blast count.</li><li><b>CBF forge</b> — CBF AML (t8;21 and inv16) is diagnostic of AML even with &lt;20% blasts; do not require 20% blasts when an AML-defining fusion is present.</li><li><b>Auer rod sword t(8;21)</b> — The t(8;21) RUNX1::RUNX1T1 FUSION is favorable, whereas a RUNX1 point MUTATION is adverse — same gene name, opposite prognosis. Also, adverse KIT mutations can co-occur with CBF AML and worsen its outcome.</li><li><b>inv(16) eosinophils</b> — Abnormal marrow eosinophilia points to inv(16) CBF AML; like t(8;21), a co-occurring KIT mutation can downgrade the otherwise favorable prognosis.</li><li><b>NPM1 crown</b> — NPM1 is favorable ONLY when FLT3-ITD is absent; NPM1 + FLT3-ITD is intermediate risk, not favorable.</li><li><b>Cytoplasmic NPM1</b> — Cytoplasmic NPM1 staining is the morphologic clue to NPM1 mutation; it is AML-defining and persists at relapse, making it ideal for MRD tracking.</li><li><b>FLT3-ITD red chain</b> — NPM1-mut + FLT3-ITD is NOT favorable — it is intermediate; the FLT3-ITD overrides the favorable NPM1. (In ELN 2017 the allelic ratio mattered; in ELN 2022 any FLT3-ITD with NPM1 is intermediate.)</li><li><b>CEBPA bZIP forge</b> — Only bZIP in-frame CEBPA confers favorable risk (ELN 2022); non-bZIP CEBPA mutations do not. The older rule required BIALLELIC CEBPA — both are testable nuances.</li><li><b>~55-60% survival</b> — High survival is contingent on appropriate consolidation (HiDAC) AND on MRD clearance; persistent MRD reclassifies the patient toward transplant.</li><li><b>MRD ticker tape</b> — A favorable-risk patient who is MRD-positive after consolidation is no longer treated as low-risk — persistent/rising MRD is an indication to consider allo-HCT.</li><li><b>No HCT sign</b> — Don't transplant favorable-risk AML in first remission by default — reserve allo-HCT for relapse (CR2) or MRD failure.</li><li><b>Myeloid sarcoma</b> — A myeloid sarcoma (chloroma) IS acute leukemia even if the marrow shows &lt;20% blasts; treat as systemic AML, not as an isolated tumor.</li><li><b>CD33 / gemtuzumab gemstone</b> — Gemtuzumab's benefit is greatest in favorable/CBF (CD33+) AML and least in adverse-risk; key toxicity is hepatic veno-occlusive disease/SOS.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. FAVORABLE banner</div><div class="rte">Per ELN 2022, favorable-risk AML has the best overall survival (~55-65% at 5 years) and is generally cured with intensive chemotherapy alone — high-dose cytarabine (HiDAC) consolidation — WITHOUT allogeneic transplant in first complete remission. The favorable group comprises core-binding-factor AML [t(8;21) and inv(16)/t(16;16)], NPM1-mutated without FLT3-ITD, and in-frame bZIP CEBPA mutation.</div><div class="rtt">⚠️ Favorable risk means you AVOID allo-HCT in CR1 — transplant exposes a curable patient to needless transplant-related mortality. Risk is set by genetics, not blast count.</div></div><div class="rt"><div class="rtl">2. CBF forge</div><div class="rte">Core-binding-factor (CBF) AML = t(8;21) RUNX1::RUNX1T1 and inv(16)/t(16;16) CBFB::MYH11. Both disrupt the CBF transcription complex (RUNX1 + CBFB) needed for normal hematopoiesis. These are AML-DEFINING genetic abnormalities — they are AML regardless of blast count (the ≥20% blast threshold does not apply).</div><div class="rtt">⚠️ CBF AML (t8;21 and inv16) is diagnostic of AML even with &lt;20% blasts; do not require 20% blasts when an AML-defining fusion is present.</div></div><div class="rt"><div class="rtl">3. Auer rod sword t(8;21)</div><div class="rte">t(8;21)(q22;q22) creates the RUNX1::RUNX1T1 fusion, classically with abundant Auer rods and MPO positivity, and is favorable risk. CBF AML benefits from adding gemtuzumab ozogamicin (anti-CD33) to induction.</div><div class="rtt">⚠️ The t(8;21) RUNX1::RUNX1T1 FUSION is favorable, whereas a RUNX1 point MUTATION is adverse — same gene name, opposite prognosis. Also, adverse KIT mutations can co-occur with CBF AML and worsen its outcome.</div></div><div class="rt"><div class="rtl">4. inv(16) eosinophils</div><div class="rte">inv(16)(p13q22) or t(16;16) yields CBFB::MYH11 and is favorable; the marrow shows characteristic abnormal eosinophils with basophilic granules (AML M4Eo / acute myelomonocytic leukemia with eosinophilia).</div><div class="rtt">⚠️ Abnormal marrow eosinophilia points to inv(16) CBF AML; like t(8;21), a co-occurring KIT mutation can downgrade the otherwise favorable prognosis.</div></div><div class="rt"><div class="rtl">5. NPM1 crown</div><div class="rte">NPM1 (nucleophosmin) mutation is one of the most common AML lesions (~30%), typically with normal karyotype, and is FAVORABLE only in the absence of FLT3-ITD. It is a strong target for measurable residual disease monitoring by PCR.</div><div class="rtt">⚠️ NPM1 is favorable ONLY when FLT3-ITD is absent; NPM1 + FLT3-ITD is intermediate risk, not favorable.</div></div><div class="rt"><div class="rtl">6. Cytoplasmic NPM1</div><div class="rte">Mutated NPM1 carries a frameshift in exon 12 that creates a nuclear export signal, causing aberrant CYTOPLASMIC localization of nucleophosmin (normally nucleolar) — detectable by immunohistochemistry (NPM1c+).</div><div class="rtt">⚠️ Cytoplasmic NPM1 staining is the morphologic clue to NPM1 mutation; it is AML-defining and persists at relapse, making it ideal for MRD tracking.</div></div><div class="rt"><div class="rtl">7. FLT3-ITD red chain</div><div class="rte">A concurrent FLT3-ITD removes NPM1's favorable status, downgrading it to intermediate risk in ELN 2022 (regardless of allelic ratio). These patients add midostaurin to 7+3 and are considered for allo-HCT.</div><div class="rtt">⚠️ NPM1-mut + FLT3-ITD is NOT favorable — it is intermediate; the FLT3-ITD overrides the favorable NPM1. (In ELN 2017 the allelic ratio mattered; in ELN 2022 any FLT3-ITD with NPM1 is intermediate.)</div></div><div class="rt"><div class="rtl">8. CEBPA bZIP forge</div><div class="rte">An in-frame mutation in the basic leucine zipper (bZIP) region of CEBPA is favorable. ELN 2022 narrowed the definition: only bZIP in-frame CEBPA mutations qualify (whether mono- or biallelic), replacing the older biallelic-CEBPA requirement.</div><div class="rtt">⚠️ Only bZIP in-frame CEBPA confers favorable risk (ELN 2022); non-bZIP CEBPA mutations do not. The older rule required BIALLELIC CEBPA — both are testable nuances.</div></div><div class="rt"><div class="rtl">9. ~55-60% survival</div><div class="rte">Favorable cytogenetics/genetics carry the highest long-term survival in AML (~55-65% at 5 years), which is precisely why chemotherapy consolidation alone — not transplant — is the standard in CR1.</div><div class="rtt">⚠️ High survival is contingent on appropriate consolidation (HiDAC) AND on MRD clearance; persistent MRD reclassifies the patient toward transplant.</div></div><div class="rt"><div class="rtl">10. MRD ticker tape</div><div class="rte">NPM1 (and the CBF fusions) provide molecular targets for measurable residual disease (MRD) monitoring by quantitative PCR, typically after ~2 cycles and through follow-up. MRD positivity/rising transcripts predict relapse and can override the 'favorable, no transplant' default.</div><div class="rtt">⚠️ A favorable-risk patient who is MRD-positive after consolidation is no longer treated as low-risk — persistent/rising MRD is an indication to consider allo-HCT.</div></div><div class="rt"><div class="rtl">11. No HCT sign</div><div class="rte">Favorable-risk patients in CR1 generally do NOT receive allogeneic transplant; they are consolidated with HiDAC, because transplant's treatment-related mortality outweighs benefit in a group cured by chemo.</div><div class="rtt">⚠️ Don't transplant favorable-risk AML in first remission by default — reserve allo-HCT for relapse (CR2) or MRD failure.</div></div><div class="rt"><div class="rtl">12. Myeloid sarcoma</div><div class="rte">Myeloid (granulocytic) sarcoma — an extramedullary tumor of myeloblasts (chloroma, green from MPO) — can occur with t(8;21) CBF AML. It is itself AML-defining: tissue diagnosis of myeloid sarcoma equals AML regardless of marrow blast percentage.</div><div class="rtt">⚠️ A myeloid sarcoma (chloroma) IS acute leukemia even if the marrow shows &lt;20% blasts; treat as systemic AML, not as an isolated tumor.</div></div><div class="rt"><div class="rtl">13. CD33 / gemtuzumab gemstone</div><div class="rte">CD33 is expressed on most AML myeloblasts. Gemtuzumab ozogamicin is an anti-CD33 antibody-drug conjugate (delivers calicheamicin) added to induction; it improves survival particularly in CD33+ favorable/CBF AML. Watch for veno-occlusive disease (sinusoidal obstruction syndrome).</div><div class="rtt">⚠️ Gemtuzumab's benefit is greatest in favorable/CBF (CD33+) AML and least in adverse-risk; key toxicity is hepatic veno-occlusive disease/SOS.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aml_consolidation.html" title="AML — Consolidation &amp; Transplant">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aml_induction.html" title="AML — Induction (7+3)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Reference — Acid-Base (Sketchy pHun Park)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Water pHun Park</b> — WRONG answer is to read the pH alone and stop. A 'normal' pH of 7.40 can hide a mixed disorder (e.g., metabolic acidosis + respiratory alkalosis in salicylate toxicity). Always compute the anion gap and check compensation even when pH looks normal — the discriminator is that PCO2 and HCO3 are both abnormal in opposite directions.</li><li><b>Lemonade stand (acid)</b> — WRONG answer is calling every metabolic acidosis 'high gap.' A normal-gap (hyperchloremic) acidosis from diarrhea or type 1/2 RTA has a NORMAL anion gap because Cl rises to replace lost HCO3. Discriminator: compute the gap — diarrhea/RTA give normal gap; lactate/ketones/toxic alcohols give a high gap.</li><li><b>Tickets cone / pH meter</b> — WRONG answer is assuming the same absolute change in HCO3 and PCO2 affects pH equally. Because pH tracks the RATIO, what matters is proportional change — a small PCO2 swing from rapid breathing can shift pH faster than a slow renal HCO3 adjustment. Discriminator: respiratory changes are immediate; renal compensation lags 3-5 days.</li><li><b>Tank reading 22-28</b> — WRONG answer is treating a low HCO3 as proof of metabolic acidosis without checking PCO2. A low HCO3 is ALSO the renal compensation for a chronic respiratory alkalosis (e.g., high-altitude, pregnancy). Discriminator: in primary metabolic acidosis pH is low; in compensated respiratory alkalosis pH is high or near-normal.</li><li><b>Normal pH hours 7.35-7.45</b> — WRONG answer is to label a pH of exactly 7.40 as 'no acid-base disorder.' Mixed disorders (e.g., concurrent metabolic acidosis and metabolic alkalosis in a vomiting DKA patient) can produce a perfectly normal pH. Discriminator: an abnormal anion gap or a delta-delta ratio outside 1-2 reveals the hidden disorder despite a normal pH.</li><li><b>Smoking BBQ / grills</b> — WRONG answer is giving supplemental O2 freely to a hypercapnic COPD patient and ignoring rising CO2. High-flow O2 can blunt hypoxic drive and worsen CO2 retention/narcosis. Discriminator: in chronic respiratory acidosis HCO3 is markedly elevated (renal compensation) with near-normal pH — target controlled O2 (SpO2 88-92%) and consider BiPAP.</li><li><b>Hyperventilating swimmer (resp alkalosis)</b> — WRONG answer is attributing tachypnea with low PCO2 in a sick patient purely to 'anxiety.' Early sepsis, PE, and salicylate toxicity all present with primary respiratory alkalosis. Discriminator: salicylate poisoning classically gives a MIXED respiratory alkalosis + high-anion-gap metabolic acidosis — check the gap and a salicylate level before calling it panic.</li><li><b>Lifeguard on tower (compensation)</b> — WRONG answer is assuming compensation can fully normalize the pH. Compensation NEVER fully corrects pH back to 7.40 and never overshoots to the opposite side. Discriminator: if the pH is normal or has crossed to the other side of 7.40, there is a second primary disorder, not 'complete compensation.'</li><li><b>Pool (the body fluid / pH bath)</b> — WRONG answer is thinking the bicarbonate buffer can neutralize acid indefinitely without renal/respiratory help. Buffers only blunt the initial swing; they are consumed and must be regenerated — the kidney regenerates HCO3 by excreting NH4+ and titratable acid. Discriminator: failure to make new bicarbonate (e.g., distal/type 1 RTA, CKD) produces a persistent metabolic acidosis despite buffering.</li><li><b>Balloons / party (buffers)</b> — WRONG answer is expecting full renal compensation within hours of an acute respiratory change. Renal HCO3 adjustment takes 3-5 days to plateau. Discriminator: an acute respiratory acidosis shows minimal HCO3 rise (~1 per 10 mmHg PCO2) and a markedly low pH; a fully developed (chronic) one shows HCO3 up ~3.5 per 10 mmHg with near-normal pH.</li><li><b>Bicarbonate soda box</b> — WRONG answer is bolusing bicarbonate for routine DKA or lactic acidosis with pH &gt;7.1. In DKA bicarbonate is not recommended unless pH &lt;6.9 — insulin + fluids clear ketones and regenerate HCO3, and bicarbonate risks hypokalemia, paradoxical CNS acidosis, and cerebral edema in children. Discriminator: treat the underlying cause first; reserve HCO3 for pH &lt;6.9-7.1 or specific toxidromes.</li><li><b>Fan / blowing CO2 off</b> — WRONG answer is interpreting Kussmaul (deep, rapid) breathing in a DKA patient as a primary respiratory alkalosis. It is appropriate respiratory COMPENSATION for the metabolic acidosis. Discriminator: apply Winter's formula — if measured PCO2 matches 1.5×HCO3 + 8 (±2), the low PCO2 is expected compensation, not a separate respiratory disorder.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Water pHun Park</div><div class="rte">The whole scene encodes systematic ABG interpretation. Work it in a fixed order every time: (1) pH — acidemic (&lt;7.35) or alkalemic (&gt;7.45)? (2) Is the primary process respiratory (PCO2, normal 35-45) or metabolic (HCO3, normal 22-28)? (3) Calculate the anion gap = Na − (Cl + HCO3); normal ~8-12. (4) Check compensation. (5) If high gap, run delta-delta to unmask a second metabolic disorder. Mnemonic 'ROME': Respiratory Opposite (pH and PCO2 move opposite directions), Metabolic Equal (pH and HCO3 move same direction).</div><div class="rtt">⚠️ WRONG answer is to read the pH alone and stop. A 'normal' pH of 7.40 can hide a mixed disorder (e.g., metabolic acidosis + respiratory alkalosis in salicylate toxicity). Always compute the anion gap and check compensation even when pH looks normal — the discriminator is that PCO2 and HCO3 are both abnormal in opposite directions.</div></div><div class="rt"><div class="rtl">2. Lemonade stand (acid)</div><div class="rte">Lemonade = sour/acidic = the ACID side of the balance, i.e. acidemia (arterial pH &lt;7.35). Acid is added either by retaining CO2 (respiratory) or by gaining fixed acid / losing HCO3 (metabolic). High-anion-gap metabolic acidosis causes are captured by MUDPILES (Methanol, Uremia, DKA, Propylene glycol, Iron/INH, Lactate, Ethylene glycol, Salicylates); normal-gap (hyperchloremic) causes by USED CARP (Ureterosigmoidostomy, Saline, Endocrine/Addison, Diarrhea, Carbonic anhydrase inhibitors, Ammonium chloride, RTA, Pancreatic fistula).</div><div class="rtt">⚠️ WRONG answer is calling every metabolic acidosis 'high gap.' A normal-gap (hyperchloremic) acidosis from diarrhea or type 1/2 RTA has a NORMAL anion gap because Cl rises to replace lost HCO3. Discriminator: compute the gap — diarrhea/RTA give normal gap; lactate/ketones/toxic alcohols give a high gap.</div></div><div class="rt"><div class="rtl">3. Tickets cone / pH meter</div><div class="rte">The central pH/HCO3 reference gauge — color scale = the pH spectrum from acid (low) to base (high). Conceptually this is the Henderson-Hasselbalch relationship: pH ∝ HCO3 / PCO2. Raising HCO3 or lowering PCO2 raises pH; the kidney controls the numerator (HCO3, slow, days) and the lungs control the denominator (PCO2, fast, minutes).</div><div class="rtt">⚠️ WRONG answer is assuming the same absolute change in HCO3 and PCO2 affects pH equally. Because pH tracks the RATIO, what matters is proportional change — a small PCO2 swing from rapid breathing can shift pH faster than a slow renal HCO3 adjustment. Discriminator: respiratory changes are immediate; renal compensation lags 3-5 days.</div></div><div class="rt"><div class="rtl">4. Tank reading 22-28</div><div class="rte">Normal serum bicarbonate (HCO3) range is 22-28 mEq/L — the metabolic arm of acid-base. HCO3 &lt;22 = metabolic acidosis; HCO3 &gt;28 = metabolic alkalosis. In a primary metabolic acidosis, respiratory compensation is predicted by Winter's formula: expected PCO2 = 1.5 × HCO3 + 8 (±2). If measured PCO2 is higher than predicted there is a concurrent respiratory acidosis; if lower, a concurrent respiratory alkalosis.</div><div class="rtt">⚠️ WRONG answer is treating a low HCO3 as proof of metabolic acidosis without checking PCO2. A low HCO3 is ALSO the renal compensation for a chronic respiratory alkalosis (e.g., high-altitude, pregnancy). Discriminator: in primary metabolic acidosis pH is low; in compensated respiratory alkalosis pH is high or near-normal.</div></div><div class="rt"><div class="rtl">5. Normal pH hours 7.35-7.45</div><div class="rte">Normal arterial pH is 7.35-7.45 (clock = the pH 'opening hours'). pH &lt;7.35 = acidemia; pH &gt;7.45 = alkalemia. The terms acid-OSIS / alkal-OSIS describe the underlying process (which can coexist), while acid-EMIA / alkal-EMIA describe the net blood pH. Life-threatening thresholds: pH &lt;7.1 risks arrhythmia and depressed contractility; pH &gt;7.55 risks seizures, tetany, and arrhythmia.</div><div class="rtt">⚠️ WRONG answer is to label a pH of exactly 7.40 as 'no acid-base disorder.' Mixed disorders (e.g., concurrent metabolic acidosis and metabolic alkalosis in a vomiting DKA patient) can produce a perfectly normal pH. Discriminator: an abnormal anion gap or a delta-delta ratio outside 1-2 reveals the hidden disorder despite a normal pH.</div></div><div class="rt"><div class="rtl">6. Smoking BBQ / grills</div><div class="rte">Retained CO2 (smoke) = respiratory acidosis from hypoventilation. Causes: COPD/asthma, opioid or benzodiazepine overdose (CNS depression), neuromuscular disease (Guillain-Barré, myasthenia), obesity hypoventilation. Acute: every 10 mmHg rise in PCO2 raises HCO3 by ~1 (and drops pH by ~0.08). Chronic: kidneys retain HCO3 ~3.5 per 10 mmHg PCO2 (pH drops only ~0.03). Treat the cause; ventilatory support (BiPAP) if needed.</div><div class="rtt">⚠️ WRONG answer is giving supplemental O2 freely to a hypercapnic COPD patient and ignoring rising CO2. High-flow O2 can blunt hypoxic drive and worsen CO2 retention/narcosis. Discriminator: in chronic respiratory acidosis HCO3 is markedly elevated (renal compensation) with near-normal pH — target controlled O2 (SpO2 88-92%) and consider BiPAP.</div></div><div class="rt"><div class="rtl">7. Hyperventilating swimmer (resp alkalosis)</div><div class="rte">Hyperventilation blows off CO2 = respiratory alkalosis (high pH, low PCO2). Causes: anxiety/pain, hypoxia (PE, pneumonia, high altitude), sepsis (early), pregnancy (progesterone), salicylate toxicity (direct respiratory center stimulation), liver failure. Compensation: acute HCO3 falls ~2 per 10 mmHg drop in PCO2; chronic ~4-5 per 10 mmHg. Symptoms: perioral/digital paresthesias, lightheadedness, carpopedal spasm (from reduced ionized calcium).</div><div class="rtt">⚠️ WRONG answer is attributing tachypnea with low PCO2 in a sick patient purely to 'anxiety.' Early sepsis, PE, and salicylate toxicity all present with primary respiratory alkalosis. Discriminator: salicylate poisoning classically gives a MIXED respiratory alkalosis + high-anion-gap metabolic acidosis — check the gap and a salicylate level before calling it panic.</div></div><div class="rt"><div class="rtl">8. Lifeguard on tower (compensation)</div><div class="rte">Compensation = the secondary system 'watching' and adjusting to pull pH back toward normal (lungs respond to metabolic problems; kidneys respond to respiratory problems). Use formulas to test adequacy: Winter's for metabolic acidosis (expected PCO2 = 1.5×HCO3 + 8 ±2); for metabolic alkalosis expected PCO2 = 0.7×HCO3 + 21; respiratory rules above. A measured value off the predicted = a second (mixed) disorder.</div><div class="rtt">⚠️ WRONG answer is assuming compensation can fully normalize the pH. Compensation NEVER fully corrects pH back to 7.40 and never overshoots to the opposite side. Discriminator: if the pH is normal or has crossed to the other side of 7.40, there is a second primary disorder, not 'complete compensation.'</div></div><div class="rt"><div class="rtl">9. Pool (the body fluid / pH bath)</div><div class="rte">The extracellular fluid compartment where pH is defended. The bicarbonate-carbonic acid system is the dominant ECF buffer; intracellular phosphate, proteins (hemoglobin), and bone provide additional buffering. In chronic metabolic acidosis (e.g., CKD, RTA) bone carbonate is mobilized as buffer, contributing to renal osteodystrophy and growth failure in children.</div><div class="rtt">⚠️ WRONG answer is thinking the bicarbonate buffer can neutralize acid indefinitely without renal/respiratory help. Buffers only blunt the initial swing; they are consumed and must be regenerated — the kidney regenerates HCO3 by excreting NH4+ and titratable acid. Discriminator: failure to make new bicarbonate (e.g., distal/type 1 RTA, CKD) produces a persistent metabolic acidosis despite buffering.</div></div><div class="rt"><div class="rtl">10. Balloons / party (buffers)</div><div class="rte">Buffering systems cushion pH changes within seconds — the body's first line of defense. Order/speed of defense: (1) chemical buffers (instant, bicarbonate + intracellular proteins/phosphate), (2) respiratory compensation (minutes to hours, alters PCO2), (3) renal compensation (hours to 3-5 days, alters HCO3 excretion/regeneration).</div><div class="rtt">⚠️ WRONG answer is expecting full renal compensation within hours of an acute respiratory change. Renal HCO3 adjustment takes 3-5 days to plateau. Discriminator: an acute respiratory acidosis shows minimal HCO3 rise (~1 per 10 mmHg PCO2) and a markedly low pH; a fully developed (chronic) one shows HCO3 up ~3.5 per 10 mmHg with near-normal pH.</div></div><div class="rt"><div class="rtl">11. Bicarbonate soda box</div><div class="rte">Sodium bicarbonate = base (HCO3), the metabolic alkali. Therapeutic role: IV NaHCO3 is reserved for severe acidemia (generally pH &lt;7.1), toxic-alcohol/salicylate poisoning (urinary alkalinization traps salicylate), hyperkalemia, and TCA overdose (sodium load narrows QRS). Each amp = 50 mEq HCO3. Excess intake or volume contraction with maintained HCO3 produces metabolic alkalosis.</div><div class="rtt">⚠️ WRONG answer is bolusing bicarbonate for routine DKA or lactic acidosis with pH &gt;7.1. In DKA bicarbonate is not recommended unless pH &lt;6.9 — insulin + fluids clear ketones and regenerate HCO3, and bicarbonate risks hypokalemia, paradoxical CNS acidosis, and cerebral edema in children. Discriminator: treat the underlying cause first; reserve HCO3 for pH &lt;6.9-7.1 or specific toxidromes.</div></div><div class="rt"><div class="rtl">12. Fan / blowing CO2 off</div><div class="rte">Ventilation moves CO2 — the fast respiratory control of pH. Minute ventilation (rate × tidal volume) sets PCO2: increased ventilation lowers PCO2 and raises pH; hypoventilation does the reverse. This is the compensatory lever for primary metabolic disorders (Kussmaul respirations in DKA blow off CO2 to compensate for metabolic acidosis).</div><div class="rtt">⚠️ WRONG answer is interpreting Kussmaul (deep, rapid) breathing in a DKA patient as a primary respiratory alkalosis. It is appropriate respiratory COMPENSATION for the metabolic acidosis. Discriminator: apply Winter's formula — if measured PCO2 matches 1.5×HCO3 + 8 (±2), the low PCO2 is expected compensation, not a separate respiratory disorder.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nref_urinalysis.html" title="Renal Reference — AKI Urine Microscopy &amp; Dipstick Algorithm">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nref_acid_base.html" title="Renal Reference — Acid-Base Approach (Step 1 &amp; 2 Map)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

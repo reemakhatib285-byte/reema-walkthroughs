@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Asthma — Diagnosis &amp; Reversibility Workup</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>11</em></summary><ol class="traps"><li><b>Rising PCO2 = impending failure</b> — A 'normal' PaCO2 during a severe attack is ominous, not reassuring — it marks the crossover from hyperventilation to exhaustion.</li><li><b>Scalloped flow-volume loop</b> — A FLAT/plateaued (fixed) loop on inspiration and expiration suggests a FIXED large-airway obstruction (e.g., tracheal stenosis/tumor), not asthma — shape of the loop localizes the lesion.</li><li><b>FEV1/FVC obstructive gauge</b> — A NORMAL FEV1/FVC between attacks does NOT exclude asthma — spirometry is frequently normal when the patient is asymptomatic, so a normal study in a suggestive history warrants a methacholine challenge.</li><li><b>Methacholine machine</b> — A NEGATIVE methacholine test effectively rules OUT asthma (high NPV); a POSITIVE test is less specific (also positive in COPD, allergic rhinitis, recent infection), so it confirms hyperresponsiveness, not necessarily asthma.</li><li><b>Reversibility ruler</b> — Reversibility distinguishes asthma from fixed COPD obstruction — but you must satisfy BOTH ≥12% AND ≥200 mL; meeting only one (e.g., 15% but 150 mL) does not count as a positive bronchodilator response.</li><li><b>Police suspect lineup (asthma/COPD/IPF)</b> — IPF/restrictive disease has a NORMAL or HIGH FEV1/FVC ratio (both FEV1 and FVC fall together) — do not mistake restriction for obstruction; a high ratio rules asthma/COPD out.</li><li><b>FeNO meter</b> — ICS therapy SUPPRESSES FeNO — a low value in a treated patient may reflect good adherence/treatment, not absence of disease; conversely a high FeNO on ICS suggests non-adherence or poor technique.</li><li><b>Eosinophils severity marker</b> — Chronic oral steroids and even ICS suppress the eosinophil count — a 'normal' eos in a treated severe asthmatic may understate true type-2 disease; and extremely high eosinophils should prompt thinking of EGPA, not just asthma.</li><li><b>EGPA flag (extremely elevated eos)</b> — New mononeuritis multiplex, purpura, or migratory infiltrates in an asthmatic point to EGPA, not 'just severe asthma' — and leukotriene-antagonist use has been associated with unmasking EGPA when steroids are tapered.</li><li><b>IgE &gt;1000 / atopy</b> — IgE confirms atopy and helps dose omalizumab but is NOT a diagnostic test for asthma itself — and a markedly high IgE with worsening asthma + bronchiectasis should trigger an ABPA workup (Aspergillus-specific IgE/IgG, eosinophilia).</li><li><b>Allergy skin-prick test</b> — A positive skin-prick confirms ATOPY/sensitization, not asthma — many sensitized people never develop asthma, and non-allergic (eosinophilic) asthma exists with negative skin tests.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Rising PCO2 = impending failure</div><div class="rte">During a severe attack the tachypneic patient normally has LOW PaCO2 (respiratory alkalosis). A PaCO2 that normalizes (back to ~40) and then rises signals respiratory-muscle fatigue and falling minute ventilation — impending respiratory failure requiring escalation toward intubation.</div><div class="rtt">⚠️ A 'normal' PaCO2 during a severe attack is ominous, not reassuring — it marks the crossover from hyperventilation to exhaustion.</div></div><div class="rt"><div class="rtl">2. Worse on waking</div><div class="rte">Diurnal variability with nocturnal/early-morning symptoms (cough, wheeze, dyspnea waking the patient) reflects circadian dips in airway caliber and is a hallmark of asthma. PEF is characteristically lowest in the morning ('morning dipping'), and &gt;10-20% diurnal PEF variability supports the diagnosis.</div></div><div class="rt"><div class="rtl">3. Scalloped flow-volume loop</div><div class="rte">The expiratory limb of the flow-volume loop is concave/scooped (scalloped) in obstruction — peak flow is reached early then flow collapses as small airways close. This pattern is shared by asthma and COPD; reversibility testing then separates them.</div><div class="rtt">⚠️ A FLAT/plateaued (fixed) loop on inspiration and expiration suggests a FIXED large-airway obstruction (e.g., tracheal stenosis/tumor), not asthma — shape of the loop localizes the lesion.</div></div><div class="rt"><div class="rtl">4. FEV1/FVC obstructive gauge</div><div class="rte">Spirometry is the cornerstone: a reduced FEV1/FVC ratio (&lt;0.7, or below the lower limit of normal) defines an OBSTRUCTIVE defect. FEV1 falls more than FVC because expiratory airflow is limited. Asthma's obstruction is reversible; COPD's is not.</div><div class="rtt">⚠️ A NORMAL FEV1/FVC between attacks does NOT exclude asthma — spirometry is frequently normal when the patient is asymptomatic, so a normal study in a suggestive history warrants a methacholine challenge.</div></div><div class="rt"><div class="rtl">5. Methacholine machine</div><div class="rte">The methacholine bronchoprovocation challenge detects airway HYPERRESPONSIVENESS when baseline spirometry is normal but suspicion is high. A ≥20% fall in FEV1 at a low methacholine dose (PC20) is positive. It is highly SENSITIVE with a high negative predictive value.</div><div class="rtt">⚠️ A NEGATIVE methacholine test effectively rules OUT asthma (high NPV); a POSITIVE test is less specific (also positive in COPD, allergic rhinitis, recent infection), so it confirms hyperresponsiveness, not necessarily asthma.</div></div><div class="rt"><div class="rtl">6. Reversibility ruler</div><div class="rte">Significant bronchodilator reversibility = post-bronchodilator FEV1 (or FVC) improvement of ≥12% AND ≥200 mL — this confirms reversible airflow obstruction and clinches asthma. (Updated GINA also accepts ≥10% of predicted FEV1.) Both the percent and absolute thresholds must be met under the classic rule.</div><div class="rtt">⚠️ Reversibility distinguishes asthma from fixed COPD obstruction — but you must satisfy BOTH ≥12% AND ≥200 mL; meeting only one (e.g., 15% but 150 mL) does not count as a positive bronchodilator response.</div></div><div class="rt"><div class="rtl">7. Police suspect lineup (asthma/COPD/IPF)</div><div class="rte">Differential by PFT pattern: Asthma = obstructive + REVERSIBLE; COPD = obstructive + irreversible (FEV1/FVC &lt;0.7 post-BD); IPF/interstitial disease = RESTRICTIVE (low FVC and TLC, normal/high ratio) with low DLCO. The pattern triages the suspect.</div><div class="rtt">⚠️ IPF/restrictive disease has a NORMAL or HIGH FEV1/FVC ratio (both FEV1 and FVC fall together) — do not mistake restriction for obstruction; a high ratio rules asthma/COPD out.</div></div><div class="rt"><div class="rtl">8. FeNO meter</div><div class="rte">Elevated FeNO (&gt;40-50 ppb high; 25-50 intermediate; IL-13-driven) indicates active eosinophilic/type-2 airway inflammation and predicts corticosteroid responsiveness. It supports the asthma diagnosis and helps select type-2 biologics, but is an adjunct — not a stand-alone diagnostic.</div><div class="rtt">⚠️ ICS therapy SUPPRESSES FeNO — a low value in a treated patient may reflect good adherence/treatment, not absence of disease; conversely a high FeNO on ICS suggests non-adherence or poor technique.</div></div><div class="rt"><div class="rtl">9. Eosinophils severity marker</div><div class="rte">Blood eosinophilia (≥300/µL, or ≥150 at biologic initiation) marks the eosinophilic phenotype, correlates with exacerbation frequency, and predicts response to anti-IL-5 and dupilumab. It guides both prognosis and biologic selection.</div><div class="rtt">⚠️ Chronic oral steroids and even ICS suppress the eosinophil count — a 'normal' eos in a treated severe asthmatic may understate true type-2 disease; and extremely high eosinophils should prompt thinking of EGPA, not just asthma.</div></div><div class="rt"><div class="rtl">10. EGPA flag (extremely elevated eos)</div><div class="rte">Markedly elevated eosinophils (often &gt;1500/µL or &gt;10%) in an adult-onset asthmatic with systemic features — sinusitis/nasal polyps, mononeuritis multiplex, skin lesions, pulmonary infiltrates, cardiac or renal involvement — suggest EGPA (eosinophilic granulomatosis with polyangiitis / Churg-Strauss), an ANCA-associated (often p-ANCA/MPO) small-vessel vasculitis.</div><div class="rtt">⚠️ New mononeuritis multiplex, purpura, or migratory infiltrates in an asthmatic point to EGPA, not 'just severe asthma' — and leukotriene-antagonist use has been associated with unmasking EGPA when steroids are tapered.</div></div><div class="rt"><div class="rtl">11. IgE &gt;1000 / atopy</div><div class="rte">Very high total IgE (often &gt;1000 IU/mL) in an asthmatic with central bronchiectasis, recurrent infiltrates, and Aspergillus sensitization raises concern for ABPA (allergic bronchopulmonary aspergillosis), treated with systemic steroids ± antifungals. Moderately elevated IgE simply supports atopy and guides omalizumab dosing.</div><div class="rtt">⚠️ IgE confirms atopy and helps dose omalizumab but is NOT a diagnostic test for asthma itself — and a markedly high IgE with worsening asthma + bronchiectasis should trigger an ABPA workup (Aspergillus-specific IgE/IgG, eosinophilia).</div></div><div class="rt"><div class="rtl">12. Allergy skin-prick test</div><div class="rte">Allergy skin-prick (or specific-IgE) testing identifies sensitizing aeroallergens to guide trigger avoidance, allergen immunotherapy, and biologic choice (e.g., omalizumab requires perennial allergen sensitization). It characterizes the allergic phenotype, not the diagnosis.</div><div class="rtt">⚠️ A positive skin-prick confirms ATOPY/sensitization, not asthma — many sensitized people never develop asthma, and non-allergic (eosinophilic) asthma exists with negative skin tests.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="asthma_2.html" title="Asthma — Chronic Step-Up Therapy Ladder">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="asthma_exacerbation.html" title="Asthma — Exacerbation Triggers Winter Scene">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

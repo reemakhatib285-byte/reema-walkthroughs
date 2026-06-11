@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">VTE — Diagnostic Imaging Algorithm (CTPA, V/Q, US, Echo)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Compression ultrasound</b> — WRONG: 'Order a D-dimer to confirm a DVT already seen as a non-compressible femoral vein on US.' D-dimer is a rule-OUT test for low pretest probability, not a confirmatory test — a positive compression US already establishes DVT and warrants anticoagulation.</li><li><b>Loss of compressibility = DVT</b> — WRONG: 'A normal compression US of the leg rules out PE.' A negative leg US does not exclude PE — the clot may have already embolized or arisen elsewhere; if PE is suspected with negative legs, proceed to CTPA/V/Q based on pretest probability and D-dimer.</li><li><b>CTPA = principal PE test</b> — WRONG: 'Send a hemodynamically unstable, hypotensive patient with suspected massive PE to CTPA first.' An unstable patient may not survive transport to CT — bedside echocardiography showing RV strain (plus clinical context) supports empiric thrombolysis; CTPA is for stable patients.</li><li><b>RV enlargement on CTPA</b> — WRONG: 'RV enlargement on CTPA in a normotensive patient means give thrombolytics now.' Imaging RV strain alone defines intermediate-risk PE — systemic thrombolysis is reserved for hemodynamic instability (or decompensation); intermediate-risk patients are usually anticoagulated and monitored (PEITHO showed excess major bleeding/stroke with routine lysis).</li><li><b>CTPA contraindicated</b> — WRONG: 'A creatinine of 3.5 means you cannot image for PE at all.' Renal failure contraindicates contrast CTPA but not diagnosis — a V/Q scan (no iodinated contrast) is the correct alternative; missing a PE is far more dangerous than the limitation.</li><li><b>V/Q scan tower</b> — WRONG: 'V/Q is useless in a patient with COPD/abnormal CXR, so just give contrast despite the renal failure.' V/Q is less interpretable with parenchymal disease but is still the contrast-free option; alternatives include lower-extremity US or careful risk-benefit CTPA — not forcing contrast in renal failure by default.</li><li><b>Normal V/Q rules out PE</b> — WRONG: 'A low-probability (not normal) V/Q scan rules out PE.' Only a NORMAL perfusion scan excludes PE — 'low probability' still carries residual risk and must be combined with pretest probability/D-dimer; do not equate low-probability with normal.</li><li><b>High-prob V/Q = specific</b> — WRONG: 'A non-high-probability V/Q scan in a high pretest-probability patient excludes PE.' The discriminator is pretest probability — with high clinical suspicion, a non-high-prob scan is non-diagnostic and you must proceed to CTPA, US, or angiography rather than stopping.</li><li><b>Intermediate/non-diagnostic V/Q trap</b> — WRONG: 'An intermediate/non-diagnostic V/Q in a symptomatic patient lets you safely stop and discharge.' Indeterminate scans require escalation (leg US, CTPA, or angiography) — stopping risks missing a treatable, potentially fatal PE.</li><li><b>Echo watchtower</b> — WRONG: 'A normal echocardiogram rules out PE.' Echo is neither sensitive nor specific enough to exclude PE (many PEs have normal echoes) — its role is to detect RV strain for risk stratification in unstable patients, not to confirm or exclude the diagnosis.</li><li><b>Wells → D-dimer (algorithm)</b> — WRONG: 'Order a D-dimer in a patient with high pretest probability (Wells &gt;6) for suspected PE.' D-dimer is a rule-out tool only for low/intermediate probability — in high pretest probability its negative result is unreliable, and a positive result is expected and unhelpful; proceed directly to CTPA.</li><li><b>CTPA → if blocked → V/Q</b> — WRONG: 'If CTPA is contraindicated, give the contrast anyway because there is no other PE test.' V/Q (and leg US/angiography) provide contrast-free or alternative pathways — defaulting to contrast in a contraindicated patient is the wrong, avoidable harm.</li><li><b>Proximal DVT → treat as VTE</b> — WRONG: 'Proximal DVT confirmed on US, but withhold anticoagulation until CTPA proves a PE.' Proximal DVT already establishes VTE — delaying treatment to chase imaging confirmation of PE risks fatal embolization; anticoagulate now.</li><li><b>Post-VTE sequelae (PTS / CTEPH)</b> — WRONG: 'Work up suspected CTEPH (chronic dyspnea after PE) with CTPA as the first/best test.' V/Q scan is the preferred screening test for CTEPH (higher sensitivity for chronic/organized thrombus); a normal V/Q effectively excludes it, whereas CTPA can miss distal chronic disease.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Compression ultrasound</div><div class="rte">Compression ultrasound with Doppler is the first-line, non-invasive test for suspected DVT, examining the common femoral, femoral, and popliteal veins. The single diagnostic criterion is loss of vein compressibility under probe pressure (a normal vein collapses, a clot-filled vein does not). Sensitivity/specificity for proximal DVT are &gt;95%, but it is less reliable for isolated calf vein DVT, where serial scans may be needed. Mnemonic: 'If it won't squish, there's a clot in the dish.'</div><div class="rtt">⚠️ WRONG: 'Order a D-dimer to confirm a DVT already seen as a non-compressible femoral vein on US.' D-dimer is a rule-OUT test for low pretest probability, not a confirmatory test — a positive compression US already establishes DVT and warrants anticoagulation.</div></div><div class="rt"><div class="rtl">2. Loss of compressibility = DVT</div><div class="rte">A vein that fails to fully collapse when the transducer compresses it is the defining sign of an intraluminal thrombus; color Doppler showing absent or filling-defect flow is supportive. This is operator-dependent and limited in the pelvic/iliac veins and in obese or edematous legs, where CT/MR venography may be required. Mnemonic: 'Compressible = clear; non-compressible = clot.'</div><div class="rtt">⚠️ WRONG: 'A normal compression US of the leg rules out PE.' A negative leg US does not exclude PE — the clot may have already embolized or arisen elsewhere; if PE is suspected with negative legs, proceed to CTPA/V/Q based on pretest probability and D-dimer.</div></div><div class="rt"><div class="rtl">3. CTPA = principal PE test</div><div class="rte">CT pulmonary angiography is the first-line, gold-standard imaging test for PE, directly visualizing filling defects in the pulmonary arteries down to the segmental/subsegmental level. It is fast, widely available, and simultaneously evaluates alternative diagnoses (pneumonia, dissection). It requires IV iodinated contrast and radiation. Mnemonic: 'CTPA = the lighthouse you steer toward for PE.'</div><div class="rtt">⚠️ WRONG: 'Send a hemodynamically unstable, hypotensive patient with suspected massive PE to CTPA first.' An unstable patient may not survive transport to CT — bedside echocardiography showing RV strain (plus clinical context) supports empiric thrombolysis; CTPA is for stable patients.</div></div><div class="rt"><div class="rtl">4. RV enlargement on CTPA</div><div class="rte">On CTPA, an RV:LV diameter ratio &gt;1.0 (or &gt;0.9) on the axial four-chamber reconstruction signals RV pressure overload and predicts elevated 30-day/short-term mortality. Combined with elevated troponin/BNP, it reclassifies a normotensive PE as intermediate-HIGH risk, prompting closer monitoring and consideration of reperfusion if the patient deteriorates. Mnemonic: 'Big RV on CT = bad prognosis flag.'</div><div class="rtt">⚠️ WRONG: 'RV enlargement on CTPA in a normotensive patient means give thrombolytics now.' Imaging RV strain alone defines intermediate-risk PE — systemic thrombolysis is reserved for hemodynamic instability (or decompensation); intermediate-risk patients are usually anticoagulated and monitored (PEITHO showed excess major bleeding/stroke with routine lysis).</div></div><div class="rt"><div class="rtl">5. CTPA contraindicated</div><div class="rte">CTPA should be avoided when IV iodinated contrast is hazardous: significant renal impairment (contrast nephropathy), severe contrast allergy/anaphylaxis history, and relative avoidance in pregnancy/young women to limit breast radiation. In these cases the algorithm escalates to a V/Q scan, which uses no iodinated contrast. Mnemonic: 'Kidney, allergy, pregnancy → road blocked → reroute to V/Q.'</div><div class="rtt">⚠️ WRONG: 'A creatinine of 3.5 means you cannot image for PE at all.' Renal failure contraindicates contrast CTPA but not diagnosis — a V/Q scan (no iodinated contrast) is the correct alternative; missing a PE is far more dangerous than the limitation.</div></div><div class="rt"><div class="rtl">6. V/Q scan tower</div><div class="rte">The ventilation–perfusion scan is the principal alternative to CTPA when contrast is contraindicated (renal failure, contrast allergy) or to reduce radiation in young/pregnant patients. It compares inhaled and IV radiotracer distributions; a PE shows perfusion defects in normally ventilated lung (mismatch). It performs best with a normal baseline chest X-ray. Mnemonic: 'V/Q = the backup tower when CTPA road is blocked.'</div><div class="rtt">⚠️ WRONG: 'V/Q is useless in a patient with COPD/abnormal CXR, so just give contrast despite the renal failure.' V/Q is less interpretable with parenchymal disease but is still the contrast-free option; alternatives include lower-extremity US or careful risk-benefit CTPA — not forcing contrast in renal failure by default.</div></div><div class="rt"><div class="rtl">7. Normal V/Q rules out PE</div><div class="rte">A completely NORMAL perfusion scan has a very high negative predictive value (~100%) and effectively excludes clinically significant PE, allowing anticoagulation to be safely withheld. This mirrors how a negative high-sensitivity D-dimer rules out PE in a low/intermediate pretest patient. Mnemonic: 'Normal V/Q = green light, PE excluded.'</div><div class="rtt">⚠️ WRONG: 'A low-probability (not normal) V/Q scan rules out PE.' Only a NORMAL perfusion scan excludes PE — 'low probability' still carries residual risk and must be combined with pretest probability/D-dimer; do not equate low-probability with normal.</div></div><div class="rt"><div class="rtl">8. High-prob V/Q = specific</div><div class="rte">A high-probability V/Q scan (≥2 large mismatched segmental perfusion defects) is highly specific (~85–90%) and, with a concordant high pretest probability, rules PE IN and justifies treatment. However V/Q is not very sensitive overall and produces many non-diagnostic results, so a non-high-probability scan cannot exclude PE. Mnemonic: 'High-prob V/Q rules IN; it does not rule out.'</div><div class="rtt">⚠️ WRONG: 'A non-high-probability V/Q scan in a high pretest-probability patient excludes PE.' The discriminator is pretest probability — with high clinical suspicion, a non-high-prob scan is non-diagnostic and you must proceed to CTPA, US, or angiography rather than stopping.</div></div><div class="rt"><div class="rtl">9. Intermediate/non-diagnostic V/Q trap</div><div class="rte">Intermediate/indeterminate V/Q results are common (especially with abnormal CXR or COPD) and neither confirm nor exclude PE. The correct move is further testing: bilateral leg compression US (a positive proximal DVT confirms VTE and ends the workup) or CTPA/pulmonary angiography. Mnemonic: 'Yellow light = keep going, don't stop the workup.'</div><div class="rtt">⚠️ WRONG: 'An intermediate/non-diagnostic V/Q in a symptomatic patient lets you safely stop and discharge.' Indeterminate scans require escalation (leg US, CTPA, or angiography) — stopping risks missing a treatable, potentially fatal PE.</div></div><div class="rt"><div class="rtl">10. Echo watchtower</div><div class="rte">Echocardiography does NOT diagnose PE — it risk-stratifies. In an unstable patient it can rapidly show signs of acute RV pressure overload (RV dilation, septal flattening/D-sign, McConnell's sign of apical sparing with free-wall hypokinesis, TR with elevated PASP), supporting empiric thrombolysis when CTPA is unsafe. Mnemonic: 'Echo = watchtower for RV strain in the crashing patient.'</div><div class="rtt">⚠️ WRONG: 'A normal echocardiogram rules out PE.' Echo is neither sensitive nor specific enough to exclude PE (many PEs have normal echoes) — its role is to detect RV strain for risk stratification in unstable patients, not to confirm or exclude the diagnosis.</div></div><div class="rt"><div class="rtl">11. Wells → D-dimer (algorithm)</div><div class="rte">Start with the Wells (or revised Geneva/PERC) score to set pretest probability. For LOW/moderate probability, a high-sensitivity D-dimer below the (age-adjusted: age×10 if &gt;50) cutoff has high negative predictive value and rules OUT PE with no imaging. A positive D-dimer, or HIGH pretest probability, goes straight to CTPA. Mnemonic: 'Low Wells + negative D-dimer = done; high Wells = skip D-dimer, image.'</div><div class="rtt">⚠️ WRONG: 'Order a D-dimer in a patient with high pretest probability (Wells &gt;6) for suspected PE.' D-dimer is a rule-out tool only for low/intermediate probability — in high pretest probability its negative result is unreliable, and a positive result is expected and unhelpful; proceed directly to CTPA.</div></div><div class="rt"><div class="rtl">12. CTPA → if blocked → V/Q</div><div class="rte">When imaging is indicated, CTPA is the default; if it is contraindicated (renal failure, contrast allergy, pregnancy) or unavailable, escalate to a V/Q scan, and if that is non-diagnostic, use leg compression US or formal pulmonary angiography. D-dimer is unhelpful once the decision to image has been made. Mnemonic: 'CTPA first; blocked road → V/Q → US/angio.'</div><div class="rtt">⚠️ WRONG: 'If CTPA is contraindicated, give the contrast anyway because there is no other PE test.' V/Q (and leg US/angiography) provide contrast-free or alternative pathways — defaulting to contrast in a contraindicated patient is the wrong, avoidable harm.</div></div><div class="rt"><div class="rtl">13. Proximal DVT → treat as VTE</div><div class="rte">DVT and PE are one disease (VTE). In a patient with suspected PE, finding a proximal DVT on compression US confirms VTE and justifies full anticoagulation without further chest imaging — useful when CTPA is contraindicated or non-diagnostic. Management is identical regardless of which territory is imaged. Mnemonic: 'Catch the clot in the leg, you've caught the PE — treat the same.'</div><div class="rtt">⚠️ WRONG: 'Proximal DVT confirmed on US, but withhold anticoagulation until CTPA proves a PE.' Proximal DVT already establishes VTE — delaying treatment to chase imaging confirmation of PE risks fatal embolization; anticoagulate now.</div></div><div class="rt"><div class="rtl">14. Post-VTE sequelae (PTS / CTEPH)</div><div class="rte">Long-term follow-up watches for chronic complications: post-thrombotic syndrome (PTS — chronic leg pain, swelling, hyperpigmentation, venous ulcers from valvular damage after DVT) and chronic thromboembolic pulmonary hypertension (CTEPH — persistent exertional dyspnea months after PE). Screen suspected CTEPH with a V/Q scan (more sensitive than CTPA for chronic clot), then confirm with right heart catheterization; treat with pulmonary thromboendarterectomy. Mnemonic: 'After the clot: PTS in the leg, CTEPH in the lung.'</div><div class="rtt">⚠️ WRONG: 'Work up suspected CTEPH (chronic dyspnea after PE) with CTPA as the first/best test.' V/Q scan is the preferred screening test for CTEPH (higher sensitivity for chronic/organized thrombus); a normal V/Q effectively excludes it, whereas CTPA can miss distal chronic disease.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="vte_anticoagulation.html" title="VTE — Anticoagulation: Treatment, Dosing &amp; Reversal">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="vte_pe_pathophysiology_shock.html" title="VTE — How PE Kills: V/Q Mismatch, RV Strain &amp; Shock">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

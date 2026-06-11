@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pulmonary Hypertension — Diagnostic Workup &amp; Vasoreactivity</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Only IPAH/HPAH tested</b> — WRONG: performing vasoreactivity testing in Group 2, 3, or 4 PH. Discriminator: vasoreactivity testing and CCB therapy apply only to IPAH/HPAH/drug-induced Group 1 — in Group 2 (left heart) a positive 'response' is meaningless and CCBs can be harmful.</li><li><b>Groups 2/3/5 barred</b> — WRONG: extrapolating a 'positive vasoreactivity' result to start CCBs in a Group 2 or 3 patient. Discriminator: CCB responsiveness is only validated and only safe in IPAH/HPAH/drug-induced PAH; in left-heart or lung disease, treat the cause.</li><li><b>CCB reward 5%</b> — WRONG: starting calcium channel blockers empirically in all PAH patients. Discriminator: only the ~5% durable vasoresponders benefit; CCBs in non-responders cause hypotension, edema, and clinical deterioration — confirm a positive test AND sustained response first.</li><li><b>mPAP drop &gt;=10</b> — WRONG: calling any drop in mPAP a positive test. Discriminator: a positive result needs a fall of ≥10 mmHg AND a final mPAP ≤40 mmHg AND maintained/increased cardiac output — all three, not just a partial pressure drop.</li><li><b>Absolute mPAP &lt;=40</b> — WRONG: declaring a responder based on the ≥10 mmHg drop alone when the final mPAP is still &gt;40. Discriminator: both the magnitude of fall (≥10) AND the absolute endpoint (≤40 mmHg) must be satisfied for a positive test.</li><li><b>CO must not drop</b> — WRONG: calling the test positive when mPAP falls but cardiac output also drops. Discriminator: a falling CO indicates harmful systemic effect, not true pulmonary vasoreactivity — the result is negative and CCBs would be dangerous.</li><li><b>RHC = gold standard</b> — WRONG: confirming PH (or starting PAH drugs) on the basis of echocardiography alone. Discriminator: echo only screens/estimates PA systolic pressure; right heart catheterization is mandatory to confirm the diagnosis, get the PAWP, and classify the hemodynamics.</li><li><b>Adenosine/NO agents</b> — WRONG: using oral calcium channel blockers themselves as the acute testing agent. Discriminator: testing uses titratable short-acting agents (inhaled NO, IV adenosine, IV epoprostenol); CCBs are the long-term therapy given only AFTER a confirmed positive test.</li><li><b>Echo + bubble study</b> — WRONG: treating echo as diagnostic/confirmatory for PH. Discriminator: echo SCREENS and stratifies probability — an abnormal echo triggers right heart catheterization, which is what actually confirms and classifies PH.</li><li><b>Isolated low DLCO</b> — WRONG: dismissing PAH because spirometry (FEV1/FVC) is normal. Discriminator: PAH characteristically gives an ISOLATED low DLCO with normal volumes — obstructive/restrictive PFT abnormalities instead point toward Group 3 lung-disease PH.</li><li><b>V/Q scan for CTEPH</b> — WRONG: using CT pulmonary angiography to rule OUT CTEPH. Discriminator: CTPA can miss distal/chronic organized clot — V/Q scan is more SENSITIVE and is the screening test; a normal V/Q reliably excludes CTEPH, whereas a normal CTPA does not.</li><li><b>TR murmur / TR jet</b> — WRONG: assuming an inspiration-augmented holosystolic murmur is mitral regurgitation. Discriminator: right-sided murmurs (TR) increase with INSPIRATION (Carvallo sign); left-sided murmurs (MR) do not — the inspiratory augmentation localizes it to the tricuspid/right heart.</li><li><b>Elevated TR jet velocity</b> — WRONG: quoting the echo-estimated PA systolic pressure as the patient's actual mPAP/diagnosis. Discriminator: TR-jet-derived PASP is an estimate with significant error — it stratifies probability and prompts catheterization; only RHC gives the true mPAP and PAWP.</li><li><b>High DLCO = classic PH</b> — WRONG: expecting PAH to show a HIGH DLCO. Discriminator: PAH gives a LOW (often disproportionately low) DLCO with normal volumes; a HIGH DLCO instead suggests alveolar hemorrhage, polycythemia, or left-to-right shunt — different differential entirely.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Only IPAH/HPAH tested</div><div class="rte">Acute VASOREACTIVITY testing is done ONLY in idiopathic (IPAH), heritable (HPAH), or drug/toxin-induced PAH — the subsets where a small minority are 'responders' who benefit from calcium channel blockers. It is performed at the time of the diagnostic right heart catheterization, not by echo. It is NOT used to guide therapy in connective-tissue-disease PAH or other PAH subtypes.</div><div class="rtt">⚠️ WRONG: performing vasoreactivity testing in Group 2, 3, or 4 PH. Discriminator: vasoreactivity testing and CCB therapy apply only to IPAH/HPAH/drug-induced Group 1 — in Group 2 (left heart) a positive 'response' is meaningless and CCBs can be harmful.</div></div><div class="rt"><div class="rtl">2. Groups 2/3/5 barred</div><div class="rte">Groups 2 (left heart), 3 (lung disease), and 5 (multifactorial) are NOT vasoreactivity-tested and do not receive calcium channel blockers on that basis. Their PH is driven by the underlying disorder — treat heart failure/valve, hypoxia/lung disease, or the systemic condition respectively.</div><div class="rtt">⚠️ WRONG: extrapolating a 'positive vasoreactivity' result to start CCBs in a Group 2 or 3 patient. Discriminator: CCB responsiveness is only validated and only safe in IPAH/HPAH/drug-induced PAH; in left-heart or lung disease, treat the cause.</div></div><div class="rt"><div class="rtl">3. CCB reward 5%</div><div class="rte">Only about 10% of IPAH patients are acute responders, and just ~5% maintain a durable long-term response to high-dose CALCIUM CHANNEL BLOCKERS (nifedipine, diltiazem, or amlodipine). Responders must be re-evaluated within 3-12 months to confirm sustained benefit; non-sustained responders need PAH-specific therapy.</div><div class="rtt">⚠️ WRONG: starting calcium channel blockers empirically in all PAH patients. Discriminator: only the ~5% durable vasoresponders benefit; CCBs in non-responders cause hypotension, edema, and clinical deterioration — confirm a positive test AND sustained response first.</div></div><div class="rt"><div class="rtl">4. mPAP drop &gt;=10</div><div class="rte">A POSITIVE acute vasoreactivity response (modified Sitbon criteria) requires a FALL in mPAP of AT LEAST 10 mmHg during the challenge. This component must be met together with the absolute-mPAP and preserved-cardiac-output criteria.</div><div class="rtt">⚠️ WRONG: calling any drop in mPAP a positive test. Discriminator: a positive result needs a fall of ≥10 mmHg AND a final mPAP ≤40 mmHg AND maintained/increased cardiac output — all three, not just a partial pressure drop.</div></div><div class="rt"><div class="rtl">5. Absolute mPAP &lt;=40</div><div class="rte">A positive response also requires the FINAL absolute mPAP to fall TO ≤40 mmHg. A patient can drop ≥10 mmHg yet still be non-responsive if the ending mPAP remains above 40.</div><div class="rtt">⚠️ WRONG: declaring a responder based on the ≥10 mmHg drop alone when the final mPAP is still &gt;40. Discriminator: both the magnitude of fall (≥10) AND the absolute endpoint (≤40 mmHg) must be satisfied for a positive test.</div></div><div class="rt"><div class="rtl">6. CO must not drop</div><div class="rte">During the vasoreactivity test, CARDIAC OUTPUT must be MAINTAINED or INCREASED. A drop in CO means the agent caused systemic vasodilation/hemodynamic compromise rather than selective pulmonary vasodilation — that is a NEGATIVE (and concerning) response.</div><div class="rtt">⚠️ WRONG: calling the test positive when mPAP falls but cardiac output also drops. Discriminator: a falling CO indicates harmful systemic effect, not true pulmonary vasoreactivity — the result is negative and CCBs would be dangerous.</div></div><div class="rt"><div class="rtl">7. RHC = gold standard</div><div class="rte">RIGHT HEART CATHETERIZATION is the GOLD-STANDARD confirmatory test for PH: it directly measures mPAP, PAWP, cardiac output (thermodilution/Fick), and calculates PVR — the numbers that both confirm PH and classify pre- vs post-capillary disease. It is required before committing a patient to PAH-specific therapy.</div><div class="rtt">⚠️ WRONG: confirming PH (or starting PAH drugs) on the basis of echocardiography alone. Discriminator: echo only screens/estimates PA systolic pressure; right heart catheterization is mandatory to confirm the diagnosis, get the PAWP, and classify the hemodynamics.</div></div><div class="rt"><div class="rtl">8. Adenosine/NO agents</div><div class="rte">Vasoreactivity is tested with SHORT-ACTING, rapidly reversible pulmonary vasodilators: inhaled NITRIC OXIDE (10-20 ppm, the most commonly used), IV ADENOSINE, or IV epoprostenol (and in some labs inhaled iloprost). Their short half-lives make the response immediately interpretable and reversible if hemodynamics worsen.</div><div class="rtt">⚠️ WRONG: using oral calcium channel blockers themselves as the acute testing agent. Discriminator: testing uses titratable short-acting agents (inhaled NO, IV adenosine, IV epoprostenol); CCBs are the long-term therapy given only AFTER a confirmed positive test.</div></div><div class="rt"><div class="rtl">9. Echo + bubble study</div><div class="rte">Transthoracic ECHOCARDIOGRAPHY is the FIRST-LINE SCREENING test for suspected PH: it estimates PA systolic pressure from the tricuspid regurgitant jet, assesses RV size/function and the interventricular septum, and evaluates left-heart causes (Group 2). A bubble (agitated-saline) study detects an intracardiac/right-to-left SHUNT (e.g., PFO/ASD).</div><div class="rtt">⚠️ WRONG: treating echo as diagnostic/confirmatory for PH. Discriminator: echo SCREENS and stratifies probability — an abnormal echo triggers right heart catheterization, which is what actually confirms and classifies PH.</div></div><div class="rt"><div class="rtl">10. Isolated low DLCO</div><div class="rte">On pulmonary function testing, an ISOLATED reduction in DLCO (diffusing capacity) with relatively PRESERVED spirometry/lung volumes is a classic clue to pulmonary VASCULAR disease (PAH) — the capillary bed is destroyed/remodeled even though the airways and parenchyma are intact. A very low DLCO in PAH also flags possible pulmonary veno-occlusive disease and portends worse prognosis.</div><div class="rtt">⚠️ WRONG: dismissing PAH because spirometry (FEV1/FVC) is normal. Discriminator: PAH characteristically gives an ISOLATED low DLCO with normal volumes — obstructive/restrictive PFT abnormalities instead point toward Group 3 lung-disease PH.</div></div><div class="rt"><div class="rtl">11. V/Q scan for CTEPH</div><div class="rte">The VENTILATION/PERFUSION (V/Q) scan is the SCREENING test of choice for chronic thromboembolic PH (CTEPH, Group 4): it shows segmental/subsegmental PERFUSION defects with normal ventilation (mismatched defects). A normal V/Q scan essentially excludes CTEPH. Every PH patient should be screened for CTEPH because it is potentially CURABLE by pulmonary thromboendarterectomy.</div><div class="rtt">⚠️ WRONG: using CT pulmonary angiography to rule OUT CTEPH. Discriminator: CTPA can miss distal/chronic organized clot — V/Q scan is more SENSITIVE and is the screening test; a normal V/Q reliably excludes CTEPH, whereas a normal CTPA does not.</div></div><div class="rt"><div class="rtl">12. TR murmur / TR jet</div><div class="rte">A holosystolic tricuspid REGURGITATION murmur at the left lower sternal border that gets LOUDER with INSPIRATION (Carvallo sign, due to increased venous return) reflects RV pressure/volume overload from PH. Other exam clues: a loud/palpable P2, RV heave, elevated JVP with prominent V waves, and signs of right heart failure (edema, ascites, hepatomegaly).</div><div class="rtt">⚠️ WRONG: assuming an inspiration-augmented holosystolic murmur is mitral regurgitation. Discriminator: right-sided murmurs (TR) increase with INSPIRATION (Carvallo sign); left-sided murmurs (MR) do not — the inspiratory augmentation localizes it to the tricuspid/right heart.</div></div><div class="rt"><div class="rtl">13. Elevated TR jet velocity</div><div class="rte">On echo, an elevated tricuspid regurgitant JET VELOCITY is used to estimate PA systolic pressure (via the modified Bernoulli equation, adding estimated RA pressure). A high TR velocity, plus enlarged RA/RV and septal flattening, raises the echo PROBABILITY of PH and triggers confirmatory right heart catheterization.</div><div class="rtt">⚠️ WRONG: quoting the echo-estimated PA systolic pressure as the patient's actual mPAP/diagnosis. Discriminator: TR-jet-derived PASP is an estimate with significant error — it stratifies probability and prompts catheterization; only RHC gives the true mPAP and PAWP.</div></div><div class="rt"><div class="rtl">14. High DLCO = classic PH</div><div class="rte">Pattern recognition for boards: an ISOLATED LOW DLCO with PRESERVED lung volumes is the hallmark PFT signature of pulmonary VASCULAR disease/PAH. (Contrast: a HIGH DLCO classically accompanies alveolar hemorrhage, polycythemia, left-to-right shunt, or asthma.) Pair the low DLCO with normal spirometry to point toward Group 1 PAH over parenchymal lung disease.</div><div class="rtt">⚠️ WRONG: expecting PAH to show a HIGH DLCO. Discriminator: PAH gives a LOW (often disproportionately low) DLCO with normal volumes; a HIGH DLCO instead suggests alveolar hemorrhage, polycythemia, or left-to-right shunt — different differential entirely.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pulmhtn_classification.html" title="Pulmonary Hypertension — Definition &amp; Hemodynamic Classification">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pulmhtn_treatment.html" title="Pulmonary Hypertension — PAH Treatment &amp; CTEPH">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

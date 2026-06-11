@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Reference — Acid-Base Compensation Formulas (Table 58-1)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Range of values header</b> — WRONG answer: calling a derangement "fully compensated" when pH has crossed to the other side of 7.40. Discriminator: compensation never normalizes or overshoots pH — if a patient with chronic respiratory acidosis is frankly alkalemic, a second primary metabolic alkalosis is present (e.g., overdiuresis in COPD).</li><li><b>Metabolic acidosis — Winter's formula</b> — WRONG answer: assuming a low PaCO2 in a metabolic acidosis is automatically "appropriate" without doing the math. Discriminator: if measured PaCO2 is HIGHER than Winter's predicts → superimposed respiratory acidosis (e.g., DKA patient tiring/aspirating); if measured PaCO2 is LOWER than predicted → superimposed respiratory alkalosis (e.g., salicylate toxicity, sepsis, pregnancy).</li><li><b>Metabolic acidosis — alt rules</b> — WRONG answer: using the "HCO3 + 15" rule outside its validity range. Discriminator: the rule only holds for HCO3 roughly 10–24; at very low HCO3 it diverges from Winter's, so when given a severe acidosis (HCO3 &lt; 10) compute Winter's formula explicitly rather than trusting the shortcut.</li><li><b>Metabolic acidosis values (all Low)</b> — WRONG answer: stopping at "metabolic acidosis with appropriate compensation" without the anion gap or delta-delta. Discriminator: both values low confirms direction only — a normal pH with low HCO3 and low PaCO2 plus a high gap can hide a triple disorder; compute the gap and delta-delta on every metabolic acidosis.</li><li><b>Metabolic alkalosis — formula</b> — WRONG answer: predicting unlimited CO2 retention to fully correct the alkalemia. Discriminator: compensatory hypoventilation is LIMITED because rising PaCO2 worsens hypoxemia, which then drives ventilation — PaCO2 rarely exceeds ~55 mmHg; a PaCO2 above that implies a superimposed respiratory acidosis rather than normal compensation.</li><li><b>Metabolic alkalosis values (all High)</b> — WRONG answer: attributing a high PaCO2 with high HCO3 entirely to compensation when the PaCO2 exceeds the predicted value. Discriminator: if measured PaCO2 &gt; expected (0.7 × HCO3 + 21) → concurrent respiratory acidosis; if measured PaCO2 &lt; expected → concurrent respiratory alkalosis (classic in a vomiting patient who is also septic or pregnant).</li><li><b>Respiratory alkalosis values (pH High, both Low)</b> — WRONG answer: misreading a respiratory alkalosis with low HCO3 as a primary metabolic acidosis. Discriminator: in primary metabolic acidosis pH and PaCO2 move in the SAME direction (both low with pH low); in respiratory alkalosis the pH is HIGH despite the low HCO3 — the pH direction tells you which variable is primary.</li><li><b>Respiratory alkalosis — acute</b> — WRONG answer: calling a respiratory alkalosis "acute" when HCO3 has fallen far more than the 2-per-10 rule predicts. Discriminator: if the HCO3 drop exceeds the acute prediction it is either CHRONIC respiratory alkalosis (renal compensation, ~4–5 per 10) or a superimposed metabolic acidosis — check the clinical timeline (minutes/hours vs days).</li><li><b>Respiratory alkalosis — chronic</b> — WRONG answer: diagnosing a superimposed metabolic acidosis in a high-altitude dweller whose HCO3 is low. Discriminator: a near-normal pH with chronically low PaCO2 and proportionally low HCO3 (4–5 per 10) is fully compensated CHRONIC respiratory alkalosis — only call it a second disorder if HCO3 falls more than the chronic formula predicts or the pH is frankly acidemic.</li><li><b>Respiratory acidosis values (pH Low, both High)</b> — WRONG answer: reading high HCO3 as a primary metabolic alkalosis. Discriminator: in metabolic alkalosis the pH is HIGH; in respiratory acidosis the pH is LOW despite the high HCO3 — again the pH direction names the primary disorder. A patient with low pH, high PaCO2, and high HCO3 has respiratory acidosis with renal compensation, not alkalosis.</li><li><b>Respiratory acidosis — acute</b> — WRONG answer: labeling an acidosis "acute" when HCO3 has risen well above the 1-per-10 rule. Discriminator: a large HCO3 rise in apparent acute respiratory acidosis means it is actually CHRONIC (renal compensation has had days to work) OR there is a superimposed metabolic alkalosis — reconcile with the clinical time course before treating.</li><li><b>Respiratory acidosis — chronic</b> — WRONG answer: over-oxygenating a chronic CO2 retainer or attributing a very high HCO3 purely to chronic compensation. Discriminator: HCO3 above the chronic prediction (3.5–4 per 10) signals a superimposed metabolic alkalosis (e.g., a COPD patient on loop diuretics or with vomiting) — and remember chronic compensation, like all single disorders, never normalizes the pH.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Range of values header</div><div class="rte">The systematic ABG approach: (1) check pH to name acidemia (&lt;7.35) vs alkalemia (&gt;7.45); (2) check whether PaCO2 (normal 40 ± 5) or HCO3 (normal 24 ± 2) explains the pH shift to identify the PRIMARY disorder; (3) use the compensation formula to predict the expected secondary value; (4) calculate the anion gap on every metabolic acidosis. The primary disturbance and its compensation always move pH in OPPOSITE directions from each other, but the primary and compensatory variables (HCO3 and PaCO2) move in the SAME direction. Overcompensation past normal pH never happens with a single disorder — if pH is normal but PaCO2 and HCO3 are both deranged, suspect a mixed disorder.</div><div class="rtt">⚠️ WRONG answer: calling a derangement "fully compensated" when pH has crossed to the other side of 7.40. Discriminator: compensation never normalizes or overshoots pH — if a patient with chronic respiratory acidosis is frankly alkalemic, a second primary metabolic alkalosis is present (e.g., overdiuresis in COPD).</div></div><div class="rt"><div class="rtl">2. Metabolic acidosis — Winter's formula</div><div class="rte">Winter's formula gives the expected respiratory compensation (the PaCO2 the lungs should drive to via hyperventilation) for any measured HCO3 in metabolic acidosis: expected PaCO2 = 1.5 × HCO3 + 8 ± 2. Example: HCO3 of 12 → expected PaCO2 = 1.5(12) + 8 = 26 ± 2 (24–28). Hyperventilation (Kussmaul respirations in DKA) blows off CO2 within minutes to hours and is maximal by ~12–24h, but PaCO2 rarely falls below ~10 mmHg. Always pair Winter's with an anion gap and a delta-delta to fully characterize the disorder.</div><div class="rtt">⚠️ WRONG answer: assuming a low PaCO2 in a metabolic acidosis is automatically "appropriate" without doing the math. Discriminator: if measured PaCO2 is HIGHER than Winter's predicts → superimposed respiratory acidosis (e.g., DKA patient tiring/aspirating); if measured PaCO2 is LOWER than predicted → superimposed respiratory alkalosis (e.g., salicylate toxicity, sepsis, pregnancy).</div></div><div class="rt"><div class="rtl">3. Metabolic acidosis — alt rules</div><div class="rte">Bedside shortcuts equivalent to Winter's: (1) PaCO2 falls ~1.25 mmHg for each 1 mmol/L drop in HCO3 below 24; (2) PaCO2 ≈ HCO3 + 15; (3) the last two digits of the pH approximate the expected PaCO2 (e.g., pH 7.26 → PaCO2 ~26). These give a fast sanity check before reaching for the full Winter's calculation, but Winter's (± 2 range) remains the board-preferred answer.</div><div class="rtt">⚠️ WRONG answer: using the "HCO3 + 15" rule outside its validity range. Discriminator: the rule only holds for HCO3 roughly 10–24; at very low HCO3 it diverges from Winter's, so when given a severe acidosis (HCO3 &lt; 10) compute Winter's formula explicitly rather than trusting the shortcut.</div></div><div class="rt"><div class="rtl">4. Metabolic acidosis values (all Low)</div><div class="rte">Primary fall in HCO3 lowers pH (acidemia); the lungs compensate by hyperventilating to lower PaCO2, partially restoring pH. HCO3 and PaCO2 move in the SAME direction (both low) — the signature of a metabolic acidosis with respiratory compensation. Next step is ALWAYS the anion gap (Na − [Cl + HCO3], normal 8–12): high-gap causes = MUDPILES/GOLDMARK (methanol, uremia, DKA, propylene glycol, INH/iron, lactate, ethylene glycol, salicylates), normal-gap (hyperchloremic) causes = diarrhea and renal tubular acidosis (urine anion gap separates them).</div><div class="rtt">⚠️ WRONG answer: stopping at "metabolic acidosis with appropriate compensation" without the anion gap or delta-delta. Discriminator: both values low confirms direction only — a normal pH with low HCO3 and low PaCO2 plus a high gap can hide a triple disorder; compute the gap and delta-delta on every metabolic acidosis.</div></div><div class="rt"><div class="rtl">5. Metabolic alkalosis — formula</div><div class="rte">Expected respiratory compensation is hypoventilation that RAISES PaCO2: ~0.7 mmHg rise per 1 mmol/L rise in HCO3 (≈0.75 in this table, ≈6 per 10 mmol/L), giving expected PaCO2 ≈ 0.7 × HCO3 + 21, or the shortcut PaCO2 = HCO3 + 15. Example: HCO3 of 36 → expected PaCO2 ≈ 0.7(36) + 21 ≈ 46. Distinguish saline-RESPONSIVE causes (urine Cl &lt; 20: vomiting/NG suction, diuretics, contraction alkalosis — treat with normal saline) from saline-RESISTANT (urine Cl &gt; 20: hyperaldosteronism, Cushing, severe hypokalemia, Bartter/Gitelman).</div><div class="rtt">⚠️ WRONG answer: predicting unlimited CO2 retention to fully correct the alkalemia. Discriminator: compensatory hypoventilation is LIMITED because rising PaCO2 worsens hypoxemia, which then drives ventilation — PaCO2 rarely exceeds ~55 mmHg; a PaCO2 above that implies a superimposed respiratory acidosis rather than normal compensation.</div></div><div class="rt"><div class="rtl">6. Metabolic alkalosis values (all High)</div><div class="rte">Primary rise in HCO3 raises pH (alkalemia); the lungs compensate by hypoventilating to retain CO2. HCO3 and PaCO2 move in the SAME direction (both high) — the signature of metabolic alkalosis with respiratory compensation. The maintenance of metabolic alkalosis usually requires volume depletion, chloride depletion, or hypokalemia, all of which sustain renal bicarbonate reabsorption; correcting these (saline + KCl) is therapeutic.</div><div class="rtt">⚠️ WRONG answer: attributing a high PaCO2 with high HCO3 entirely to compensation when the PaCO2 exceeds the predicted value. Discriminator: if measured PaCO2 &gt; expected (0.7 × HCO3 + 21) → concurrent respiratory acidosis; if measured PaCO2 &lt; expected → concurrent respiratory alkalosis (classic in a vomiting patient who is also septic or pregnant).</div></div><div class="rt"><div class="rtl">7. Respiratory alkalosis values (pH High, both Low)</div><div class="rte">Primary fall in PaCO2 (hyperventilation) raises pH (alkalemia); the kidney compensates by excreting HCO3, lowering it. Here pH and PaCO2 move in OPPOSITE directions (PaCO2 down, pH up), which fingers PaCO2 as the PRIMARY problem and HCO3 as the compensation. Causes: anxiety/pain, hypoxemia (PE, pneumonia, high altitude), CNS lesions, pregnancy (progesterone), sepsis, and early salicylate toxicity. Salicylate poisoning classically produces a mixed primary respiratory alkalosis + high-anion-gap metabolic acidosis.</div><div class="rtt">⚠️ WRONG answer: misreading a respiratory alkalosis with low HCO3 as a primary metabolic acidosis. Discriminator: in primary metabolic acidosis pH and PaCO2 move in the SAME direction (both low with pH low); in respiratory alkalosis the pH is HIGH despite the low HCO3 — the pH direction tells you which variable is primary.</div></div><div class="rt"><div class="rtl">8. Respiratory alkalosis — acute</div><div class="rte">Acute respiratory alkalosis: HCO3 falls only ~0.2 mmol/L per 1 mmHg fall in PaCO2 (roughly a 2 mmol/L drop per 10 mmHg fall), reflecting immediate intracellular/tissue buffering before the kidney engages. Example: acute PaCO2 fall from 40 to 20 → HCO3 drops ~4 (24 → ~20). This small HCO3 fall is why acute hyperventilation can produce a strikingly alkalemic pH.</div><div class="rtt">⚠️ WRONG answer: calling a respiratory alkalosis "acute" when HCO3 has fallen far more than the 2-per-10 rule predicts. Discriminator: if the HCO3 drop exceeds the acute prediction it is either CHRONIC respiratory alkalosis (renal compensation, ~4–5 per 10) or a superimposed metabolic acidosis — check the clinical timeline (minutes/hours vs days).</div></div><div class="rt"><div class="rtl">9. Respiratory alkalosis — chronic</div><div class="rte">Chronic respiratory alkalosis: after 2–3 days the kidney reduces HCO3 reabsorption and ammoniagenesis, so HCO3 falls ~0.4–0.5 mmol/L per 1 mmHg fall in PaCO2 (≈4–5 per 10 mmHg) — roughly double the acute response. This is the only acid-base state in which renal compensation can return pH essentially to normal (e.g., long-term high-altitude residence, chronic liver disease, pregnancy).</div><div class="rtt">⚠️ WRONG answer: diagnosing a superimposed metabolic acidosis in a high-altitude dweller whose HCO3 is low. Discriminator: a near-normal pH with chronically low PaCO2 and proportionally low HCO3 (4–5 per 10) is fully compensated CHRONIC respiratory alkalosis — only call it a second disorder if HCO3 falls more than the chronic formula predicts or the pH is frankly acidemic.</div></div><div class="rt"><div class="rtl">10. Respiratory acidosis values (pH Low, both High)</div><div class="rte">Primary rise in PaCO2 (hypoventilation/CO2 retention) lowers pH (acidemia); the kidney compensates by generating and reabsorbing HCO3, raising it. pH and PaCO2 move in OPPOSITE directions (PaCO2 up, pH down), identifying PaCO2 as PRIMARY and HCO3 as compensation. Causes: COPD/obstructive disease, neuromuscular weakness (Guillain-Barré, myasthenic crisis), CNS/opioid-benzodiazepine sedation, obesity hypoventilation, chest-wall disease.</div><div class="rtt">⚠️ WRONG answer: reading high HCO3 as a primary metabolic alkalosis. Discriminator: in metabolic alkalosis the pH is HIGH; in respiratory acidosis the pH is LOW despite the high HCO3 — again the pH direction names the primary disorder. A patient with low pH, high PaCO2, and high HCO3 has respiratory acidosis with renal compensation, not alkalosis.</div></div><div class="rt"><div class="rtl">11. Respiratory acidosis — acute</div><div class="rte">Acute respiratory acidosis: HCO3 rises only ~0.1 mmol/L per 1 mmHg rise in PaCO2 (≈1 mmol/L per 10 mmHg), from immediate tissue/cell buffering before renal compensation begins. Example: acute PaCO2 jump from 40 to 80 → HCO3 rises only ~4 (24 → ~28) and pH drops sharply. Manage by reversing the cause (naloxone for opioids, BiPAP/ventilation for hypoventilation) — bicarbonate is NOT the treatment.</div><div class="rtt">⚠️ WRONG answer: labeling an acidosis "acute" when HCO3 has risen well above the 1-per-10 rule. Discriminator: a large HCO3 rise in apparent acute respiratory acidosis means it is actually CHRONIC (renal compensation has had days to work) OR there is a superimposed metabolic alkalosis — reconcile with the clinical time course before treating.</div></div><div class="rt"><div class="rtl">12. Respiratory acidosis — chronic</div><div class="rte">Chronic respiratory acidosis: over 3–5 days the kidney maximizes HCO3 generation so HCO3 rises ~0.4 mmol/L per 1 mmHg rise in PaCO2 (≈3.5–4 per 10 mmHg) — about 4× the acute response. Classic in stable COPD: PaCO2 60 → expected HCO3 ≈ 24 + 4×(2) = ~32, with pH only mildly low. Giving these patients high-flow O2 can blunt hypoxic drive and worsen hypercapnia; titrate O2 to SpO2 88–92%.</div><div class="rtt">⚠️ WRONG answer: over-oxygenating a chronic CO2 retainer or attributing a very high HCO3 purely to chronic compensation. Discriminator: HCO3 above the chronic prediction (3.5–4 per 10) signals a superimposed metabolic alkalosis (e.g., a COPD patient on loop diuretics or with vomiting) — and remember chronic compensation, like all single disorders, never normalizes the pH.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nref_acid_base.html" title="Renal Reference — Acid-Base Approach (Step 1 &amp; 2 Map)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nref_bun_cr.html" title="Renal Reference — BUN:Cr Ratio">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

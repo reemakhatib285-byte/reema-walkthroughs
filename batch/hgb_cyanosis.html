@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hemoglobinopathy — The Cyanosis Courtroom</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Carboxyhemoglobin (COHb)</b> — WRONG: 'A normal pulse oximetry reading rules out CO poisoning.' Standard 2-wavelength pulse oximetry cannot distinguish COHb from O2Hb, so SpO2 reads FALSELY NORMAL — you must measure COHb with co-oximetry/ABG. PaO2 is also normal and misleading.</li><li><b>COHb treatment</b> — WRONG: 'Methylene blue treats carbon monoxide poisoning.' Methylene blue is for methemoglobinemia, not COHb; CO is treated with 100% O2 ± hyperbaric oxygen.</li><li><b>Methemoglobin (MetHb)</b> — WRONG: 'A low SpO2 that won't rise with 100% O2 means a shunt/severe lung disease.' A pulse ox plateauing near 85% with a NORMAL PaO2 (saturation gap) points to methemoglobinemia — confirm with co-oximetry, not a chest CT.</li><li><b>MetHb causes</b> — WRONG: 'Cyanosis in a baby on well water is congenital cyanotic heart disease.' Nitrate-contaminated well water causes acquired methemoglobinemia ('blue baby' from nitrates) — look for chocolate blood and a saturation gap before invoking a cardiac shunt.</li><li><b>Methylene blue treatment</b> — WRONG: 'Methylene blue directly donates electrons without needing NADPH/G6PD.' It works THROUGH the NADPH-dependent pathway (G6PD-supplied) — which is exactly why it fails and is dangerous in G6PD deficiency (next panel).</li><li><b>MetHb + G6PD danger</b> — WRONG: 'Methylene blue is the universal antidote for methemoglobinemia in any patient.' In G6PD deficiency it is contraindicated (ineffective + can cause hemolysis) — switch to ascorbic acid or exchange transfusion.</li><li><b>Sulfhemoglobin (SulfHb)</b> — WRONG: 'Greenish or dark blood with cyanosis is just methemoglobinemia.' Sulfhemoglobinemia (greenish blood) is a separate, IRREVERSIBLE dyshemoglobin — and unlike MetHb it does not respond to methylene blue.</li><li><b>SulfHb management</b> — WRONG: 'Methylene blue reverses sulfhemoglobinemia like it does methemoglobinemia.' SulfHb is irreversible — MB does not work; you remove the drug and wait out the RBC lifespan.</li><li><b>Hb M (congenital)</b> — WRONG: 'Congenital cyanosis from Hb M should be treated urgently with methylene blue.' Hb M is a structural globin defect (not enzymatic), so MB is ineffective; it is well tolerated and requires no treatment — contrast with congenital cytochrome b5 reductase deficiency, which CAN respond to MB/ascorbic acid.</li><li><b>Master comparison chart</b> — WRONG: 'A normal ABG PaO2 means oxygen delivery is adequate.' PaO2 is normal in all dyshemoglobinemias yet tissue O2 delivery is impaired — you must measure functional saturation with co-oximetry, not infer it from PaO2.</li><li><b>Trap: brown blood = MetHb</b> — WRONG: 'Brown blood means it's old/venous and clinically meaningless.' Fresh chocolate-brown arterial blood that won't redden with O2 is a specific clue to methemoglobinemia — act on it.</li><li><b>Trap: false-normal SpO2 = COHb</b> — WRONG: 'SpO2 of 99% excludes hypoxia, so CO poisoning is off the table.' Pulse oximetry reads COHb as if it were O2Hb (falsely high) — a normal SpO2 does NOT rule out CO; measure COHb.</li><li><b>Trap: high-affinity → ↑Hb</b> — WRONG: 'Erythrocytosis with normal SaO2 must be polycythemia vera — start phlebotomy and check JAK2.' High-affinity Hb (low P50, normal SaO2, no JAK2) is compensatory; phlebotomy worsens tissue O2 delivery.</li><li><b>Traps: thal mimics</b> — WRONG: 'A sickle cell patient with microcytosis just has iron deficiency.' Co-inherited α-thalassemia also lowers MCV in SCD (and tempers hemolysis) — don't assume iron deficiency without checking iron studies and considering α-thal.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Carboxyhemoglobin (COHb)</div><div class="rte">Carbon monoxide binds hemoglobin with ~200–250× the affinity of O2, forming carboxyhemoglobin and also LEFT-shifting the dissociation curve of remaining heme, so O2 is held tightly and not released — a double hit causing severe tissue hypoxia despite a normal PaO2 (dissolved O2 is unaffected). Classic source: smoke inhalation, faulty heaters, car exhaust. Skin is described as 'cherry-red' (often a late/postmortem sign). Symptoms: headache, confusion, syncope; check a COHb level by co-oximetry.</div><div class="rtt">⚠️ WRONG: 'A normal pulse oximetry reading rules out CO poisoning.' Standard 2-wavelength pulse oximetry cannot distinguish COHb from O2Hb, so SpO2 reads FALSELY NORMAL — you must measure COHb with co-oximetry/ABG. PaO2 is also normal and misleading.</div></div><div class="rt"><div class="rtl">2. COHb treatment</div><div class="rte">Treatment of CO poisoning is high-flow 100% O2 by non-rebreather, which competitively displaces CO and shortens the COHb half-life from ~4–6 hours (room air) to ~60–90 minutes. Hyperbaric O2 (HBO) further shortens it to ~20–30 minutes and is considered for severe cases: loss of consciousness, neurologic deficits, COHb &gt;25% (&gt;15–20% in pregnancy), pregnancy with fetal distress, ischemic ECG/troponin, or severe acidosis — aiming to reduce delayed neurocognitive sequelae.</div><div class="rtt">⚠️ WRONG: 'Methylene blue treats carbon monoxide poisoning.' Methylene blue is for methemoglobinemia, not COHb; CO is treated with 100% O2 ± hyperbaric oxygen.</div></div><div class="rt"><div class="rtl">3. Methemoglobin (MetHb)</div><div class="rte">Methemoglobin is hemoglobin with iron oxidized to the ferric Fe3+ state, which cannot bind O2; worse, it left-shifts the remaining ferrous heme, impairing O2 release → functional anemia/tissue hypoxia despite normal PaO2. Blood is classically chocolate-brown and does not turn red on exposure to air/O2. The hallmark is a 'saturation gap' (normal PaO2 but low SaO2 by co-oximetry) with SpO2 characteristically stuck around ~85% regardless of supplemental O2. Symptoms appear above ~15–20% MetHb; &gt;50–70% can be lethal.</div><div class="rtt">⚠️ WRONG: 'A low SpO2 that won't rise with 100% O2 means a shunt/severe lung disease.' A pulse ox plateauing near 85% with a NORMAL PaO2 (saturation gap) points to methemoglobinemia — confirm with co-oximetry, not a chest CT.</div></div><div class="rt"><div class="rtl">4. MetHb causes</div><div class="rte">Acquired methemoglobinemia is driven by oxidant exposures: dapsone (a top board cause), topical/local anesthetics (benzocaine spray, prilocaine/EMLA, lidocaine), nitrites and nitrates (amyl nitrite 'poppers', well-water nitrates in infants, nitroglycerin/nitroprusside), sulfonamides, and aniline dyes. Infants are especially susceptible (lower NADH-cytochrome b5 reductase activity). Congenital forms: cytochrome b5 reductase deficiency (autosomal recessive enzymatic) and Hb M (autosomal dominant globin variant).</div><div class="rtt">⚠️ WRONG: 'Cyanosis in a baby on well water is congenital cyanotic heart disease.' Nitrate-contaminated well water causes acquired methemoglobinemia ('blue baby' from nitrates) — look for chocolate blood and a saturation gap before invoking a cardiac shunt.</div></div><div class="rt"><div class="rtl">5. Methylene blue treatment</div><div class="rte">Methylene blue (1–2 mg/kg IV) is first-line for symptomatic methemoglobinemia. It is reduced by NADPH-methemoglobin reductase (using NADPH generated by G6PD) to leukomethylene blue, which then non-enzymatically reduces Fe3+ back to functional Fe2+. Onset is within 30–60 minutes; redose if needed. Treat when MetHb is symptomatic or roughly &gt;20–30% (or lower with cardiopulmonary disease).</div><div class="rtt">⚠️ WRONG: 'Methylene blue directly donates electrons without needing NADPH/G6PD.' It works THROUGH the NADPH-dependent pathway (G6PD-supplied) — which is exactly why it fails and is dangerous in G6PD deficiency (next panel).</div></div><div class="rt"><div class="rtl">6. MetHb + G6PD danger</div><div class="rte">In G6PD deficiency methylene blue is BOTH ineffective and dangerous: without adequate NADPH, MB cannot be reduced to its active leukomethylene-blue form (so it doesn't reverse MetHb), and MB itself acts as an oxidant that can precipitate acute hemolysis. Use alternatives instead: high-dose ascorbic acid (vitamin C), and for severe/refractory cases exchange transfusion or hyperbaric O2.</div><div class="rtt">⚠️ WRONG: 'Methylene blue is the universal antidote for methemoglobinemia in any patient.' In G6PD deficiency it is contraindicated (ineffective + can cause hemolysis) — switch to ascorbic acid or exchange transfusion.</div></div><div class="rt"><div class="rtl">7. Sulfhemoglobin (SulfHb)</div><div class="rte">Sulfhemoglobin forms when a sulfur atom is incorporated into the heme ring (often from the same oxidant drugs — sulfonamides, dapsone, metoclopramide, phenazopyridine). The bond is IRREVERSIBLE: the affected RBC stays abnormal for its entire ~120-day lifespan. Blood is greenish/dark, cyanosis is out of proportion to the measured level (even small amounts cause visible cyanosis), and co-oximetry may overestimate MetHb unless specifically corrected.</div><div class="rtt">⚠️ WRONG: 'Greenish or dark blood with cyanosis is just methemoglobinemia.' Sulfhemoglobinemia (greenish blood) is a separate, IRREVERSIBLE dyshemoglobin — and unlike MetHb it does not respond to methylene blue.</div></div><div class="rt"><div class="rtl">8. SulfHb management</div><div class="rte">There is NO antidote for sulfhemoglobinemia. Management is to stop the offending oxidant and WAIT for normal red-cell turnover (~120 days) as new, unaffected RBCs replace the abnormal ones; transfusion can be used if the patient is symptomatic. Methylene blue is useless because the sulfur-heme modification is covalent/irreversible (contrast with MetHb, where MB works).</div><div class="rtt">⚠️ WRONG: 'Methylene blue reverses sulfhemoglobinemia like it does methemoglobinemia.' SulfHb is irreversible — MB does not work; you remove the drug and wait out the RBC lifespan.</div></div><div class="rt"><div class="rtl">9. Hb M (congenital)</div><div class="rte">Hb M is inherited (autosomal DOMINANT) methemoglobinemia from a globin mutation in the heme pocket that locks iron in the Fe3+ state. It presents as lifelong, well-tolerated cyanosis (grey-blue) with a positive family history (pedigree) and is typically asymptomatic — patients are not in distress despite looking cyanotic. Because the defect is structural (globin), it does NOT respond to methylene blue and generally needs NO treatment.</div><div class="rtt">⚠️ WRONG: 'Congenital cyanosis from Hb M should be treated urgently with methylene blue.' Hb M is a structural globin defect (not enzymatic), so MB is ineffective; it is well tolerated and requires no treatment — contrast with congenital cytochrome b5 reductase deficiency, which CAN respond to MB/ascorbic acid.</div></div><div class="rt"><div class="rtl">10. Master comparison chart</div><div class="rte">Unifying frame: COHb, MetHb, and SulfHb are dyshemoglobins that cause cyanosis/hypoxia while ABG PaO2 stays NORMAL (PaO2 reflects only dissolved O2, which these don't affect). Co-oximetry (multi-wavelength) is the key test that quantifies and distinguishes each species — ordinary 2-wavelength pulse oximetry is fooled (falsely normal in CO, plateaus ~85% in MetHb). Calculated SaO2 from PaO2 looks fine, producing a saturation gap.</div><div class="rtt">⚠️ WRONG: 'A normal ABG PaO2 means oxygen delivery is adequate.' PaO2 is normal in all dyshemoglobinemias yet tissue O2 delivery is impaired — you must measure functional saturation with co-oximetry, not infer it from PaO2.</div></div><div class="rt"><div class="rtl">11. Trap: brown blood = MetHb</div><div class="rte">Board pearl: chocolate-brown blood that does NOT turn red on exposure to air/100% O2, plus cyanosis unresponsive to oxygen and a saturation gap, equals methemoglobinemia until proven otherwise. Look for an oxidant trigger (dapsone, benzocaine, nitrites). Confirm with co-oximetry and treat with methylene blue (unless G6PD-deficient).</div><div class="rtt">⚠️ WRONG: 'Brown blood means it's old/venous and clinically meaningless.' Fresh chocolate-brown arterial blood that won't redden with O2 is a specific clue to methemoglobinemia — act on it.</div></div><div class="rt"><div class="rtl">12. Trap: false-normal SpO2 = COHb</div><div class="rte">Board pearl: a falsely NORMAL pulse-ox reading in a patient with headache, nausea, confusion, or a fire/smoke/heater exposure points to carbon monoxide poisoning — standard pulse oximetry cannot see COHb. Confirm with carboxyhemoglobin level (co-oximetry); treat with 100% O2 ± hyperbaric. Whole families/co-exposed individuals symptomatic together is a tell.</div><div class="rtt">⚠️ WRONG: 'SpO2 of 99% excludes hypoxia, so CO poisoning is off the table.' Pulse oximetry reads COHb as if it were O2Hb (falsely high) — a normal SpO2 does NOT rule out CO; measure COHb.</div></div><div class="rt"><div class="rtl">13. Trap: high-affinity → ↑Hb</div><div class="rte">Board pearl: unexplained erythrocytosis (high Hb/Hct) with a LOW P50, NORMAL SaO2, and normal/high EPO but NO JAK2 mutation suggests a high-O2-affinity hemoglobin variant. The left-shifted curve withholds O2 from tissues, driving compensatory EPO and red-cell production. It is benign and compensatory — do NOT phlebotomize as you would polycythemia vera.</div><div class="rtt">⚠️ WRONG: 'Erythrocytosis with normal SaO2 must be polycythemia vera — start phlebotomy and check JAK2.' High-affinity Hb (low P50, normal SaO2, no JAK2) is compensatory; phlebotomy worsens tissue O2 delivery.</div></div><div class="rt"><div class="rtl">14. Traps: thal mimics</div><div class="rte">Two co-inheritance pearls: (1) Iron overload (transfusion-dependent thalassemia, hemochromatosis) plus deferoxamine raises the risk of Yersinia enterocolitica infection (Yersinia is siderophilic and uses deferoxamine as a siderophore) — suspect with febrile diarrhea/sepsis. (2) Co-inherited α-thalassemia in sickle cell disease (HbSS + α-thal) reduces MCHC and lowers MCV, mildly ameliorating the sickling/hemolysis but increasing retinopathy — a microcytic SCD patient may have concurrent α-thal or iron deficiency.</div><div class="rtt">⚠️ WRONG: 'A sickle cell patient with microcytosis just has iron deficiency.' Co-inherited α-thalassemia also lowers MCV in SCD (and tempers hemolysis) — don't assume iron deficiency without checking iron studies and considering α-thal.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hgb_alpha_variants.html" title="Hemoglobinopathy — The Alpha Ladder &amp; Variant Gallery">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hgb_structure.html" title="Hemoglobinopathy — The Hemoglobin Forge">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

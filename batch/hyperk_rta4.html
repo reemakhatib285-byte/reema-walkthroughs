@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyperkalemia — Type 4 RTA (hyporeninemic hypoaldosteronism)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Type 4 = hyporenin hypoaldo</b> — WRONG answer: predicting hypokalemia, as in the other RTAs. Discriminator: type 4 is the ONLY renal tubular acidosis with HYPERkalemia, and it is the mechanistic opposite of Gitelman/Bartter (which waste K+). NAGMA + high K+ = type 4 until proven otherwise.</li><li><b>Diabetic + CKD</b> — WRONG answer: attributing this patient's hyperkalemia solely to 'CKD lowering GFR.' Discriminator: the K+ is high out of proportion to the GFR, and there is a coexisting NAGMA — that pattern is a secretory (aldosterone) defect (type 4 RTA), not simple nephron loss.</li><li><b>Low renin</b> — WRONG answer: expecting HIGH renin in this condition. Discriminator: 'hyporeninemic' is in the name — plasma renin activity is LOW. A high-renin, high-aldosterone picture points elsewhere (e.g., secondary hyperaldosteronism), and high-renin states do not cause type 4 RTA.</li><li><b>Low angiotensin II</b> — WRONG answer: thinking ACEi/ARBs are safe to continue at full dose in a hyperkalemic type 4 RTA patient. Discriminator: by further lowering angiotensin II and aldosterone, RAAS blockers aggravate the exact defect — they often must be reduced or held.</li><li><b>Low aldosterone</b> — WRONG answer: assuming aldosterone is normal because the patient isn't hypotensive or hyponatremic like Addison's. Discriminator: type 4 RTA is an ISOLATED mineralocorticoid problem with preserved cortisol/volume — patients are often euvolemic or hypertensive, unlike the volume-depleted hyponatremic Addisonian.</li><li><b>Hyperkalemia 5.5-6.5</b> — WRONG answer: ignoring why the acidosis is disproportionately mild given the chronicity. Discriminator: the hyperkalemia itself suppresses renal AMMONIAGENESIS, which limits NH4+-based acid excretion and worsens the acidosis — correcting the K+ improves ammonium handling and the acidosis.</li><li><b>Most common RTA in CKD</b> — WRONG answer: reaching for rare classic distal/proximal RTA diagnoses first. Discriminator: in an adult diabetic/CKD patient, type 4 is far more likely than type 1 or 2 — chase the common cause (and the drug list) before ordering an exhaustive RTA workup.</li><li><b>Mild NAGMA</b> — WRONG answer: expecting a HIGH anion gap or a severe acidosis. Discriminator: a wide gap or bicarbonate in the single digits argues against uncomplicated type 4 RTA — look for an additional process (lactic acidosis, ketoacidosis, advanced uremia).</li><li><b>Urine pH &lt; 5.5</b> — WRONG answer: confusing type 4 with type 1 (distal) RTA. Discriminator: type 1 distal RTA has an INABILITY to acidify (urine pH &gt; 5.5) and HYPOkalemia, whereas type 4 acidifies normally (urine pH &lt; 5.5) and is HYPERkalemic. The urine pH plus the K+ direction separates them instantly.</li><li><b>Low NH4+ excretion</b> — WRONG answer: using a positive urine anion gap to diagnose diarrhea. Discriminator: a NEGATIVE urine anion gap (high NH4+) indicates an appropriate renal response, as in diarrhea; a POSITIVE urine anion gap (low NH4+) indicates an RTA. Type 4 gives a positive urine anion gap.</li><li><b>Gordon / PHA-II</b> — WRONG answer: confusing Gordon (PHA-II) with PHA-I or with type 4 RTA. Discriminator: Gordon has HYPERTENSION + high/normal aldosterone and responds to thiazides; type 4 RTA is hypoaldosteronism. The mirror image is Gitelman syndrome (loss-of-function NCC) — low BP, hypokalemia, metabolic alkalosis.</li><li><b>RTA comparison</b> — WRONG answer: mixing up which RTAs waste vs retain potassium. Discriminator: types 1 and 2 are HYPOkalemic; only type 4 is HYPERkalemic. The single fastest exam screen: NAGMA + low K+ = type 1 or 2; NAGMA + high K+ = type 4.</li><li><b>Stop ACEi/ARB/NSAID</b> — WRONG answer: continuing an NSAID or ACEi unchanged while treating the K+ symptomatically. Discriminator: failing to address the offending drugs leaves the underlying RAAS suppression in place — drug review is the highest-yield, lowest-cost intervention before adding new agents.</li><li><b>Fludrocortisone / loop</b> — WRONG answer: giving fludrocortisone to a hypertensive, volume-overloaded type 4 RTA patient by reflex. Discriminator: fludrocortisone causes sodium/water retention and can worsen HTN and edema — in those patients favor a loop diuretic (and/or bicarbonate) over mineralocorticoid replacement.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Type 4 = hyporenin hypoaldo</div><div class="rte">Type 4 RTA is hyporeninemic hypoaldosteronism: low renin leads to low angiotensin II, then low aldosterone, impairing distal nephron K+ AND H+ secretion. The result is the unique combination of HYPERkalemia plus a mild non-anion-gap (hyperchloremic) metabolic acidosis. It is the most common RTA seen in adult clinical practice, especially in diabetics with CKD.</div><div class="rtt">⚠️ WRONG answer: predicting hypokalemia, as in the other RTAs. Discriminator: type 4 is the ONLY renal tubular acidosis with HYPERkalemia, and it is the mechanistic opposite of Gitelman/Bartter (which waste K+). NAGMA + high K+ = type 4 until proven otherwise.</div></div><div class="rt"><div class="rtl">2. Diabetic + CKD</div><div class="rte">The prototype patient is a long-standing diabetic with chronic kidney disease who presents with persistent mild hyperkalemia and a mild metabolic acidosis (the throne shows glucose ~220). Diabetic nephropathy damages the juxtaglomerular apparatus, lowering renin release; other associations include HIV, chronic interstitial nephritis, and NSAID/ACEi/ARB use.</div><div class="rtt">⚠️ WRONG answer: attributing this patient's hyperkalemia solely to 'CKD lowering GFR.' Discriminator: the K+ is high out of proportion to the GFR, and there is a coexisting NAGMA — that pattern is a secretory (aldosterone) defect (type 4 RTA), not simple nephron loss.</div></div><div class="rt"><div class="rtl">3. Low renin</div><div class="rte">The cascade starts at the top: diabetic nephropathy, aging, NSAIDs, and beta-blockers reduce renin secretion from the juxtaglomerular cells (impaired conversion of prorenin to renin in diabetes). This is the 'failed waterfall' — every downstream RAAS step is starved from here.</div><div class="rtt">⚠️ WRONG answer: expecting HIGH renin in this condition. Discriminator: 'hyporeninemic' is in the name — plasma renin activity is LOW. A high-renin, high-aldosterone picture points elsewhere (e.g., secondary hyperaldosteronism), and high-renin states do not cause type 4 RTA.</div></div><div class="rt"><div class="rtl">4. Low angiotensin II</div><div class="rte">Low renin yields low angiotensin II, removing the principal stimulus for adrenal aldosterone release. ACEi and ARBs reproduce this step pharmacologically, which is exactly why those drugs precipitate or worsen type 4 RTA / hyperkalemia in susceptible patients.</div><div class="rtt">⚠️ WRONG answer: thinking ACEi/ARBs are safe to continue at full dose in a hyperkalemic type 4 RTA patient. Discriminator: by further lowering angiotensin II and aldosterone, RAAS blockers aggravate the exact defect — they often must be reduced or held.</div></div><div class="rt"><div class="rtl">5. Low aldosterone</div><div class="rte">The end of the cascade: low aldosterone reduces ENaC activity and the lumen-negative voltage needed for distal K+ secretion (causing hyperkalemia) and reduces H+ secretion via the alpha-intercalated cell H+-ATPase (causing acidosis). Aldosterone deficiency thus produces both signature abnormalities simultaneously.</div><div class="rtt">⚠️ WRONG answer: assuming aldosterone is normal because the patient isn't hypotensive or hyponatremic like Addison's. Discriminator: type 4 RTA is an ISOLATED mineralocorticoid problem with preserved cortisol/volume — patients are often euvolemic or hypertensive, unlike the volume-depleted hyponatremic Addisonian.</div></div><div class="rt"><div class="rtl">6. Hyperkalemia 5.5-6.5</div><div class="rte">Hyperkalemia in type 4 RTA is usually MILD and chronic, typically in the 5.5–6.5 mEq/L range, and is the abnormality that often unmasks the diagnosis on routine labs. It is generally well tolerated unless an acute insult (ACEi start, AKI, K+ load) pushes it higher.</div><div class="rtt">⚠️ WRONG answer: ignoring why the acidosis is disproportionately mild given the chronicity. Discriminator: the hyperkalemia itself suppresses renal AMMONIAGENESIS, which limits NH4+-based acid excretion and worsens the acidosis — correcting the K+ improves ammonium handling and the acidosis.</div></div><div class="rt"><div class="rtl">7. Most common RTA in CKD</div><div class="rte">Type 4 RTA is the #1 cause of CHRONIC hyperkalemia in CKD, dramatically more common in clinical practice than the inherited/classic types 1 and 2. Suspect it whenever a diabetic or CKD patient has persistent mild hyperkalemia with a normal anion gap.</div><div class="rtt">⚠️ WRONG answer: reaching for rare classic distal/proximal RTA diagnoses first. Discriminator: in an adult diabetic/CKD patient, type 4 is far more likely than type 1 or 2 — chase the common cause (and the drug list) before ordering an exhaustive RTA workup.</div></div><div class="rt"><div class="rtl">8. Mild NAGMA</div><div class="rte">The acidosis is a mild non-anion-gap (hyperchloremic) metabolic acidosis, with serum bicarbonate usually only modestly reduced (often ~17–22 mEq/L, rarely severe). It results from impaired NH4+ excretion driven by aldosterone deficiency and the suppressive effect of hyperkalemia on ammoniagenesis.</div><div class="rtt">⚠️ WRONG answer: expecting a HIGH anion gap or a severe acidosis. Discriminator: a wide gap or bicarbonate in the single digits argues against uncomplicated type 4 RTA — look for an additional process (lactic acidosis, ketoacidosis, advanced uremia).</div></div><div class="rt"><div class="rtl">9. Urine pH &lt; 5.5</div><div class="rte">In type 4 RTA the distal acidification machinery is intact, so the kidney CAN still lower urine pH below 5.5 in the face of acidosis — the problem is quantitatively too little ammonium buffer, not an inability to secrete H+. This preserved acidification is the key urinary discriminator.</div><div class="rtt">⚠️ WRONG answer: confusing type 4 with type 1 (distal) RTA. Discriminator: type 1 distal RTA has an INABILITY to acidify (urine pH &gt; 5.5) and HYPOkalemia, whereas type 4 acidifies normally (urine pH &lt; 5.5) and is HYPERkalemic. The urine pH plus the K+ direction separates them instantly.</div></div><div class="rt"><div class="rtl">10. Low NH4+ excretion</div><div class="rte">Aldosterone deficiency and hyperkalemia impair renal ammoniagenesis and NH4+ excretion. Because urine NH4+ is hard to measure directly, a POSITIVE urine anion gap (Na+ + K+ − Cl−) serves as a surrogate for low NH4+ — confirming the renal (RTA) origin of a hyperchloremic acidosis rather than GI bicarbonate loss.</div><div class="rtt">⚠️ WRONG answer: using a positive urine anion gap to diagnose diarrhea. Discriminator: a NEGATIVE urine anion gap (high NH4+) indicates an appropriate renal response, as in diarrhea; a POSITIVE urine anion gap (low NH4+) indicates an RTA. Type 4 gives a positive urine anion gap.</div></div><div class="rt"><div class="rtl">11. Gordon / PHA-II</div><div class="rte">Gordon syndrome (pseudohypoaldosteronism type II, familial hyperkalemic hypertension) is a WNK-kinase defect that over-activates the thiazide-sensitive NCC cotransporter, causing increased NaCl reabsorption, volume expansion, HYPERTENSION, hyperkalemia, and a mild NAGMA — with LOW renin but normal/high aldosterone. The elegant treatment is a thiazide diuretic, which blocks the overactive transporter.</div><div class="rtt">⚠️ WRONG answer: confusing Gordon (PHA-II) with PHA-I or with type 4 RTA. Discriminator: Gordon has HYPERTENSION + high/normal aldosterone and responds to thiazides; type 4 RTA is hypoaldosteronism. The mirror image is Gitelman syndrome (loss-of-function NCC) — low BP, hypokalemia, metabolic alkalosis.</div></div><div class="rt"><div class="rtl">12. RTA comparison</div><div class="rte">Side-by-side: Type 1 (distal) — HYPOkalemia, inability to acidify (urine pH &gt; 5.5), calcium phosphate stones/nephrocalcinosis, severe acidosis, treat with bicarbonate. Type 2 (proximal) — HYPOkalemia, bicarbonate wasting with Fanconi syndrome (glucosuria, phosphaturia, aminoaciduria), urine pH variable. Type 4 — HYPERkalemia, mild NAGMA, urine pH &lt; 5.5, hypoaldosteronism.</div><div class="rtt">⚠️ WRONG answer: mixing up which RTAs waste vs retain potassium. Discriminator: types 1 and 2 are HYPOkalemic; only type 4 is HYPERkalemic. The single fastest exam screen: NAGMA + low K+ = type 1 or 2; NAGMA + high K+ = type 4.</div></div><div class="rt"><div class="rtl">13. Stop ACEi/ARB/NSAID</div><div class="rte">First-line management is to remove or reduce drugs that worsen hypoaldosteronism/hyperkalemia: ACEi, ARBs, NSAIDs, potassium-sparing diuretics (spironolactone/eplerenone/amiloride), trimethoprim, and heparin. Add dietary potassium restriction and avoid salt substitutes (which are KCl).</div><div class="rtt">⚠️ WRONG answer: continuing an NSAID or ACEi unchanged while treating the K+ symptomatically. Discriminator: failing to address the offending drugs leaves the underlying RAAS suppression in place — drug review is the highest-yield, lowest-cost intervention before adding new agents.</div></div><div class="rt"><div class="rtl">14. Fludrocortisone / loop</div><div class="rte">Definitive therapy replaces or bypasses the missing mineralocorticoid effect: fludrocortisone (a synthetic mineralocorticoid, e.g., 0.1 mg daily) restores ENaC-driven K+ and H+ secretion, while a loop or thiazide diuretic lowers K+ and helps correct the acidosis (useful when volume overload/HTN makes fludrocortisone risky). Sodium bicarbonate can be added for persistent acidosis.</div><div class="rtt">⚠️ WRONG answer: giving fludrocortisone to a hypertensive, volume-overloaded type 4 RTA patient by reflex. Discriminator: fludrocortisone causes sodium/water retention and can worsen HTN and edema — in those patients favor a loop diuretic (and/or bicarbonate) over mineralocorticoid replacement.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hypok_treatment.html" title="Hypokalemia — treatment">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperk_ecg_clinical.html" title="Hyperkalemia — clinical features &amp; ECG">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

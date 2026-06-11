@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Platelet disorders — HIT (The HIT Battlefield)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Heparin-PF4 complex</b> — Don't confuse HIT type I with type II — type I is a transient, non-immune, mild count dip in the first 1–2 days that resolves despite continued heparin and needs no action. Stopping heparin and starting a DTI for a type I dip is over-treatment; the dangerous, antibody-mediated entity is type II.</li><li><b>Prothrombotic paradox</b> — Don't treat low platelets in HIT as a bleeding problem — risk is clotting. The classic wrong answer is transfusing platelets (adds fuel for thrombosis) or simply holding anticoagulation; the correct move is to STOP heparin and START a non-heparin anticoagulant because the patient is actively prothrombotic.</li><li><b>Platelet/monocyte activation</b> — Don't expect the count to be the danger — the activated procoagulant state (thrombin generation) is. A 'reassuring' platelet count of 80–100K in a heparin patient with a new clot does not exclude HIT; the thrombosis is the alarm even when thrombocytopenia is modest.</li><li><b>4T score</b> — Don't order a PF4 ELISA in a low-probability (4Ts 0–3) patient — its low specificity yields false positives that trigger unnecessary, costly, bleeding-risk anticoagulation. Use the 4Ts to gate testing; a low score makes HIT unlikely without any assay.</li><li><b>50% platelet drop</b> — Severe &lt;20K thrombocytopenia argues against HIT — that depth suggests another cause (drug-induced immune thrombocytopenia, DIC, ITP, post-transfusion purpura). Equally, judge the drop relative to baseline, not the absolute range: a fall from 400K→150K is a &gt;50% HIT-range drop even though 150K 'looks normal.'</li><li><b>Timing 5-10 days</b> — Don't exclude HIT because a drop happened on day 1 — that's expected rapid-onset HIT if there was heparin in the last 100 days. Likewise, a drop appearing after heparin was already stopped can still be delayed-onset HIT; the recent-exposure history reframes 'wrong' timing as classic.</li><li><b>ELISA screening</b> — Don't accept a weakly positive ELISA as proof of HIT — its poor specificity over-diagnoses, especially after cardiac surgery. Use it to RULE OUT (negative excludes) and confirm true positives with the functional serotonin release assay; treating on a low-OD ELISA alone leads to unnecessary anticoagulation.</li><li><b>SRA gold standard</b> — Don't wait for the SRA before acting — it takes days and is sent out. If the 4Ts are intermediate/high, stop heparin and start a non-heparin anticoagulant immediately; treating only after SRA confirmation risks thrombosis during the delay.</li><li><b>STOP heparin</b> — Continuing/switching to LMWH does not treat HIT — LMWH cross-reacts with HIT antibodies and perpetuates the disease. The complete first step is removing every heparin source (including flushes), not down-titrating or substituting another heparin product.</li><li><b>Argatroban</b> — Don't use argatroban (hepatically cleared) in significant hepatic impairment — choose bivalirudin instead. And remember argatroban falsely elevates INR; bridging to warfarin requires a higher target INR and platelet recovery first, or you'll stop the DTI prematurely and leave the patient unprotected.</li><li><b>Bivalirudin / DOAC</b> — Don't give a DOAC to an unstable, critically ill HIT patient who may need procedures or has unreliable absorption — a titratable IV DTI (argatroban/bivalirudin) is safer acutely. DOACs are best reserved for clinically stable patients without thrombosis or once stabilized.</li><li><b>Avoid warfarin early</b> — Starting warfarin alone in acute HIT causes skin necrosis / limb gangrene — protein C falls first, deepening thrombosis. If warfarin was already inadvertently started, reverse it with vitamin K and cover with a non-heparin anticoagulant; never bridge HIT with warfarin monotherapy.</li><li><b>Anticoagulate even without clot</b> — Just stopping heparin is insufficient — must add an alternative anticoagulant. 'Isolated HIT' (thrombocytopenia without overt clot) is NOT observed without anticoagulation; the prothrombotic window means ~half will clot if untreated. Withholding anticoagulation until a clot appears is the wrong, dangerous choice.</li><li><b>Avoid heparin re-exposure</b> — Don't assume 'it was a long time ago, heparin is fine now' — re-exposure while antibodies persist (or anamnestically) triggers rapid, severe HIT. Lifelong avoidance and clear documentation are the safe default; any exception requires confirmed antibody clearance and specialist involvement.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Heparin-PF4 complex</div><div class="rte">HIT type II is an immune reaction: heparin binds platelet factor 4 (PF4) released from platelet alpha-granules, forming a heparin–PF4 complex that becomes immunogenic. IgG antibodies form against this complex (typically by days 5–10 of first exposure). Unfractionated heparin carries the highest risk (&gt;LMWH &gt; fondaparinux ≈ none) because larger, more negatively charged molecules form bigger PF4 complexes. This contrasts with benign HIT type I (mild, early, non-immune, self-resolving).</div><div class="rtt">⚠️ Don't confuse HIT type I with type II — type I is a transient, non-immune, mild count dip in the first 1–2 days that resolves despite continued heparin and needs no action. Stopping heparin and starting a DTI for a type I dip is over-treatment; the dangerous, antibody-mediated entity is type II.</div></div><div class="rt"><div class="rtl">2. Prothrombotic paradox</div><div class="rte">The defining paradox of HIT: despite a FALLING platelet count, the patient is hypercoagulable and forms clots (the antibodies activate platelets and generate thrombin). Thrombosis occurs in up to 30–50% of HIT — venous (DVT/PE, most common) more than arterial (limb ischemia, stroke, MI) — and is the main cause of morbidity/mortality. The thrombocytopenia is rarely severe enough to cause spontaneous bleeding.</div><div class="rtt">⚠️ Don't treat low platelets in HIT as a bleeding problem — risk is clotting. The classic wrong answer is transfusing platelets (adds fuel for thrombosis) or simply holding anticoagulation; the correct move is to STOP heparin and START a non-heparin anticoagulant because the patient is actively prothrombotic.</div></div><div class="rt"><div class="rtl">3. Platelet/monocyte activation</div><div class="rte">The IgG–heparin–PF4 immune complexes cross-link platelet FcγRIIa receptors, causing massive platelet activation, aggregation (consumption → thrombocytopenia), and release of procoagulant microparticles. The complexes also activate monocytes and endothelium to express tissue factor, driving a thrombin burst. This explains the simultaneous platelet drop AND thrombosis — platelets are consumed into clots, not destroyed for clearance alone.</div><div class="rtt">⚠️ Don't expect the count to be the danger — the activated procoagulant state (thrombin generation) is. A 'reassuring' platelet count of 80–100K in a heparin patient with a new clot does not exclude HIT; the thrombosis is the alarm even when thrombocytopenia is modest.</div></div><div class="rt"><div class="rtl">4. 4T score</div><div class="rte">The 4Ts score estimates pretest probability (0–2 points each, max 8): Thrombocytopenia (&gt;50% fall and nadir ≥20K = 2), Timing (onset day 5–10 or ≤1 day with recent heparin = 2), Thrombosis (new confirmed thrombosis/skin necrosis = 2), and oTher cause absent (= 2). Score 0–3 = low (HIT effectively excluded, ~&lt;5%; no need to test); 4–5 = intermediate; 6–8 = high. Intermediate/high → stop heparin, start non-heparin anticoagulant, and send immunoassay.</div><div class="rtt">⚠️ Don't order a PF4 ELISA in a low-probability (4Ts 0–3) patient — its low specificity yields false positives that trigger unnecessary, costly, bleeding-risk anticoagulation. Use the 4Ts to gate testing; a low score makes HIT unlikely without any assay.</div></div><div class="rt"><div class="rtl">5. 50% platelet drop</div><div class="rte">HIT characteristically produces a &gt;50% fall from the patient's baseline platelet count, with a typical nadir of ~50–70K (median ~60K). The drop is relative — a patient going from 400K to 150K is 'normal range' but has fallen &gt;50% and may have HIT. Counts &lt;20K are distinctly unusual for HIT and should prompt another diagnosis (DIC, other drug, post-transfusion purpura).</div><div class="rtt">⚠️ Severe &lt;20K thrombocytopenia argues against HIT — that depth suggests another cause (drug-induced immune thrombocytopenia, DIC, ITP, post-transfusion purpura). Equally, judge the drop relative to baseline, not the absolute range: a fall from 400K→150K is a &gt;50% HIT-range drop even though 150K 'looks normal.'</div></div><div class="rt"><div class="rtl">6. Timing 5-10 days</div><div class="rte">Classic HIT onset is day 5–10 after starting heparin (time to form IgG). RAPID-onset HIT occurs within hours to &lt;1 day if the patient had heparin exposure within the prior ~100 days (pre-existing antibodies). DELAYED-onset HIT can begin days to weeks after heparin is stopped. Knowing the exposure timeline is essential to fit the picture and to assign the Timing points in the 4Ts.</div><div class="rtt">⚠️ Don't exclude HIT because a drop happened on day 1 — that's expected rapid-onset HIT if there was heparin in the last 100 days. Likewise, a drop appearing after heparin was already stopped can still be delayed-onset HIT; the recent-exposure history reframes 'wrong' timing as classic.</div></div><div class="rt"><div class="rtl">7. ELISA screening</div><div class="rte">The PF4–heparin antibody immunoassay (ELISA) is the screening test: HIGH sensitivity but LOW specificity, so a negative result effectively excludes HIT but a positive must be interpreted with the optical density (OD) — higher OD = more likely true/functional HIT. Many patients (especially post-cardiac-surgery) have non-pathogenic antibodies, producing false positives. A positive ELISA with intermediate/high 4Ts should be confirmed with a functional assay.</div><div class="rtt">⚠️ Don't accept a weakly positive ELISA as proof of HIT — its poor specificity over-diagnoses, especially after cardiac surgery. Use it to RULE OUT (negative excludes) and confirm true positives with the functional serotonin release assay; treating on a low-OD ELISA alone leads to unnecessary anticoagulation.</div></div><div class="rt"><div class="rtl">8. SRA gold standard</div><div class="rte">The serotonin release assay (SRA) — a functional test showing heparin-dependent platelet activation (radiolabeled serotonin release) at therapeutic but not high heparin concentrations — is the confirmatory GOLD STANDARD with high sensitivity AND specificity. Because it is technically demanding and not rapid, it confirms the diagnosis but does NOT delay treatment: empiric management starts on clinical/4Ts grounds while the SRA is pending.</div><div class="rtt">⚠️ Don't wait for the SRA before acting — it takes days and is sent out. If the 4Ts are intermediate/high, stop heparin and start a non-heparin anticoagulant immediately; treating only after SRA confirmation risks thrombosis during the delay.</div></div><div class="rt"><div class="rtl">9. STOP heparin</div><div class="rte">First and immediate step in suspected HIT: STOP ALL heparin — IV/SC unfractionated heparin, LMWH, heparin line flushes, and heparin-bonded catheters. Stopping heparin alone, however, is insufficient because the prothrombotic state persists for days; a non-heparin anticoagulant must be added. Document the diagnosis prominently and label the chart to prevent future re-exposure.</div><div class="rtt">⚠️ Continuing/switching to LMWH does not treat HIT — LMWH cross-reacts with HIT antibodies and perpetuates the disease. The complete first step is removing every heparin source (including flushes), not down-titrating or substituting another heparin product.</div></div><div class="rt"><div class="rtl">10. Argatroban</div><div class="rte">Argatroban is a direct thrombin inhibitor (DTI) given as a continuous IV infusion, titrated to aPTT, and is hepatically cleared — making it the preferred agent in RENAL failure. Note it artificially prolongs the INR, which complicates later warfarin overlap. It is a mainstay for acute HIT anticoagulation in hospitalized/critically ill patients who need an IV, easily titratable option.</div><div class="rtt">⚠️ Don't use argatroban (hepatically cleared) in significant hepatic impairment — choose bivalirudin instead. And remember argatroban falsely elevates INR; bridging to warfarin requires a higher target INR and platelet recovery first, or you'll stop the DTI prematurely and leave the patient unprotected.</div></div><div class="rt"><div class="rtl">11. Bivalirudin / DOAC</div><div class="rte">Alternatives for HIT anticoagulation: bivalirudin (IV DTI, enzymatically/renally cleared — favored in hepatic impairment and periprocedurally), fondaparinux (SC factor Xa inhibitor, no cross-reactivity, used off-label especially in stable patients), and DOACs (rivaroxaban/apixaban) — increasingly used for clinically stable HIT and for transition/outpatient therapy. Choice depends on organ function, acuity, and need for titratability.</div><div class="rtt">⚠️ Don't give a DOAC to an unstable, critically ill HIT patient who may need procedures or has unreliable absorption — a titratable IV DTI (argatroban/bivalirudin) is safer acutely. DOACs are best reserved for clinically stable patients without thrombosis or once stabilized.</div></div><div class="rt"><div class="rtl">12. Avoid warfarin early</div><div class="rte">Do NOT start warfarin in acute HIT until platelets have recovered (typically &gt;150K) and the patient is on a therapeutic non-heparin anticoagulant. Warfarin acutely depletes protein C (short half-life) before depleting the prothrombotic factors, transiently worsening the hypercoagulable state and risking venous limb gangrene and warfarin skin necrosis. When started, overlap with the DTI for ≥5 days and until INR is therapeutic.</div><div class="rtt">⚠️ Starting warfarin alone in acute HIT causes skin necrosis / limb gangrene — protein C falls first, deepening thrombosis. If warfarin was already inadvertently started, reverse it with vitamin K and cover with a non-heparin anticoagulant; never bridge HIT with warfarin monotherapy.</div></div><div class="rt"><div class="rtl">13. Anticoagulate even without clot</div><div class="rte">ALL HIT patients need therapeutic non-heparin anticoagulation, even with no clot detected, because thrombotic risk persists for weeks. If no thrombosis is found, screen (e.g., lower-extremity Doppler) and continue anticoagulation for ~4 weeks (until platelets recover and antibodies wane); if thrombosis IS present (HITT), treat for at least 3 months. The clinical entity, not just the lab, drives the duration.</div><div class="rtt">⚠️ Just stopping heparin is insufficient — must add an alternative anticoagulant. 'Isolated HIT' (thrombocytopenia without overt clot) is NOT observed without anticoagulation; the prothrombotic window means ~half will clot if untreated. Withholding anticoagulation until a clot appears is the wrong, dangerous choice.</div></div><div class="rt"><div class="rtl">14. Avoid heparin re-exposure</div><div class="rte">Document HIT prominently as an allergy/adverse reaction and avoid all future heparin exposure given cross-reactivity and the risk of rapid-onset HIT on re-challenge. HIT antibodies are typically transient (wane over ~3 months); in rare unavoidable situations (e.g., cardiac surgery) where antibodies have cleared and SRA is negative, a single intraoperative heparin dose may be considered by specialists — otherwise use a non-heparin alternative.</div><div class="rtt">⚠️ Don't assume 'it was a long time ago, heparin is fine now' — re-exposure while antibodies persist (or anamnestically) triggers rapid, severe HIT. Lifelong avoidance and clear documentation are the safe default; any exception requires confirmed antibody clearance and specialist involvement.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="plt_hit_1.html" title="Platelet disorders — Drug-induced thrombocytopenia &amp; HIT (part 1)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="plt_hus.html" title="Platelet disorders — HUS (The HUS Battlefield)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

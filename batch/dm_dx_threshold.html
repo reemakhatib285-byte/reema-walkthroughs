@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">DM — Scene 1 — DM Pathophys &amp; Dx: The Diagnostic Threshold Crossing</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Lighthouse SCREEN</b> — WRONG: 'Only screen patients with symptoms (polyuria/polydipsia).' Most T2DM is asymptomatic for years; the whole point of screening is to catch it before symptoms. Also WRONG: the old age-45 cutoff — ADA lowered it to 35 in 2022. Discriminator: screening is age/risk-driven, not symptom-driven.</li><li><b>Risk factors banner</b> — WRONG: 'A patient with PCOS and acanthosis nigricans at age 28 with normal weight does not need screening yet.' Acanthosis and PCOS are insulin-resistance markers — screen regardless of the age-35 rule. Discriminator: risk factors OVERRIDE the age threshold.</li><li><b>Special-population sign</b> — WRONG: 'Order an A1c to screen the CF patient / post-transplant patient.' A1c is unreliable here and falsely reassuring. Discriminator: when chronicity is short (new transplant) or glycation is altered (CF), the OGTT — not A1c — is correct.</li><li><b>RANDOM &gt;=200 + symptoms</b> — WRONG: 'Every DM diagnosis must be confirmed on a second day.' False — a symptomatic random glucose &gt;=200 stands alone. Discriminator: symptoms + random &gt;=200 = diagnose now; asymptomatic abnormal value = repeat to confirm.</li><li><b>A1c &lt; 5.7% (Normal)</b> — WRONG: 'A normal A1c rules out diabetes in a patient with anemia.' A1c can be falsely low (normal) with shortened RBC survival. Discriminator: a normal A1c is only trustworthy when RBC turnover is normal.</li><li><b>A1c 5.7-6.4% (Prediabetes)</b> — WRONG: 'Start a sulfonylurea / start insulin for prediabetes.' Lifestyle is first-line; metformin is the only drug recommended, and only for high-risk subsets. Discriminator: prediabetes = lifestyle +/- metformin, never insulin/SU.</li><li><b>A1c &gt;= 6.5% (DM)</b> — WRONG: 'A single A1c of 6.6% in an asymptomatic patient diagnoses DM.' One abnormal asymptomatic value is NOT enough — repeat to confirm. Discriminator: asymptomatic requires confirmation; symptomatic random &gt;=200 does not.</li><li><b>FPG fasting &gt;=8h plank</b> — WRONG: 'A non-fasting glucose of 130 diagnoses DM by the FPG criterion.' The 126 cutoff applies ONLY to a true &gt;=8h fasting sample. Discriminator: a random 130 is not diagnostic (need &gt;=200 + symptoms, or a fasting &gt;=126).</li><li><b>2-h OGTT 75g load</b> — WRONG: 'A1c is the most sensitive test for early diabetes.' The 2-h OGTT detects the earliest (post-load) abnormalities and is the most sensitive. Discriminator: OGTT &gt; FPG &gt; A1c for sensitivity; A1c wins on convenience, not sensitivity.</li><li><b>Confirm on separate day</b> — WRONG: 'Diagnose DM from one elevated FPG in an asymptomatic screening patient.' Confirmation is required. Discriminator: asymptomatic = confirm; symptomatic crisis/random &gt;=200 = no confirmation.</li><li><b>A1c UNRELIABLE list</b> — WRONG: 'Use A1c to manage the dialysis patient / patient on EPO / patient with sickle cell.' These falsify A1c (usually falsely low in high-turnover states). Discriminator: altered RBC turnover = abandon A1c, use FPG/OGTT/fructosamine.</li><li><b>STOP — A1c limitations</b> — WRONG: 'Trust a normal A1c in a patient with a known hemoglobinopathy.' The assay is invalid; a normal value does not exclude DM. Discriminator: in any A1c-unreliable state, the absence of an elevated A1c proves nothing.</li><li><b>Use FPG/OGTT/fructosamine</b> — WRONG: 'Order another A1c in 3 months to monitor a dialysis patient.' Repeat A1c stays unreliable. Discriminator: substitute fructosamine (or glucose monitoring), not a repeat A1c.</li><li><b>Classic symptoms patient</b> — WRONG: 'Weight gain is a classic presenting symptom of new hyperglycemia.' New marked hyperglycemia causes weight LOSS (calorie loss via glucosuria + catabolism). Discriminator: weight loss with polyuria/polydipsia points to new DM (especially T1DM), not weight gain.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Lighthouse SCREEN</div><div class="rte">ADA recommends universal screening for type 2 DM starting at age 35, repeated every 3 years if normal. Screen EARLIER (any age) if overweight/obese — BMI &gt;=25 (&gt;=23 in Asian Americans, who develop insulin resistance at lower BMI) PLUS one risk factor. Once prediabetes is found, screen annually. Test of choice: A1c, FPG, or 2-h OGTT — any one is acceptable. Mnemonic: '35 every 3.'</div><div class="rtt">⚠️ WRONG: 'Only screen patients with symptoms (polyuria/polydipsia).' Most T2DM is asymptomatic for years; the whole point of screening is to catch it before symptoms. Also WRONG: the old age-45 cutoff — ADA lowered it to 35 in 2022. Discriminator: screening is age/risk-driven, not symptom-driven.</div></div><div class="rt"><div class="rtl">2. Risk factors banner</div><div class="rte">Any one risk factor in an overweight patient mandates screening before age 35: first-degree relative with DM, HTN (&gt;=130/80), dyslipidemia (HDL &lt;35 or TG &gt;250), prior gestational DM, PCOS, physical inactivity, CVD, or acanthosis nigricans (a visible sign of severe insulin resistance). Women with prior GDM need lifelong q1-3y screening. High-risk ethnicity (Black, Hispanic, Native American, Asian, Pacific Islander) also counts.</div><div class="rtt">⚠️ WRONG: 'A patient with PCOS and acanthosis nigricans at age 28 with normal weight does not need screening yet.' Acanthosis and PCOS are insulin-resistance markers — screen regardless of the age-35 rule. Discriminator: risk factors OVERRIDE the age threshold.</div></div><div class="rt"><div class="rtl">3. Special-population sign</div><div class="rte">Two populations are screened with OGTT, NOT A1c: cystic fibrosis-related diabetes (annual OGTT from age 10) and post-transplant diabetes (NODAT). In CF, A1c is falsely low from altered glycation/RBC turnover; in transplant patients, steroids/calcineurin inhibitors (tacrolimus) cause hyperglycemia that A1c underestimates early. OGTT is the most sensitive test and catches disease A1c/FPG miss.</div><div class="rtt">⚠️ WRONG: 'Order an A1c to screen the CF patient / post-transplant patient.' A1c is unreliable here and falsely reassuring. Discriminator: when chronicity is short (new transplant) or glycation is altered (CF), the OGTT — not A1c — is correct.</div></div><div class="rt"><div class="rtl">4. RANDOM &gt;=200 + symptoms</div><div class="rte">A random (non-fasting) plasma glucose &gt;=200 mg/dL in a patient with classic hyperglycemic symptoms (polyuria, polydipsia, weight loss) OR in hyperglycemic crisis is diagnostic of DM on a SINGLE test — no confirmatory repeat needed. This is the one scenario where one value seals the diagnosis. All other (asymptomatic) abnormal tests require confirmation.</div><div class="rtt">⚠️ WRONG: 'Every DM diagnosis must be confirmed on a second day.' False — a symptomatic random glucose &gt;=200 stands alone. Discriminator: symptoms + random &gt;=200 = diagnose now; asymptomatic abnormal value = repeat to confirm.</div></div><div class="rt"><div class="rtl">5. A1c &lt; 5.7% (Normal)</div><div class="rte">A1c &lt; 5.7% = normal glucose tolerance. A1c reflects average glycemia over ~3 months (lifespan of RBC); it correlates with mean glucose (A1c 6% ~= 126 mg/dL, each 1% ~= 28-29 mg/dL). No fasting required, low day-to-day variability — its main practical advantage.</div><div class="rtt">⚠️ WRONG: 'A normal A1c rules out diabetes in a patient with anemia.' A1c can be falsely low (normal) with shortened RBC survival. Discriminator: a normal A1c is only trustworthy when RBC turnover is normal.</div></div><div class="rt"><div class="rtl">6. A1c 5.7-6.4% (Prediabetes)</div><div class="rte">A1c 5.7-6.4% = prediabetes. These patients have ~5-10%/yr conversion to overt DM and elevated CV risk. Management: intensive lifestyle (7% weight loss, 150 min/wk exercise) cuts progression ~58%; metformin is added for highest-risk (BMI &gt;=35, age &lt;60, prior GDM, A1c &gt;=6.0%). Prediabetes thresholds: A1c 5.7-6.4, FPG 100-125 (IFG), 2-h OGTT 140-199 (IGT).</div><div class="rtt">⚠️ WRONG: 'Start a sulfonylurea / start insulin for prediabetes.' Lifestyle is first-line; metformin is the only drug recommended, and only for high-risk subsets. Discriminator: prediabetes = lifestyle +/- metformin, never insulin/SU.</div></div><div class="rt"><div class="rtl">7. A1c &gt;= 6.5% (DM)</div><div class="rte">A1c &gt;= 6.5% diagnoses diabetes. Must be a standardized/NGSP-certified DCCT-aligned assay. If the patient is asymptomatic, confirm with a repeat A1c &gt;=6.5 (or a second different test that is also in the diabetic range) on a separate occasion. A1c &gt;=6.5 and FPG &gt;=126 are independent qualifying criteria — meeting either twice (or two different tests once each) confirms DM.</div><div class="rtt">⚠️ WRONG: 'A single A1c of 6.6% in an asymptomatic patient diagnoses DM.' One abnormal asymptomatic value is NOT enough — repeat to confirm. Discriminator: asymptomatic requires confirmation; symptomatic random &gt;=200 does not.</div></div><div class="rt"><div class="rtl">8. FPG fasting &gt;=8h plank</div><div class="rte">Fasting plasma glucose requires &gt;=8 hours no caloric intake. Cutoffs: &lt;100 normal, 100-125 = impaired fasting glucose (prediabetes), &gt;=126 mg/dL = diabetes. FPG mainly reflects hepatic glucose output/basal insulin. Cheap and widely used but has more day-to-day variability than A1c and requires fasting.</div><div class="rtt">⚠️ WRONG: 'A non-fasting glucose of 130 diagnoses DM by the FPG criterion.' The 126 cutoff applies ONLY to a true &gt;=8h fasting sample. Discriminator: a random 130 is not diagnostic (need &gt;=200 + symptoms, or a fasting &gt;=126).</div></div><div class="rt"><div class="rtl">9. 2-h OGTT 75g load</div><div class="rte">75g oral glucose tolerance test, glucose measured at 2 hours: &lt;140 normal, 140-199 = impaired glucose tolerance (prediabetes), &gt;=200 mg/dL = diabetes. Most SENSITIVE of the three tests — catches early DM that FPG/A1c miss (post-prandial defect). Standard for gestational DM screening and for CF/post-transplant. Note GDM uses different (lower) thresholds.</div><div class="rtt">⚠️ WRONG: 'A1c is the most sensitive test for early diabetes.' The 2-h OGTT detects the earliest (post-load) abnormalities and is the most sensitive. Discriminator: OGTT &gt; FPG &gt; A1c for sensitivity; A1c wins on convenience, not sensitivity.</div></div><div class="rt"><div class="rtl">10. Confirm on separate day</div><div class="rte">In an ASYMPTOMATIC patient, a single abnormal test must be confirmed by repeating the same test, or by a second different test, that again falls in the diabetic range — ideally a new sample. Exception: if two DIFFERENT tests from the SAME draw are both diagnostic, that confirms DM without a second visit. If two tests are discordant, repeat the one that was abnormal.</div><div class="rtt">⚠️ WRONG: 'Diagnose DM from one elevated FPG in an asymptomatic screening patient.' Confirmation is required. Discriminator: asymptomatic = confirm; symptomatic crisis/random &gt;=200 = no confirmation.</div></div><div class="rt"><div class="rtl">11. A1c UNRELIABLE list</div><div class="rte">A1c is unreliable whenever RBC lifespan or hemoglobin glycation is abnormal. FALSELY LOW: anything shortening RBC survival or increasing young cells — hemolytic anemia, acute blood loss, recent transfusion, EPO therapy, reticulocytosis, pregnancy, ESRD/hemodialysis. FALSELY HIGH: iron/B12 deficiency anemia (older RBCs), splenectomy, alcoholism. Hemoglobinopathies (HbS, HbC) interfere with the assay either way.</div><div class="rtt">⚠️ WRONG: 'Use A1c to manage the dialysis patient / patient on EPO / patient with sickle cell.' These falsify A1c (usually falsely low in high-turnover states). Discriminator: altered RBC turnover = abandon A1c, use FPG/OGTT/fructosamine.</div></div><div class="rt"><div class="rtl">12. STOP — A1c limitations</div><div class="rte">STOP: when any condition altering RBC turnover or hemoglobin is present, do NOT use A1c to diagnose OR to monitor — it will mislead in both directions. Recognize the falsely-normal A1c trap: a hemolytic-anemia patient with true hyperglycemia can show a deceptively normal A1c. Switch to glucose-based testing immediately.</div><div class="rtt">⚠️ WRONG: 'Trust a normal A1c in a patient with a known hemoglobinopathy.' The assay is invalid; a normal value does not exclude DM. Discriminator: in any A1c-unreliable state, the absence of an elevated A1c proves nothing.</div></div><div class="rt"><div class="rtl">13. Use FPG/OGTT/fructosamine</div><div class="rte">When A1c is invalid, diagnose/monitor with FPG, OGTT, or fructosamine. Fructosamine reflects glycated serum proteins (mainly albumin) over the prior ~2-3 weeks — independent of RBC turnover, so it is the go-to in hemolysis, recent transfusion, or pregnancy. (Caveat: fructosamine is itself falsely low in hypoalbuminemia/protein-losing states.) For diagnosis specifically, OGTT/FPG are the validated tools.</div><div class="rtt">⚠️ WRONG: 'Order another A1c in 3 months to monitor a dialysis patient.' Repeat A1c stays unreliable. Discriminator: substitute fructosamine (or glucose monitoring), not a repeat A1c.</div></div><div class="rt"><div class="rtl">14. Classic symptoms patient</div><div class="rte">Classic hyperglycemia symptoms = the 3 P's plus more: polyuria and nocturia (osmotic diuresis once glucose exceeds the renal threshold ~180 mg/dL → glucosuria), polydipsia (compensating water loss), unexplained weight loss (catabolism/glycosuric calorie loss — prominent in T1DM/DKA), blurry vision (osmotic lens swelling), fatigue, and recurrent infections (candidiasis). Symptoms + random glucose &gt;=200 = diagnostic without confirmation.</div><div class="rtt">⚠️ WRONG: 'Weight gain is a classic presenting symptom of new hyperglycemia.' New marked hyperglycemia causes weight LOSS (calorie loss via glucosuria + catabolism). Discriminator: weight loss with polyuria/polydipsia points to new DM (especially T1DM), not weight gain.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_hyperglycemic_crisis.html" title="DM — Scene 1 — Acute Hyperglycemic Crisis: DKA vs HHS Diagnosis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_pharm_liver_pancreas.html" title="DM — Scene 1 — Diabetes Pharmacology: The Liver-Pancreas Workshop">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyperkalemia — drugs (the saboteur workshop)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>3 lanes of drugs</b> — WRONG answer = assume every drug-induced hyperkalemia is from an ACEi/ARB. Map the drug to its lane (RAAS vs MR vs ENaC vs shift) — and remember risk multiplies when agents from different lanes are combined, especially in CKD or diabetes.</li><li><b>ACE inhibitors</b> — WRONG answer = stop an ACEi permanently for a small, expected creatinine rise (&lt;30%) without checking potassium. In proteinuric CKD the renoprotective benefit is worth tolerating mild Cr/K+ rises; severe or progressive hyperkalemia, however, does warrant dose reduction/discontinuation.</li><li><b>ARBs</b> — WRONG answer = switch an ACEi to an ARB to avoid hyperkalemia. The hyperkalemia risk is essentially the SAME because both reduce aldosterone; ARBs only fix the bradykinin-related cough/angioedema, not the potassium. Never combine an ACEi WITH an ARB (additive hyperkalemia/AKI, no benefit).</li><li><b>Renin inhibitor</b> — WRONG answer = add aliskiren to an ACEi or ARB in a diabetic/CKD patient. The ALTITUDE trial showed dual RAAS blockade with aliskiren caused excess hyperkalemia, hypotension, and renal events — it is contraindicated in diabetes with an ACEi/ARB.</li><li><b>NSAIDs</b> — WRONG answer = overlook OTC NSAIDs as a hyperkalemia (and HTN/AKI) cause. NSAIDs act like a functional RAAS blocker; in a patient already on an ACEi + diuretic, adding an NSAID forms the dangerous 'triple whammy' (ACEi/ARB + diuretic + NSAID → AKI and hyperkalemia).</li><li><b>Heparin / LMWH</b> — WRONG answer = exclude heparin as a cause because 'it's just an anticoagulant' or because the dose is low. Heparin blocks aldosterone DIRECTLY at the adrenal (not at a receptor) and can cause hyperkalemia at any dose — a classic, easily missed cause in hospitalized patients.</li><li><b>Spironolactone</b> — WRONG answer = combine spironolactone with an ACEi/ARB in a patient with CKD or diabetes without close monitoring. This is a high-risk combination for severe hyperkalemia. Spironolactone's non-selective action also causes gynecomastia — switch to eplerenone if that occurs.</li><li><b>Eplerenone</b> — WRONG answer = assume eplerenone is 'safer' for potassium because it is selective. Selectivity only spares the sex-hormone side effects; the hyperkalemia risk is comparable to spironolactone and still requires K+ monitoring.</li><li><b>Drospirenone</b> — WRONG answer = forget the OCP when evaluating hyperkalemia in a young woman, especially if she is also on an ACEi/ARB, NSAID, or K-sparing diuretic. Drospirenone-containing pills carry a label caution about combining with potassium-raising drugs.</li><li><b>Amiloride/triamterene</b> — WRONG answer = treat amiloride-induced hyperkalemia with fludrocortisone. ENaC blockade is downstream of aldosterone, so giving more mineralocorticoid won't help — stop the drug. Note: amiloride/triamterene block the channel directly (vs spironolactone, which blocks the receptor).</li><li><b>Trimethoprim</b> — WRONG answer = miss TMP-SMX as the cause of new hyperkalemia in a patient treated for a UTI, cellulitis, or PCP. Trimethoprim is a classic, frequently tested ENaC blocker — think of it (and pentamidine) whenever an HIV/PCP patient becomes hyperkalemic.</li><li><b>Pentamidine</b> — WRONG answer = assume an HIV patient's hyperkalemia is only from their renal disease while overlooking pentamidine (or TMP-SMX). Both ENaC-blocking antimicrobials are common culprits in this exact population.</li><li><b>Calcineurin inhibitors</b> — WRONG answer = attribute a transplant patient's hyperkalemia solely to allograft dysfunction. CNIs directly impair distal K+ handling even with adequate graft function; review tacrolimus/cyclosporine levels and co-prescribed RAAS/ENaC blockers.</li><li><b>Deadly combos</b> — WRONG answer = add a second potassium-raising drug from a different lane without rechecking potassium and renal function. Always reconcile the full medication list (including OTC NSAIDs and OCPs) — combinations from different lanes are additive and are the most common cause of severe drug-induced hyperkalemia.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. 3 lanes of drugs</div><div class="rte">Drugs cause hyperkalemia along three mechanistic lanes that all converge on impaired distal K+ secretion: (1) RAAS BLOCKADE (less aldosterone is made), (2) ALDOSTERONE-RECEPTOR (mineralocorticoid receptor) blockade, and (3) ENaC blockade in the collecting duct. A few additional drugs cause a transcellular SHIFT (beta-blockers, digoxin).</div><div class="rtt">⚠️ WRONG answer = assume every drug-induced hyperkalemia is from an ACEi/ARB. Map the drug to its lane (RAAS vs MR vs ENaC vs shift) — and remember risk multiplies when agents from different lanes are combined, especially in CKD or diabetes.</div></div><div class="rt"><div class="rtl">2. ACE inhibitors</div><div class="rte">ACE inhibitors (-pril) block angiotensin-converting enzyme → less angiotensin II → less aldosterone → reduced distal K+ secretion → hyperkalemia. Risk is highest in CKD, diabetes, volume depletion, or when combined with other RAAS/ENaC blockers. Monitor K+ and creatinine ~1–2 weeks after starting or uptitrating.</div><div class="rtt">⚠️ WRONG answer = stop an ACEi permanently for a small, expected creatinine rise (&lt;30%) without checking potassium. In proteinuric CKD the renoprotective benefit is worth tolerating mild Cr/K+ rises; severe or progressive hyperkalemia, however, does warrant dose reduction/discontinuation.</div></div><div class="rt"><div class="rtl">3. ARBs</div><div class="rte">ARBs (-sartan) block the angiotensin II type-1 (AT1) receptor → less aldosterone → hyperkalemia. Same downstream effect as ACEi but without bradykinin accumulation (so no cough/angioedema risk).</div><div class="rtt">⚠️ WRONG answer = switch an ACEi to an ARB to avoid hyperkalemia. The hyperkalemia risk is essentially the SAME because both reduce aldosterone; ARBs only fix the bradykinin-related cough/angioedema, not the potassium. Never combine an ACEi WITH an ARB (additive hyperkalemia/AKI, no benefit).</div></div><div class="rt"><div class="rtl">4. Renin inhibitor</div><div class="rte">Direct renin inhibitor (aliskiren) blocks renin at the top of the RAAS cascade → less angiotensin II and aldosterone → hyperkalemia.</div><div class="rtt">⚠️ WRONG answer = add aliskiren to an ACEi or ARB in a diabetic/CKD patient. The ALTITUDE trial showed dual RAAS blockade with aliskiren caused excess hyperkalemia, hypotension, and renal events — it is contraindicated in diabetes with an ACEi/ARB.</div></div><div class="rt"><div class="rtl">5. NSAIDs</div><div class="rte">NSAIDs inhibit prostaglandin (PGE2) synthesis. PGE2 normally stimulates renin, so blocking it → low renin → low aldosterone (hyporeninemic hypoaldosteronism) → hyperkalemia. NSAIDs also reduce renal blood flow/GFR, compounding the effect.</div><div class="rtt">⚠️ WRONG answer = overlook OTC NSAIDs as a hyperkalemia (and HTN/AKI) cause. NSAIDs act like a functional RAAS blocker; in a patient already on an ACEi + diuretic, adding an NSAID forms the dangerous 'triple whammy' (ACEi/ARB + diuretic + NSAID → AKI and hyperkalemia).</div></div><div class="rt"><div class="rtl">6. Heparin / LMWH</div><div class="rte">Heparin (unfractionated and LMWH) directly inhibits aldosterone synthesis in the adrenal zona glomerulosa (reduces angiotensin-II receptor number and inhibits the final synthetic steps) → hyperkalemia, even at prophylactic doses and within days.</div><div class="rtt">⚠️ WRONG answer = exclude heparin as a cause because 'it's just an anticoagulant' or because the dose is low. Heparin blocks aldosterone DIRECTLY at the adrenal (not at a receptor) and can cause hyperkalemia at any dose — a classic, easily missed cause in hospitalized patients.</div></div><div class="rt"><div class="rtl">7. Spironolactone</div><div class="rte">Spironolactone is a non-selective mineralocorticoid (aldosterone) receptor antagonist in the collecting duct → blocks aldosterone action → K+-sparing → hyperkalemia. Used in HFrEF (RALES), resistant HTN (PATHWAY-2), primary aldosteronism, and cirrhotic ascites.</div><div class="rtt">⚠️ WRONG answer = combine spironolactone with an ACEi/ARB in a patient with CKD or diabetes without close monitoring. This is a high-risk combination for severe hyperkalemia. Spironolactone's non-selective action also causes gynecomastia — switch to eplerenone if that occurs.</div></div><div class="rt"><div class="rtl">8. Eplerenone</div><div class="rte">Eplerenone is a SELECTIVE mineralocorticoid receptor antagonist → blocks aldosterone with far fewer antiandrogen/progestin side effects (less gynecomastia) than spironolactone, but the same hyperkalemia risk.</div><div class="rtt">⚠️ WRONG answer = assume eplerenone is 'safer' for potassium because it is selective. Selectivity only spares the sex-hormone side effects; the hyperkalemia risk is comparable to spironolactone and still requires K+ monitoring.</div></div><div class="rt"><div class="rtl">9. Drospirenone</div><div class="rte">Drospirenone (the progestin in some combined oral contraceptives, e.g. Yaz/Yasmin) has antimineralocorticoid (spironolactone-like) activity → can raise serum K+.</div><div class="rtt">⚠️ WRONG answer = forget the OCP when evaluating hyperkalemia in a young woman, especially if she is also on an ACEi/ARB, NSAID, or K-sparing diuretic. Drospirenone-containing pills carry a label caution about combining with potassium-raising drugs.</div></div><div class="rt"><div class="rtl">10. Amiloride/triamterene</div><div class="rte">Amiloride and triamterene are K+-sparing diuretics that directly block the epithelial sodium channel (ENaC) in the collecting duct principal cells. Blocking Na+ reabsorption removes the favorable lumen-negative gradient that drives K+ secretion → hyperkalemia. They act independently of aldosterone (unlike spironolactone).</div><div class="rtt">⚠️ WRONG answer = treat amiloride-induced hyperkalemia with fludrocortisone. ENaC blockade is downstream of aldosterone, so giving more mineralocorticoid won't help — stop the drug. Note: amiloride/triamterene block the channel directly (vs spironolactone, which blocks the receptor).</div></div><div class="rt"><div class="rtl">11. Trimethoprim</div><div class="rte">Trimethoprim (in TMP-SMX/Bactrim) blocks ENaC exactly like amiloride → hyperkalemia, especially at high doses (PCP treatment), in CKD, or with other RAAS/K-sparing agents. Effect appears within days of starting.</div><div class="rtt">⚠️ WRONG answer = miss TMP-SMX as the cause of new hyperkalemia in a patient treated for a UTI, cellulitis, or PCP. Trimethoprim is a classic, frequently tested ENaC blocker — think of it (and pentamidine) whenever an HIV/PCP patient becomes hyperkalemic.</div></div><div class="rt"><div class="rtl">12. Pentamidine</div><div class="rte">Pentamidine (used for PCP prophylaxis/treatment when TMP-SMX cannot be used) blocks ENaC like amiloride → hyperkalemia. Classic in the HIV/PCP context; also causes nephrotoxicity and hypoglycemia.</div><div class="rtt">⚠️ WRONG answer = assume an HIV patient's hyperkalemia is only from their renal disease while overlooking pentamidine (or TMP-SMX). Both ENaC-blocking antimicrobials are common culprits in this exact population.</div></div><div class="rt"><div class="rtl">13. Calcineurin inhibitors</div><div class="rte">Calcineurin inhibitors (cyclosporine, tacrolimus) cause hyperkalemia by multiple distal mechanisms: they impair aldosterone responsiveness, downregulate ENaC and the Na-K-ATPase, and can produce a type-4-RTA-like state — a common problem in transplant recipients.</div><div class="rtt">⚠️ WRONG answer = attribute a transplant patient's hyperkalemia solely to allograft dysfunction. CNIs directly impair distal K+ handling even with adequate graft function; review tacrolimus/cyclosporine levels and co-prescribed RAAS/ENaC blockers.</div></div><div class="rt"><div class="rtl">14. Deadly combos</div><div class="rte">High-risk drug combinations that multiply hyperkalemia risk: ACEi/ARB + spironolactone; ACEi/ARB + NSAID (+ diuretic = the 'triple whammy' for AKI); and TMP-SMX + a K-sparing diuretic or RAAS blocker. Risk compounds further in CKD, diabetes, and the elderly.</div><div class="rtt">⚠️ WRONG answer = add a second potassium-raising drug from a different lane without rechecking potassium and renal function. Always reconcile the full medication list (including OTC NSAIDs and OCPs) — combinations from different lanes are additive and are the most common cause of severe drug-induced hyperkalemia.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperk_diagnosis.html" title="Hyperkalemia — diagnosis (staircase algorithm)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperk_intake_load.html" title="Hyperkalemia — excess intake &amp; load">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The PHPT Surgery Decision Tree</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Asymptomatic ≠ observe banner</b> — A board case shows an asymptomatic patient with PHPT and a T-score of -2.8, then offers 'observe with annual labs since she has no symptoms' — WRONG. Asymptomatic PHPT still requires surgery if any criterion is met; this T-score below -2.5 alone is an operative indication. The discriminator: screen for ALL objective criteria, not just symptoms.</li><li><b>'50-1-2.5 stones kidneys' mnemonic</b> — A case lists a 24-hr urine calcium of 320 mg and asks if that alone justifies surgery — WRONG, that's below the 400 mg/day threshold. Conversely &gt;400 mg/day with stone risk IS a criterion in many guideline versions. The discriminator: know the exact numbers (50 / 1 / 2.5 / GFR 60 / urine Ca 400); near-threshold values are deliberate distractors.</li><li><b>Any one trigger = operate</b> — A case where the patient meets only ONE criterion (e.g., age 45, otherwise normal) is dismissed as 'not enough indications, needs at least two to operate' — WRONG. A single criterion suffices. The discriminator: the rule is ANY-one, so do not require multiple positives before referring.</li><li><b>Age &lt; 50</b> — A 45-year-old with mild asymptomatic PHPT and otherwise normal labs is offered 'monitor, she's too young and low-risk for surgery' — WRONG. Young age is itself an indication BECAUSE of the long exposure ahead, not a reason to defer. The discriminator: age &lt;50 = operate, age &gt;50 with no other criteria = can monitor.</li><li><b>Ca &gt;1 mg/dL above ULN</b> — A patient with calcium 11.2 (ULN 10.5) is called 'meets the surgical calcium criterion' — WRONG; that's only 0.7 above ULN, under the &gt;1.0 threshold. The discriminator: it is &gt;1.0 mg/dL ABOVE the upper limit (not just any value above normal); compute the exact difference against that patient's lab ULN.</li><li><b>T-score &lt; -2.5 (DEXA)</b> — A PHPT patient has normal spine and hip DEXA, the forearm is not scanned, and they are labeled 'no bone indication for surgery' — WRONG/incomplete. PHPT hits cortical bone (distal radius) first, so omitting the forearm can miss osteoporosis. The discriminator: always include the distal 1/3 radius on DEXA in PHPT; spine/hip alone can be falsely reassuring.</li><li><b>eGFR &lt; 60</b> — A PHPT patient with eGFR 55 is told 'kidney function is fine, no renal indication' — WRONG; &lt;60 is below the threshold and is itself an operative criterion. The discriminator: the renal cutoff is eGFR 60 (not 30 or 45); an eGFR in the 50s already qualifies.</li><li><b>Stones / nephrocalcinosis</b> — An asymptomatic PHPT patient with a 4 mm renal stone seen incidentally on CT is dismissed because 'he's never had renal colic' — WRONG. Silent stones or nephrocalcinosis on imaging count as a surgical criterion regardless of symptoms. The discriminator: imaging-detected stones qualify; absence of colic does not exclude the indication.</li><li><b>Parathyroidectomy = definitive (OR)</b> — A surgically eligible PHPT patient is offered 'lifelong cinacalcet' as equivalent definitive treatment — WRONG. Medical therapy only controls calcium or protects bone; it never cures. The discriminator: if criteria are met and the patient can tolerate surgery, parathyroidectomy is the answer; medical therapy is reserved for those who decline or are not operative candidates.</li><li><b>Cortical bone sites (radius/hip/spine)</b> — A PHPT patient with a normal spine T-score is reassured their bones are protected — WRONG, because PHPT spares trabecular spine relatively while eroding cortical radius. The discriminator: in PHPT the radius (cortical) is the canary, not the spine (trabecular); a normal spine does not rule out PHPT bone disease.</li><li><b>No criteria = monitor</b> — An asymptomatic PHPT patient who meets no criteria is pushed to surgery 'just to be safe' — WRONG/overtreatment. With no criteria met, guideline-concordant care is monitoring, not operating. The discriminator: surgery requires a met criterion (or symptoms); a fully criterion-negative patient is observed.</li><li><b>Serial monitoring panel</b> — A monitored PHPT patient skips DEXA for years because calcium has been 'stable' — WRONG. Calcium can stay flat while bone density silently declines past -2.5, which is itself an operative trigger. The discriminator: monitoring is multi-parameter (Ca + renal + DEXA); stable calcium alone does not confirm stable disease.</li><li><b>Medical options (cinacalcet / bisphosphonate)</b> — A non-operative PHPT patient with hypercalcemia is started on a bisphosphonate to bring the calcium down — WRONG. Bisphosphonates raise BMD but do not correct hypercalcemia; cinacalcet is the agent that lowers calcium. The discriminator: match the drug to the goal — calcium → cinacalcet, bone → bisphosphonate.</li><li><b>Avoid thiazides / Li (monitor side)</b> — A patient on a thiazide has calcium 10.8 and is immediately diagnosed with PHPT — WRONG/premature. Thiazides (and lithium) themselves raise calcium; you must stop the offending drug and recheck calcium and PTH before committing to a PHPT diagnosis. The discriminator: drug-induced hypercalcemia mimics PHPT — clear the meds first.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Asymptomatic ≠ observe banner</div><div class="rte">Most PHPT today is asymptomatic, found incidentally on a high calcium with an inappropriately normal/high PTH. The central teaching point: asymptomatic does NOT equal observe. Per the 2022 (4th International) Workshop guidelines, meeting ANY single objective criterion mandates referral for parathyroidectomy even without symptoms. Symptomatic disease (overt stones, fractures, neuromuscular/psychiatric symptoms) is always a surgical indication.</div><div class="rtt">⚠️ A board case shows an asymptomatic patient with PHPT and a T-score of -2.8, then offers 'observe with annual labs since she has no symptoms' — WRONG. Asymptomatic PHPT still requires surgery if any criterion is met; this T-score below -2.5 alone is an operative indication. The discriminator: screen for ALL objective criteria, not just symptoms.</div></div><div class="rt"><div class="rtl">2. '50-1-2.5 stones kidneys' mnemonic</div><div class="rte">The surgery-criteria mnemonic for asymptomatic PHPT: AGE &lt;50; calcium &gt;1.0 mg/dL above the upper limit of normal; T-score &lt; -2.5 (or vertebral fracture); plus KIDNEY findings — eGFR &lt;60, nephrolithiasis/nephrocalcinosis, or 24-hr urine calcium &gt;400 mg/day. Any single one triggers operation. Memorize 'less than 50, one above, minus 2.5, and the kidneys.'</div><div class="rtt">⚠️ A case lists a 24-hr urine calcium of 320 mg and asks if that alone justifies surgery — WRONG, that's below the 400 mg/day threshold. Conversely &gt;400 mg/day with stone risk IS a criterion in many guideline versions. The discriminator: know the exact numbers (50 / 1 / 2.5 / GFR 60 / urine Ca 400); near-threshold values are deliberate distractors.</div></div><div class="rt"><div class="rtl">3. Any one trigger = operate</div><div class="rte">The decision logic is OR, not AND: meeting any single guideline criterion is sufficient to indicate parathyroidectomy. A patient need not have all (or even two) criteria — one is enough. This reflects that even mild asymptomatic disease causes progressive bone loss, renal injury, and stone risk over time, all reversible/preventable with cure.</div><div class="rtt">⚠️ A case where the patient meets only ONE criterion (e.g., age 45, otherwise normal) is dismissed as 'not enough indications, needs at least two to operate' — WRONG. A single criterion suffices. The discriminator: the rule is ANY-one, so do not require multiple positives before referring.</div></div><div class="rt"><div class="rtl">4. Age &lt; 50</div><div class="rte">Age younger than 50 is an independent surgical criterion in asymptomatic PHPT. Younger patients have many decades of cumulative exposure to elevated calcium/PTH, so the lifetime risk of progressive bone loss, stones, and renal decline is high; cure now prevents these. In the scene the young woman (age 45) gets the green check — operate.</div><div class="rtt">⚠️ A 45-year-old with mild asymptomatic PHPT and otherwise normal labs is offered 'monitor, she's too young and low-risk for surgery' — WRONG. Young age is itself an indication BECAUSE of the long exposure ahead, not a reason to defer. The discriminator: age &lt;50 = operate, age &gt;50 with no other criteria = can monitor.</div></div><div class="rt"><div class="rtl">5. Ca &gt;1 mg/dL above ULN</div><div class="rte">Serum calcium more than 1.0 mg/dL above the upper limit of normal (e.g., ULN 10.5 → criterion at &gt;11.5 mg/dL) is a surgical indication. Use albumin-corrected or ionized calcium. The threshold is deliberately modest because even mildly elevated calcium in PHPT predicts progression; markedly high calcium also raises crisis risk.</div><div class="rtt">⚠️ A patient with calcium 11.2 (ULN 10.5) is called 'meets the surgical calcium criterion' — WRONG; that's only 0.7 above ULN, under the &gt;1.0 threshold. The discriminator: it is &gt;1.0 mg/dL ABOVE the upper limit (not just any value above normal); compute the exact difference against that patient's lab ULN.</div></div><div class="rt"><div class="rtl">6. T-score &lt; -2.5 (DEXA)</div><div class="rte">Osteoporosis by DEXA — a T-score &lt; -2.5 at ANY site (lumbar spine, hip, or distal one-third radius) — OR a prior fragility/vertebral fracture (including silent fracture on imaging) is a surgical criterion. Because PHPT preferentially erodes CORTICAL bone, the distal radius is the most sensitive site and DEXA must include the forearm.</div><div class="rtt">⚠️ A PHPT patient has normal spine and hip DEXA, the forearm is not scanned, and they are labeled 'no bone indication for surgery' — WRONG/incomplete. PHPT hits cortical bone (distal radius) first, so omitting the forearm can miss osteoporosis. The discriminator: always include the distal 1/3 radius on DEXA in PHPT; spine/hip alone can be falsely reassuring.</div></div><div class="rt"><div class="rtl">7. eGFR &lt; 60</div><div class="rte">Renal impairment with eGFR &lt;60 mL/min/1.73m2 (CKD stage 3 or worse) attributable to PHPT is a surgical criterion. Chronic hypercalcemia and hypercalciuria cause nephrocalcinosis and tubulointerstitial damage; operating may halt further decline. eGFR &lt;60 also limits some medical options (bisphosphonates) and raises secondary HPT confusion.</div><div class="rtt">⚠️ A PHPT patient with eGFR 55 is told 'kidney function is fine, no renal indication' — WRONG; &lt;60 is below the threshold and is itself an operative criterion. The discriminator: the renal cutoff is eGFR 60 (not 30 or 45); an eGFR in the 50s already qualifies.</div></div><div class="rt"><div class="rtl">8. Stones / nephrocalcinosis</div><div class="rte">Nephrolithiasis or nephrocalcinosis (clinical OR detected on imaging), or 24-hr urine calcium &gt;400 mg/day with increased stone risk, is a surgical indication. PHPT classically causes calcium-based stones via hypercalciuria. Even asymptomatic stones found incidentally on CT/ultrasound count — making renal imaging part of the PHPT workup.</div><div class="rtt">⚠️ An asymptomatic PHPT patient with a 4 mm renal stone seen incidentally on CT is dismissed because 'he's never had renal colic' — WRONG. Silent stones or nephrocalcinosis on imaging count as a surgical criterion regardless of symptoms. The discriminator: imaging-detected stones qualify; absence of colic does not exclude the indication.</div></div><div class="rt"><div class="rtl">9. Parathyroidectomy = definitive (OR)</div><div class="rte">Parathyroidectomy is the ONLY definitive cure for PHPT and is preferred whenever criteria are met and the patient is operable. Preop localization (sestamibi scan, neck ultrasound, 4D-CT) guides minimally invasive single-gland resection; intraoperative PTH should drop &gt;50% within 10 min (Miami criterion). Cure normalizes calcium, improves BMD, and reduces stone recurrence.</div><div class="rtt">⚠️ A surgically eligible PHPT patient is offered 'lifelong cinacalcet' as equivalent definitive treatment — WRONG. Medical therapy only controls calcium or protects bone; it never cures. The discriminator: if criteria are met and the patient can tolerate surgery, parathyroidectomy is the answer; medical therapy is reserved for those who decline or are not operative candidates.</div></div><div class="rt"><div class="rtl">10. Cortical bone sites (radius/hip/spine)</div><div class="rte">PHPT (excess PTH) preferentially resorbs CORTICAL bone, with the distal third of the radius the earliest and most affected site; trabecular spine is relatively spared early. This is why DEXA in PHPT must assess all three sites including the forearm. Severe long-standing disease causes osteitis fibrosa cystica (subperiosteal resorption, 'salt-and-pepper' skull, brown tumors).</div><div class="rtt">⚠️ A PHPT patient with a normal spine T-score is reassured their bones are protected — WRONG, because PHPT spares trabecular spine relatively while eroding cortical radius. The discriminator: in PHPT the radius (cortical) is the canary, not the spine (trabecular); a normal spine does not rule out PHPT bone disease.</div></div><div class="rt"><div class="rtl">11. No criteria = monitor</div><div class="rte">If a patient with asymptomatic PHPT meets NO surgical criteria (age &gt;50, Ca &lt;1 above ULN, T-score &gt; -2.5, no fracture, eGFR &gt;60, no stones/normal urine Ca), active surveillance is appropriate. The older man in the scene with calcium 0.3 above ULN, T-score &gt; -2.5, eGFR ok, and no stones gets monitoring rather than the OR.</div><div class="rtt">⚠️ An asymptomatic PHPT patient who meets no criteria is pushed to surgery 'just to be safe' — WRONG/overtreatment. With no criteria met, guideline-concordant care is monitoring, not operating. The discriminator: surgery requires a met criterion (or symptoms); a fully criterion-negative patient is observed.</div></div><div class="rt"><div class="rtl">12. Serial monitoring panel</div><div class="rte">Surveillance of non-operative PHPT includes serum calcium annually, serum creatinine/eGFR annually, and DEXA (3 sites including forearm) every 1-2 years. Crossing a surgical threshold during follow-up converts the patient to a surgical candidate. Renal imaging is checked if stone symptoms or rising urine calcium arise.</div><div class="rtt">⚠️ A monitored PHPT patient skips DEXA for years because calcium has been 'stable' — WRONG. Calcium can stay flat while bone density silently declines past -2.5, which is itself an operative trigger. The discriminator: monitoring is multi-parameter (Ca + renal + DEXA); stable calcium alone does not confirm stable disease.</div></div><div class="rt"><div class="rtl">13. Medical options (cinacalcet / bisphosphonate)</div><div class="rte">When surgery is declined or contraindicated: cinacalcet (calcimimetic, activates CaSR) LOWERS serum calcium but does little for bone density; bisphosphonates (e.g., alendronate) improve/protect BMD but do NOT durably lower calcium. They address different problems, so a patient needing both effects may take both. Maintain hydration; ensure adequate (not excessive) vitamin D.</div><div class="rtt">⚠️ A non-operative PHPT patient with hypercalcemia is started on a bisphosphonate to bring the calcium down — WRONG. Bisphosphonates raise BMD but do not correct hypercalcemia; cinacalcet is the agent that lowers calcium. The discriminator: match the drug to the goal — calcium → cinacalcet, bone → bisphosphonate.</div></div><div class="rt"><div class="rtl">14. Avoid thiazides / Li (monitor side)</div><div class="rte">In PHPT, maintain hydration and AVOID provocateurs of hypercalcemia: thiazide diuretics (increase distal tubular calcium reabsorption → raise serum calcium and can unmask PHPT) and lithium (shifts the parathyroid set-point, raising PTH and calcium). If a patient on lithium/thiazide has borderline hypercalcemia, stop the drug and recheck before diagnosing PHPT.</div><div class="rtt">⚠️ A patient on a thiazide has calcium 10.8 and is immediately diagnosed with PHPT — WRONG/premature. Thiazides (and lithium) themselves raise calcium; you must stop the offending drug and recheck calcium and PTH before committing to a PHPT diagnosis. The discriminator: drug-induced hypercalcemia mimics PHPT — clear the meds first.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_07_mineralization.html" title="Calcium/PTH/VitD — The Mineralization Workshop">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="capth_15_pth_resistance.html" title="Calcium/PTH/VitD — The PTH Receptor Resistance Clinic">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Plasma Cell — MGUS to Smoldering to Myeloma Spectrum</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>MGUS criteria</b> — WRONG answer: starting myeloma therapy (e.g., lenalidomide/bortezomib) for MGUS. The discriminator is that MGUS has no end-organ damage by definition — ANY CRAB feature or SLiM biomarker reclassifies the patient as multiple myeloma, which is what gets treated; MGUS is only monitored.</li><li><b>MGUS plasma cells less than 10%</b> — WRONG answer: reassuring the patient that MGUS is benign and discharging them with no follow-up. The discriminator is the cumulative ~1%/year progression risk — MGUS needs ongoing surveillance (interval guided by risk stratification), not one-and-done reassurance.</li><li><b>MGUS all-green (no damage)</b> — WRONG answer: treating all MGUS as equally low risk. The discriminator is the Mayo risk model — IgA/IgM isotype, M-protein ≥1.5 g/dL, and abnormal FLC ratio define high-risk MGUS warranting closer monitoring, sometimes with a baseline marrow and imaging.</li><li><b>Smoldering MM (SMM)</b> — WRONG answer: treating all smoldering myeloma like active myeloma. The discriminator is the absence of CRAB/SLiM — standard care is close observation; only HIGH-RISK SMM (or development of a myeloma-defining event) prompts therapy, and early lenalidomide is largely trial/guideline-evolving.</li><li><b>SMM M-protein greater than or equal to 30 g/L</b> — WRONG answer: assuming an M-protein ≥3 g/dL automatically means symptomatic myeloma needing chemo. The discriminator is end-organ status — without CRAB or a SLiM biomarker, a ≥3 g/dL spike is smoldering myeloma, which is observed, not immediately treated.</li><li><b>SMM plasma cells 10-60%</b> — WRONG answer: waiting for CRAB to appear before treating a patient whose marrow shows 65% clonal plasma cells. The discriminator is the SLiM '60%' rule — ≥60% marrow plasma cells defines myeloma now and is an indication to treat, regardless of intact end-organs.</li><li><b>SMM risk factors</b> — WRONG answer: using only M-protein level to gauge SMM risk. The discriminator is the multi-factor 20-2-20 stratification (M-protein, marrow plasma cell %, and FLC ratio together) — high-risk SMM behaves almost like myeloma and warrants closer follow-up or clinical-trial therapy.</li><li><b>Symptomatic MM</b> — WRONG answer: requiring symptoms (bone pain, fatigue) before diagnosing myeloma. The discriminator is the 2014 IMWG update — SLiM biomarkers (60% plasma cells, FLC ratio ≥100, &gt;1 focal MRI lesion) define myeloma in still-asymptomatic patients so therapy can start before CRAB damage occurs.</li><li><b>MM workforce greater than or equal to 60%</b> — WRONG answer: classifying a patient with 62% marrow plasma cells but normal calcium/creatinine/Hgb as smoldering myeloma. The discriminator is the SLiM ≥60% rule — that alone upgrades them to active myeloma requiring treatment.</li><li><b>SLiM biomarkers</b> — WRONG answer: telling a patient with an FLC ratio of 120 and no CRAB that they only have smoldering disease. The discriminator is that any single SLiM biomarker (here, FLC ratio ≥100) is myeloma-defining and an indication to treat, even with normal calcium, kidneys, hemoglobin, and bones.</li><li><b>Progression rate 1%/year</b> — WRONG answer: applying the MGUS 1%/year rate to smoldering myeloma surveillance intervals. The discriminator is that SMM's early progression (~10%/year) demands tighter monitoring (e.g., every 2–3 months initially) than MGUS.</li><li><b>Solitary plasmacytoma</b> — WRONG answer: giving systemic myeloma chemotherapy for an isolated plasmacytoma. The discriminator is that it is localized with a clean marrow — first-line is radiation to the lesion, reserving systemic therapy for progression to multiple myeloma.</li><li><b>Nonsecretory myeloma</b> — WRONG answer: ruling out myeloma because SPEP/UPEP show no M-spike. The discriminator is nonsecretory/light-chain-only disease — order serum free light chains and a marrow biopsy; absence of an electrophoretic spike does NOT exclude myeloma.</li><li><b>All MM preceded by MGUS</b> — WRONG answer: assuming myeloma arises de novo and that a prior 'benign' MGUS is unrelated. The discriminator is the established precursor continuum — a known MGUS patient who develops CRAB has progressed along that same clone, which is why baseline characterization and monitoring matter.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. MGUS criteria</div><div class="rte">MGUS (monoclonal gammopathy of undetermined significance) requires ALL three: serum M-protein &lt;3 g/dL (&lt;30 g/L) AND clonal marrow plasma cells &lt;10% AND NO CRAB/SLiM end-organ damage. It is a premalignant clone present in ~3% of people over 50 and ~5% over 70. Management is observation, not treatment — recheck SPEP/CBC/calcium/creatinine periodically.</div><div class="rtt">⚠️ WRONG answer: starting myeloma therapy (e.g., lenalidomide/bortezomib) for MGUS. The discriminator is that MGUS has no end-organ damage by definition — ANY CRAB feature or SLiM biomarker reclassifies the patient as multiple myeloma, which is what gets treated; MGUS is only monitored.</div></div><div class="rt"><div class="rtl">2. MGUS plasma cells less than 10%</div><div class="rte">MGUS marrow clonal plasma cells must be &lt;10% (often a marrow isn't even needed if M-protein is low and labs are clean). The clone progresses to myeloma or a related malignancy at a steady ~1% per year. Mnemonic: 'MGUS marches at 1% a year' — risk is lifelong, so surveillance never fully stops.</div><div class="rtt">⚠️ WRONG answer: reassuring the patient that MGUS is benign and discharging them with no follow-up. The discriminator is the cumulative ~1%/year progression risk — MGUS needs ongoing surveillance (interval guided by risk stratification), not one-and-done reassurance.</div></div><div class="rt"><div class="rtl">3. MGUS all-green (no damage)</div><div class="rte">MGUS lifetime progression is roughly 1%/year (~25% over a lifetime), and most patients never progress and die of other causes. Risk stratifies on three factors: non-IgG isotype, M-protein ≥1.5 g/dL, and abnormal serum free light chain ratio (0 vs 1–3 adverse factors). Low-risk IgG MGUS &lt;1.5 g/dL with normal FLC ratio can have minimal follow-up.</div><div class="rtt">⚠️ WRONG answer: treating all MGUS as equally low risk. The discriminator is the Mayo risk model — IgA/IgM isotype, M-protein ≥1.5 g/dL, and abnormal FLC ratio define high-risk MGUS warranting closer monitoring, sometimes with a baseline marrow and imaging.</div></div><div class="rt"><div class="rtl">4. Smoldering MM (SMM)</div><div class="rte">Smoldering multiple myeloma is the intermediate stage — greater tumor burden than MGUS but still NO CRAB and no SLiM biomarkers (so no end-organ damage). It is asymptomatic by definition and historically observed, though high-risk SMM is increasingly offered early lenalidomide on trials. Mnemonic: 'smoldering = fire is lit but the building isn't burning (no CRAB).'</div><div class="rtt">⚠️ WRONG answer: treating all smoldering myeloma like active myeloma. The discriminator is the absence of CRAB/SLiM — standard care is close observation; only HIGH-RISK SMM (or development of a myeloma-defining event) prompts therapy, and early lenalidomide is largely trial/guideline-evolving.</div></div><div class="rt"><div class="rtl">5. SMM M-protein greater than or equal to 30 g/L</div><div class="rte">SMM is defined by serum M-protein ≥3 g/dL (≥30 g/L) OR urine M-protein ≥500 mg/24h, OR marrow clonal plasma cells 10–60%, in the absence of CRAB and SLiM events. So it sits between MGUS (&lt;3 g/dL and &lt;10% cells) and myeloma (any defining event). Numbers separate the stages — burden up, but organs still intact.</div><div class="rtt">⚠️ WRONG answer: assuming an M-protein ≥3 g/dL automatically means symptomatic myeloma needing chemo. The discriminator is end-organ status — without CRAB or a SLiM biomarker, a ≥3 g/dL spike is smoldering myeloma, which is observed, not immediately treated.</div></div><div class="rt"><div class="rtl">6. SMM plasma cells 10-60%</div><div class="rte">SMM marrow clonal plasma cells fall in the 10–60% range. The upper bound matters: reaching ≥60% is a SLiM myeloma-defining event that diagnoses myeloma even without CRAB. Mnemonic for the 'Sixty' in SLiM: 60% plasma cells = the building is full, call it myeloma.</div><div class="rtt">⚠️ WRONG answer: waiting for CRAB to appear before treating a patient whose marrow shows 65% clonal plasma cells. The discriminator is the SLiM '60%' rule — ≥60% marrow plasma cells defines myeloma now and is an indication to treat, regardless of intact end-organs.</div></div><div class="rt"><div class="rtl">7. SMM risk factors</div><div class="rte">High-risk SMM is captured by the '20-2-20' model: M-protein &gt;2 g/dL, marrow plasma cells &gt;20%, and FLC ratio &gt;20 — any 2 of 3 marks high risk for rapid progression (~50% at 2 years). These patients are candidates for early intervention/trials. Mnemonic: '20-2-20' = the three twenties of dangerous smoldering disease.</div><div class="rtt">⚠️ WRONG answer: using only M-protein level to gauge SMM risk. The discriminator is the multi-factor 20-2-20 stratification (M-protein, marrow plasma cell %, and FLC ratio together) — high-risk SMM behaves almost like myeloma and warrants closer follow-up or clinical-trial therapy.</div></div><div class="rt"><div class="rtl">8. Symptomatic MM</div><div class="rte">Active multiple myeloma = clonal marrow plasma cells (usually ≥10%) PLUS at least one myeloma-defining event: any CRAB feature OR any SLiM biomarker. This is the stage that gets treated — typical induction is a triplet/quadruplet such as VRd (bortezomib + lenalidomide + dexamethasone) ± daratumumab, then autologous stem cell transplant in eligible patients. Mnemonic: 'a defining event turns the clone into a disease.'</div><div class="rtt">⚠️ WRONG answer: requiring symptoms (bone pain, fatigue) before diagnosing myeloma. The discriminator is the 2014 IMWG update — SLiM biomarkers (60% plasma cells, FLC ratio ≥100, &gt;1 focal MRI lesion) define myeloma in still-asymptomatic patients so therapy can start before CRAB damage occurs.</div></div><div class="rt"><div class="rtl">9. MM workforce greater than or equal to 60%</div><div class="rte">Clonal marrow plasma cells ≥60% is the 'S' of SLiM and independently defines multiple myeloma even with no CRAB, because progression to organ damage is nearly inevitable. It removes the old requirement to wait for kidney/bone/calcium injury. This is the 'Sixty percent' criterion.</div><div class="rtt">⚠️ WRONG answer: classifying a patient with 62% marrow plasma cells but normal calcium/creatinine/Hgb as smoldering myeloma. The discriminator is the SLiM ≥60% rule — that alone upgrades them to active myeloma requiring treatment.</div></div><div class="rt"><div class="rtl">10. SLiM biomarkers</div><div class="rte">SLiM myeloma-defining biomarkers: Sixty percent clonal marrow plasma cells, Light-chain (involved:uninvolved free) ratio ≥100 (with involved FLC ≥100 mg/L), and MRI with &gt;1 focal lesion (each ≥5 mm). Any one defines multiple myeloma WITHOUT CRAB. Mnemonic: SLiM = Sixty / Light chains 100 / MRI lesions.</div><div class="rtt">⚠️ WRONG answer: telling a patient with an FLC ratio of 120 and no CRAB that they only have smoldering disease. The discriminator is that any single SLiM biomarker (here, FLC ratio ≥100) is myeloma-defining and an indication to treat, even with normal calcium, kidneys, hemoglobin, and bones.</div></div><div class="rt"><div class="rtl">11. Progression rate 1%/year</div><div class="rte">MGUS progresses to malignancy at ~1%/year (constant lifelong). Smoldering myeloma progresses much faster — about 10%/year in the first 5 years, then slowing — which is why SMM is watched more closely than MGUS. The steepening curve up the 'building' mirrors rising tumor burden and risk.</div><div class="rtt">⚠️ WRONG answer: applying the MGUS 1%/year rate to smoldering myeloma surveillance intervals. The discriminator is that SMM's early progression (~10%/year) demands tighter monitoring (e.g., every 2–3 months initially) than MGUS.</div></div><div class="rt"><div class="rtl">12. Solitary plasmacytoma</div><div class="rte">Solitary plasmacytoma is a single clonal plasma cell mass in bone or soft tissue (extramedullary) with a NORMAL marrow (&lt;10% clonal cells) and no CRAB. Treatment of choice is definitive local radiotherapy (~40–50 Gy), which can be curative. Bone plasmacytomas progress to overt myeloma more often than extramedullary ones — follow with serial SPEP/FLC.</div><div class="rtt">⚠️ WRONG answer: giving systemic myeloma chemotherapy for an isolated plasmacytoma. The discriminator is that it is localized with a clean marrow — first-line is radiation to the lesion, reserving systemic therapy for progression to multiple myeloma.</div></div><div class="rt"><div class="rtl">13. Nonsecretory myeloma</div><div class="rte">Nonsecretory myeloma (~1–2% of cases) has marrow plasmacytosis and CRAB end-organ damage but little or no detectable serum/urine M-protein on SPEP/UPEP. Most still have an abnormal serum free light chain ratio, so the FLC assay (plus marrow biopsy/imaging) makes the diagnosis. Mnemonic: 'silent spike, loud light chains.'</div><div class="rtt">⚠️ WRONG answer: ruling out myeloma because SPEP/UPEP show no M-spike. The discriminator is nonsecretory/light-chain-only disease — order serum free light chains and a marrow biopsy; absence of an electrophoretic spike does NOT exclude myeloma.</div></div><div class="rt"><div class="rtl">14. All MM preceded by MGUS</div><div class="rte">Essentially all multiple myeloma is preceded by an asymptomatic MGUS phase (shown by stored-sample studies), often progressing through smoldering myeloma — it is a biologic continuum, not a sudden event. This underlies the rationale for surveillance and for emerging early-intervention trials in high-risk precursors. Mnemonic: MGUS → SMM → MM is one escalator, not three separate buildings.</div><div class="rtt">⚠️ WRONG answer: assuming myeloma arises de novo and that a prior 'benign' MGUS is unrelated. The discriminator is the established precursor continuum — a known MGUS patient who develops CRAB has progressed along that same clone, which is why baseline characterization and monitoring matter.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pcd_mspike_diagnosis.html" title="Plasma Cell — M-Spike &amp; Quality Control Lab (SPEP/UPEP/FLC)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcd_bone_disease_pathophys.html" title="Plasma Cell — Myeloma Bone Disease &amp; Microenvironment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

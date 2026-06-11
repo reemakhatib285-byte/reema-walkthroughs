@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Respiratory Disturbance — DLCO Bazaar (High vs Low Causes)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>DLCO DOWN banner</b> — Always correct DLCO for hemoglobin BEFORE calling it truly low — anemia alone lowers measured DLCO without any lung disease.</li><li><b>Emphysema (↓DLCO)</b> — Obstruction + LOW DLCO = emphysema. Obstruction with NORMAL or HIGH DLCO = asthma or chronic bronchitis. This DLCO split is the high-yield way to separate the two.</li><li><b>Fibrosis (↓DLCO)</b> — Restriction + LOW DLCO = parenchymal lung disease (fibrosis/ILD), distinguishing it from chest-wall/neuromuscular restriction, which has a NORMAL DLCO.</li><li><b>Anemia (↓DLCO)</b> — A low DLCO in an anemic patient is an artifact of low Hgb — adjust for hemoglobin; it is NOT evidence of lung disease.</li><li><b>Obesity → normal DLCO</b> — Obesity's restrictive-looking PFTs have a NORMAL/high DLCO — do not mistake it for fibrosis. The normal DLCO is what unmasks the extrapulmonary cause.</li><li><b>Neuromuscular → DLCO normal</b> — Normal DLCO + restriction = EXTRApulmonary cause (neuromuscular / chest wall / obesity), NOT ILD. A normal DLCO essentially argues against significant fibrosis.</li><li><b>Extrapulmonary = DLCO preserved</b> — Use DLCO as the single most useful test to triage restriction: LOW = inside the lung (ILD), NORMAL = outside the lung.</li><li><b>Asthma (↑/normal DLCO)</b> — When both show obstruction, DLCO distinguishes asthma (normal/high) from emphysema (low) — a frequently tested discriminator.</li><li><b>DLCO UP banner</b> — A high DLCO is a real diagnostic clue (think alveolar hemorrhage or polycythemia) — not an artifact to dismiss.</li><li><b>Polycythemia (↑DLCO)</b> — Polycythemia falsely RAISES DLCO; anemia falsely LOWERS it — opposite ends of the same hemoglobin correction.</li><li><b>Pulmonary hemorrhage (↑DLCO)</b> — Rising DLCO + hemoptysis + bilateral infiltrates + anemia = diffuse alveolar hemorrhage — the classic high-DLCO emergency. (Note: most other acute lung pathologies lower DLCO.)</li><li><b>Low TLC, normal DLCO → extrapulm</b> — Don't diagnose intrinsic lung disease when TLC is low but DLCO is preserved — look for an extrapulmonary cause.</li><li><b>Low TLC, low DLCO → intrinsic</b> — Pairing TLC with DLCO is the key step that separates lung fibrosis (both low) from extrapulmonary restriction (low TLC, normal DLCO).</li><li><b>Extra=in / Intra=out / Fixed=both</b> — Match the flattened limb to the lesion location — 'Extrathoracic = INspiration, Intrathoracic = EXpiration, Fixed = both.' Reversing inspiratory/expiratory is the classic board trap.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. DLCO DOWN banner</div><div class="rte">DLCO (diffusing capacity for CO) measures how readily gas crosses the alveolar-capillary membrane and binds hemoglobin. It falls when any of three are lost: alveolar SURFACE AREA (emphysema, lobectomy), MEMBRANE integrity/thickness (ILD/fibrosis, edema), or pulmonary blood volume / HEMOGLOBIN (anemia, pulmonary vascular disease, PE/PAH). Mnemonic for low DLCO: 'emphysema, fibrosis, PE/pulmonary vascular, anemia'.</div><div class="rtt">⚠️ Always correct DLCO for hemoglobin BEFORE calling it truly low — anemia alone lowers measured DLCO without any lung disease.</div></div><div class="rt"><div class="rtl">2. Emphysema (↓DLCO)</div><div class="rte">Emphysema destroys alveolar walls and capillaries → loss of surface area → low DLCO. It is the one OBSTRUCTIVE disease (FEV1/FVC &lt;0.7) that lowers DLCO, alongside hyperinflation (↑TLC, ↑↑RV).</div><div class="rtt">⚠️ Obstruction + LOW DLCO = emphysema. Obstruction with NORMAL or HIGH DLCO = asthma or chronic bronchitis. This DLCO split is the high-yield way to separate the two.</div></div><div class="rt"><div class="rtl">3. Fibrosis (↓DLCO)</div><div class="rte">Pulmonary fibrosis/ILD thickens the alveolar-capillary membrane and destroys parenchyma → low DLCO with a RESTRICTIVE pattern (↓TLC, normal/high FEV1/FVC). DLCO often falls before lung volumes drop, making it an early/sensitive marker of ILD severity.</div><div class="rtt">⚠️ Restriction + LOW DLCO = parenchymal lung disease (fibrosis/ILD), distinguishing it from chest-wall/neuromuscular restriction, which has a NORMAL DLCO.</div></div><div class="rt"><div class="rtl">4. Anemia (↓DLCO)</div><div class="rte">DLCO depends on hemoglobin available to bind the inhaled CO. Anemia lowers measured DLCO even with perfectly normal lungs; this is corrected by the Hgb-adjusted DLCO calculation.</div><div class="rtt">⚠️ A low DLCO in an anemic patient is an artifact of low Hgb — adjust for hemoglobin; it is NOT evidence of lung disease.</div></div><div class="rt"><div class="rtl">5. Obesity → normal DLCO</div><div class="rte">Obesity compresses the chest wall and reduces FRC and ERV first (basal atelectasis, worse supine), giving a mildly restrictive-looking pattern. But DLCO is NORMAL or even slightly HIGH because the alveolar membrane is intact and pulmonary blood volume rises in the dependent lung.</div><div class="rtt">⚠️ Obesity's restrictive-looking PFTs have a NORMAL/high DLCO — do not mistake it for fibrosis. The normal DLCO is what unmasks the extrapulmonary cause.</div></div><div class="rt"><div class="rtl">6. Neuromuscular → DLCO normal</div><div class="rte">Neuromuscular weakness and chest-wall restriction reduce the ability to inflate the lungs (↓TLC, ↓FVC) but leave the gas-exchange membrane intact → PRESERVED DLCO. (If anything, DL/VA can look high because diffusion is normalized to a small lung volume.)</div><div class="rtt">⚠️ Normal DLCO + restriction = EXTRApulmonary cause (neuromuscular / chest wall / obesity), NOT ILD. A normal DLCO essentially argues against significant fibrosis.</div></div><div class="rt"><div class="rtl">7. Extrapulmonary = DLCO preserved</div><div class="rte">The master rule for splitting restriction: parenchymal (lung) restriction lowers DLCO; extrapulmonary restriction (chest wall, neuromuscular, obesity, pleural disease) preserves DLCO because the lung tissue itself is normal.</div><div class="rtt">⚠️ Use DLCO as the single most useful test to triage restriction: LOW = inside the lung (ILD), NORMAL = outside the lung.</div></div><div class="rt"><div class="rtl">8. Asthma (↑/normal DLCO)</div><div class="rte">Asthma is obstructive (reversible) but the alveoli are normal, so DLCO is NORMAL or slightly HIGH (increased pulmonary blood volume from hyperinflation pulling capillaries open). This contrasts sharply with emphysema's low DLCO.</div><div class="rtt">⚠️ When both show obstruction, DLCO distinguishes asthma (normal/high) from emphysema (low) — a frequently tested discriminator.</div></div><div class="rt"><div class="rtl">9. DLCO UP banner</div><div class="rte">High DLCO causes more CO uptake than expected: diffuse alveolar HEMORRHAGE (intra-alveolar blood soaks up CO), POLYCYTHEMIA (extra Hgb), LEFT-TO-RIGHT shunt and early CHF (↑pulmonary blood volume), ASTHMA, EXERCISE, and the supine position. Mnemonic: 'a polycythemic asthmatic bleeding into their lungs during exercise'.</div><div class="rtt">⚠️ A high DLCO is a real diagnostic clue (think alveolar hemorrhage or polycythemia) — not an artifact to dismiss.</div></div><div class="rt"><div class="rtl">10. Polycythemia (↑DLCO)</div><div class="rte">Polycythemia raises DLCO because excess hemoglobin binds more CO — the mirror image of anemia. This is why DLCO must be Hgb-corrected before interpretation.</div><div class="rtt">⚠️ Polycythemia falsely RAISES DLCO; anemia falsely LOWERS it — opposite ends of the same hemoglobin correction.</div></div><div class="rt"><div class="rtl">11. Pulmonary hemorrhage (↑DLCO)</div><div class="rte">Diffuse alveolar hemorrhage (e.g., Goodpasture/anti-GBM, ANCA-vasculitis, SLE) fills alveoli with blood whose hemoglobin avidly binds the test CO → transiently HIGH DLCO. Serial DLCO can even track bleeding activity.</div><div class="rtt">⚠️ Rising DLCO + hemoptysis + bilateral infiltrates + anemia = diffuse alveolar hemorrhage — the classic high-DLCO emergency. (Note: most other acute lung pathologies lower DLCO.)</div></div><div class="rt"><div class="rtl">12. Low TLC, normal DLCO → extrapulm</div><div class="rte">Low TLC with a NORMAL DLCO localizes restriction OUTSIDE the lung: chest wall (kyphoscoliosis, ankylosing spondylitis), neuromuscular weakness, or obesity. The lung parenchyma and membrane are intact.</div><div class="rtt">⚠️ Don't diagnose intrinsic lung disease when TLC is low but DLCO is preserved — look for an extrapulmonary cause.</div></div><div class="rt"><div class="rtl">13. Low TLC, low DLCO → intrinsic</div><div class="rte">Low TLC WITH low DLCO localizes restriction INSIDE the lung: intrinsic parenchymal disease (ILD/fibrosis, sarcoid, hypersensitivity pneumonitis).</div><div class="rtt">⚠️ Pairing TLC with DLCO is the key step that separates lung fibrosis (both low) from extrapulmonary restriction (low TLC, normal DLCO).</div></div><div class="rt"><div class="rtl">14. Extra=in / Intra=out / Fixed=both</div><div class="rte">Upper-airway obstruction patterns on the flow-volume loop: variable EXTRAthoracic (e.g., vocal cord dysfunction, extrathoracic goiter) flattens the INspiratory limb; variable INTRAthoracic (tracheomalacia, intrathoracic tumor) flattens the EXpiratory limb; FIXED lesions (tracheal stenosis, large goiter) flatten BOTH limbs (box shape). Mechanism: extrathoracic airways collapse with the negative pressure of inspiration; intrathoracic airways collapse with the positive pleural pressure of forced expiration.</div><div class="rtt">⚠️ Match the flattened limb to the lesion location — 'Extrathoracic = INspiration, Intrathoracic = EXpiration, Fixed = both.' Reversing inspiratory/expiratory is the classic board trap.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="osa_treatment_complications.html" title="Sleep Apnea — Treatment &amp; Complications">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="respdist_patterns.html" title="Respiratory Disturbance — Disease Pattern Recognition (Pulmonology Waiting Room)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

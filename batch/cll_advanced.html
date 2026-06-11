@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CLL — Response Assessment, MRD, Sequencing &amp; Cellular Therapy</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>6</em></summary><ol class="traps"><li><b>Response board</b> — Lymphocytosis can transiently SPIKE after starting a BTK inhibitor (redistribution of CLL cells out of nodes into blood) — this is NOT progressive disease and should not prompt stopping the drug.</li><li><b>CR criteria</b> — A normal-looking blood count is not CR — nodes, spleen, and marrow must all clear. CR with residual MRD still carries worse PFS than MRD-undetectable CR.</li><li><b>MRD 1 in 10,000</b> — "MRD-negative" is sensitivity-dependent — it means below the assay's detection limit, not zero disease. Always state the threshold (10⁻⁴ vs 10⁻⁶).</li><li><b>MRD not for BTK</b> — Don't use MRD to decide when to stop a BTK inhibitor — uMRD is rarely reached and is not the goal of continuous therapy. MRD-guided stopping applies to venetoclax regimens.</li><li><b>Pirtobrutinib after both</b> — C481S mutation = classic resistance mechanism to COVALENT BTKi (ibrutinib/acalabrutinib/zanubrutinib); pirtobrutinib overcomes it because it doesn't need that cysteine.</li><li><b>CAR-T CD19</b> — Watch for CAR-T toxicities: cytokine release syndrome (CRS, treat with tocilizumab) and ICANS (neurotoxicity).</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Response board</div><div class="rte">iwCLL response categories assessed ~2 months after therapy: CR (complete remission), PR (partial response, ≥50% drop), SD (stable disease), PD (progressive disease, ≥50% rise or new lesions). Response is graded on blood counts, nodes, spleen/liver size, and marrow — symptoms alone don't define response.</div><div class="rtt">⚠️ Lymphocytosis can transiently SPIKE after starting a BTK inhibitor (redistribution of CLL cells out of nodes into blood) — this is NOT progressive disease and should not prompt stopping the drug.</div></div><div class="rt"><div class="rtl">2. CR criteria</div><div class="rte">Complete remission requires ALL: blood lymphocytes &lt;4×10⁹/L, no node &gt;1.5 cm, no hepatosplenomegaly, no constitutional symptoms, marrow lymphocytes &lt;30%, AND count recovery (platelets &gt;100k, Hb &gt;11 g/dL untransfused, neutrophils &gt;1.5k). CRi = CR with incomplete marrow recovery.</div><div class="rtt">⚠️ A normal-looking blood count is not CR — nodes, spleen, and marrow must all clear. CR with residual MRD still carries worse PFS than MRD-undetectable CR.</div></div><div class="rt"><div class="rtl">3. PR ≥50%</div><div class="rte">Partial response = ≥50% reduction in blood lymphocyte count AND ≥50% reduction in nodal/organ burden, plus improvement in at least one cytopenia. PR-L (PR with lymphocytosis) is a recognized BTKi-specific category where nodes shrink but blood lymphocytes stay high due to redistribution.</div></div><div class="rt"><div class="rtl">4. MRD 1 in 10,000</div><div class="rte">Standard MRD-undetectable (uMRD) threshold = &lt;1 CLL cell per 10,000 leukocytes = 10⁻⁴ = 0.01%, measured by 4–8 color flow cytometry or ASO-PCR. uMRD at 10⁻⁴ is the conventional cutoff correlating with prolonged PFS.</div><div class="rtt">⚠️ "MRD-negative" is sensitivity-dependent — it means below the assay's detection limit, not zero disease. Always state the threshold (10⁻⁴ vs 10⁻⁶).</div></div><div class="rt"><div class="rtl">5. Deep MRD 10^-6</div><div class="rte">Next-generation sequencing (clonoSEQ, IGH-based) detects MRD down to 10⁻⁶ (1 in a million = 0.0001%), two logs deeper than flow. Deeper uMRD predicts more durable remission and is increasingly used as a trial endpoint.</div></div><div class="rt"><div class="rtl">6. MRD after venetoclax</div><div class="rte">MRD is meaningful with FIXED-DURATION venetoclax-based regimens (e.g., venetoclax + obinutuzumab): achieving uMRD predicts longer PFS and supports time-limited therapy. MRD-guided trials use uMRD to decide when to stop venetoclax.</div></div><div class="rt"><div class="rtl">7. MRD not for BTK</div><div class="rte">MRD is NOT meaningful for continuous BTK-inhibitor monotherapy: BTKi produces durable disease CONTROL without deep clearance, so MRD stays detectable indefinitely even in excellent responders. Treatment is continued until progression or toxicity, not until uMRD.</div><div class="rtt">⚠️ Don't use MRD to decide when to stop a BTK inhibitor — uMRD is rarely reached and is not the goal of continuous therapy. MRD-guided stopping applies to venetoclax regimens.</div></div><div class="rt"><div class="rtl">8. Sequencing: both work</div><div class="rte">BTK inhibitor and BCL2 inhibitor (venetoclax) can be sequenced in EITHER order after failure of the first — both directions retain efficacy. Choice of first agent depends on patient factors (cardiac/bleeding risk favors avoiding ibrutinib; TLS risk and adherence to ramp-up affect venetoclax).</div></div><div class="rt"><div class="rtl">9. Pirtobrutinib after both</div><div class="rte">Pirtobrutinib is a NONCOVALENT (reversible) BTK inhibitor that binds independent of the C481 cysteine, so it salvages disease resistant to covalent BTKi via the C481S mutation, and works even after both covalent BTKi and venetoclax failure (ORR ~82% in the double-exposed BRUIN data).</div><div class="rtt">⚠️ C481S mutation = classic resistance mechanism to COVALENT BTKi (ibrutinib/acalabrutinib/zanubrutinib); pirtobrutinib overcomes it because it doesn't need that cysteine.</div></div><div class="rt"><div class="rtl">10. Allo SCT</div><div class="rte">Allogeneic stem cell transplant is the only potentially CURATIVE option (graft-versus-leukemia effect) but carries high transplant-related mortality. It has fallen out of favor, now reserved for young, fit, double-refractory (post-BTKi and post-venetoclax) or high-risk patients — largely supplanted by targeted agents and CAR-T.</div></div><div class="rt"><div class="rtl">11. CAR-T CD19</div><div class="rte">Anti-CD19 CAR-T (liso-cel, lisocabtagene maraleucel) is approved for relapsed/refractory CLL/SLL after ≥2 prior lines including a BTKi and venetoclax. Autologous T cells are reprogrammed to target CD19 on the malignant B cells.</div><div class="rtt">⚠️ Watch for CAR-T toxicities: cytokine release syndrome (CRS, treat with tocilizumab) and ICANS (neurotoxicity).</div></div><div class="rt"><div class="rtl">12. T-cell exhaustion</div><div class="rte">CLL induces profound T-cell exhaustion (upregulated PD-1, impaired synapse formation), which historically limited CAR-T efficacy compared to other B-cell malignancies — a central biologic challenge for cellular therapy in CLL.</div></div><div class="rt"><div class="rtl">13. CAR-T for Richter</div><div class="rte">CAR-T (and allo-SCT) show promise for Richter transformation (DLBCL evolving from CLL), which otherwise responds poorly to standard DLBCL chemoimmunotherapy and carries a dismal prognosis.</div></div><div class="rt"><div class="rtl">14. Nurse-like cells</div><div class="rte">The tumor microenvironment sustains CLL: nurse-like cells (monocyte-derived) feed and protect CLL cells via CD40L/BAFF/APRIL and chemokines, Th1/Th2 skewing drives immune dysfunction, and broken/consumed complement proteins contribute to infection risk. This stromal dependence underlies sanctuary in lymph nodes.</div></div><div class="rt"><div class="rtl">15. Broken complement</div><div class="rte">Complement deficiency/dysfunction plus hypogammaglobulinemia and T/NK dysfunction together produce the multi-arm immune failure of CLL, explaining why infection is the leading cause of death even before cytotoxic therapy.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="cll_staging.html" title="CLL — Rai/Binet Staging &amp; Prognostic Risk Map">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="cll_treatment.html" title="CLL — Treatment: BTK Inhibitors, Venetoclax &amp; FCR">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

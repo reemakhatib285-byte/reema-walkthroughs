@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hemoglobinopathy — The Thalassemia Crucible</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Unpaired α chains</b> — Wrong answer: 'β-thal is caused by a quantitative defect in α-globin.' No — β-thal is a quantitative β-globin defect; the α-chains are normal/excess. The disease severity tracks the α:β imbalance, not an α-chain mutation. (α-thalassemia is the one with too few α-chains.)</li><li><b>Ineffective erythropoiesis</b> — Wrong answer: 'expect a high reticulocyte count proportional to anemia like in peripheral hemolysis.' Discriminator: in β-thal the cells die in the marrow (ineffective erythropoiesis), so the retic count is inappropriately LOW for the severity — distinguishing it from a brisk peripheral hemolytic process.</li><li><b>Marrow expansion</b> — Wrong answer: attributing the crew-cut skull / chipmunk facies to iron overload. Discriminator: these bony changes are from EPO-driven marrow EXPANSION (under-transfusion), not iron deposition. Iron overload causes the cardiac/endocrine/hepatic damage instead.</li><li><b>Extramedullary hematopoiesis</b> — Wrong answer: 'a paraspinal mass in a thalassemia patient is malignancy until proven otherwise → biopsy.' Discriminator: in known thalassemia, smooth paravertebral masses are extramedullary hematopoiesis; biopsy risks hemorrhage. Diagnose with MRI and treat with transfusion/radiation, not surgery.</li><li><b>Iron overload (hepcidin)</b> — Wrong answer: 'iron overload in thal major is only a problem because of transfusions, so non-transfused patients are safe.' Discriminator: hepcidin suppression from ineffective erythropoiesis drives GI hyperabsorption even WITHOUT transfusion — intermedia patients still develop iron overload.</li><li><b>β-thal trait (minor)</b> — Wrong answer: 'microcytosis in β-thal trait → start oral iron.' Discriminator: iron studies are normal in pure thal trait; iron supplementation is useless and risks iron overload. The microcytosis with a normal RDW and high-normal/elevated RBC count points to thalassemia, not iron deficiency (where RDW is high and RBC count is low).</li><li><b>NTDT (intermedia)</b> — Wrong answer: 'NTDT patients don't need iron monitoring since they aren't regularly transfused.' Discriminator: NTDT still accumulates iron through GI hyperabsorption and needs ferritin/MRI monitoring and chelation when loaded; they also have a notable thrombotic and pulmonary-hypertension risk that transfusion-dependent patients are partly protected from.</li><li><b>TDT (major / Cooley)</b> — Wrong answer: 'β-thal major presents at birth.' Discriminator: symptoms emerge around 6 months because fetal hemoglobin (α2γ2) doesn't need β-chains and protects the neonate; disease appears only as the HbF→HbA switch fails. (Contrast α-thal major / hydrops fetalis, which IS symptomatic in utero.)</li><li><b>HbE/β-thal</b> — Wrong answer: 'HbE trait alone causes severe anemia.' Discriminator: HbE heterozygote/homozygote alone is mild/asymptomatic microcytosis — it's the COMPOUND HbE/β-thal combination that produces clinically severe, sometimes transfusion-dependent disease.</li><li><b>Transfusion target</b> — Wrong answer: 'transfuse only when symptomatic / to normal Hb of 14.' Discriminator: the goal is a moderate target (~9–10.5) sufficient to suppress marrow drive — not normalization. Reactive 'as-needed' transfusion fails to suppress erythropoiesis and allows the bony/extramedullary complications to develop.</li><li><b>Iron chelation</b> — Wrong answer: 'start chelation at the very first transfusion.' Discriminator: chelation begins after iron LOADING is established (ferritin ~1000 ng/mL or ~10–20 units), not pre-emptively — early over-chelation harms growth and bones. Also: deferiprone causing fever/sore throat = check for agranulocytosis, don't dismiss it.</li><li><b>Cardiac MRI T2*</b> — Wrong answer: 'a normal serum ferritin means cardiac iron is safe.' Discriminator: serum ferritin and even liver iron do NOT reliably reflect cardiac iron; a patient can have a reassuring ferritin yet dangerous cardiac loading. Cardiac MRI T2* is required to assess heart iron and prevent the #1 cause of death.</li><li><b>Luspatercept</b> — Wrong answer: 'luspatercept works like EPO by stimulating early erythroid proliferation.' Discriminator: luspatercept is an activin/GDF11 ligand trap acting on LATE erythroid maturation; it is not an erythropoiesis-stimulating agent and works precisely where β-thal maturation stalls.</li><li><b>Curative — HSCT / gene Tx</b> — Wrong answer: 'iron chelation cures thalassemia.' Discriminator: chelation only manages iron — it does not address the globin defect. Cure requires replacing/correcting the hematopoietic stem cells: allogeneic HSCT or gene therapy (beti-cel, exa-cel).</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Unpaired α chains</div><div class="rte">Normal adult Hb (HbA) is α2β2. In β-thalassemia the β-globin genes (chromosome 11) are mutated → reduced (β+) or absent (β0) β-chain synthesis. α-chains keep being made at full rate from chromosome 16, so unpaired free α-chains accumulate and precipitate inside red cell precursors — this insoluble α-chain inclusion is THE central toxic event that drives every downstream finding. Contrast α-thalassemia where excess β or γ chains form soluble tetramers (HbH, Bart's).</div><div class="rtt">⚠️ Wrong answer: 'β-thal is caused by a quantitative defect in α-globin.' No — β-thal is a quantitative β-globin defect; the α-chains are normal/excess. The disease severity tracks the α:β imbalance, not an α-chain mutation. (α-thalassemia is the one with too few α-chains.)</div></div><div class="rt"><div class="rtl">2. Ineffective erythropoiesis</div><div class="rte">Precipitated α-chain inclusions damage the membrane of developing erythroblasts → apoptosis of RBC precursors WITHIN the marrow before they ever reach the blood = ineffective erythropoiesis (intramedullary hemolysis). This is the dominant mechanism of anemia in β-thal major, more than peripheral hemolysis. Result: low reticulocyte response relative to the degree of anemia, with marrow packed with dying precursors.</div><div class="rtt">⚠️ Wrong answer: 'expect a high reticulocyte count proportional to anemia like in peripheral hemolysis.' Discriminator: in β-thal the cells die in the marrow (ineffective erythropoiesis), so the retic count is inappropriately LOW for the severity — distinguishing it from a brisk peripheral hemolytic process.</div></div><div class="rt"><div class="rtl">3. Marrow expansion</div><div class="rte">Chronic anemia → high erythropoietin → massive compensatory marrow hyperplasia that physically expands the medullary cavity. Classic findings: frontal bossing and maxillary overgrowth ('chipmunk'/rodent facies), 'hair-on-end' or 'crew-cut' skull on X-ray, thinned cortices with pathologic fractures, and pneumatized sinuses. Seen in transfusion-naïve or under-transfused β-thal major; early adequate transfusion suppresses EPO drive and prevents these skeletal changes.</div><div class="rtt">⚠️ Wrong answer: attributing the crew-cut skull / chipmunk facies to iron overload. Discriminator: these bony changes are from EPO-driven marrow EXPANSION (under-transfusion), not iron deposition. Iron overload causes the cardiac/endocrine/hepatic damage instead.</div></div><div class="rt"><div class="rtl">4. Extramedullary hematopoiesis</div><div class="rte">When marrow output can't keep up, blood production restarts in fetal hematopoietic sites → hepatosplenomegaly and paravertebral masses (can cause cord compression). Massive splenomegaly leads to hypersplenism (worsening cytopenias, rising transfusion need) and may prompt splenectomy — after which patients need pneumococcal/Hib/meningococcal vaccination and penicillin prophylaxis due to encapsulated-organism risk.</div><div class="rtt">⚠️ Wrong answer: 'a paraspinal mass in a thalassemia patient is malignancy until proven otherwise → biopsy.' Discriminator: in known thalassemia, smooth paravertebral masses are extramedullary hematopoiesis; biopsy risks hemorrhage. Diagnose with MRI and treat with transfusion/radiation, not surgery.</div></div><div class="rt"><div class="rtl">5. Iron overload (hepcidin)</div><div class="rte">Ineffective erythropoiesis releases erythroferrone, which SUPPRESSES hepcidin → unrestrained ferroportin activity → excess GI iron absorption. Add chronic transfusions (each unit ≈ 200–250 mg iron) and iron deposits in heart, liver, and endocrine organs. Sequelae: dilated/restrictive cardiomyopathy and arrhythmia (leading cause of death), cirrhosis, diabetes, hypogonadism/delayed puberty, hypothyroidism, hypoparathyroidism. Even non-transfused intermedia loads iron via the hepcidin mechanism.</div><div class="rtt">⚠️ Wrong answer: 'iron overload in thal major is only a problem because of transfusions, so non-transfused patients are safe.' Discriminator: hepcidin suppression from ineffective erythropoiesis drives GI hyperabsorption even WITHOUT transfusion — intermedia patients still develop iron overload.</div></div><div class="rt"><div class="rtl">6. β-thal trait (minor)</div><div class="rte">β-thal minor (one defective β gene): mild or no anemia (Hb ~10–14), markedly LOW MCV (often &lt;75) out of proportion to mild anemia, normal/high RBC count, and ELEVATED HbA2 (&gt;3.5%) ± mild HbF rise on electrophoresis — HbA2 elevation is the diagnostic hallmark. Mentzer index (MCV/RBC) &lt;13 favors thal trait; &gt;13 favors iron deficiency. Important for genetic counseling.</div><div class="rtt">⚠️ Wrong answer: 'microcytosis in β-thal trait → start oral iron.' Discriminator: iron studies are normal in pure thal trait; iron supplementation is useless and risks iron overload. The microcytosis with a normal RDW and high-normal/elevated RBC count points to thalassemia, not iron deficiency (where RDW is high and RBC count is low).</div></div><div class="rt"><div class="rtl">7. NTDT (intermedia)</div><div class="rte">Thal intermedia / non-transfusion-dependent thalassemia (NTDT): Hb roughly 7–12, HbF often 10–40%, with milder genotypes than major. Patients survive without regular transfusions but suffer chronic complications — iron overload (hepcidin mechanism), pulmonary hypertension, thrombosis/hypercoagulability, leg ulcers, gallstones, and extramedullary hematopoiesis. Transfuse episodically (growth, pregnancy, infection, surgery).</div><div class="rtt">⚠️ Wrong answer: 'NTDT patients don't need iron monitoring since they aren't regularly transfused.' Discriminator: NTDT still accumulates iron through GI hyperabsorption and needs ferritin/MRI monitoring and chelation when loaded; they also have a notable thrombotic and pulmonary-hypertension risk that transfusion-dependent patients are partly protected from.</div></div><div class="rt"><div class="rtl">8. TDT (major / Cooley)</div><div class="rte">β-thal major (Cooley anemia, both β genes severely affected): presents at ~6 months of age as protective fetal HbF wanes and the β-chain deficit unmasks. Severe transfusion-dependent anemia (untreated Hb 2–4), failure to thrive, hepatosplenomegaly, skeletal deformities. Management = lifelong regular transfusion PLUS mandatory iron chelation; allogeneic HSCT or gene therapy is curative.</div><div class="rtt">⚠️ Wrong answer: 'β-thal major presents at birth.' Discriminator: symptoms emerge around 6 months because fetal hemoglobin (α2γ2) doesn't need β-chains and protects the neonate; disease appears only as the HbF→HbA switch fails. (Contrast α-thal major / hydrops fetalis, which IS symptomatic in utero.)</div></div><div class="rt"><div class="rtl">9. HbE/β-thal</div><div class="rte">HbE/β-thalassemia (compound heterozygote of HbE structural variant + a β-thal allele) is the most common severe thalassemia in Southeast Asia. HbE is a β-globin point mutation that is also mildly thalassemic. Phenotype ranges widely from mild (like intermedia) to transfusion-dependent severe disease; the severe end can rival β-thal major.</div><div class="rtt">⚠️ Wrong answer: 'HbE trait alone causes severe anemia.' Discriminator: HbE heterozygote/homozygote alone is mild/asymptomatic microcytosis — it's the COMPOUND HbE/β-thal combination that produces clinically severe, sometimes transfusion-dependent disease.</div></div><div class="rt"><div class="rtl">10. Transfusion target</div><div class="rte">In β-thal major, regular transfusions maintain pre-transfusion Hb around 9–10.5 g/dL. Keeping Hb adequate suppresses the EPO drive and marrow hyperplasia → prevents skeletal deformity, extramedullary hematopoiesis, and ineffective erythropoiesis. Start early in life. The cost is obligate iron loading, which mandates chelation. Use leukoreduced, phenotypically matched units to limit alloimmunization.</div><div class="rtt">⚠️ Wrong answer: 'transfuse only when symptomatic / to normal Hb of 14.' Discriminator: the goal is a moderate target (~9–10.5) sufficient to suppress marrow drive — not normalization. Reactive 'as-needed' transfusion fails to suppress erythropoiesis and allows the bony/extramedullary complications to develop.</div></div><div class="rt"><div class="rtl">11. Iron chelation</div><div class="rte">Iron chelators remove transfusional iron: deferasirox (DFX, once-daily oral, first-line; watch renal/hepatic toxicity and GI), deferiprone (DFP, oral, best at clearing CARDIAC iron but risks agranulocytosis → monitor CBC), and deferoxamine (DFO, subcutaneous/IV overnight pump; risks ocular/auditory toxicity and growth retardation). Hold deferiprone/deferasirox during neutropenia or infection. Start once iron-loaded (ferritin ~1000 or after ~10–20 transfusions).</div><div class="rtt">⚠️ Wrong answer: 'start chelation at the very first transfusion.' Discriminator: chelation begins after iron LOADING is established (ferritin ~1000 ng/mL or ~10–20 units), not pre-emptively — early over-chelation harms growth and bones. Also: deferiprone causing fever/sore throat = check for agranulocytosis, don't dismiss it.</div></div><div class="rt"><div class="rtl">12. Cardiac MRI T2*</div><div class="rte">Cardiac and hepatic MRI T2* (and liver R2*) noninvasively quantify tissue iron and guide chelation intensity. Cardiac T2* &lt;20 ms = significant cardiac iron; &lt;10 ms = high risk of heart failure/arrhythmia. Cardiac iron-overload cardiomyopathy is the LEADING cause of death in β-thal major, and ferritin/liver iron correlate poorly with heart iron — so cardiac T2* is essential.</div><div class="rtt">⚠️ Wrong answer: 'a normal serum ferritin means cardiac iron is safe.' Discriminator: serum ferritin and even liver iron do NOT reliably reflect cardiac iron; a patient can have a reassuring ferritin yet dangerous cardiac loading. Cardiac MRI T2* is required to assess heart iron and prevent the #1 cause of death.</div></div><div class="rt"><div class="rtl">13. Luspatercept</div><div class="rte">Luspatercept is an activin receptor IIB ligand trap that sequesters TGF-β superfamily ligands (GDF11), promoting late-stage erythroid maturation that is blocked in β-thal. It reduces transfusion burden in adults with transfusion-dependent β-thal (subcutaneous every 3 weeks). Distinct mechanism from erythropoietin — it acts on terminal maturation, not early proliferation.</div><div class="rtt">⚠️ Wrong answer: 'luspatercept works like EPO by stimulating early erythroid proliferation.' Discriminator: luspatercept is an activin/GDF11 ligand trap acting on LATE erythroid maturation; it is not an erythropoiesis-stimulating agent and works precisely where β-thal maturation stalls.</div></div><div class="rt"><div class="rtl">14. Curative — HSCT / gene Tx</div><div class="rte">The only curative options: allogeneic HSCT (best outcomes in young, low-iron-burden patients with a matched sibling donor) and gene therapy — betibeglogene autotemcel (beti-cel, lentiviral β-globin gene addition) and exagamglogene autotemcel (exa-cel, CRISPR editing of BCL11A to re-induce fetal hemoglobin). Both gene therapies are approved for transfusion-dependent β-thal and can free patients from transfusions.</div><div class="rtt">⚠️ Wrong answer: 'iron chelation cures thalassemia.' Discriminator: chelation only manages iron — it does not address the globin defect. Cure requires replacing/correcting the hematopoietic stem cells: allogeneic HSCT or gene therapy (beti-cel, exa-cel).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hgb_sickle_origins.html" title="Hemoglobinopathy — The Sickle River: Origins">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="bmf_aa_etiology.html" title="Bone Marrow Failure — The Aplastic Wasteland (AA Etiology)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

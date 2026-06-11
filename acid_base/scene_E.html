@@ -10,6 +10,27 @@
     --yellow:#ffd166; --body:#d1d5db; --muted:#9ca3af; --green:#4ade80;
   }
   *{box-sizing:border-box}
+  /* PDF-style study panels below the interactive scene */
+  .panels{max-width:1000px;margin:0 auto;padding:8px 18px 60px}
+  details.panel{background:var(--panel);border:1px solid #1f2a3a;border-radius:12px;margin:12px 0;overflow:hidden}
+  details.panel>summary{cursor:pointer;list-style:none;padding:14px 18px;font-size:15px;font-weight:700;
+    color:var(--white);background:#16223a;border-left:4px solid var(--accent);display:flex;align-items:center;gap:10px}
+  details.panel>summary::-webkit-details-marker{display:none}
+  details.panel>summary em{font-style:normal;font-size:12px;font-weight:700;color:#fff;
+    background:var(--accent);border-radius:20px;padding:2px 9px}
+  ol.traps{margin:0;padding:14px 18px 16px 38px;color:var(--body);font-size:14px;line-height:1.55}
+  ol.traps li{margin:0 0 9px}
+  ol.traps b{color:var(--yellow)}
+  .rtwrap{padding:8px 18px 14px}
+  .rt{padding:12px 0;border-bottom:1px solid #1f2a3a}
+  .rt:last-child{border-bottom:none}
+  .rtl{color:var(--white);font-weight:700;font-size:14px;margin-bottom:4px}
+  .rte{color:var(--body);font-size:14px;line-height:1.55}
+  .rtt{color:#fca5a5;font-size:13px;line-height:1.5;margin-top:5px}
+  table.drug{width:calc(100% - 36px);margin:8px 18px 16px;border-collapse:collapse;font-size:13px}
+  table.drug th{background:#16223a;color:var(--white);text-align:left;padding:8px 10px;border:1px solid #2a3a52}
+  table.drug td{padding:8px 10px;border:1px solid #1f2a3a;color:var(--body);vertical-align:top;line-height:1.45}
+  table.drug tr:nth-child(even) td{background:#0f1827}
   html,body{margin:0;height:100%;background:var(--bg);
     font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--body)}
   .wrap{display:flex;height:100vh;gap:0}
@@ -61,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -119,6 +153,8 @@
     <h1 class="scene-title">Acid–Base E — Metabolic Alkalosis (Contraction Corridor)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -127,9 +163,15 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
+<div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Urine chloride: &lt;20 vs &gt;20</b> — Use urine CHLORIDE, not urine sodium — vomiting can keep urine Na high while Cl is low.</li><li><b>Vomiting / NG suction loses HCl</b> — Expect paradoxical aciduria — urine is acidic despite alkalemia due to avid Na/H+ handling.</li><li><b>Saline-responsive → NaCl + KCl</b> — Giving saline to a saline-RESISTANT (urine Cl &gt; 20) alkalosis won't fix it.</li><li><b>Contraction: Cl + K + volume depletion</b> — You must replace Cl− AND K+ — correcting volume alone may not fix it.</li><li><b>Distal Na delivery → K+/H+ wasting</b> — Hypokalemia both causes and worsens metabolic alkalosis — fix the K+.</li><li><b>Exogenous alkali / milk-alkali</b> — Milk-alkali = hypercalcemia + metabolic alkalosis + AKI from calcium/alkali intake.</li><li><b>Don't over-correct (caution)</b> — A ‘normal’ pH can still hide a mixed disorder — check the gaps and compensation.</li><li><b>Saline-resistant: mineralocorticoid excess</b> — These won't respond to saline — treat the underlying drive.</li><li><b>Hyperaldo → HTN + low K+</b> — Hypertensive + hypokalemic alkalosis = think primary hyperaldosteronism.</li><li><b>Spironolactone for aldo excess</b> — Works for aldosterone-driven causes — but NOT for Liddle (receptor-independent).</li><li><b>Liddle → amiloride (not spironolactone)</b> — Spironolactone fails in Liddle because the channel is active independent of aldosterone.</li><li><b>Acetazolamide for volume-overloaded alkalosis</b> — Useful exactly when saline is contraindicated by volume status.</li><li><b>HCl infusion / dialysis = last resort</b> — Reserved for severe, refractory cases — not first-line.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Urine chloride: &lt;20 vs &gt;20</div><div class="rte">Urine chloride classifies metabolic alkalosis: &lt; 20 = saline (chloride)-responsive; &gt; 20 = saline-resistant.</div><div class="rtt">⚠️ Use urine CHLORIDE, not urine sodium — vomiting can keep urine Na high while Cl is low.</div></div><div class="rt"><div class="rtl">2. Vomiting / NG suction loses HCl</div><div class="rte">Loss of gastric H+ and Cl− generates the alkalosis; volume/Cl loss then maintains it. Classic saline-responsive cause (urine Cl &lt; 20).</div><div class="rtt">⚠️ Expect paradoxical aciduria — urine is acidic despite alkalemia due to avid Na/H+ handling.</div></div><div class="rt"><div class="rtl">3. Saline-responsive → NaCl + KCl</div><div class="rte">Chloride-responsive alkalosis (urine Cl &lt; 20) corrects with normal saline plus potassium chloride.</div><div class="rtt">⚠️ Giving saline to a saline-RESISTANT (urine Cl &gt; 20) alkalosis won't fix it.</div></div><div class="rt"><div class="rtl">4. Contraction: Cl + K + volume depletion</div><div class="rte">Volume contraction with chloride and potassium depletion sustains the alkalosis (the ‘contraction’ corridor).</div><div class="rtt">⚠️ You must replace Cl− AND K+ — correcting volume alone may not fix it.</div></div><div class="rt"><div class="rtl">5. Distal Na delivery → K+/H+ wasting</div><div class="rte">Increased distal sodium delivery + aldosterone drives K+ and H+ secretion → worsening hypokalemia and alkalosis.</div><div class="rtt">⚠️ Hypokalemia both causes and worsens metabolic alkalosis — fix the K+.</div></div><div class="rt"><div class="rtl">6. Exogenous alkali / milk-alkali</div><div class="rte">Ingested alkali (bicarbonate, milk-alkali syndrome, massive citrate/transfusion) can generate alkalosis, especially with renal impairment.</div><div class="rtt">⚠️ Milk-alkali = hypercalcemia + metabolic alkalosis + AKI from calcium/alkali intake.</div></div><div class="rt"><div class="rtl">7. Don't over-correct (caution)</div><div class="rte">Watch for mixed pictures and overshoot; post-DKA or post-hypercapnia states can leave a metabolic alkalosis.</div><div class="rtt">⚠️ A ‘normal’ pH can still hide a mixed disorder — check the gaps and compensation.</div></div><div class="rt"><div class="rtl">8. Saline-resistant: mineralocorticoid excess</div><div class="rte">Excess mineralocorticoid (primary hyperaldosteronism, Cushing, Liddle) drives Na retention and K+/H+ loss → saline-resistant alkalosis (urine Cl &gt; 20).</div><div class="rtt">⚠️ These won't respond to saline — treat the underlying drive.</div></div><div class="rt"><div class="rtl">9. Hyperaldo → HTN + low K+</div><div class="rte">Primary hyperaldosteronism: hypertension + hypokalemia + metabolic alkalosis, urine Cl &gt; 20, low renin.</div><div class="rtt">⚠️ Hypertensive + hypokalemic alkalosis = think primary hyperaldosteronism.</div></div><div class="rt"><div class="rtl">10. Spironolactone for aldo excess</div><div class="rte">Aldosterone-receptor blockers (spironolactone/eplerenone) treat mineralocorticoid-excess alkalosis.</div><div class="rtt">⚠️ Works for aldosterone-driven causes — but NOT for Liddle (receptor-independent).</div></div><div class="rt"><div class="rtl">11. Liddle → amiloride (not spironolactone)</div><div class="rte">Liddle syndrome = constitutively active ENaC with LOW aldosterone/renin → use ENaC blockers (amiloride/triamterene).</div><div class="rtt">⚠️ Spironolactone fails in Liddle because the channel is active independent of aldosterone.</div></div><div class="rt"><div class="rtl">12. Acetazolamide for volume-overloaded alkalosis</div><div class="rte">When you can't give saline (e.g. CHF / volume overload), acetazolamide induces bicarbonaturia to correct the alkalosis.</div><div class="rtt">⚠️ Useful exactly when saline is contraindicated by volume status.</div></div><div class="rt"><div class="rtl">13. HCl infusion / dialysis = last resort</div><div class="rte">Severe symptomatic alkalemia (pH &gt; 7.55) may need HCl infusion or dialysis.</div><div class="rtt">⚠️ Reserved for severe, refractory cases — not first-line.</div></div></div></details></div>
 <script>
 const DATA = [{"label": "Full scene", "x": 50, "y": 50, "z": 1.0, "see": "The whole scene at once.", "encodes": "Use this to orient, then arrow through each symbol.", "trap": ""}, {"label": "Urine chloride: <20 vs >20", "x": 13, "y": 30, "z": 3, "see": "The big clock split green ‘<20’ and red ‘>20’.", "encodes": "Urine chloride classifies metabolic alkalosis: < 20 = saline (chloride)-responsive; > 20 = saline-resistant.", "trap": "Use urine CHLORIDE, not urine sodium — vomiting can keep urine Na high while Cl is low."}, {"label": "Vomiting / NG suction loses HCl", "x": 16, "y": 56, "z": 3, "see": "The man vomiting; the stomach diagram shows HCl out, HCO3 retained.", "encodes": "Loss of gastric H+ and Cl− generates the alkalosis; volume/Cl loss then maintains it. Classic saline-responsive cause (urine Cl < 20).", "trap": "Expect paradoxical aciduria — urine is acidic despite alkalemia due to avid Na/H+ handling."}, {"label": "Saline-responsive → NaCl + KCl", "x": 28, "y": 40, "z": 3, "see": "The IV bag ‘NaCl + KCl’ with a green check.", "encodes": "Chloride-responsive alkalosis (urine Cl < 20) corrects with normal saline plus potassium chloride.", "trap": "Giving saline to a saline-RESISTANT (urine Cl > 20) alkalosis won't fix it."}, {"label": "Contraction: Cl + K + volume depletion", "x": 11, "y": 86, "z": 3, "see": "The ‘ECF bottle / Cl− jar / low K+’ at bottom-left.", "encodes": "Volume contraction with chloride and potassium depletion sustains the alkalosis (the ‘contraction’ corridor).", "trap": "You must replace Cl− AND K+ — correcting volume alone may not fix it."}, {"label": "Distal Na delivery → K+/H+ wasting", "x": 40, "y": 45, "z": 3, "see": "The distal-tubule worker with Na+/K+/H+ exchange arrows.", "encodes": "Increased distal sodium delivery + aldosterone drives K+ and H+ secretion → worsening hypokalemia and alkalosis.", "trap": "Hypokalemia both causes and worsens metabolic alkalosis — fix the K+."}, {"label": "Exogenous alkali / milk-alkali", "x": 50, "y": 60, "z": 3, "see": "The man clutching a large ‘HCO3’ bottle.", "encodes": "Ingested alkali (bicarbonate, milk-alkali syndrome, massive citrate/transfusion) can generate alkalosis, especially with renal impairment.", "trap": "Milk-alkali = hypercalcemia + metabolic alkalosis + AKI from calcium/alkali intake."}, {"label": "Don't over-correct (caution)", "x": 50, "y": 15, "z": 3, "see": "The yellow caution sign with HCO3 / DKA tags at the top.", "encodes": "Watch for mixed pictures and overshoot; post-DKA or post-hypercapnia states can leave a metabolic alkalosis.", "trap": "A ‘normal’ pH can still hide a mixed disorder — check the gaps and compensation."}, {"label": "Saline-resistant: mineralocorticoid excess", "x": 73, "y": 30, "z": 3, "see": "The crowned figure labelled ‘ENaC’ on the red (resistant) side.", "encodes": "Excess mineralocorticoid (primary hyperaldosteronism, Cushing, Liddle) drives Na retention and K+/H+ loss → saline-resistant alkalosis (urine Cl > 20).", "trap": "These won't respond to saline — treat the underlying drive."}, {"label": "Hyperaldo → HTN + low K+", "x": 70, "y": 51, "z": 3, "see": "Gauges showing HIGH (pressure) and LOW (potassium) by the king.", "encodes": "Primary hyperaldosteronism: hypertension + hypokalemia + metabolic alkalosis, urine Cl > 20, low renin.", "trap": "Hypertensive + hypokalemic alkalosis = think primary hyperaldosteronism."}, {"label": "Spironolactone for aldo excess", "x": 78, "y": 62, "z": 3, "see": "The ‘SPIRONOLACTONE’ bottle on the resistant side.", "encodes": "Aldosterone-receptor blockers (spironolactone/eplerenone) treat mineralocorticoid-excess alkalosis.", "trap": "Works for aldosterone-driven causes — but NOT for Liddle (receptor-independent)."}, {"label": "Liddle → amiloride (not spironolactone)", "x": 88, "y": 45, "z": 3, "see": "The blocked ‘ENaC’ channel on the far right.", "encodes": "Liddle syndrome = constitutively active ENaC with LOW aldosterone/renin → use ENaC blockers (amiloride/triamterene).", "trap": "Spironolactone fails in Liddle because the channel is active independent of aldosterone."}, {"label": "Acetazolamide for volume-overloaded alkalosis", "x": 63, "y": 83, "z": 3, "see": "The ‘CHF’ cabinet with ‘ACETAZOLAMIDE’ and HCO3.", "encodes": "When you can't give saline (e.g. CHF / volume overload), acetazolamide induces bicarbonaturia to correct the alkalosis.", "trap": "Useful exactly when saline is contraindicated by volume status."}, {"label": "HCl infusion / dialysis = last resort", "x": 82, "y": 86, "z": 3, "see": "The ‘HCl SYRINGE — last resort’ at bottom-right.", "encodes": "Severe symptomatic alkalemia (pH > 7.55) may need HCl infusion or dialysis.", "trap": "Reserved for severe, refractory cases — not first-line."}];
 const META = {"title": "Acid–Base E — Metabolic Alkalosis (Contraction Corridor)", "image": "/Users/rimakhatib/Desktop/skts/electrolytes /acid_base/SCENE E — Metabolic Alkalosis  Setting- The Contraction Corridor.jpeg"};
@@ -147,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -217,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -231,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -249,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -283,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="scene_D.html" title="Acid–Base D — Renal Tubular Acidosis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="scene_F.html" title="Acid–Base F — Respiratory Acidosis &amp; Alkalosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Kidney Transplant — Immunosuppression by Signal (Management 1)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Induction graft gate</b> — Board trap: confusing induction with maintenance. Induction is a one-time peri-transplant burst (basiliximab/ATG), NOT the daily lifelong regimen. A stem asking 'which drug does the patient take indefinitely to prevent chronic rejection' is maintenance (tacrolimus + MMF + steroids), not an induction antibody.</li><li><b>ATG (depleting)</b> — Board trap: ATG-induced profound T-cell depletion is a classic CMV reactivation trigger — a febrile, leukopenic patient weeks after ATG for rejection is likely CMV, not 'expected ATG marrow effect' alone. Also, ATG (depleting) ≠ basiliximab (non-depleting); only the depleting agent is appropriate for established/steroid-resistant rejection.</li><li><b>Alemtuzumab</b> — Board trap: like ATG, alemtuzumab is depleting and immunosuppressively profound — answering that it is a 'mild, non-depleting' agent (the basiliximab role) is wrong. The prolonged lymphopenia means infection prophylaxis cannot be stopped early.</li><li><b>Basiliximab</b> — Board trap: basiliximab does NOT deplete T cells and cannot reverse an established/ongoing acute rejection — choosing basiliximab to TREAT acute cellular rejection is wrong (answer is pulse steroids, then ATG if steroid-resistant). It is induction/prophylaxis only.</li><li><b>Signal 1 — TCR/antigen</b> — Board trap: don't confuse Signal 1 (TCR/antigen, blocked downstream by CNIs at calcineurin) with Signal 2 (costimulation, blocked by belatacept). Mislabeling which signal a drug blocks is the core mechanism distractor in these questions.</li><li><b>Signal 2 — costimulation</b> — Board trap: belatacept is CONTRAINDICATED in EBV-seronegative recipients because of a markedly increased risk of EBV-driven post-transplant lymphoproliferative disorder (PTLD), particularly CNS PTLD. Selecting belatacept for an EBV-naive patient is a classic wrong answer; check EBV serostatus first.</li><li><b>Calcineurin gorge</b> — Board trap: tacrolimus (FK-506) is preferred over cyclosporine as first-line CNI — choosing cyclosporine as the modern default is wrong. Distinguish their toxicities: tacrolimus → neurotoxicity (tremor), new-onset diabetes, alopecia; cyclosporine → gingival hyperplasia, hirsutism, hyperlipidemia. A rising Cr with a high tac level = CNI nephrotoxicity (reduce dose), NOT rejection (don't escalate).</li><li><b>IL-2 receptor / mTOR tower</b> — Board trap: don't conflate the two ways to hit this axis. Basiliximab blocks the IL-2 RECEPTOR (induction, non-depleting); sirolimus blocks mTOR (the downstream proliferation signal). Both touch IL-2 signaling but at different points and for different roles.</li><li><b>Sirolimus / everolimus</b> — Board trap: AVOID mTOR inhibitors in the immediate peri-operative period — impaired wound healing causes dehiscence and lymphocele; substituting sirolimus on day 0 is wrong (use a CNI-based regimen, switch later). Also, sirolimus is a recognized cause of new/worsening proteinuria — don't reflexively call that proteinuria 'rejection.'</li><li><b>Purine forge — DNA block</b> — Board trap: antimetabolites are maintenance agents that suppress proliferation, not rapid-acting rescue drugs — they do not treat acute rejection (that's pulse steroids/ATG). Their main acute issue is myelosuppression, so a pancytopenic transplant patient should prompt review of MMF/azathioprine dosing and interactions.</li><li><b>Mycophenolate</b> — Board trap: MMF is TERATOGENIC (first-trimester loss, ear/facial malformations) and must be stopped and switched (e.g., to azathioprine) before conception — continuing MMF in a patient planning pregnancy is wrong. Also, new diarrhea in a transplant patient is often MMF, but CMV colitis must be excluded before simply attributing it to the drug.</li><li><b>Azathioprine</b> — Board trap: allopurinol (xanthine oxidase inhibitor) blocks azathioprine catabolism → toxic accumulation and life-threatening pancytopenia; giving full-dose azathioprine with allopurinol (or febuxostat) is a classic fatal-interaction wrong answer — reduce azathioprine ~75% or switch agents. Also remember azathioprine, not MMF, is the antimetabolite of choice in pregnancy.</li><li><b>Steroids moon</b> — Board trap: high-dose pulse IV methylprednisolone is first-line for acute CELLULAR (T-cell-mediated) rejection — but steroids alone are inadequate for antibody-mediated rejection (needs plasmapheresis/IVIG ± rituximab). Don't treat a C4d+/DSA+ ABMR with steroid pulses alone.</li><li><b>Workhorse regimen band</b> — Board trap: the default maintenance answer is tacrolimus + mycophenolate + prednisone — substituting an induction antibody (basiliximab/ATG) into the lifelong regimen, or naming cyclosporine as first-line CNI, is wrong. Equally, forgetting that maintenance patients need PJP (TMP-SMX) and CMV prophylaxis is a common omission.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Induction graft gate</div><div class="rte">Induction is intense immunosuppression given at the time of transplant (day 0, peri-operatively) to blunt the strong early alloimmune response and prevent acute rejection during the highest-risk first weeks. Agents are antibody-based: depleting (ATG, alemtuzumab) for high immunologic risk, or non-depleting (basiliximab) for standard/low risk. Induction also permits lower/delayed calcineurin inhibitor dosing early on. Mnemonic: induction = brief, intense 'gatekeeper'; maintenance = lifelong, lower-intensity defense.</div><div class="rtt">⚠️ Board trap: confusing induction with maintenance. Induction is a one-time peri-transplant burst (basiliximab/ATG), NOT the daily lifelong regimen. A stem asking 'which drug does the patient take indefinitely to prevent chronic rejection' is maintenance (tacrolimus + MMF + steroids), not an induction antibody.</div></div><div class="rt"><div class="rtl">2. ATG (depleting)</div><div class="rte">Anti-thymocyte globulin (ATG, typically rabbit/Thymoglobulin) is a polyclonal antibody that profoundly DEPLETES circulating T cells; used as induction in high immunologic risk (high PRA, D/R sensitization, repeat transplant, delayed graft function) and as treatment for steroid-resistant acute cellular rejection. Side effects: cytokine-release syndrome (premedicate with steroids/antihistamine/acetaminophen), leukopenia/thrombocytopenia, serum sickness, and markedly increased CMV/EBV/PTLD risk requiring prophylaxis.</div><div class="rtt">⚠️ Board trap: ATG-induced profound T-cell depletion is a classic CMV reactivation trigger — a febrile, leukopenic patient weeks after ATG for rejection is likely CMV, not 'expected ATG marrow effect' alone. Also, ATG (depleting) ≠ basiliximab (non-depleting); only the depleting agent is appropriate for established/steroid-resistant rejection.</div></div><div class="rt"><div class="rtl">3. Alemtuzumab</div><div class="rte">Alemtuzumab is a monoclonal anti-CD52 antibody that causes prolonged depletion of T and B lymphocytes (and monocytes/NK cells); used as a potent depleting induction agent, sometimes allowing steroid- or CNI-minimization protocols. Because lymphocyte recovery is slow, it carries a sustained risk of opportunistic infection (CMV, PJP, fungal) mandating prolonged prophylaxis. CD52 is the target shared with its use in MS and CLL.</div><div class="rtt">⚠️ Board trap: like ATG, alemtuzumab is depleting and immunosuppressively profound — answering that it is a 'mild, non-depleting' agent (the basiliximab role) is wrong. The prolonged lymphopenia means infection prophylaxis cannot be stopped early.</div></div><div class="rt"><div class="rtl">4. Basiliximab</div><div class="rte">Basiliximab is a monoclonal antibody against CD25 (the IL-2 receptor alpha chain) that blocks IL-2-driven T-cell proliferation WITHOUT depleting T cells; it is the standard NON-depleting induction agent for low/standard immunologic risk recipients. It is very well tolerated (no cytokine-release syndrome, no added CMV/PTLD burden beyond baseline), but it is purely preventive and has no role in treating established rejection.</div><div class="rtt">⚠️ Board trap: basiliximab does NOT deplete T cells and cannot reverse an established/ongoing acute rejection — choosing basiliximab to TREAT acute cellular rejection is wrong (answer is pulse steroids, then ATG if steroid-resistant). It is induction/prophylaxis only.</div></div><div class="rt"><div class="rtl">5. Signal 1 — TCR/antigen</div><div class="rte">Signal 1 is antigen recognition: the antigen-presenting cell displays donor MHC/peptide to the T-cell receptor (TCR)-CD3 complex, initiating T-cell activation. Downstream this raises intracellular calcium, activating calcineurin → NFAT → IL-2 transcription. Calcineurin inhibitors (tacrolimus, cyclosporine) and steroids act on this proximal arm. Mnemonic: 'Signal 1 = the antigen handshake at the TCR.'</div><div class="rtt">⚠️ Board trap: don't confuse Signal 1 (TCR/antigen, blocked downstream by CNIs at calcineurin) with Signal 2 (costimulation, blocked by belatacept). Mislabeling which signal a drug blocks is the core mechanism distractor in these questions.</div></div><div class="rt"><div class="rtl">6. Signal 2 — costimulation</div><div class="rte">Signal 2 is costimulation: T-cell CD28 binding APC B7 (CD80/CD86) is required for full activation; without it, the T cell becomes anergic. Belatacept is a CTLA-4–Ig fusion protein that outcompetes CD28 for B7, blocking costimulation; it is a CNI-sparing maintenance option that avoids nephrotoxicity but requires IV infusions. Mnemonic: 'Signal 2 = CD28/B7 handshake; belatacept = the CTLA-4 decoy.'</div><div class="rtt">⚠️ Board trap: belatacept is CONTRAINDICATED in EBV-seronegative recipients because of a markedly increased risk of EBV-driven post-transplant lymphoproliferative disorder (PTLD), particularly CNS PTLD. Selecting belatacept for an EBV-naive patient is a classic wrong answer; check EBV serostatus first.</div></div><div class="rt"><div class="rtl">7. Calcineurin gorge</div><div class="rte">Calcineurin inhibitors (CNIs) bind immunophilins (tacrolimus→FKBP-12; cyclosporine→cyclophilin) to inhibit calcineurin, preventing NFAT dephosphorylation and thus blocking IL-2 transcription — the backbone of maintenance therapy. Tacrolimus is first-line (more potent, lower acute rejection). Both are nephrotoxic (afferent arteriolar vasoconstriction) and need therapeutic drug monitoring; both are metabolized by CYP3A4 (azoles, diltiazem raise levels; rifampin lowers them).</div><div class="rtt">⚠️ Board trap: tacrolimus (FK-506) is preferred over cyclosporine as first-line CNI — choosing cyclosporine as the modern default is wrong. Distinguish their toxicities: tacrolimus → neurotoxicity (tremor), new-onset diabetes, alopecia; cyclosporine → gingival hyperplasia, hirsutism, hyperlipidemia. A rising Cr with a high tac level = CNI nephrotoxicity (reduce dose), NOT rejection (don't escalate).</div></div><div class="rt"><div class="rtl">8. IL-2 receptor / mTOR tower</div><div class="rte">Once IL-2 is produced (downstream of Signal 1/calcineurin), it binds the IL-2 receptor (CD25) and activates the PI3K/mTOR pathway that drives clonal T-cell proliferation — 'Signal 3.' This axis is the target of two distinct drug classes: basiliximab blocks the IL-2 receptor (CD25) extracellularly, while sirolimus/everolimus block mTOR intracellularly. Mnemonic: IL-2 = the growth command, mTOR = the proliferation engine.</div><div class="rtt">⚠️ Board trap: don't conflate the two ways to hit this axis. Basiliximab blocks the IL-2 RECEPTOR (induction, non-depleting); sirolimus blocks mTOR (the downstream proliferation signal). Both touch IL-2 signaling but at different points and for different roles.</div></div><div class="rt"><div class="rtl">9. Sirolimus / everolimus</div><div class="rte">mTOR inhibitors (sirolimus, everolimus) bind FKBP-12 and inhibit mTOR, blocking IL-2-driven T-cell proliferation; they are CNI-sparing and notably antiproliferative/antineoplastic (reduce skin cancer and Kaposi sarcoma). Characteristic side effects: impaired wound healing, mouth ulcers, proteinuria, hyperlipidemia, pneumonitis, and cytopenias. They are favored when malignancy (e.g., recurrent skin cancer) is a concern.</div><div class="rtt">⚠️ Board trap: AVOID mTOR inhibitors in the immediate peri-operative period — impaired wound healing causes dehiscence and lymphocele; substituting sirolimus on day 0 is wrong (use a CNI-based regimen, switch later). Also, sirolimus is a recognized cause of new/worsening proteinuria — don't reflexively call that proteinuria 'rejection.'</div></div><div class="rt"><div class="rtl">10. Purine forge — DNA block</div><div class="rte">Antimetabolites inhibit purine/DNA synthesis, suppressing proliferation of both T and B lymphocytes (which depend on de novo purine synthesis). This is the third pillar of triple maintenance therapy alongside a CNI and steroids. The two drugs are mycophenolate (inhibits IMPDH, the rate-limiting de novo purine enzyme) and azathioprine (a purine analog activated to thioguanine nucleotides).</div><div class="rtt">⚠️ Board trap: antimetabolites are maintenance agents that suppress proliferation, not rapid-acting rescue drugs — they do not treat acute rejection (that's pulse steroids/ATG). Their main acute issue is myelosuppression, so a pancytopenic transplant patient should prompt review of MMF/azathioprine dosing and interactions.</div></div><div class="rt"><div class="rtl">11. Mycophenolate</div><div class="rte">Mycophenolate mofetil (MMF) is hydrolyzed to mycophenolic acid, a reversible inhibitor of inosine monophosphate dehydrogenase (IMPDH), selectively blocking de novo purine synthesis on which lymphocytes rely — it is the FIRST-LINE maintenance antimetabolite. Side effects: dose-limiting GI toxicity (diarrhea, nausea — enteric-coated form helps) and myelosuppression (leukopenia). No TPMT issue and no allopurinol interaction (unlike azathioprine).</div><div class="rtt">⚠️ Board trap: MMF is TERATOGENIC (first-trimester loss, ear/facial malformations) and must be stopped and switched (e.g., to azathioprine) before conception — continuing MMF in a patient planning pregnancy is wrong. Also, new diarrhea in a transplant patient is often MMF, but CMV colitis must be excluded before simply attributing it to the drug.</div></div><div class="rt"><div class="rtl">12. Azathioprine</div><div class="rte">Azathioprine is an older antimetabolite, a prodrug converted to 6-mercaptopurine and then thioguanine nucleotides that incorporate into DNA; inactivation is via thiopurine methyltransferase (TPMT) and xanthine oxidase. Low/absent TPMT activity → severe myelosuppression (check TPMT before use). It is the preferred antimetabolite in pregnancy (safer than MMF). Main toxicities: dose-dependent myelosuppression and hepatotoxicity.</div><div class="rtt">⚠️ Board trap: allopurinol (xanthine oxidase inhibitor) blocks azathioprine catabolism → toxic accumulation and life-threatening pancytopenia; giving full-dose azathioprine with allopurinol (or febuxostat) is a classic fatal-interaction wrong answer — reduce azathioprine ~75% or switch agents. Also remember azathioprine, not MMF, is the antimetabolite of choice in pregnancy.</div></div><div class="rt"><div class="rtl">13. Steroids moon</div><div class="rte">Corticosteroids (prednisone for maintenance, IV methylprednisolone for pulses) are broad immunosuppressants that inhibit NF-κB, reducing macrophage/T-cell cytokine production (IL-1, IL-2, IL-6, TNF) and lymphocyte trafficking. They serve in all three roles: induction adjunct, low-dose maintenance, and FIRST-LINE pulse therapy for acute cellular rejection. Chronic toxicities: hyperglycemia, osteoporosis/avascular necrosis, infection, weight gain, cataracts, adrenal suppression.</div><div class="rtt">⚠️ Board trap: high-dose pulse IV methylprednisolone is first-line for acute CELLULAR (T-cell-mediated) rejection — but steroids alone are inadequate for antibody-mediated rejection (needs plasmapheresis/IVIG ± rituximab). Don't treat a C4d+/DSA+ ABMR with steroid pulses alone.</div></div><div class="rt"><div class="rtl">14. Workhorse regimen band</div><div class="rte">Standard long-term maintenance is TRIPLE therapy targeting different points of the activation cascade: a calcineurin inhibitor (tacrolimus, Signal 1/IL-2 transcription) + an antimetabolite (mycophenolate, DNA/purine synthesis) + low-dose steroid (broad cytokine suppression). Layering mechanisms maximizes efficacy while limiting any single drug's toxicity. Reflex regimen for the boards: 'tacrolimus + MMF + prednisone.' Don't forget concurrent prophylaxis (TMP-SMX for PJP, valganciclovir for CMV).</div><div class="rtt">⚠️ Board trap: the default maintenance answer is tacrolimus + mycophenolate + prednisone — substituting an induction antibody (basiliximab/ATG) into the lifelong regimen, or naming cyclosporine as first-line CNI, is wrong. Equally, forgetting that maintenance patients need PJP (TMP-SMX) and CMV prophylaxis is a common omission.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ktx_cni.html" title="Kidney Transplant — Drug Toxicities, Nephrotoxicity &amp; CYP3A (Management 2)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="ktx_posttransplant.html" title="Kidney Transplant — Peri-op to 2 Weeks Post-Transplant">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

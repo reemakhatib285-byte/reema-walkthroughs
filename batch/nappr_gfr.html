@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Approach — GFR &amp; Estimation (creatinine, cystatin C, eGFR equations)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Inulin / iothalamate gold standard</b> — Tempting wrong answer: 'creatinine clearance equals true GFR, so use 24h CrCl as the gold standard.' Discriminator: creatinine is filtered AND actively secreted by the proximal tubule (organic cation pathway), so CrCl OVERestimates true GFR by ~10-20% (more as GFR falls). Only inulin/iothalamate (filtered-only) give true GFR.</li><li><b>Why inulin removed</b> — Tempting wrong answer: 'always get a formal measured GFR before diagnosing CKD.' Discriminator: routine practice uses eGFR (CKD-EPI) confirmed over ≥3 months for CKD; measured GFR is only ordered for the specific high-stakes scenarios above (donor evaluation, near-threshold decisions, atypical body composition).</li><li><b>PCr rises in chronic CKD</b> — Tempting wrong answer: 'a creatinine in the normal range rules out significant CKD.' Discriminator: serum creatinine has a wide reserve and depends on muscle mass — a frail elderly patient or amputee can have advanced CKD with a 'normal' creatinine. Always convert to eGFR and interpret with body composition.</li><li><b>Acute process curve</b> — Tempting wrong answer: 'plug today's creatinine into CKD-EPI to dose drugs in an AKI patient.' Discriminator: in unstable AKI the eGFR is meaningless — a rising creatinine means GFR is already much lower than the number suggests, and a falling creatinine during recovery means it's higher. Dose nephrotoxic/renally-cleared drugs conservatively and re-check trends, don't trust a point eGFR.</li><li><b>Muscle mass false high eGFR</b> — Tempting wrong answer: 'this bodybuilder's low eGFR means CKD — start nephrology workup.' Discriminator: his high creatinine reflects muscle, not renal impairment. Confirm with a cystatin-C-based eGFR (muscle-independent); if normal, true GFR is fine.</li><li><b>Muscle loss masks low GFR</b> — Tempting wrong answer: 'this 85-year-old's creatinine is 0.9, so renal function is preserved — full-dose the renally cleared drug.' Discriminator: a 'normal' creatinine in a low-muscle elderly patient can hide stage 3-4 CKD. Estimate with cystatin C or Cockcroft-Gault using actual weight, and dose-reduce accordingly.</li><li><b>Dietary creatine spike</b> — Tempting wrong answer: 'creatinine jumped after dinner — the patient developed AKI.' Discriminator: a dietary/supplement creatine load causes a transient creatinine rise with no fall in GFR and no oliguria; recheck a fasting sample and it normalizes. Don't confuse it with true AKI.</li><li><b>Secretion / leaky valve</b> — Tempting wrong answer: 'patient started TMP-SMX (or cimetidine) and creatinine rose — that's nephrotoxic AKI, stop the drug.' Discriminator: trimethoprim/cimetidine cause an isolated creatinine rise by blocking tubular SECRETION, with no change in true GFR (cystatin C and BUN stay flat, no other AKI markers). It's a benign pseudo-elevation, not true injury.</li><li><b>PCr overestimates in advanced CKD</b> — Tempting wrong answer: 'use 24h creatinine clearance to decide on dialysis timing in stage 5 CKD.' Discriminator: at very low GFR, CrCl overestimates true GFR (secretion fraction is large); rely on eGFR (CKD-EPI), symptoms, and measured GFR rather than CrCl for dialysis decisions.</li><li><b>Cystatin C</b> — Tempting wrong answer: 'cystatin C is a perfect, confounder-free GFR marker.' Discriminator: cystatin C is FALSELY RAISED (eGFR falsely low) by corticosteroids, hyper/hypothyroidism, active inflammation/high CRP, obesity, malignancy, and smoking. When these are present, neither marker is clean — use a measured GFR.</li><li><b>Cockcroft-Gault</b> — Tempting wrong answer: 'use the lab's CKD-EPI eGFR (mL/min/1.73m²) directly for renal drug dosing.' Discriminator: many drug-dosing thresholds were derived from Cockcroft-Gault CrCl (mL/min, not BSA-normalized). For drug dosing, especially at extremes of body size, use Cockcroft-Gault with the appropriate weight — the units and normalization differ from eGFR.</li><li><b>MDRD 4-variable</b> — Tempting wrong answer: 'a normal MDRD eGFR confirms normal kidney function.' Discriminator: MDRD is unreliable above 60 — it underestimates and was capped at '&gt;60,' so it cannot confirm a precisely normal GFR. Use CKD-EPI to characterize near-normal function.</li><li><b>CKD-EPI most accurate</b> — Tempting wrong answer: 'one CKD-EPI eGFR of 55 diagnoses CKD.' Discriminator: CKD requires the abnormality (eGFR &lt;60 or markers of damage such as albuminuria/hematuria/imaging) to PERSIST for ≥3 months — a single low value during illness or AKI does not diagnose chronic disease.</li><li><b>Combined eGFR (Cr + cystatin C)</b> — Tempting wrong answer: 'the combined equation is immune to confounders, so it's always exact.' Discriminator: if BOTH markers are confounded in the same direction (e.g., a cachectic patient on steroids — low muscle lowers creatinine while steroids raise cystatin C), the combined estimate is still off; in that case obtain a measured GFR.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Inulin / iothalamate gold standard</div><div class="rte">True GFR is the volume of plasma cleared of a marker per unit time (normal ~120 mL/min/1.73m²). The ideal marker is freely filtered at the glomerulus and NEITHER reabsorbed NOR secreted by the tubule, so its clearance equals GFR exactly. Inulin (a plant polysaccharide given by continuous infusion) is the historic gold standard; iothalamate, iohexol, and ⁵¹Cr-EDTA are the modern reference (mGFR) methods used in research and transplant donor evaluation. Mnemonic — the perfect marker is 'filtered, not touched again.'</div><div class="rtt">⚠️ Tempting wrong answer: 'creatinine clearance equals true GFR, so use 24h CrCl as the gold standard.' Discriminator: creatinine is filtered AND actively secreted by the proximal tubule (organic cation pathway), so CrCl OVERestimates true GFR by ~10-20% (more as GFR falls). Only inulin/iothalamate (filtered-only) give true GFR.</div></div><div class="rt"><div class="rtl">2. Why inulin removed</div><div class="rte">Measured GFR with inulin/iothalamate requires timed infusions and serial blood/urine sampling — too cumbersome and costly for routine care, so we ESTIMATE GFR from serum markers. mGFR is reserved for situations where precision changes management: living-kidney-donor evaluation, transplant waitlist timing, GFR near a treatment threshold, extremes of body habitus, or chemotherapy dosing. The tradeoff of estimating is potential overdiagnosis of CKD and drug-dosing errors when the estimate is off. Mnemonic — 'measure when the number must be exact; estimate for everyday care.'</div><div class="rtt">⚠️ Tempting wrong answer: 'always get a formal measured GFR before diagnosing CKD.' Discriminator: routine practice uses eGFR (CKD-EPI) confirmed over ≥3 months for CKD; measured GFR is only ordered for the specific high-stakes scenarios above (donor evaluation, near-threshold decisions, atypical body composition).</div></div><div class="rt"><div class="rtl">3. PCr rises in chronic CKD</div><div class="rte">In a steady state, creatinine production (from muscle) equals excretion, so serum creatinine inversely tracks GFR. Plotted as creatinine vs GFR the curve is hyperbolic, but the eGFR equations linearize the relationship for stable CKD. Crucially, because the curve is steep at high GFR, creatinine can stay 'normal' until ~50% of nephron function is lost — early CKD hides behind a normal creatinine. Mnemonic — 'creatinine is a lazy alarm; it only rings after half the kidney is gone.'</div><div class="rtt">⚠️ Tempting wrong answer: 'a creatinine in the normal range rules out significant CKD.' Discriminator: serum creatinine has a wide reserve and depends on muscle mass — a frail elderly patient or amputee can have advanced CKD with a 'normal' creatinine. Always convert to eGFR and interpret with body composition.</div></div><div class="rt"><div class="rtl">4. Acute process curve</div><div class="rte">eGFR equations assume a STEADY STATE (production = excretion). In AKI, creatinine has not yet equilibrated to the new GFR, so a single value lags far behind real-time function — a patient whose GFR just crashed to near-zero may still show a near-normal creatinine for 24-48h. Therefore eGFR (CKD-EPI/MDRD) is INVALID during acute or rapidly changing kidney function; trend serial creatinines and urine output instead. Mnemonic — 'eGFR equations only work when the creatinine is sitting still.'</div><div class="rtt">⚠️ Tempting wrong answer: 'plug today's creatinine into CKD-EPI to dose drugs in an AKI patient.' Discriminator: in unstable AKI the eGFR is meaningless — a rising creatinine means GFR is already much lower than the number suggests, and a falling creatinine during recovery means it's higher. Dose nephrotoxic/renally-cleared drugs conservatively and re-check trends, don't trust a point eGFR.</div></div><div class="rt"><div class="rtl">5. Muscle mass false high eGFR</div><div class="rte">Creatinine is generated from creatine in skeletal muscle, so production scales with muscle mass. A heavily muscular patient (bodybuilder, young athletic male) generates more creatinine at any given GFR, so the creatinine-based eGFR reads FALSELY LOW (underestimates true GFR). The same applies to high creatine/protein supplement use. Use cystatin C or measured GFR when muscle mass is atypical. Mnemonic — 'big muscles → big creatinine → falsely small eGFR.'</div><div class="rtt">⚠️ Tempting wrong answer: 'this bodybuilder's low eGFR means CKD — start nephrology workup.' Discriminator: his high creatinine reflects muscle, not renal impairment. Confirm with a cystatin-C-based eGFR (muscle-independent); if normal, true GFR is fine.</div></div><div class="rt"><div class="rtl">6. Muscle loss masks low GFR</div><div class="rte">Low muscle mass means low creatinine generation, so the elderly, cachectic, malnourished, cirrhotic, amputees, and patients with neuromuscular wasting produce little creatinine. Their serum creatinine and creatinine-based eGFR read FALSELY HIGH (overestimate GFR), masking genuinely reduced renal function. This causes systematic overdosing of renally cleared drugs in frail patients. Use cystatin C or measured GFR. Mnemonic — 'thin muscle → low creatinine → kidney looks better than it is.'</div><div class="rtt">⚠️ Tempting wrong answer: 'this 85-year-old's creatinine is 0.9, so renal function is preserved — full-dose the renally cleared drug.' Discriminator: a 'normal' creatinine in a low-muscle elderly patient can hide stage 3-4 CKD. Estimate with cystatin C or Cockcroft-Gault using actual weight, and dose-reduce accordingly.</div></div><div class="rt"><div class="rtl">7. Dietary creatine spike</div><div class="rte">Cooked meat contains preformed creatinine (cooking converts creatine to creatinine), and creatine supplements raise the substrate pool — both transiently raise serum creatinine for several hours after a large meat meal WITHOUT any change in GFR. This is why fasting/standardized morning samples are preferred and why a single post-meal value can mislead. Mnemonic — 'a steak dinner spikes the creatinine, not the kidney.'</div><div class="rtt">⚠️ Tempting wrong answer: 'creatinine jumped after dinner — the patient developed AKI.' Discriminator: a dietary/supplement creatine load causes a transient creatinine rise with no fall in GFR and no oliguria; recheck a fasting sample and it normalizes. Don't confuse it with true AKI.</div></div><div class="rt"><div class="rtl">8. Secretion / leaky valve</div><div class="rte">Beyond filtration, the proximal tubule actively secretes creatinine into the urine via organic cation transporters (OCT2) and MATE pumps. This 'extra' secreted creatinine means creatinine clearance overestimates true GFR. Drugs that block these transporters — trimethoprim, cimetidine, and also dronedarone, ritonavir/cobicistat — reduce secretion and raise serum creatinine WITHOUT lowering true GFR (a pseudo-AKI). Mnemonic — 'the tubule leaks extra creatinine out; block the leak and creatinine backs up.'</div><div class="rtt">⚠️ Tempting wrong answer: 'patient started TMP-SMX (or cimetidine) and creatinine rose — that's nephrotoxic AKI, stop the drug.' Discriminator: trimethoprim/cimetidine cause an isolated creatinine rise by blocking tubular SECRETION, with no change in true GFR (cystatin C and BUN stay flat, no other AKI markers). It's a benign pseudo-elevation, not true injury.</div></div><div class="rt"><div class="rtl">9. PCr overestimates in advanced CKD</div><div class="rte">As GFR falls in advanced CKD, tubular secretion of creatinine and extrarenal (gut bacterial) elimination become a LARGER proportion of total creatinine clearance. Consequently creatinine-based CrCl increasingly overestimates true GFR at low GFR — the sicker the kidney, the more the secreted fraction inflates the apparent clearance. This is one reason equations were developed and why cystatin C or measured GFR is preferred near dialysis thresholds. Mnemonic — 'low GFR → secretion dominates → creatinine flatters the kidney.'</div><div class="rtt">⚠️ Tempting wrong answer: 'use 24h creatinine clearance to decide on dialysis timing in stage 5 CKD.' Discriminator: at very low GFR, CrCl overestimates true GFR (secretion fraction is large); rely on eGFR (CKD-EPI), symptoms, and measured GFR rather than CrCl for dialysis decisions.</div></div><div class="rt"><div class="rtl">10. Cystatin C</div><div class="rte">Cystatin C is a low-molecular-weight protein produced at a constant rate by ALL nucleated cells, freely filtered and then fully metabolized by the tubule (so no urinary clearance is measured). Because production is independent of muscle mass, age, sex, and diet, it is a superior GFR marker when body composition is atypical (very muscular, cachectic, elderly, amputees) and detects 'CKD-G' that creatinine misses. A combined creatinine + cystatin C eGFR is the most accurate non-invasive estimate. Mnemonic — 'cystatin C ignores muscle and counts only the kidney.'</div><div class="rtt">⚠️ Tempting wrong answer: 'cystatin C is a perfect, confounder-free GFR marker.' Discriminator: cystatin C is FALSELY RAISED (eGFR falsely low) by corticosteroids, hyper/hypothyroidism, active inflammation/high CRP, obesity, malignancy, and smoking. When these are present, neither marker is clean — use a measured GFR.</div></div><div class="rt"><div class="rtl">11. Cockcroft-Gault</div><div class="rte">Cockcroft-Gault: CrCl = [(140 − age) × weight(kg)] / (72 × serum Cr) × 0.85 if female. It estimates creatinine CLEARANCE (not GFR), incorporates age, weight, and sex, and remains the equation many drug package inserts and renal dosing references are validated against. It is NOT body-surface-area normalized (no /1.73m²) and uses actual/ideal/adjusted body weight depending on habitus. Mnemonic — 'Cockcroft-Gault for drug doses; CKD-EPI for staging.'</div><div class="rtt">⚠️ Tempting wrong answer: 'use the lab's CKD-EPI eGFR (mL/min/1.73m²) directly for renal drug dosing.' Discriminator: many drug-dosing thresholds were derived from Cockcroft-Gault CrCl (mL/min, not BSA-normalized). For drug dosing, especially at extremes of body size, use Cockcroft-Gault with the appropriate weight — the units and normalization differ from eGFR.</div></div><div class="rt"><div class="rtl">12. MDRD 4-variable</div><div class="rte">The 4-variable MDRD equation (age, sex, race, creatinine) was derived in a CKD population, so it performs reasonably at GFR &lt;60 but systematically UNDERestimates GFR at higher/near-normal values (and historically reported '&gt;60' rather than a precise number). It has been largely superseded by CKD-EPI, which is more accurate across the full range. Mnemonic — 'MDRD = Made for Diseased kidneys (low GFR only).'</div><div class="rtt">⚠️ Tempting wrong answer: 'a normal MDRD eGFR confirms normal kidney function.' Discriminator: MDRD is unreliable above 60 — it underestimates and was capped at '&gt;60,' so it cannot confirm a precisely normal GFR. Use CKD-EPI to characterize near-normal function.</div></div><div class="rt"><div class="rtl">13. CKD-EPI most accurate</div><div class="rte">CKD-EPI is the guideline-preferred eGFR equation and is more accurate than MDRD across the whole GFR range, especially at near-normal values. The 2021 race-free refit removed the race coefficient; creatinine-based, cystatin-C-based, and combined versions exist. Confirming an eGFR &lt;60 mL/min/1.73m² persistently for ≥3 months (with markers like albuminuria) defines and stages CKD (G1-G5). Mnemonic — 'CKD-EPI is the default; combined Cr+cystatin is the most accurate.'</div><div class="rtt">⚠️ Tempting wrong answer: 'one CKD-EPI eGFR of 55 diagnoses CKD.' Discriminator: CKD requires the abnormality (eGFR &lt;60 or markers of damage such as albuminuria/hematuria/imaging) to PERSIST for ≥3 months — a single low value during illness or AKI does not diagnose chronic disease.</div></div><div class="rt"><div class="rtl">14. Combined eGFR (Cr + cystatin C)</div><div class="rte">The CKD-EPI creatinine–cystatin C equation averages two independent markers and is the most accurate routinely available eGFR, recommended when a creatinine-only estimate is uncertain or when a precise number changes management (e.g., the eGFR sits near a treatment/eligibility threshold, atypical body composition, or before nephrotoxic chemotherapy). It hedges against each marker's confounders. Mnemonic — 'when one marker lies, average two.'</div><div class="rtt">⚠️ Tempting wrong answer: 'the combined equation is immune to confounders, so it's always exact.' Discriminator: if BOTH markers are confounded in the same direction (e.g., a cachectic patient on steroids — low muscle lowers creatinine while steroids raise cystatin C), the combined estimate is still off; in that case obtain a measured GFR.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nappr_azotemia.html" title="Renal Approach — Azotemia / Uremia Overview (Pre/Intra/Post-renal &amp; BUN:Cr)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nappr_hematuria.html" title="Renal Approach — Hematuria (glomerular vs urologic, casts, malignancy workup)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

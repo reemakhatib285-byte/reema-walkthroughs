@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pneumonia/Abscess — VAP Prevention &amp; ICU/Severe CAP</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>10</em></summary><ol class="traps"><li><b>Avoid intubation</b> — VAP prevention is mostly about ventilator days, not antibiotics — prophylactic systemic antibiotics do NOT prevent VAP and breed resistance.</li><li><b>NIV / non-invasive</b> — NIV is contraindicated with depressed consciousness, copious secretions, hemodynamic instability, or facial trauma — forcing NIV in a patient who needs intubation risks aspiration and delayed definitive airway.</li><li><b>Head of bed &gt;30°</b> — Flat/supine positioning increases aspiration and VAP — being supine is the wrong answer when asked how to position a ventilated patient.</li><li><b>Hand hygiene</b> — When a question asks the most effective measure to prevent nosocomial infection spread overall, the answer is hand hygiene — not gloves, gowns, or antibiotics.</li><li><b>Avoid prolonged ETT</b> — Don't pursue early tracheostomy purely to prevent VAP — routine early trach has not been shown to reduce VAP or mortality versus standard extubation timing.</li><li><b>Severe CAP — major/minor</b> — A single major criterion (mechanical ventilation OR septic shock) is enough for ICU — you do not also need minor criteria when a major one is present.</li><li><b>≥3 minor criteria</b> — Don't confuse the IDSA/ATS minor criteria (≥3 → ICU) with CURB-65 (≥2 → admit, ≥3 → consider ICU) — they are different tools and boards test mixing them up.</li><li><b>CRP / inflammation</b> — Steroids help severe CAP but are HARMFUL in influenza pneumonia (increased mortality/secondary infection) — don't give routine steroids for flu-driven pneumonia.</li><li><b>CHF mimic trap</b> — Bilateral infiltrate + dyspnea isn't always pneumonia — consider CHF and ARDS; treating volume-overload edema with antibiotics alone misses the diagnosis.</li><li><b>Pleural effusion drained</b> — Pleural fluid pH &lt;7.2 (or pus/positive Gram stain) mandates chest-tube drainage — managing an empyema with antibiotics alone is a classic wrong answer.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Avoid intubation</div><div class="rte">The single most effective VAP-prevention strategy is to avoid the endotracheal tube entirely or remove it as early as safely possible — VAP risk is roughly 1-3% per ventilator-day, highest in the first week. The ETT bypasses upper-airway defenses, props the glottis open, and lets a biofilm of secretions pool above the cuff and leak into the lower airway.</div><div class="rtt">⚠️ VAP prevention is mostly about ventilator days, not antibiotics — prophylactic systemic antibiotics do NOT prevent VAP and breed resistance.</div></div><div class="rt"><div class="rtl">2. NIV / non-invasive</div><div class="rte">Non-invasive ventilation (CPAP/BiPAP) avoids the ETT and its VAP risk; it is first-line in COPD exacerbation and cardiogenic pulmonary edema. By keeping the natural airway defenses intact, NIV markedly lowers nosocomial pneumonia versus invasive ventilation.</div><div class="rtt">⚠️ NIV is contraindicated with depressed consciousness, copious secretions, hemodynamic instability, or facial trauma — forcing NIV in a patient who needs intubation risks aspiration and delayed definitive airway.</div></div><div class="rt"><div class="rtl">3. Daily sedation hold</div><div class="rte">Daily "sedation vacations" (spontaneous awakening trials) paired with spontaneous breathing trials are core ABCDE/ventilator-bundle elements that shorten ventilation, ICU stay, and therefore VAP. Lighter sedation lets patients clear secretions and pass extubation readiness sooner.</div></div><div class="rt"><div class="rtl">4. Subglottic drainage</div><div class="rte">Specialized ETTs with a dorsal lumen for continuous/intermittent subglottic secretion drainage remove the pooled, bacteria-laden secretions above the cuff that would otherwise micro-aspirate past it — proven to reduce VAP incidence and recommended for patients expected to be ventilated &gt;48-72h.</div></div><div class="rt"><div class="rtl">5. Head of bed &gt;30°</div><div class="rte">Semi-recumbent positioning at 30-45° (vs supine) uses gravity to reduce gastroesophageal reflux and micro-aspiration of gastric/oropharyngeal contents — a simple, free, evidence-based bundle element.</div><div class="rtt">⚠️ Flat/supine positioning increases aspiration and VAP — being supine is the wrong answer when asked how to position a ventilated patient.</div></div><div class="rt"><div class="rtl">6. Hand hygiene</div><div class="rte">Hand hygiene is the single most effective infection-control measure for preventing healthcare-associated transmission of MDR pathogens, including those causing VAP. Alcohol-based rubs before/after every patient contact interrupt cross-contamination from staff hands.</div><div class="rtt">⚠️ When a question asks the most effective measure to prevent nosocomial infection spread overall, the answer is hand hygiene — not gloves, gowns, or antibiotics.</div></div><div class="rt"><div class="rtl">7. Avoid prolonged ETT</div><div class="rte">Prolonged intubation selects for resistant flora and biofilm; daily readiness assessment and prompt extubation cut cumulative VAP risk. Reintubation, however, also raises VAP — so balance early extubation against a high failure risk.</div><div class="rtt">⚠️ Don't pursue early tracheostomy purely to prevent VAP — routine early trach has not been shown to reduce VAP or mortality versus standard extubation timing.</div></div><div class="rt"><div class="rtl">8. Severe CAP — major/minor</div><div class="rte">IDSA/ATS severe-CAP criteria: either of TWO MAJOR criteria mandates ICU — (1) need for invasive mechanical ventilation, or (2) septic shock requiring vasopressors. Either lever alone opens the ICU gate directly.</div><div class="rtt">⚠️ A single major criterion (mechanical ventilation OR septic shock) is enough for ICU — you do not also need minor criteria when a major one is present.</div></div><div class="rt"><div class="rtl">9. ≥3 minor criteria</div><div class="rte">ICU is also indicated with ≥3 of 9 MINOR criteria: RR ≥30, PaO2/FiO2 ≤250, multilobar infiltrates, confusion/disorientation, uremia (BUN ≥20), leukopenia (WBC &lt;4), thrombocytopenia (plt &lt;100k), hypothermia (&lt;36°C), and hypotension needing aggressive fluids. (Distinct from CURB-65, which is a 0-5 mortality/disposition score: Confusion, Urea &gt;7, RR ≥30, BP &lt;90/60, age ≥65.)</div><div class="rtt">⚠️ Don't confuse the IDSA/ATS minor criteria (≥3 → ICU) with CURB-65 (≥2 → admit, ≥3 → consider ICU) — they are different tools and boards test mixing them up.</div></div><div class="rt"><div class="rtl">10. CRP / inflammation</div><div class="rte">Markedly elevated inflammatory markers (CRP) flag severe disease. Adjunctive corticosteroids (e.g., hydrocortisone) reduce mortality in severe CAP and are recommended in refractory septic shock; in COVID-19 pneumonia requiring oxygen, dexamethasone is standard.</div><div class="rtt">⚠️ Steroids help severe CAP but are HARMFUL in influenza pneumonia (increased mortality/secondary infection) — don't give routine steroids for flu-driven pneumonia.</div></div><div class="rt"><div class="rtl">11. CHF mimic trap</div><div class="rte">Acute cardiogenic pulmonary edema (CHF) produces bilateral infiltrates, dyspnea, and crackles that mimic pneumonia — but features cardiomegaly, cephalization, Kerley B lines, effusions, elevated BNP, and a response to diuresis rather than antibiotics. Always confirm infection before committing to CAP therapy.</div><div class="rtt">⚠️ Bilateral infiltrate + dyspnea isn't always pneumonia — consider CHF and ARDS; treating volume-overload edema with antibiotics alone misses the diagnosis.</div></div><div class="rt"><div class="rtl">12. Pleural effusion drained</div><div class="rte">A parapneumonic effusion needs thoracentesis to distinguish uncomplicated (sterile, pH &gt;7.2, glucose &gt;60, no organisms) from complicated effusion/empyema (pH &lt;7.2, glucose &lt;60, LDH high, positive Gram stain/culture, or frank pus). Complicated effusions and empyema require chest-tube drainage — antibiotics alone will not clear them.</div><div class="rtt">⚠️ Pleural fluid pH &lt;7.2 (or pus/positive Gram stain) mandates chest-tube drainage — managing an empyema with antibiotics alone is a classic wrong answer.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pna_organisms_resistance.html" title="Pneumonia/Abscess — Pneumococcal Resistance, CA-MRSA &amp; Atypicals">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pleural_analysis.html" title="Pleural Disease — Fluid Analysis, Thoracentesis &amp; Chest Tube">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

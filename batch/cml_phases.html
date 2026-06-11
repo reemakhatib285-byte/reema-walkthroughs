@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">CML — Phases (Chronic / Accelerated / Blast)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Three-phase pyramid</b> — Untreated CML inevitably advances to blast crisis within ~3-5 years; TKIs hold the overwhelming majority indefinitely in chronic phase with near-normal life expectancy.</li><li><b>Chronic phase — base</b> — Diagnosis-stage CML is almost always chronic phase: massive leukocytosis with full myeloid spectrum, basophilia, low LAP, and splenomegaly — not a blast-dominant acute picture.</li><li><b>Chronic &lt;5% blasts</b> — Rising blasts/basophils on serial counts signal transformation — recheck the marrow karyotype for clonal evolution and reassess TKI adherence/resistance.</li><li><b>Accelerated phase — middle</b> — Accelerated criteria to memorize: blasts 10-19%, basophils ≥20%, persistent thrombocytopenia &lt;100k (or refractory thrombocytosis), and clonal evolution. Any one of these upstages from chronic phase.</li><li><b>10–19% blasts (accelerated)</b> — ≥20% blasts = blast crisis; 10-19% = accelerated; &lt;10% = chronic. The 20% cutoff is the single most tested number in CML staging.</li><li><b>≥20% basophils</b> — Don't confuse the two basophil-related numbers: basophils ≥20% = accelerated phase; this is separate from the blast thresholds.</li><li><b>Clonal evolution</b> — High-risk additional abnormalities (+8, i(17q)/iso17q, double Ph, 3q26.2/EVI1) signal progression — detected only on full karyotype, not FISH/PCR.</li><li><b>Blast phase / crisis — top</b> — WHO uses ≥20% blasts for blast phase; older/ELN criteria use ≥30%. Extramedullary (e.g. CNS, skin, bone) blast proliferation also counts as blast crisis regardless of marrow blast %.</li><li><b>Myeloid 60% blast crisis</b> — Myeloid blast crisis is treated like AML and has a WORSE response/prognosis than lymphoid blast crisis.</li><li><b>Lymphoid 25% blast crisis</b> — Lymphoid blast crisis responds BETTER to ALL-type therapy + TKI than myeloid blast crisis does — a classic 'which has the better prognosis' question.</li><li><b>HSCT cure</b> — HSCT is NOT first-line for chronic-phase CML — TKIs are. Transplant is for advanced/blast phase or TKI failure/resistance; transplant earlier (better outcomes in less-advanced disease).</li><li><b>Diagnosis demographics</b> — The Philadelphia chromosome t(9;22)/BCR-ABL1 is REQUIRED for the diagnosis — a 'CML' without demonstrable BCR-ABL1 is atypical CML or another MDS/MPN overlap, not classic CML.</li><li><b>TKI era survival</b> — Pre-TKI median survival was only ~3-6 years (busulfan/hydroxyurea/interferon era); imatinib changed the natural history — this before/after contrast is heavily tested.</li><li><b>Response milestones bar</b> — Failure to hit milestones (e.g. &gt;10% at 3-6 months, &gt;1% at 12 months) should trigger: check ADHERENCE first, then drug interactions, then BCR-ABL1 kinase-domain mutation testing, then switch TKI.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Three-phase pyramid</div><div class="rte">Untreated CML progresses through three sequential phases — chronic → accelerated → blast crisis — driven by accumulating 'second-hit' mutations on top of BCR-ABL1. Each step up shortens survival and reduces TKI responsiveness. The whole point of TKI therapy is to freeze patients in chronic phase.</div><div class="rtt">⚠️ Untreated CML inevitably advances to blast crisis within ~3-5 years; TKIs hold the overwhelming majority indefinitely in chronic phase with near-normal life expectancy.</div></div><div class="rt"><div class="rtl">2. Chronic phase — base</div><div class="rte">Chronic phase = &lt;10% blasts in blood and marrow (drawing shows &lt;5%); ~90% of patients present here. Often asymptomatic (incidental leukocytosis) or with fatigue, splenomegaly, and early satiety. Highly responsive to TKIs.</div><div class="rtt">⚠️ Diagnosis-stage CML is almost always chronic phase: massive leukocytosis with full myeloid spectrum, basophilia, low LAP, and splenomegaly — not a blast-dominant acute picture.</div></div><div class="rt"><div class="rtl">3. Chronic &lt;5% blasts</div><div class="rte">Chronic-phase blast count is low (&lt;10% in marrow/blood). Serial CBCs should stay stable; a rising blast or basophil count is the earliest sign of transformation.</div><div class="rtt">⚠️ Rising blasts/basophils on serial counts signal transformation — recheck the marrow karyotype for clonal evolution and reassess TKI adherence/resistance.</div></div><div class="rt"><div class="rtl">4. Accelerated phase — middle</div><div class="rte">Accelerated phase is the intermediate, less-stable stage. WHO/ELN criteria: blasts 10-19%, peripheral basophils ≥20%, persistent thrombocytopenia (&lt;100k) unrelated to therapy or uncontrolled thrombocytosis, increasing spleen/WBC unresponsive to therapy, or clonal evolution (new ACAs).</div><div class="rtt">⚠️ Accelerated criteria to memorize: blasts 10-19%, basophils ≥20%, persistent thrombocytopenia &lt;100k (or refractory thrombocytosis), and clonal evolution. Any one of these upstages from chronic phase.</div></div><div class="rt"><div class="rtl">5. 10–19% blasts (accelerated)</div><div class="rte">Blasts of 10-19% in blood or marrow defines accelerated phase. This is the window between chronic (&lt;10%) and blast crisis (≥20%).</div><div class="rtt">⚠️ ≥20% blasts = blast crisis; 10-19% = accelerated; &lt;10% = chronic. The 20% cutoff is the single most tested number in CML staging.</div></div><div class="rt"><div class="rtl">6. ≥20% basophils</div><div class="rte">Peripheral basophils ≥20% is a standalone accelerated-phase criterion. Basophilia is a CML hallmark throughout, but the ≥20% threshold specifically marks acceleration.</div><div class="rtt">⚠️ Don't confuse the two basophil-related numbers: basophils ≥20% = accelerated phase; this is separate from the blast thresholds.</div></div><div class="rt"><div class="rtl">7. Clonal evolution</div><div class="rte">Clonal evolution = emergence of new cytogenetic abnormalities in the Ph clone beyond the original Ph chromosome. It is an accelerated-phase criterion and predicts progression.</div><div class="rtt">⚠️ High-risk additional abnormalities (+8, i(17q)/iso17q, double Ph, 3q26.2/EVI1) signal progression — detected only on full karyotype, not FISH/PCR.</div></div><div class="rt"><div class="rtl">8. Blast phase / crisis — top</div><div class="rte">Blast crisis = ≥20% blasts in blood/marrow by WHO (the drawing's ≥30% reflects older ELN criteria). It behaves like an acute leukemia, responds poorly, and carries a dismal prognosis (median survival measured in months without transplant).</div><div class="rtt">⚠️ WHO uses ≥20% blasts for blast phase; older/ELN criteria use ≥30%. Extramedullary (e.g. CNS, skin, bone) blast proliferation also counts as blast crisis regardless of marrow blast %.</div></div><div class="rt"><div class="rtl">9. Myeloid 60% blast crisis</div><div class="rte">~60-70% of blast crises are of myeloid lineage and are treated with AML-type induction chemotherapy plus a TKI, ideally bridging to allogeneic HSCT. Responses are short.</div><div class="rtt">⚠️ Myeloid blast crisis is treated like AML and has a WORSE response/prognosis than lymphoid blast crisis.</div></div><div class="rt"><div class="rtl">10. Lymphoid 25% blast crisis</div><div class="rte">~20-30% of blast crises are lymphoid (usually B-lineage) and are treated with ALL-type regimens (e.g. hyper-CVAD) plus a TKI, then HSCT. Better response (~CR 70%) and prognosis than myeloid.</div><div class="rtt">⚠️ Lymphoid blast crisis responds BETTER to ALL-type therapy + TKI than myeloid blast crisis does — a classic 'which has the better prognosis' question.</div></div><div class="rt"><div class="rtl">11. HSCT cure</div><div class="rte">Allogeneic HSCT is the only proven curative modality but is reserved for TKI-resistant disease, T315I where ponatinib/asciminib are unavailable, and accelerated/blast phase. Cure rates fall sharply with advanced phase (CP 50-70% → BP ≤20%).</div><div class="rtt">⚠️ HSCT is NOT first-line for chronic-phase CML — TKIs are. Transplant is for advanced/blast phase or TKI failure/resistance; transplant earlier (better outcomes in less-advanced disease).</div></div><div class="rt"><div class="rtl">12. Diagnosis demographics</div><div class="rte">CML is ~15% of adult leukemias, median age 55-65 (rare in children), ~9,000 new US cases/yr, slight male predominance (M:F ~1.6:1). Ionizing radiation is the only established environmental risk.</div><div class="rtt">⚠️ The Philadelphia chromosome t(9;22)/BCR-ABL1 is REQUIRED for the diagnosis — a 'CML' without demonstrable BCR-ABL1 is atypical CML or another MDS/MPN overlap, not classic CML.</div></div><div class="rt"><div class="rtl">13. TKI era survival</div><div class="rte">TKIs revolutionized prognosis: imatinib (IRIS trial, 2001) converted CML from a fatal disease into a chronic one. Chronic-phase patients now have ~85-90% long-term survival approaching that of the general population.</div><div class="rtt">⚠️ Pre-TKI median survival was only ~3-6 years (busulfan/hydroxyurea/interferon era); imatinib changed the natural history — this before/after contrast is heavily tested.</div></div><div class="rt"><div class="rtl">14. Response milestones bar</div><div class="rte">Response is monitored by BCR-ABL1 transcript milestones on the IS: ≤10% at 3 months, CCyR (≤1%) by 12 months, MMR/MR3 (≤0.1%) as the long-term goal, and deep responses MR4 (≤0.01%)/MR4.5 (≤0.0032%) enabling treatment-free remission attempts.</div><div class="rtt">⚠️ Failure to hit milestones (e.g. &gt;10% at 3-6 months, &gt;1% at 12 months) should trigger: check ADHERENCE first, then drug interactions, then BCR-ABL1 kinase-domain mutation testing, then switch TKI.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="cml_pathophysiology.html" title="CML — Pathophysiology (Philadelphia / BCR-ABL1)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="cml_treatment.html" title="CML — Treatment (Tyrosine Kinase Inhibitors)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Diabetes — Complication 1: Diabetic Nephropathy</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Prevalence gauge</b> — WRONG: 'Every diabetic inevitably progresses to dialysis, so screening changes nothing.' Only a subset progress, and screening plus ACEi/ARB, SGLT2i, glycemic and BP control sharply slow progression. Discriminator: nephropathy is preventable/modifiable, and annual ACR + eGFR screening starts at diagnosis in T2DM and 5 years after diagnosis in T1DM.</li><li><b>Phase 1 — hyperfiltration</b> — WRONG: 'The first sign of diabetic nephropathy is a falling GFR.' Early GFR is HIGH (hyperfiltration); GFR decline is a LATE event. Discriminator: hyperfiltration (increased GFR) is the first change; a low eGFR early on points away from early diabetic nephropathy.</li><li><b>Hypertrophy / mesangial expansion</b> — WRONG: 'Kimmelstiel-Wilson nodules are seen in any cause of nephrotic syndrome.' Nodular glomerulosclerosis with K-W nodules is specific to diabetic nephropathy (mimicked only by amyloid/MPGN/light-chain disease). Discriminator: K-W nodules + GBM thickening + mesangial expansion = diabetic nephropathy.</li><li><b>Phase 2 — microalbuminuria</b> — WRONG: 'A single elevated ACR of 120 mg/g confirms diabetic nephropathy.' One positive sample is insufficient and can be transient; confirm with 2 of 3 over 3-6 months. Discriminator: diagnosis of persistent albuminuria requires repeat confirmation, excluding reversible causes.</li><li><b>Macroalbuminuria — late</b> — WRONG: 'GFR decline appears before any albuminuria in diabetic nephropathy.' Albuminuria (micro then macro) precedes the GFR decline in the classic course. Discriminator: the sequence is hyperfiltration -&gt; microalbuminuria -&gt; macroalbuminuria -&gt; falling GFR; declining GFR is the late event.</li><li><b>ACEi / ARB first-line</b> — WRONG: 'Combine an ACEi AND an ARB for additive renoprotection in heavy albuminuria.' Dual RAAS blockade increases hyperkalemia and AKI without benefit (ONTARGET/VA NEPHRON-D) and is contraindicated. Discriminator: use ONE RAAS agent (ACEi OR ARB), never both together.</li><li><b>Type II RTA (proximal)</b> — WRONG: 'Hyperkalemia in a diabetic on an ACEi reflects type I (distal) RTA.' Diabetic hyperkalemic RTA is type IV (hyporeninemic hypoaldosteronism); type I distal RTA causes HYPOkalemia. Discriminator: diabetes + hyperkalemia + mild NAGMA = type IV RTA; monitor K+ on RAAS blockade.</li><li><b>SGLT2i renoprotection</b> — WRONG: 'SGLT2 inhibitors should be started in a T1DM patient for kidney protection.' SGLT2i are not approved in T1DM due to euglycemic DKA risk. Discriminator: SGLT2i renoprotection applies to T2DM/CKD; in T1DM the euglycemic DKA risk outweighs benefit.</li><li><b>Small initial eGFR dip</b> — WRONG: 'Stop the ACEi immediately because creatinine rose 20% after starting it.' A rise up to 30% is expected and the drug should be continued. Discriminator: only investigate/stop (think bilateral renal artery stenosis, volume depletion) if creatinine rises &gt;30% or potassium becomes dangerous.</li><li><b>Retinopathy coexists</b> — WRONG: 'A T1DM patient with proteinuria, hematuria, and NO retinopathy has diabetic nephropathy.' Lack of retinopathy (plus active sediment/hematuria) points to non-diabetic kidney disease and warrants biopsy. Discriminator: diabetic nephropathy in T1DM tracks with retinopathy; its absence -&gt; look for alternative renal disease.</li><li><b>DPP-4 / dose adjust in CKD</b> — WRONG: 'Use a DPP-4 inhibitor to slow diabetic CKD progression.' DPP-4i do not protect the kidney; only ACEi/ARB, SGLT2i, GLP-1 RA, and finerenone do. Discriminator: for renoprotection choose SGLT2i/GLP-1 RA/MRA; DPP-4i is purely glycemic (and use linagliptin if no renal dose adjustment is desired).</li><li><b>Avoid metformin advanced CKD</b> — WRONG: 'Continue full-dose metformin through a CT with IV contrast in a patient with eGFR 28.' Metformin must be held around contrast when eGFR &lt;30 (AKI -&gt; lactic acidosis) and resumed only after renal function is confirmed stable. Discriminator: stop metformin if eGFR &lt;30 and around contrast; recheck Cr at 48 h.</li><li><b>MRA (finerenone)</b> — WRONG: 'Start finerenone in a diabetic CKD patient with serum potassium 5.6 mEq/L to add renoprotection.' Finerenone causes hyperkalemia and should not be started when potassium is already elevated (&gt;5.0). Discriminator: confirm K+ &lt;=5.0 and acceptable eGFR before starting finerenone, and monitor potassium closely, especially with concurrent ACEi/ARB.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Prevalence gauge</div><div class="rte">Only ~20-40% of diabetics develop diabetic kidney disease — it is not universal, but diabetic nephropathy is the leading cause of ESRD/dialysis in the US. Higher risk in Black, Hispanic, and Native American patients and with poor glycemic/BP control and family history. Screen annually with spot urine ACR and serum creatinine/eGFR.</div><div class="rtt">⚠️ WRONG: 'Every diabetic inevitably progresses to dialysis, so screening changes nothing.' Only a subset progress, and screening plus ACEi/ARB, SGLT2i, glycemic and BP control sharply slow progression. Discriminator: nephropathy is preventable/modifiable, and annual ACR + eGFR screening starts at diagnosis in T2DM and 5 years after diagnosis in T1DM.</div></div><div class="rt"><div class="rtl">2. Phase 1 — hyperfiltration</div><div class="rte">The EARLIEST change is glomerular HYPERFILTRATION: GFR rises (up to ~50% above normal) from afferent arteriolar vasodilation and efferent constriction (angiotensin II), raising intraglomerular pressure. This is accompanied by renal/glomerular hypertrophy. Chronic hyperfiltration drives later structural damage.</div><div class="rtt">⚠️ WRONG: 'The first sign of diabetic nephropathy is a falling GFR.' Early GFR is HIGH (hyperfiltration); GFR decline is a LATE event. Discriminator: hyperfiltration (increased GFR) is the first change; a low eGFR early on points away from early diabetic nephropathy.</div></div><div class="rt"><div class="rtl">3. Hypertrophy / mesangial expansion</div><div class="rte">Structural lesions: glomerular basement membrane (GBM) thickening, mesangial matrix expansion, and Kimmelstiel-Wilson nodular glomerulosclerosis (PAS-positive eosinophilic nodules) — the pathognomonic finding. Hyaline arteriolosclerosis of BOTH afferent and efferent arterioles is characteristic of diabetes.</div><div class="rtt">⚠️ WRONG: 'Kimmelstiel-Wilson nodules are seen in any cause of nephrotic syndrome.' Nodular glomerulosclerosis with K-W nodules is specific to diabetic nephropathy (mimicked only by amyloid/MPGN/light-chain disease). Discriminator: K-W nodules + GBM thickening + mesangial expansion = diabetic nephropathy.</div></div><div class="rt"><div class="rtl">4. Phase 2 — microalbuminuria</div><div class="rte">First detectable LAB marker = moderately increased albuminuria ('microalbuminuria'), urine albumin-to-creatinine ratio (ACR) 30-300 mg/g, typically appearing 5-10 years after onset. Must be PERSISTENT (2 of 3 samples over 3-6 months positive), excluding transient causes (exercise, fever, UTI, CHF, hyperglycemia, menstruation).</div><div class="rtt">⚠️ WRONG: 'A single elevated ACR of 120 mg/g confirms diabetic nephropathy.' One positive sample is insufficient and can be transient; confirm with 2 of 3 over 3-6 months. Discriminator: diagnosis of persistent albuminuria requires repeat confirmation, excluding reversible causes.</div></div><div class="rt"><div class="rtl">5. Macroalbuminuria — late</div><div class="rte">Overt nephropathy = severely increased albuminuria/macroalbuminuria (ACR &gt;300 mg/g, may reach nephrotic-range &gt;3.5 g/day) with progressive GFR decline, usually 10-15+ years in. Often accompanied by worsening hypertension and edema. Albuminuria precedes and predicts the GFR fall.</div><div class="rtt">⚠️ WRONG: 'GFR decline appears before any albuminuria in diabetic nephropathy.' Albuminuria (micro then macro) precedes the GFR decline in the classic course. Discriminator: the sequence is hyperfiltration -&gt; microalbuminuria -&gt; macroalbuminuria -&gt; falling GFR; declining GFR is the late event.</div></div><div class="rt"><div class="rtl">6. ACEi / ARB first-line</div><div class="rte">ACE inhibitor or ARB is FIRST-LINE once albuminuria is present (and the antihypertensive of choice in diabetics with albuminuria): they reduce intraglomerular pressure via efferent arteriolar dilation, lowering albuminuria and slowing GFR decline independent of BP. Target BP generally &lt;130/80.</div><div class="rtt">⚠️ WRONG: 'Combine an ACEi AND an ARB for additive renoprotection in heavy albuminuria.' Dual RAAS blockade increases hyperkalemia and AKI without benefit (ONTARGET/VA NEPHRON-D) and is contraindicated. Discriminator: use ONE RAAS agent (ACEi OR ARB), never both together.</div></div><div class="rt"><div class="rtl">7. Type II RTA (proximal)</div><div class="rte">Diabetes classically causes TYPE IV RTA (hyporeninemic hypoaldosteronism) -&gt; hyperkalemia with mild non-anion-gap metabolic acidosis. ACEi/ARB (and MRAs) further reduce aldosterone and raise potassium, so check potassium and creatinine 1-2 weeks after starting or up-titrating.</div><div class="rtt">⚠️ WRONG: 'Hyperkalemia in a diabetic on an ACEi reflects type I (distal) RTA.' Diabetic hyperkalemic RTA is type IV (hyporeninemic hypoaldosteronism); type I distal RTA causes HYPOkalemia. Discriminator: diabetes + hyperkalemia + mild NAGMA = type IV RTA; monitor K+ on RAAS blockade.</div></div><div class="rt"><div class="rtl">8. SGLT2i renoprotection</div><div class="rte">Add an SGLT2 inhibitor for renoprotection on top of a maximally tolerated ACEi/ARB: by restoring tubuloglomerular feedback (afferent vasoconstriction) it lowers intraglomerular pressure, reduces albuminuria, and slows CKD progression and CV/HF events (CREDENCE, DAPA-CKD) — benefit extends even to non-diabetic CKD.</div><div class="rtt">⚠️ WRONG: 'SGLT2 inhibitors should be started in a T1DM patient for kidney protection.' SGLT2i are not approved in T1DM due to euglycemic DKA risk. Discriminator: SGLT2i renoprotection applies to T2DM/CKD; in T1DM the euglycemic DKA risk outweighs benefit.</div></div><div class="rt"><div class="rtl">9. Small initial eGFR dip</div><div class="rte">A modest initial eGFR dip (or creatinine rise up to ~30%) after starting an ACEi/ARB or SGLT2i is EXPECTED and reflects reduced intraglomerular pressure — it is hemodynamic and ultimately renoprotective. Recheck in 1-2 weeks; the eGFR stabilizes and the long-term slope improves.</div><div class="rtt">⚠️ WRONG: 'Stop the ACEi immediately because creatinine rose 20% after starting it.' A rise up to 30% is expected and the drug should be continued. Discriminator: only investigate/stop (think bilateral renal artery stenosis, volume depletion) if creatinine rises &gt;30% or potassium becomes dangerous.</div></div><div class="rt"><div class="rtl">10. Retinopathy coexists</div><div class="rte">In T1DM, diabetic nephropathy almost ALWAYS coexists with retinopathy (shared microvascular pathology); the absence of retinopathy in a T1DM patient with renal disease strongly suggests a non-diabetic/alternative cause. The link is looser in T2DM but retinopathy still supports a diabetic etiology.</div><div class="rtt">⚠️ WRONG: 'A T1DM patient with proteinuria, hematuria, and NO retinopathy has diabetic nephropathy.' Lack of retinopathy (plus active sediment/hematuria) points to non-diabetic kidney disease and warrants biopsy. Discriminator: diabetic nephropathy in T1DM tracks with retinopathy; its absence -&gt; look for alternative renal disease.</div></div><div class="rt"><div class="rtl">11. DPP-4 / dose adjust in CKD</div><div class="rte">DPP-4 inhibitors lower glucose but have NO independent renoprotective effect; most require renal dose reduction in CKD (sitagliptin, saxagliptin, alogliptin) — EXCEPT linagliptin, which is hepatically eliminated and needs no renal adjustment. They are weight-neutral with low hypoglycemia risk.</div><div class="rtt">⚠️ WRONG: 'Use a DPP-4 inhibitor to slow diabetic CKD progression.' DPP-4i do not protect the kidney; only ACEi/ARB, SGLT2i, GLP-1 RA, and finerenone do. Discriminator: for renoprotection choose SGLT2i/GLP-1 RA/MRA; DPP-4i is purely glycemic (and use linagliptin if no renal dose adjustment is desired).</div></div><div class="rt"><div class="rtl">12. Avoid metformin advanced CKD</div><div class="rte">Metformin risks lactic acidosis when it accumulates in renal failure: do not START if eGFR &lt;45, REDUCE dose for eGFR 30-45, and STOP if eGFR &lt;30. Hold before/at the time of iodinated contrast if eGFR &lt;30 (or for any AKI risk) and recheck creatinine 48 h after contrast before resuming.</div><div class="rtt">⚠️ WRONG: 'Continue full-dose metformin through a CT with IV contrast in a patient with eGFR 28.' Metformin must be held around contrast when eGFR &lt;30 (AKI -&gt; lactic acidosis) and resumed only after renal function is confirmed stable. Discriminator: stop metformin if eGFR &lt;30 and around contrast; recheck Cr at 48 h.</div></div><div class="rt"><div class="rtl">13. MRA (finerenone)</div><div class="rte">Finerenone, a NONSTEROIDAL selective mineralocorticoid-receptor antagonist, reduces albuminuria, slows CKD progression, and lowers CV events in T2DM with CKD (FIDELIO/FIGARO-DKD) on top of ACEi/ARB +/- SGLT2i. It is added for residual albuminuria; check baseline potassium and eGFR before starting.</div><div class="rtt">⚠️ WRONG: 'Start finerenone in a diabetic CKD patient with serum potassium 5.6 mEq/L to add renoprotection.' Finerenone causes hyperkalemia and should not be started when potassium is already elevated (&gt;5.0). Discriminator: confirm K+ &lt;=5.0 and acceptable eGFR before starting finerenone, and monitor potassium closely, especially with concurrent ACEi/ARB.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="dm_insulin.html" title="DM — Scene 4 — Insulin: Types, Kinetics &amp; Regimens">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="dm_complication2.html" title="Diabetes — Complication 2: Autonomic &amp; Peripheral Neuropathy / Foot">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

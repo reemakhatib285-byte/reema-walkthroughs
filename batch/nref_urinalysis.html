@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Renal Reference — AKI Urine Microscopy &amp; Dipstick Algorithm</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Exam algorithm header</b> — WRONG answer: jumping straight to a diagnosis from one dipstick square. Discriminator: dipstick is a screen, microscopy + casts localize. Always pair them — e.g., protein-positive dipstick alone cannot tell you glomerular vs tubular vs overflow proteinuria without the sediment and a UPCR/UACR.</li><li><b>Step 1 — pigment vs hematuria</b> — WRONG answer: calling any heme-positive dipstick 'hematuria.' Discriminator: dipstick detects heme, not cells. Heme+ with absent RBCs on micro = pigmenturia (rhabdo/hemolysis), not bleeding — the supernatant is also pink in hemoglobinuria but clear in hematuria once RBCs are spun down.</li><li><b>Blood+ / no RBCs = pigment</b> — WRONG answer: attributing heme+/no-RBC urine to glomerulonephritis or 'microscopic hematuria.' Discriminator: GN gives RBCs/dysmorphic RBCs/RBC casts; an empty sediment with heme positivity is pigment, so pursue CK (rhabdo) and LDH/haptoglobin/smear (hemolysis) — not a renal biopsy for GN.</li><li><b>Blood+ / RBC casts = glomerular</b> — WRONG answer: assuming visible blood means a bladder/urologic source or stone. Discriminator: RBC casts and dysmorphic RBCs = glomerular and mandate a nephritis workup (C3/C4, ANCA, anti-GBM, ANA, ASO); isomorphic (normal-shaped) RBCs with no casts suggest a urologic source (stone, tumor, UTI) needing imaging/cystoscopy.</li><li><b>Step 2 — rhabdo vs hemolysis</b> — WRONG answer: ordering a urine myoglobin assay to confirm rhabdo. Discriminator: serum CK is the test (myoglobin clears too fast for reliable urine testing); the clue cluster of CK &gt;5,000 + hyperK + hyperphos + hypoCa + heme+/no-RBC urine after immobilization/crush nails rhabdo over hemolysis.</li><li><b>Rhabdo clues</b> — WRONG answer: blaming the urine findings on 'opiate/cocaine nephrotoxicity' or simple dehydration in a found-down patient. Discriminator: prolonged immobilization (overdose, stroke, long lie) → compression rhabdomyolysis with CK&gt;5,000 and heme+/no-RBC urine; the drug itself is the trigger via immobility, and the mechanism of AKI is myoglobinuric ATN.</li><li><b>Hemolysis clues</b> — WRONG answer: calling tea/cola-colored urine with anemia 'hematuria' and chasing a urologic source. Discriminator: low haptoglobin + high LDH + spherocytes/schistocytes = hemolysis; the urine is heme+ from free hemoglobin, not intact RBCs — confirm with the hemolysis panel and smear, not cystoscopy.</li><li><b>Step 3 — RBC casts = GN</b> — WRONG answer: confusing nephritic (RBC casts, mild proteinuria) with nephrotic (&gt;3.5 g/day proteinuria, edema, hypoalbuminemia, hyperlipidemia, oval fat bodies/maltese-cross lipiduria, bland sediment). Discriminator: RBC casts/active sediment = nephritic GN; heavy proteinuria with FATTY casts and no RBC casts = nephrotic — different differentials and workup.</li><li><b>Step 4 — WBC casts = AIN</b> — WRONG answer: treating WBC casts/pyuria reflexively as a bladder UTI and prescribing antibiotics. Discriminator: AIN gives sterile pyuria + WBC casts + drug exposure ± eosinophiluria with a NEGATIVE culture; pyelonephritis gives WBC casts WITH bacteriuria/positive nitrites/leukocyte esterase and systemic infection — context (offending drug vs fever/flank pain + positive culture) separates them.</li><li><b>Step 5 — muddy brown casts = ATN</b> — WRONG answer: calling muddy brown granular casts 'prerenal' and giving more fluids expecting full reversal. Discriminator: prerenal = BLAND sediment/hyaline casts, FENa&lt;1%, BUN/Cr&gt;20, urine osm&gt;500; established ATN shows muddy brown granular casts, FENa&gt;2%, isosthenuria — it will not correct with a fluid bolus the way prerenal does.</li><li><b>Trap — 'opiate abuse' is rhabdo</b> — WRONG answer: attributing the AKI to direct opioid nephrotoxicity, contrast, or 'just dehydration.' Discriminator: the mechanism is immobilization → rhabdo → pigment ATN; the giveaway is a sky-high CK with heme-positive but RBC-negative urine. Treat the rhabdo, not a phantom direct drug toxicity.</li><li><b>Trap — 'blood in urine' = GN only if real RBCs</b> — WRONG answer: launching a GN serology workup (or biopsy) off a positive dipstick alone. Discriminator: confirm with microscopy first — only dysmorphic RBCs/RBC casts justify the nephritic workup; isomorphic RBCs → urologic source; heme+/no RBCs → pigment workup (CK, LDH/haptoglobin).</li><li><b>Trap — dipstick sees heme not RBCs</b> — WRONG answer in myeloma vignettes: 'rule out significant proteinuria because the dipstick protein is negative/trace.' Discriminator: in multiple myeloma, heavy light-chain (Bence-Jones) proteinuria can give a NEGATIVE/trace dipstick because the pad reads albumin, not light chains — order a 24-hour urine protein, urine protein electrophoresis (UPEP), and serum/urine immunofixation to catch it. The dipstick blood pad likewise misses nothing about heme source, so always confirm with micro.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Exam algorithm header</div><div class="rte">Approach every dipstick/sediment vignette in a fixed order: (1) read the dipstick panel — protein, blood/heme, leukocyte esterase, nitrites, glucose, ketones, specific gravity, pH, bilirubin; (2) correlate with microscopy (RBCs/dysmorphic RBCs, WBCs, casts, crystals, epithelial cells); (3) localize by cast type. Casts are the localizing key: RBC=glomerular, WBC=AIN/pyelo, muddy brown granular=ATN, hyaline=prerenal, broad waxy=CKD, fatty/oval fat bodies (maltese cross)=nephrotic.</div><div class="rtt">⚠️ WRONG answer: jumping straight to a diagnosis from one dipstick square. Discriminator: dipstick is a screen, microscopy + casts localize. Always pair them — e.g., protein-positive dipstick alone cannot tell you glomerular vs tubular vs overflow proteinuria without the sediment and a UPCR/UACR.</div></div><div class="rt"><div class="rtl">2. Step 1 — pigment vs hematuria</div><div class="rte">A 'blood-positive' dipstick reacts to the peroxidase activity of HEME, so it lights up for intact RBCs, free hemoglobin (intravascular hemolysis), OR myoglobin (rhabdomyolysis). The first fork is therefore: is this real hematuria or pigment? Resolve it by spinning the urine and looking — RBCs on micro = true hematuria; heme-positive dipstick with NO RBCs = pigment (myoglobin or hemoglobin).</div><div class="rtt">⚠️ WRONG answer: calling any heme-positive dipstick 'hematuria.' Discriminator: dipstick detects heme, not cells. Heme+ with absent RBCs on micro = pigmenturia (rhabdo/hemolysis), not bleeding — the supernatant is also pink in hemoglobinuria but clear in hematuria once RBCs are spun down.</div></div><div class="rt"><div class="rtl">3. Blood+ / no RBCs = pigment</div><div class="rte">Positive heme with an empty microscopy field means a heme-containing pigment is in the urine without intact red cells: myoglobin (rhabdomyolysis) or free hemoglobin (intravascular hemolysis). Both can cause pigment-nephropathy ATN via tubular obstruction, direct toxicity, and vasoconstriction; aggressive IV fluids are the cornerstone of prevention.</div><div class="rtt">⚠️ WRONG answer: attributing heme+/no-RBC urine to glomerulonephritis or 'microscopic hematuria.' Discriminator: GN gives RBCs/dysmorphic RBCs/RBC casts; an empty sediment with heme positivity is pigment, so pursue CK (rhabdo) and LDH/haptoglobin/smear (hemolysis) — not a renal biopsy for GN.</div></div><div class="rt"><div class="rtl">4. Blood+ / RBC casts = glomerular</div><div class="rte">RBC casts and dysmorphic (acanthocytic) RBCs prove the bleeding is GLOMERULAR — red cells squeezed through a damaged glomerular basement membrane get deformed and molded into Tamm-Horsfall casts. This defines a nephritic picture: hematuria + RBC casts + variable proteinuria + HTN + AKI (e.g., IgA nephropathy, post-strep GN, ANCA/anti-GBM vasculitis, lupus nephritis).</div><div class="rtt">⚠️ WRONG answer: assuming visible blood means a bladder/urologic source or stone. Discriminator: RBC casts and dysmorphic RBCs = glomerular and mandate a nephritis workup (C3/C4, ANCA, anti-GBM, ANA, ASO); isomorphic (normal-shaped) RBCs with no casts suggest a urologic source (stone, tumor, UTI) needing imaging/cystoscopy.</div></div><div class="rt"><div class="rtl">5. Step 2 — rhabdo vs hemolysis</div><div class="rte">Once you've established pigmenturia (heme+/no RBCs), separate the two sources with labs and history. Rhabdomyolysis: massively elevated CK (often &gt;5,000–10,000), muscle pain/weakness, dark urine, plus its electrolyte signature — hyperkalemia, hyperphosphatemia, hypocalcemia (early), and a high anion gap. Hemolysis: anemia with elevated LDH and indirect bilirubin and LOW haptoglobin, ± schistocytes.</div><div class="rtt">⚠️ WRONG answer: ordering a urine myoglobin assay to confirm rhabdo. Discriminator: serum CK is the test (myoglobin clears too fast for reliable urine testing); the clue cluster of CK &gt;5,000 + hyperK + hyperphos + hypoCa + heme+/no-RBC urine after immobilization/crush nails rhabdo over hemolysis.</div></div><div class="rt"><div class="rtl">6. Rhabdo clues</div><div class="rte">Rhabdomyolysis releases myoglobin, K+, phosphate, and CK from damaged muscle. Triggers: crush/trauma, prolonged immobilization ('found down', overdose), seizures, extreme exertion, statins (esp. with fibrates), and certain toxins/infections. Treat with early aggressive isotonic IV fluids titrated to urine output ~200–300 mL/hr; correct hyperkalemia (the life-threatening complication); urinary alkalinization/mannitol are not routinely beneficial.</div><div class="rtt">⚠️ WRONG answer: blaming the urine findings on 'opiate/cocaine nephrotoxicity' or simple dehydration in a found-down patient. Discriminator: prolonged immobilization (overdose, stroke, long lie) → compression rhabdomyolysis with CK&gt;5,000 and heme+/no-RBC urine; the drug itself is the trigger via immobility, and the mechanism of AKI is myoglobinuric ATN.</div></div><div class="rt"><div class="rtl">7. Hemolysis clues</div><div class="rte">Intravascular hemolysis releases free hemoglobin that overwhelms haptoglobin and spills into urine (heme+/no RBCs). Lab triad: anemia + high LDH + LOW haptoglobin, with elevated indirect bilirubin and reticulocytosis; a peripheral smear and DAT/Coombs localize the cause (autoimmune, MAHA/TTP-HUS with schistocytes, transfusion reaction, G6PD, mechanical valve, PNH).</div><div class="rtt">⚠️ WRONG answer: calling tea/cola-colored urine with anemia 'hematuria' and chasing a urologic source. Discriminator: low haptoglobin + high LDH + spherocytes/schistocytes = hemolysis; the urine is heme+ from free hemoglobin, not intact RBCs — confirm with the hemolysis panel and smear, not cystoscopy.</div></div><div class="rt"><div class="rtl">8. Step 3 — RBC casts = GN</div><div class="rte">RBC casts = glomerulonephritis (nephritic syndrome). The pattern is hematuria + dysmorphic RBCs/RBC casts + subnephrotic proteinuria + HTN + rising creatinine. Workup is driven by complement and serologies: low complement (post-strep GN, lupus, MPGN, cryoglobulinemia, endocarditis) vs normal complement, pauci-immune (ANCA vasculitis), anti-GBM (Goodpasture), IgA nephropathy.</div><div class="rtt">⚠️ WRONG answer: confusing nephritic (RBC casts, mild proteinuria) with nephrotic (&gt;3.5 g/day proteinuria, edema, hypoalbuminemia, hyperlipidemia, oval fat bodies/maltese-cross lipiduria, bland sediment). Discriminator: RBC casts/active sediment = nephritic GN; heavy proteinuria with FATTY casts and no RBC casts = nephrotic — different differentials and workup.</div></div><div class="rt"><div class="rtl">9. Step 4 — WBC casts = AIN</div><div class="rte">WBC casts with sterile pyuria and white cell casts point to acute interstitial nephritis — a hypersensitivity reaction in the interstitium. Classic causes: drugs (NSAIDs, beta-lactams/penicillins, cephalosporins, sulfonamides, PPIs, rifampin), infections, and autoimmune disease. Classic (but only ~10–30% present) triad: fever, rash, eosinophilia, often with eosinophiluria. Treat by stopping the offending drug; steroids if no recovery.</div><div class="rtt">⚠️ WRONG answer: treating WBC casts/pyuria reflexively as a bladder UTI and prescribing antibiotics. Discriminator: AIN gives sterile pyuria + WBC casts + drug exposure ± eosinophiluria with a NEGATIVE culture; pyelonephritis gives WBC casts WITH bacteriuria/positive nitrites/leukocyte esterase and systemic infection — context (offending drug vs fever/flank pain + positive culture) separates them.</div></div><div class="rt"><div class="rtl">10. Step 5 — muddy brown casts = ATN</div><div class="rte">Muddy brown granular casts and renal tubular epithelial cell casts = acute tubular necrosis (ischemic or nephrotoxic). Supporting labs: FENa &gt;2% (FEurea &gt;50% if on diuretics), urine osmolality ~300 (isosthenuria). Causes: prolonged hypoperfusion/sepsis (ischemic) and contrast, aminoglycosides, amphotericin, cisplatin, pigments (nephrotoxic). Management is supportive with dialysis for refractory hyperK, acidosis, volume overload, or uremia.</div><div class="rtt">⚠️ WRONG answer: calling muddy brown granular casts 'prerenal' and giving more fluids expecting full reversal. Discriminator: prerenal = BLAND sediment/hyaline casts, FENa&lt;1%, BUN/Cr&gt;20, urine osm&gt;500; established ATN shows muddy brown granular casts, FENa&gt;2%, isosthenuria — it will not correct with a fluid bolus the way prerenal does.</div></div><div class="rt"><div class="rtl">11. Trap — 'opiate abuse' is rhabdo</div><div class="rte">The unresponsive/'found down' patient (opioid or other overdose, stroke, alcohol) lies immobile for hours, causing pressure-induced compression rhabdomyolysis → myoglobinuric ATN. Expect CK &gt;5,000, heme+/no-RBC urine, hyperkalemia, hyperphosphatemia, hypocalcemia, and an anion-gap acidosis. Early aggressive IV fluids are key.</div><div class="rtt">⚠️ WRONG answer: attributing the AKI to direct opioid nephrotoxicity, contrast, or 'just dehydration.' Discriminator: the mechanism is immobilization → rhabdo → pigment ATN; the giveaway is a sky-high CK with heme-positive but RBC-negative urine. Treat the rhabdo, not a phantom direct drug toxicity.</div></div><div class="rt"><div class="rtl">12. Trap — 'blood in urine' = GN only if real RBCs</div><div class="rte">Do not equate dipstick heme positivity with glomerulonephritis. GN requires evidence of glomerular bleeding: dysmorphic (acanthocytic) RBCs and/or RBC casts on microscopy. Isolated heme positivity could be pigment (rhabdo/hemolysis), and isomorphic RBCs without casts suggest a urologic source needing imaging/cystoscopy rather than a nephritis workup.</div><div class="rtt">⚠️ WRONG answer: launching a GN serology workup (or biopsy) off a positive dipstick alone. Discriminator: confirm with microscopy first — only dysmorphic RBCs/RBC casts justify the nephritic workup; isomorphic RBCs → urologic source; heme+/no RBCs → pigment workup (CK, LDH/haptoglobin).</div></div><div class="rt"><div class="rtl">13. Trap — dipstick sees heme not RBCs</div><div class="rte">Core principle: the blood pad reacts to heme peroxidase activity, so it cannot distinguish RBCs from hemoglobin or myoglobin — microscopy is mandatory to interpret it. A parallel blind spot exists for protein: the dipstick protein pad detects mainly ALBUMIN and is poorly sensitive to immunoglobulin light chains (Bence-Jones protein).</div><div class="rtt">⚠️ WRONG answer in myeloma vignettes: 'rule out significant proteinuria because the dipstick protein is negative/trace.' Discriminator: in multiple myeloma, heavy light-chain (Bence-Jones) proteinuria can give a NEGATIVE/trace dipstick because the pad reads albumin, not light chains — order a 24-hour urine protein, urine protein electrophoresis (UPEP), and serum/urine immunofixation to catch it. The dipstick blood pad likewise misses nothing about heme source, so always confirm with micro.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="nref_aki_patterns.html" title="Renal Reference — AKI Pattern Table">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nref_acid_base_reading.html" title="Renal Reference — Acid-Base (Sketchy pHun Park)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

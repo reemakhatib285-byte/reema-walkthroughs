@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pneumonia — Resistance &amp; empiric antibiotic treatment armory</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>ermB gene (high macrolide MIC)</b> — High-level erm (target-site) resistance is NOT overcome by simply raising the macrolide dose — escalating azithromycin will still fail. Choose a different class (beta-lactam, doxycycline, or respiratory FQ).</li><li><b>mefA/E gene (efflux)</b> — Even 'low-level' efflux resistance can cause clinical failure of macrolide monotherapy in pneumonia — don't reassure yourself that a low MIC is safe. The board still wants combination therapy or a non-macrolide where resistance is prevalent.</li><li><b>Macrolide resistance &gt;25% rule</b> — Azithromycin monotherapy is a wrong answer for CAP in high-resistance regions (i.e., most of the US) — add a beta-lactam or use a respiratory FQ. Macrolide monotherapy is only acceptable for a healthy outpatient with no comorbidities AND documented low local resistance.</li><li><b>gyrA / parC fluoroquinolone resistance</b> — Stepwise FQ resistance can emerge during monotherapy — most dangerously when an FQ is given for presumed CAP that is actually TB, partially treating it, selecting FQ-resistant TB, and delaying diagnosis. Don't use a respiratory FQ empirically when TB is on the differential (upper-lobe cavitary disease, risk factors).</li><li><b>Fluoroquinolone resistance still low</b> — Don't avoid respiratory FQs out of fear of resistance — but DO reserve them (steward) to avoid selecting resistance, masking/partially treating TB, and exposing patients to FQ class adverse effects (tendinopathy, QT prolongation, dysglycemia, aortic aneurysm/dissection, CNS effects, C. difficile).</li><li><b>Prior antibiotic trap (3 months)</b> — If the patient received a given antibiotic class in the last 3 months, do NOT re-use that same class empirically — re-treating with it risks a resistant organism and clinical failure. This is a classic 'pick the different class' question.</li><li><b>Switch-class rule</b> — Repeating the recently-used (and possibly failed) class is the trap answer in 'which empiric antibiotic' stems — always pivot to a different class when there is recent exposure.</li><li><b>Top shelf — uncomplicated outpatient</b> — Amoxicillin alone does NOT cover atypicals, but that's acceptable for this lowest-risk group; the trap is using macrolide monotherapy in a high-resistance region. Conversely, don't over-treat a healthy outpatient with a respiratory FQ — reserve FQs.</li><li><b>Second shelf — outpatient with comorbidities</b> — With comorbidities, plain single-agent amoxicillin is INSUFFICIENT (no atypical coverage, higher DRSP risk) — broaden to the beta-lactam + macrolide/doxy combination or a respiratory FQ alone. Picking amoxicillin monotherapy here is a wrong answer.</li><li><b>Third shelf — inpatient non-severe</b> — Do NOT add empiric anti-MRSA (vancomycin/linezolid) or anti-pseudomonal agents unless specific risk factors are present (prior MRSA/Pseudomonas isolation, recent IV antibiotics + local validation). Reflexive broad coverage is the overtreatment trap left over from the abandoned HCAP era.</li><li><b>Fourth shelf — inpatient severe</b> — Fluoroquinolone MONOtherapy is NOT adequate for severe/ICU CAP — it must be paired with a beta-lactam. Also, add empiric vancomycin/linezolid (MRSA) and an antipseudomonal beta-lactam only when those specific risk factors exist, then de-escalate by cultures.</li><li><b>Duration — 5 days minimum</b> — Don't prolong antibiotics beyond ~5 days for uncomplicated CAP that has stabilized — longer-is-better is a wrong answer and risks C. difficile/resistance. Conversely, don't stop at day 5 if the patient is still unstable or has a complicated/abscess process.</li><li><b>IV-to-PO switch criteria</b> — Don't keep a patient on IV antibiotics solely to 'finish the IV course' once oral criteria are met — that's a wrong, low-value answer. The patient does NOT need to be afebrile before switching; the criteria are stability, improvement, and ability to absorb oral drugs.</li><li><b>Aspiration pneumonia coverage</b> — Do NOT add routine anaerobic coverage to every CAP — reserve it for true aspiration with risk factors or established abscess/empyema. Note current guidance: simple witnessed aspiration without these features often does NOT mandate anaerobic coverage, and metronidazole ALONE fails (misses microaerophilic strep).</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ermB gene (high macrolide MIC)</div><div class="rte">ermB encodes a methyltransferase that methylates the 23S rRNA (A2058) of the 50S ribosomal subunit — the macrolide target site — producing HIGH-LEVEL (MIC ≥64) macrolide resistance in S. pneumoniae. Because it alters the binding target itself, it confers cross-resistance to macrolides, lincosamides, and streptogramin B (the MLSB phenotype). It accounts for a large share (~40-60% in some series) of resistant pneumococci.</div><div class="rtt">⚠️ High-level erm (target-site) resistance is NOT overcome by simply raising the macrolide dose — escalating azithromycin will still fail. Choose a different class (beta-lactam, doxycycline, or respiratory FQ).</div></div><div class="rt"><div class="rtl">2. mefA/E gene (efflux)</div><div class="rte">mef(A/E) encodes a membrane efflux pump that actively pumps 14- and 15-membered macrolides out of the cell, producing LOW-LEVEL resistance (MIC typically &lt;16) — the M phenotype. Unlike ermB it does not affect clindamycin. It is the more common macrolide-resistance mechanism in some regions.</div><div class="rtt">⚠️ Even 'low-level' efflux resistance can cause clinical failure of macrolide monotherapy in pneumonia — don't reassure yourself that a low MIC is safe. The board still wants combination therapy or a non-macrolide where resistance is prevalent.</div></div><div class="rt"><div class="rtl">3. Macrolide resistance &gt;25% rule</div><div class="rte">When local pneumococcal macrolide resistance exceeds 25% (US rates run ~30-40%), guidelines say do NOT use a macrolide as monotherapy for CAP. Acceptable macrolide use is then only as the atypical-covering partner of a beta-lactam, or the patient gets a respiratory fluoroquinolone instead. The 25% threshold is the key testable number.</div><div class="rtt">⚠️ Azithromycin monotherapy is a wrong answer for CAP in high-resistance regions (i.e., most of the US) — add a beta-lactam or use a respiratory FQ. Macrolide monotherapy is only acceptable for a healthy outpatient with no comorbidities AND documented low local resistance.</div></div><div class="rt"><div class="rtl">4. gyrA / parC fluoroquinolone resistance</div><div class="rte">Fluoroquinolones inhibit DNA gyrase (topoisomerase II, encoded by gyrA) and topoisomerase IV (encoded by parC). Resistance arises from stepwise point mutations in the quinolone-resistance-determining regions of these genes, plus efflux. Because resistance is stepwise, a single mutation may raise the MIC just enough to allow on-treatment selection of fully resistant mutants.</div><div class="rtt">⚠️ Stepwise FQ resistance can emerge during monotherapy — most dangerously when an FQ is given for presumed CAP that is actually TB, partially treating it, selecting FQ-resistant TB, and delaying diagnosis. Don't use a respiratory FQ empirically when TB is on the differential (upper-lobe cavitary disease, risk factors).</div></div><div class="rt"><div class="rtl">5. Fluoroquinolone resistance still low</div><div class="rte">Pneumococcal resistance to respiratory fluoroquinolones (levofloxacin, moxifloxacin) remains low (&lt;2%), so they are reliable single-agent empiric options that cover both pneumococcus (including DRSP) and atypicals. This is why a respiratory FQ alone is an accepted regimen for outpatients with comorbidities and for inpatient non-severe CAP.</div><div class="rtt">⚠️ Don't avoid respiratory FQs out of fear of resistance — but DO reserve them (steward) to avoid selecting resistance, masking/partially treating TB, and exposing patients to FQ class adverse effects (tendinopathy, QT prolongation, dysglycemia, aortic aneurysm/dissection, CNS effects, C. difficile).</div></div><div class="rt"><div class="rtl">6. Prior antibiotic trap (3 months)</div><div class="rte">Antibiotic exposure within the prior 90 days (3 months) is one of the strongest risk factors for drug-resistant S. pneumoniae (DRSP) and for selecting resistant gram-negatives. The recent drug pressures the flora toward resistance to THAT class. This single risk factor often upgrades a patient from the simplest outpatient regimen to a combination/respiratory-FQ regimen.</div><div class="rtt">⚠️ If the patient received a given antibiotic class in the last 3 months, do NOT re-use that same class empirically — re-treating with it risks a resistant organism and clinical failure. This is a classic 'pick the different class' question.</div></div><div class="rt"><div class="rtl">7. Switch-class rule</div><div class="rte">Operationalize the 3-month rule by rotating classes: if a macrolide was used recently, choose a beta-lactam (± doxycycline) or a respiratory FQ; if a beta-lactam was used recently, choose a macrolide or a respiratory FQ. The goal is to avoid selecting/encountering resistance to the recently-used class.</div><div class="rtt">⚠️ Repeating the recently-used (and possibly failed) class is the trap answer in 'which empiric antibiotic' stems — always pivot to a different class when there is recent exposure.</div></div><div class="rt"><div class="rtl">8. Top shelf — uncomplicated outpatient</div><div class="rte">Healthy outpatient with NO comorbidities and no resistance risk: high-dose amoxicillin 1 g PO TID is preferred (high dose overcomes PBP-mediated pneumococcal resistance). Doxycycline is an alternative; a macrolide is acceptable only where local resistance is &lt;25%. These patients are low-mortality and do not need atypical-mandatory combination therapy.</div><div class="rtt">⚠️ Amoxicillin alone does NOT cover atypicals, but that's acceptable for this lowest-risk group; the trap is using macrolide monotherapy in a high-resistance region. Conversely, don't over-treat a healthy outpatient with a respiratory FQ — reserve FQs.</div></div><div class="rt"><div class="rtl">9. Second shelf — outpatient with comorbidities</div><div class="rte">Outpatient WITH comorbidities (chronic heart/lung/liver/renal disease, diabetes, alcoholism, malignancy, asplenia) or recent antibiotics: either a beta-lactam (amox-clavulanate or a cephalosporin) PLUS a macrolide or doxycycline, OR a respiratory fluoroquinolone (levofloxacin/moxifloxacin) as monotherapy. Comorbidity raises the risk of DRSP and worse outcomes, so atypical coverage is now mandatory.</div><div class="rtt">⚠️ With comorbidities, plain single-agent amoxicillin is INSUFFICIENT (no atypical coverage, higher DRSP risk) — broaden to the beta-lactam + macrolide/doxy combination or a respiratory FQ alone. Picking amoxicillin monotherapy here is a wrong answer.</div></div><div class="rt"><div class="rtl">10. Third shelf — inpatient non-severe</div><div class="rte">Inpatient (ward) non-severe CAP without MRSA/Pseudomonas risk: a beta-lactam (ceftriaxone, cefotaxime, ampicillin-sulbactam) PLUS a macrolide, OR a respiratory fluoroquinolone alone. Both regimens reliably cover pneumococcus and atypicals.</div><div class="rtt">⚠️ Do NOT add empiric anti-MRSA (vancomycin/linezolid) or anti-pseudomonal agents unless specific risk factors are present (prior MRSA/Pseudomonas isolation, recent IV antibiotics + local validation). Reflexive broad coverage is the overtreatment trap left over from the abandoned HCAP era.</div></div><div class="rt"><div class="rtl">11. Fourth shelf — inpatient severe</div><div class="rte">Severe CAP (ICU; ≥1 major or ≥3 minor IDSA/ATS criteria) without MRSA/Pseudomonas risk: a beta-lactam PLUS a macrolide, OR a beta-lactam PLUS a respiratory fluoroquinolone. Note that severe disease always uses a beta-lactam-containing COMBINATION — there is some evidence a macrolide-containing regimen has immunomodulatory mortality benefit in severe CAP.</div><div class="rtt">⚠️ Fluoroquinolone MONOtherapy is NOT adequate for severe/ICU CAP — it must be paired with a beta-lactam. Also, add empiric vancomycin/linezolid (MRSA) and an antipseudomonal beta-lactam only when those specific risk factors exist, then de-escalate by cultures.</div></div><div class="rt"><div class="rtl">12. Duration — 5 days minimum</div><div class="rte">Uncomplicated CAP needs a MINIMUM of 5 days of therapy, and the patient must be clinically stable (afebrile 48-72 h, stable vitals/oxygenation, able to eat) before stopping. Longer courses are reserved for complications: 7+ days for MRSA/Pseudomonas, and weeks for lung abscess/empyema or extrapulmonary infection (e.g., meningitis).</div><div class="rtt">⚠️ Don't prolong antibiotics beyond ~5 days for uncomplicated CAP that has stabilized — longer-is-better is a wrong answer and risks C. difficile/resistance. Conversely, don't stop at day 5 if the patient is still unstable or has a complicated/abscess process.</div></div><div class="rt"><div class="rtl">13. IV-to-PO switch criteria</div><div class="rte">Step down from IV to oral antibiotics once the patient is hemodynamically stable, clinically improving, able to ingest oral medication, and has a functioning GI tract (normal absorption). Many agents (fluoroquinolones, doxycycline, linezolid, metronidazole) have near-100% oral bioavailability, making early switch safe and shortening length of stay.</div><div class="rtt">⚠️ Don't keep a patient on IV antibiotics solely to 'finish the IV course' once oral criteria are met — that's a wrong, low-value answer. The patient does NOT need to be afebrile before switching; the criteria are stability, improvement, and ability to absorb oral drugs.</div></div><div class="rt"><div class="rtl">14. Aspiration pneumonia coverage</div><div class="rte">True aspiration pneumonia (impaired consciousness, dysphagia, poor dentition) can involve oral anaerobes and may need anaerobic coverage — amoxicillin-clavulanate, ampicillin-sulbactam, or clindamycin (clindamycin is preferred over plain penicillin because oral anaerobes produce beta-lactamase). Lung abscess from anaerobes requires prolonged therapy until the cavity resolves.</div><div class="rtt">⚠️ Do NOT add routine anaerobic coverage to every CAP — reserve it for true aspiration with risk factors or established abscess/empyema. Note current guidance: simple witnessed aspiration without these features often does NOT mandate anaerobic coverage, and metronidazole ALONE fails (misses microaerophilic strep).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pneumonia_1.html" title="Pneumonia — Organisms (typical, atypical, epidemiologic clues &amp; CA-MRSA)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pneumonia_4.html" title="Pneumonia — Ventilator-associated pneumonia (VAP): risk, prevention &amp; treatment">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

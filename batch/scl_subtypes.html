@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Scleroderma — Subtypes, Raynaud &amp; Skin</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Raynaud phenomenon (earliest)</b> — Calling new Raynaud in a 25-year-old woman with normal nailfolds and negative ANA a connective tissue disease — WRONG. That is benign PRIMARY Raynaud. Discriminator: SECONDARY (CTD-associated) Raynaud has abnormal/dilated dropout nailfold capillaries, positive autoantibodies, digital ulcers, and onset after age 40 — these mandate a workup for SSc.</li><li><b>Female predominance / epidemiology</b> — Excluding SSc in a male patient because it is a 'woman's disease' — WRONG. Men are affected and often more severely. Discriminator: demographics shift the pre-test probability but never rule the diagnosis in or out — antibodies, nailfold capillaroscopy, and skin findings decide it.</li><li><b>Silica / occupational trigger</b> — Attributing a scleroderma-like illness in a renal-failure patient on gadolinium to occupational silica — WRONG. That is nephrogenic systemic fibrosis (gadolinium + renal failure). Discriminator: NSF spares the face and lacks Raynaud/autoantibodies; eosinophilia-myalgia (L-tryptophan) and toxic oil syndrome are other mimics distinguished by exposure history and the absence of typical SSc serology.</li><li><b>Vascular + fibrotic pathogenesis</b> — Expecting immunosuppression to reverse established skin/organ fibrosis — WRONG. Mature fibrosis is largely irreversible; therapy aims to halt progression and manage organ complications. Discriminator: the vascular and inflammatory phases are the modifiable targets — once dense collagen is deposited, you prevent further damage rather than undo it.</li><li><b>Limited cutaneous SSc (CREST)</b> — Assuming limited disease is benign and skipping cardiopulmonary surveillance — WRONG. Limited SSc still kills via late PAH. Discriminator: remember CREST = Calcinosis, Raynaud, Esophageal dysmotility, Sclerodactyly, Telangiectasia — and screen these patients with annual echo + DLCO for PAH despite mild-looking skin.</li><li><b>Anti-centromere antibody</b> — Linking anti-centromere to ILD or renal crisis — WRONG. ACA = limited subtype and the PAH/vasculopathy pathway, not lung fibrosis. Discriminator: centromere→limited→PAH; Scl-70→diffuse→ILD; RNA-pol III→diffuse→renal crisis. Match the antibody to its complication.</li><li><b>Diffuse cutaneous SSc</b> — Treating progressive diffuse skin with high-dose steroids — WRONG. Steroids ≥15 mg/day precipitate renal crisis in diffuse SSc. Discriminator: diffuse disease = aggressive organ surveillance (HRCT, PFTs, BP/creatinine) and steroid-sparing skin therapy (methotrexate/mycophenolate), not corticosteroids.</li><li><b>Anti-Scl-70 (topoisomerase)</b> — Pairing anti-Scl-70 with renal crisis or PAH as the dominant risk — WRONG. Scl-70's signature complication is ILD. Discriminator: renal crisis is the anti-RNA-pol III association, isolated PAH is the anti-centromere association — Scl-70 owns the lung fibrosis.</li><li><b>Anti-RNA-pol III</b> — Forgetting to avoid steroids and to screen for cancer in an anti-RNA-pol III patient — WRONG. This antibody flags both renal-crisis vulnerability (steroids contraindicated) and paraneoplastic risk. Discriminator: RNA-pol III→kidney + malignancy; Scl-70→lung; centromere→PAH.</li><li><b>Skin staging (edematous-&gt;fibrotic-&gt;atrophic)</b> — Dismissing early puffy hands as benign edema or carpal tunnel — WRONG. Puffy fingers/hands in a Raynaud patient is the earliest cutaneous stage of SSc. Discriminator: SSc edema is non-pitting, bilateral, and accompanied by Raynaud/abnormal nailfolds, prompting an antibody and capillaroscopy workup rather than reassurance.</li><li><b>Sclerodactyly</b> — Confusing sclerodactyly with the dactylitis ('sausage digit') of psoriatic/spondyloarthritis — WRONG. Sclerodactyly is taut, bound-down, sclerotic skin, not diffuse soft-tissue swelling. Discriminator: sclerodactyly + Raynaud + nailfold dropout = scleroderma; uniform sausage swelling with nail pitting/enthesitis = spondyloarthropathy.</li><li><b>Microstomia / facial features</b> — Attributing a mask-like expressionless face plus a beaked nose only to Parkinsonism — WRONG. In a Raynaud patient with tight skin it is SSc facies. Discriminator: SSc facies has microstomia, perioral furrowing, telangiectasias, and sclerodactyly — features absent in the hypomimia of Parkinson disease.</li><li><b>Telangiectasias</b> — Calling facial telangiectasias purely cosmetic and ignoring the gut — WRONG. The same vasculopathy causes GAVE and recurrent GI bleeding. Discriminator: in an SSc patient with mat telangiectasias and iron-deficiency anemia, suspect GAVE/watermelon stomach and pursue endoscopy rather than attributing anemia to chronic disease alone.</li><li><b>Scleroderma sine scleroderma</b> — Ruling out systemic sclerosis simply because the skin looks normal — WRONG. Sine scleroderma proves visceral SSc can occur without skin change. Discriminator: a patient with Raynaud + positive SSc antibody (e.g., anti-Scl-70/centromere) + abnormal nailfold capillaroscopy + unexplained ILD/PAH has SSc regardless of normal-feeling skin.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Raynaud phenomenon (earliest)</div><div class="rte">Raynaud phenomenon is the EARLIEST and most common manifestation of SSc, often preceding skin disease by years. It is a triphasic color change: white (vasospasm/ischemia) → blue (cyanosis/deoxygenation) → red (reperfusion hyperemia), triggered by cold or stress. Nearly 95%+ of SSc patients have it; it reflects the underlying obliterative vasculopathy.</div><div class="rtt">⚠️ Calling new Raynaud in a 25-year-old woman with normal nailfolds and negative ANA a connective tissue disease — WRONG. That is benign PRIMARY Raynaud. Discriminator: SECONDARY (CTD-associated) Raynaud has abnormal/dilated dropout nailfold capillaries, positive autoantibodies, digital ulcers, and onset after age 40 — these mandate a workup for SSc.</div></div><div class="rt"><div class="rtl">2. Female predominance / epidemiology</div><div class="rte">SSc is strongly female-predominant (~4-6:1) with peak onset between ages 30-60. Although women get the disease more often, men and older patients tend to have more severe disease and worse organ outcomes. African-American patients often present younger with more diffuse disease and higher mortality.</div><div class="rtt">⚠️ Excluding SSc in a male patient because it is a 'woman's disease' — WRONG. Men are affected and often more severely. Discriminator: demographics shift the pre-test probability but never rule the diagnosis in or out — antibodies, nailfold capillaroscopy, and skin findings decide it.</div></div><div class="rt"><div class="rtl">3. Silica / occupational trigger</div><div class="rte">Silica dust (mining, sandblasting, stone-cutting) and organic solvents (and historically vinyl chloride) are recognized environmental triggers, especially for diffuse disease in men. Bleomycin and certain chemotherapeutics can also induce scleroderma-like fibrosis. These exposures act on a genetically susceptible host.</div><div class="rtt">⚠️ Attributing a scleroderma-like illness in a renal-failure patient on gadolinium to occupational silica — WRONG. That is nephrogenic systemic fibrosis (gadolinium + renal failure). Discriminator: NSF spares the face and lacks Raynaud/autoantibodies; eosinophilia-myalgia (L-tryptophan) and toxic oil syndrome are other mimics distinguished by exposure history and the absence of typical SSc serology.</div></div><div class="rt"><div class="rtl">4. Vascular + fibrotic pathogenesis</div><div class="rte">The triad of pathogenesis is vasculopathy (endothelial injury, intimal proliferation, capillary dropout) + autoimmunity (T/B cell activation, autoantibodies) + fibrosis (TGF-β/PDGF-driven fibroblast collagen overproduction). Vascular injury comes first, then immune activation drives fibroblasts to lay down excess collagen, which is largely irreversible.</div><div class="rtt">⚠️ Expecting immunosuppression to reverse established skin/organ fibrosis — WRONG. Mature fibrosis is largely irreversible; therapy aims to halt progression and manage organ complications. Discriminator: the vascular and inflammatory phases are the modifiable targets — once dense collagen is deposited, you prevent further damage rather than undo it.</div></div><div class="rt"><div class="rtl">5. Limited cutaneous SSc (CREST)</div><div class="rte">Limited cutaneous SSc (lcSSc, formerly CREST) has skin thickening restricted to DISTAL to elbows and knees plus the face, sparing the trunk. It follows a slower, more indolent course with long-standing Raynaud. The feared late complication is isolated pulmonary arterial hypertension (PAH), which drives its mortality.</div><div class="rtt">⚠️ Assuming limited disease is benign and skipping cardiopulmonary surveillance — WRONG. Limited SSc still kills via late PAH. Discriminator: remember CREST = Calcinosis, Raynaud, Esophageal dysmotility, Sclerodactyly, Telangiectasia — and screen these patients with annual echo + DLCO for PAH despite mild-looking skin.</div></div><div class="rt"><div class="rtl">6. Anti-centromere antibody</div><div class="rte">Anti-centromere antibody (ACA) is the serologic marker of LIMITED cutaneous SSc, with a centromere/discrete-speckled ANA pattern. It predicts a higher risk of isolated PAH and a lower risk of ILD and renal crisis. ACA and anti-Scl-70 are essentially mutually exclusive — they sort patients into limited vs diffuse phenotypes.</div><div class="rtt">⚠️ Linking anti-centromere to ILD or renal crisis — WRONG. ACA = limited subtype and the PAH/vasculopathy pathway, not lung fibrosis. Discriminator: centromere→limited→PAH; Scl-70→diffuse→ILD; RNA-pol III→diffuse→renal crisis. Match the antibody to its complication.</div></div><div class="rt"><div class="rtl">7. Diffuse cutaneous SSc</div><div class="rte">Diffuse cutaneous SSc (dcSSc) has skin involvement PROXIMAL to elbows/knees and on the trunk, with rapid progression and early visceral disease. The modified Rodnan skin score tracks extent. The first 3-5 years carry the highest risk of ILD, scleroderma renal crisis, and cardiac involvement — the critical monitoring window.</div><div class="rtt">⚠️ Treating progressive diffuse skin with high-dose steroids — WRONG. Steroids ≥15 mg/day precipitate renal crisis in diffuse SSc. Discriminator: diffuse disease = aggressive organ surveillance (HRCT, PFTs, BP/creatinine) and steroid-sparing skin therapy (methotrexate/mycophenolate), not corticosteroids.</div></div><div class="rt"><div class="rtl">8. Anti-Scl-70 (topoisomerase)</div><div class="rte">Anti-Scl-70 (anti-topoisomerase I) marks DIFFUSE cutaneous SSc with the highest risk of interstitial lung disease (NSIP pattern) and the worst pulmonary prognosis. Mnemonic: Scl-70 = SCarred Lungs. It correlates with extensive skin disease and overall worse survival; it is mutually exclusive with anti-centromere.</div><div class="rtt">⚠️ Pairing anti-Scl-70 with renal crisis or PAH as the dominant risk — WRONG. Scl-70's signature complication is ILD. Discriminator: renal crisis is the anti-RNA-pol III association, isolated PAH is the anti-centromere association — Scl-70 owns the lung fibrosis.</div></div><div class="rt"><div class="rtl">9. Anti-RNA-pol III</div><div class="rte">Anti-RNA-polymerase III marks DIFFUSE SSc with the highest risk of scleroderma renal crisis and the most rapidly progressive skin disease. It also carries a notable association with occult malignancy (cancer diagnosed within ~2-3 years of SSc onset), warranting age-appropriate cancer screening. RNA-pol III = Renal crisis + Rapid skin + cancer Risk.</div><div class="rtt">⚠️ Forgetting to avoid steroids and to screen for cancer in an anti-RNA-pol III patient — WRONG. This antibody flags both renal-crisis vulnerability (steroids contraindicated) and paraneoplastic risk. Discriminator: RNA-pol III→kidney + malignancy; Scl-70→lung; centromere→PAH.</div></div><div class="rt"><div class="rtl">10. Skin staging (edematous-&gt;fibrotic-&gt;atrophic)</div><div class="rte">SSc skin evolves through three stages: (1) early EDEMATOUS/puffy phase (non-pitting puffy hands, the classic early presentation), (2) INDURATED/fibrotic phase with tight bound-down skin and sclerodactyly, then (3) late ATROPHIC phase where skin softens/thins but contractures and damage persist. The modified Rodnan skin score quantifies thickening across 17 body areas.</div><div class="rtt">⚠️ Dismissing early puffy hands as benign edema or carpal tunnel — WRONG. Puffy fingers/hands in a Raynaud patient is the earliest cutaneous stage of SSc. Discriminator: SSc edema is non-pitting, bilateral, and accompanied by Raynaud/abnormal nailfolds, prompting an antibody and capillaroscopy workup rather than reassurance.</div></div><div class="rt"><div class="rtl">11. Sclerodactyly</div><div class="rte">Sclerodactyly is tight, thickened, shiny skin of the digits producing tapered fingers, flexion contractures, and a 'prayer sign' inability to flatten the palms. It is a core diagnostic feature and the S in CREST. Associated digital pitting scars and ischemic ulcers reflect the underlying vasculopathy.</div><div class="rtt">⚠️ Confusing sclerodactyly with the dactylitis ('sausage digit') of psoriatic/spondyloarthritis — WRONG. Sclerodactyly is taut, bound-down, sclerotic skin, not diffuse soft-tissue swelling. Discriminator: sclerodactyly + Raynaud + nailfold dropout = scleroderma; uniform sausage swelling with nail pitting/enthesitis = spondyloarthropathy.</div></div><div class="rt"><div class="rtl">12. Microstomia / facial features</div><div class="rte">Facial skin tightening produces microstomia (small mouth opening with perioral radial furrowing), thinned lips, a pinched beaked nose, and loss of facial wrinkles giving a mask-like, expressionless face. Microstomia complicates dental care and intubation. Mat telangiectasias often cluster on the face.</div><div class="rtt">⚠️ Attributing a mask-like expressionless face plus a beaked nose only to Parkinsonism — WRONG. In a Raynaud patient with tight skin it is SSc facies. Discriminator: SSc facies has microstomia, perioral furrowing, telangiectasias, and sclerodactyly — features absent in the hypomimia of Parkinson disease.</div></div><div class="rt"><div class="rtl">13. Telangiectasias</div><div class="rte">Mat-like telangiectasias (flat, square/oval dilated capillaries) appear on the face, lips, palms, and hands and are the T in CREST. They reflect the chronic vasculopathy and are more characteristic of LIMITED SSc. Mucosal/GI telangiectasias (including GAVE — gastric antral vascular ectasia, 'watermelon stomach') can cause occult GI bleeding and iron-deficiency anemia.</div><div class="rtt">⚠️ Calling facial telangiectasias purely cosmetic and ignoring the gut — WRONG. The same vasculopathy causes GAVE and recurrent GI bleeding. Discriminator: in an SSc patient with mat telangiectasias and iron-deficiency anemia, suspect GAVE/watermelon stomach and pursue endoscopy rather than attributing anemia to chronic disease alone.</div></div><div class="rt"><div class="rtl">14. Scleroderma sine scleroderma</div><div class="rte">Scleroderma sine scleroderma is visceral/internal-organ SSc (Raynaud, ILD, PAH, GI dysmotility, renal crisis) with characteristic autoantibodies and nailfold capillary changes but NO clinically detectable skin thickening. It is uncommon but important because organ disease and mortality are similar to cutaneous forms.</div><div class="rtt">⚠️ Ruling out systemic sclerosis simply because the skin looks normal — WRONG. Sine scleroderma proves visceral SSc can occur without skin change. Discriminator: a patient with Raynaud + positive SSc antibody (e.g., anti-Scl-70/centromere) + abnormal nailfold capillaroscopy + unexplained ILD/PAH has SSc regardless of normal-feeling skin.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="scl_organs.html" title="Scleroderma — Organ Involvement (Lung, Heart, Kidney)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="scl_treatment.html" title="Scleroderma — Treatment by Organ">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

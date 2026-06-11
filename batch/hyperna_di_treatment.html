@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypernatremia — DI Treatment Specifics</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Central: ↓AVP</b> — WRONG answer: 'central DI means the kidneys are damaged and cannot concentrate urine.' In central DI the kidneys are normal — they just never receive the AVP signal; that is why exogenous DDAVP works. Discriminator: low endogenous AVP/copeptin + strong response to DDAVP = central (the brain, not the kidney, is the broken link).</li><li><b>DDAVP synthetic</b> — WRONG answer: 'use desmopressin to treat any patient with DI.' DDAVP only works in CENTRAL DI; in nephrogenic DI the receptor/channel is resistant, so DDAVP is ineffective and the wrong choice. Discriminator: match the drug to the lesion — DDAVP for central (hormone-deficient), thiazide/amiloride for nephrogenic (hormone-resistant).</li><li><b>DDAVP routes</b> — WRONG answer: 'the IV and intranasal doses of desmopressin are interchangeable milligram-for-milligram.' Bioavailability differs markedly by route (parenteral &gt;&gt; intranasal &gt;&gt; oral), so doses are NOT equivalent and must be re-titrated when switching. Discriminator: changing route requires re-dosing to effect (urine output, serum Na), not a 1:1 conversion.</li><li><b>No water deprivation if hyperNa</b> — WRONG answer: 'confirm DI in a hypernatremic patient by performing a supervised water-deprivation test.' Depriving an already-hypertonic patient of water can drive Na dangerously higher; skip it and go straight to a desmopressin trial. Discriminator: water deprivation is reserved for the euvolemic, normonatremic polyuric patient — never the already-hypernatremic one.</li><li><b>DDAVP not for acute emergency</b> — WRONG answer: 'a seizing, severely hypernatremic DI patient needs their thiazide/amiloride or chronic DDAVP regimen started immediately.' Those are chronic therapies; the acute emergency is managed with NS (if shocked) then free water/D5W at a controlled rate. Discriminator: stabilize and replace free water acutely; reserve thiazide/amiloride/NSAID and outpatient DDAVP titration for chronic control.</li><li><b>Stop lithium</b> — WRONG answer: 'abruptly discontinue lithium in everyone with lithium-induced nephrogenic DI without considering the psychiatric risk.' Stopping lithium can precipitate manic relapse, so it must be weighed against psychiatric needs; amiloride is the bridge when lithium must continue. Discriminator: stop lithium 'IF POSSIBLE' — otherwise add amiloride to limit further renal lithium entry.</li><li><b>Nephrogenic: kidney won't listen</b> — WRONG answer: 'overcome nephrogenic DI by giving large doses of desmopressin to force the kidney to concentrate.' The kidney is RESISTANT downstream of the hormone, so more DDAVP does little; you treat with thiazide ± amiloride ± low-salt ± NSAID and by correcting the underlying cause. Discriminator: high endogenous AVP/copeptin + no rise in Uosm after DDAVP = nephrogenic — pick non-hormonal therapy.</li><li><b>Amiloride (Li-induced)</b> — WRONG answer: 'amiloride is just a generic diuretic with no special role in DI.' Its mechanism (blocking ENaC, the very channel lithium uses to enter cells) makes it uniquely useful in lithium-induced nephrogenic DI. Discriminator: lithium NDI → amiloride is the targeted, mechanism-based choice (and is K-sparing, unlike thiazides).</li><li><b>Thiazide</b> — WRONG answer: 'giving a diuretic to a polyuric DI patient will make the polyuria worse.' Thiazides paradoxically REDUCE urine output in nephrogenic DI by inducing mild volume contraction and enhancing proximal reabsorption. Discriminator: the 'paradoxical antidiuretic effect of thiazides' is the classic teaching point — pair with low salt, and watch/replace potassium.</li><li><b>NSAID</b> — WRONG answer: 'NSAIDs are first-line and safe for long-term treatment of nephrogenic DI.' They are an ADJUNCT, and their nephrotoxicity/GI risk limits chronic use; thiazide ± amiloride + low salt and treating the cause come first. Discriminator: NSAID = prostaglandin inhibition boosting AVP effect, but a second-line adjunct because of renal/GI harm.</li><li><b>Polyuria prevention</b> — WRONG answer: 'titrate DDAVP in central DI to completely abolish all polyuria around the clock.' Fully suppressing urine output risks dilutional hyponatremia; you deliberately allow a short window of breakthrough diuresis each day. Discriminator: over-aggressive DDAVP → hyponatremia — the goal is balance, not zero urine.</li><li><b>Recheck EFWC</b> — WRONG answer: 'in DI, replace only the one-time calculated free-water deficit and you're done.' Active DI has large ONGOING free-water losses that must be tracked (EFWC, urine output, serum Na) and replaced continuously, or Na rebounds. Discriminator: deficit + ongoing losses, reassessed daily — not a single static replacement.</li><li><b>Shock → NS first</b> — WRONG answer: 'a hypotensive hypernatremic patient should get hypotonic fluid (D5W/½NS) first to bring the Na down fastest.' Hypotonic fluid does not effectively restore intravascular volume — resuscitate shock with isotonic NS first, then switch to free water. Discriminator: perfusion before tonicity — NS for shock, free water once stable.</li><li><b>Treat the cause</b> — WRONG answer: 'as long as you keep up with free-water replacement, you don't need to address the underlying DI.' If the cause is untreated, ongoing renal water loss outpaces replacement and Na keeps rising — you must give DDAVP (central) or thiazide/amiloride and remove the offending cause (nephrogenic). Discriminator: 'fluid alone is not enough' — definitive control requires treating the mechanism.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Central: ↓AVP</div><div class="rte">Central DI is a problem of SUPPLY: the posterior pituitary fails to secrete AVP (ADH), but the kidney's V2 receptors and aquaporin-2 channels are fully intact and ready to respond. The mnemonic 'kidney works, brain fails to send AVP' tells you the fix is simply to replace the missing hormone with desmopressin. Endogenous AVP (and its surrogate copeptin) is LOW, and urine osmolality rises briskly once hormone is supplied.</div><div class="rtt">⚠️ WRONG answer: 'central DI means the kidneys are damaged and cannot concentrate urine.' In central DI the kidneys are normal — they just never receive the AVP signal; that is why exogenous DDAVP works. Discriminator: low endogenous AVP/copeptin + strong response to DDAVP = central (the brain, not the kidney, is the broken link).</div></div><div class="rt"><div class="rtl">2. DDAVP synthetic</div><div class="rte">Desmopressin (DDAVP) is a synthetic analog of ADH that is selective for the V2 receptor (antidiuretic action) with minimal V1 (vasoconstrictor/pressor) effect, and it has a longer duration than native AVP. It is the definitive treatment for CENTRAL DI: it reinserts aquaporin-2 channels in the collecting duct, concentrating the urine and stopping the free-water loss. Typical dosing is titrated to effect (e.g., intranasal 10–40 mcg/day, oral 0.1–0.4 mg, or 1–2 mcg SC/IV).</div><div class="rtt">⚠️ WRONG answer: 'use desmopressin to treat any patient with DI.' DDAVP only works in CENTRAL DI; in nephrogenic DI the receptor/channel is resistant, so DDAVP is ineffective and the wrong choice. Discriminator: match the drug to the lesion — DDAVP for central (hormone-deficient), thiazide/amiloride for nephrogenic (hormone-resistant).</div></div><div class="rt"><div class="rtl">3. DDAVP routes</div><div class="rte">Desmopressin can be given INTRANASAL (spray, good outpatient option), ORAL (tablet/sublingual, convenient but lower bioavailability so higher mg), or IV/SC (most potent, used inpatient or when absorption is unreliable). Route and dose are titrated to urine output and serum Na. Note that intranasal absorption can be erratic with rhinitis or mucosal disease, which sometimes prompts a switch of route.</div><div class="rtt">⚠️ WRONG answer: 'the IV and intranasal doses of desmopressin are interchangeable milligram-for-milligram.' Bioavailability differs markedly by route (parenteral &gt;&gt; intranasal &gt;&gt; oral), so doses are NOT equivalent and must be re-titrated when switching. Discriminator: changing route requires re-dosing to effect (urine output, serum Na), not a 1:1 conversion.</div></div><div class="rt"><div class="rtl">4. No water deprivation if hyperNa</div><div class="rte">If the patient is ALREADY hypernatremic (high serum osm) and producing dilute urine, the kidney has effectively already 'failed' the water-deprivation challenge — the diagnosis of a concentrating defect is made, and formally withholding more water is both unnecessary and dangerous. In that setting you proceed directly to a DDAVP trial: a brisk rise in Uosm confirms central DI, a flat response confirms nephrogenic.</div><div class="rtt">⚠️ WRONG answer: 'confirm DI in a hypernatremic patient by performing a supervised water-deprivation test.' Depriving an already-hypertonic patient of water can drive Na dangerously higher; skip it and go straight to a desmopressin trial. Discriminator: water deprivation is reserved for the euvolemic, normonatremic polyuric patient — never the already-hypernatremic one.</div></div><div class="rt"><div class="rtl">5. DDAVP not for acute emergency</div><div class="rte">Pharmacologic agents — thiazides, amiloride, and NSAIDs for nephrogenic DI, and chronic DDAVP titration for central DI — are CHRONIC management tools. In an acute severe hypernatremic EMERGENCY (seizing, altered, profoundly hypertonic), the immediate priority is hemodynamic stabilization and free-water replacement to bring osmolality down safely, not starting a maintenance drug regimen. Treat the acute electrolyte crisis first; layer in long-term DI drugs once stable.</div><div class="rtt">⚠️ WRONG answer: 'a seizing, severely hypernatremic DI patient needs their thiazide/amiloride or chronic DDAVP regimen started immediately.' Those are chronic therapies; the acute emergency is managed with NS (if shocked) then free water/D5W at a controlled rate. Discriminator: stabilize and replace free water acutely; reserve thiazide/amiloride/NSAID and outpatient DDAVP titration for chronic control.</div></div><div class="rt"><div class="rtl">6. Stop lithium</div><div class="rte">Lithium is the single most common cause of acquired nephrogenic DI — it enters principal cells through ENaC channels and downregulates aquaporin-2, making the kidney AVP-resistant. The first management step is to STOP or reduce lithium when clinically feasible (in coordination with psychiatry, since the underlying bipolar disorder must still be treated). If lithium cannot be stopped, amiloride is added to block its uptake.</div><div class="rtt">⚠️ WRONG answer: 'abruptly discontinue lithium in everyone with lithium-induced nephrogenic DI without considering the psychiatric risk.' Stopping lithium can precipitate manic relapse, so it must be weighed against psychiatric needs; amiloride is the bridge when lithium must continue. Discriminator: stop lithium 'IF POSSIBLE' — otherwise add amiloride to limit further renal lithium entry.</div></div><div class="rt"><div class="rtl">7. Nephrogenic: kidney won't listen</div><div class="rte">Nephrogenic DI is a problem of RESPONSE: AVP is present (even high) but the collecting-duct principal cell will not respond — the V2 receptor or aquaporin-2 channel is defective or downregulated. The mnemonic 'brain SENDS AVP, kidney won't listen' tells you DDAVP is futile; management instead reduces the filtered water load reaching the collecting duct (thiazide, low-salt diet) and removes/blocks the cause (stop lithium, amiloride, fix Ca/K).</div><div class="rtt">⚠️ WRONG answer: 'overcome nephrogenic DI by giving large doses of desmopressin to force the kidney to concentrate.' The kidney is RESISTANT downstream of the hormone, so more DDAVP does little; you treat with thiazide ± amiloride ± low-salt ± NSAID and by correcting the underlying cause. Discriminator: high endogenous AVP/copeptin + no rise in Uosm after DDAVP = nephrogenic — pick non-hormonal therapy.</div></div><div class="rt"><div class="rtl">8. Amiloride (Li-induced)</div><div class="rte">Amiloride is a potassium-sparing diuretic that blocks the ENaC sodium channel in the principal cell. Because lithium enters the cell THROUGH ENaC, amiloride reduces lithium uptake and protects aquaporin-2, making it the agent of choice specifically for LITHIUM-induced nephrogenic DI (especially when lithium cannot be stopped). Bonus: as a K-sparing agent it counters thiazide-induced hypokalemia when the two are combined.</div><div class="rtt">⚠️ WRONG answer: 'amiloride is just a generic diuretic with no special role in DI.' Its mechanism (blocking ENaC, the very channel lithium uses to enter cells) makes it uniquely useful in lithium-induced nephrogenic DI. Discriminator: lithium NDI → amiloride is the targeted, mechanism-based choice (and is K-sparing, unlike thiazides).</div></div><div class="rt"><div class="rtl">9. Thiazide</div><div class="rte">Thiazides treat nephrogenic DI by a paradox: they cause mild extracellular volume contraction and natriuresis, which increases PROXIMAL tubule sodium and water reabsorption, so less water reaches the AVP-dependent collecting duct and total urine output FALLS. Combine with a LOW-SALT diet (low solute intake further reduces obligatory urine volume). Watch for hypokalemia — which itself worsens nephrogenic DI — so amiloride is often paired in.</div><div class="rtt">⚠️ WRONG answer: 'giving a diuretic to a polyuric DI patient will make the polyuria worse.' Thiazides paradoxically REDUCE urine output in nephrogenic DI by inducing mild volume contraction and enhancing proximal reabsorption. Discriminator: the 'paradoxical antidiuretic effect of thiazides' is the classic teaching point — pair with low salt, and watch/replace potassium.</div></div><div class="rt"><div class="rtl">10. NSAID</div><div class="rte">Renal prostaglandins normally ANTAGONIZE AVP's concentrating action. NSAIDs (e.g., indomethacin) inhibit prostaglandin synthesis, thereby enhancing the residual AVP effect and the kidney's concentrating ability — a useful ADJUNCT in nephrogenic DI. Use is limited by NSAID toxicity: AKI, GI bleeding, and sodium/fluid retention, so they are typically reserved or short-term.</div><div class="rtt">⚠️ WRONG answer: 'NSAIDs are first-line and safe for long-term treatment of nephrogenic DI.' They are an ADJUNCT, and their nephrotoxicity/GI risk limits chronic use; thiazide ± amiloride + low salt and treating the cause come first. Discriminator: NSAID = prostaglandin inhibition boosting AVP effect, but a second-line adjunct because of renal/GI harm.</div></div><div class="rt"><div class="rtl">11. Polyuria prevention</div><div class="rte">When treating CENTRAL DI with desmopressin, over-replacement carries the opposite risk: too much DDAVP plus ongoing water intake causes water retention and DILUTIONAL HYPONATREMIA. The standard safeguard is to titrate DDAVP to allow a brief daily 'breakthrough' of dilute urine (mild intermittent polyuria) before the next dose, ensuring the patient excretes excess water rather than retaining it.</div><div class="rtt">⚠️ WRONG answer: 'titrate DDAVP in central DI to completely abolish all polyuria around the clock.' Fully suppressing urine output risks dilutional hyponatremia; you deliberately allow a short window of breakthrough diuresis each day. Discriminator: over-aggressive DDAVP → hyponatremia — the goal is balance, not zero urine.</div></div><div class="rt"><div class="rtl">12. Recheck EFWC</div><div class="rte">In ongoing DI, free-water losses change day to day, so monitor electrolyte-free water clearance (EFWC) and serum Na frequently (often daily, more in the acute phase) and adjust replacement to match. The principle: you must replace BOTH the calculated existing deficit AND the continuing obligatory urine/insensible losses, which in active DI can be very large.</div><div class="rtt">⚠️ WRONG answer: 'in DI, replace only the one-time calculated free-water deficit and you're done.' Active DI has large ONGOING free-water losses that must be tracked (EFWC, urine output, serum Na) and replaced continuously, or Na rebounds. Discriminator: deficit + ongoing losses, reassessed daily — not a single static replacement.</div></div><div class="rt"><div class="rtl">13. Shock → NS first</div><div class="rte">The exam-tablet sequence for treating hypernatremia: (1) if the patient is in shock/hypovolemic, restore perfusion with isotonic NS FIRST; (2) then give free water PO/NG or IV D5W; (3) correct Na at ≤10 mEq/L per 24 h; (4) replace the calculated deficit PLUS ongoing losses; (5) treat the underlying cause. Step 1 reflects that hemodynamic stability outranks tonicity correction in the unstable patient.</div><div class="rtt">⚠️ WRONG answer: 'a hypotensive hypernatremic patient should get hypotonic fluid (D5W/½NS) first to bring the Na down fastest.' Hypotonic fluid does not effectively restore intravascular volume — resuscitate shock with isotonic NS first, then switch to free water. Discriminator: perfusion before tonicity — NS for shock, free water once stable.</div></div><div class="rt"><div class="rtl">14. Treat the cause</div><div class="rte">The summary message of the whole sketch: fluid replacement alone does not fix DI because the kidney keeps wasting water. You must remove or treat the trigger — give DDAVP for central DI, stop lithium / add amiloride and thiazide for nephrogenic DI, and correct hypercalcemia and hypokalemia. Without addressing the cause, serum Na keeps climbing no matter how much water you give.</div><div class="rtt">⚠️ WRONG answer: 'as long as you keep up with free-water replacement, you don't need to address the underlying DI.' If the cause is untreated, ongoing renal water loss outpaces replacement and Na keeps rising — you must give DDAVP (central) or thiazide/amiloride and remove the offending cause (nephrogenic). Discriminator: 'fluid alone is not enough' — definitive control requires treating the mechanism.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperna_clinical.html" title="Hypernatremia — Clinical Features">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperna_diagnosis.html" title="Hypernatremia — Diagnostic Algorithm">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

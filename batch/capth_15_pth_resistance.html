@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The PTH Receptor Resistance Clinic</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Ca down / PO4 up — who's to blame? (banner)</b> — A student sees low Ca and reflexively orders vitamin D — but if phosphate is also LOW that points to vitamin D deficiency/malabsorption, not this PTH-axis group. The HIGH phosphate is the discriminator that sends you toward hypoPTH/PHP/CKD; ordering 25-OH vitamin D first wastes a step.</li><li><b>Activating CaSR mutation (ADH mimic)</b> — Treating ADH like ordinary hypoparathyroidism with high-dose calcium and calcitriol is the trap — it drives marked hypercalciuria, nephrocalcinosis, and stones because the overactive renal CaSR keeps wasting calcium. Aim only to relieve symptoms, keep Ca low-normal, and consider thiazides to cut urinary calcium.</li><li><b>Hypoparathyroidism — gland problem (LEFT)</b> — The classic miss is calling refractory hypocalcemia 'idiopathic hypoparathyroidism' before checking magnesium — severe hypomagnesemia produces functional hypoPTH that looks identical but reverses with Mg repletion, not lifelong calcitriol.</li><li><b>Empty gland / low PTH</b> — Don't be reassured by a 'normal' PTH value — with a calcium of 6–7 mg/dL the PTH should be markedly elevated, so a mid-normal PTH is functionally LOW and still diagnoses hypoparathyroidism.</li><li><b>HypoPTH: avoid over-treatment / stones</b> — Aiming to fully normalize serum calcium is the trap — without PTH the kidney cannot reabsorb the filtered calcium load, so 'normal' blood calcium dumps massive urinary calcium, causing nephrocalcinosis and stones. Keep Ca low-normal and monitor 24-hour urine calcium.</li><li><b>Pseudohypoparathyroidism — receptor problem (CENTER)</b> — Confusing PHP-1a with pseudoPSEUDOhypoparathyroidism is the high-yield trap: pseudopseudo (paternally-inherited GNAS mutation) has the SAME Albright body habitus — short stature, round face, brachydactyly — but NORMAL calcium, phosphate, and PTH because the renal allele is unaffected. Body looks the same; labs are normal.</li><li><b>Gland full / PTH UP (megaphone)</b> — HIGH PTH with low Ca and high PO4 is the signature that separates pseudohypoparathyroidism from true hypoparathyroidism (where PTH is low) — students who anchor on the low calcium alone miss that the PTH direction flips the diagnosis.</li><li><b>PTH-resistant kidney ('I don't listen')</b> — Because PHP shares the exact low-Ca/high-PO4/high-PTH triad with CKD, ordering more PTH assays won't separate them — you must check renal function. Normal creatinine with that triad = PHP; elevated creatinine = CKD secondary hyperparathyroidism.</li><li><b>CKD — kidney problem (RIGHT)</b> — CKD secondary HPT and PHP are biochemically identical (low Ca, high PO4, high PTH); the trap is treating them the same — CKD needs phosphate binders and active vitamin D analogs aimed at the failing kidney, and the elevated creatinine is what tells you it's CKD, not a receptor defect.</li><li><b>CKD-MBD failed activation / PO4 retained</b> — Giving plain cholecalciferol/ergocalciferol to a CKD patient is the trap — the diseased kidney can't activate it; you need ACTIVE vitamin D (calcitriol, paricalcitol) that bypasses the missing 1-alpha-hydroxylase step.</li><li><b>Creatinine separates PHP from CKD</b> — Repeating the PTH or chasing vitamin D levels to distinguish PHP from CKD is the trap — they overlap perfectly on those tests. The single discriminating value is renal function (creatinine/eGFR).</li><li><b>Mg low → functional hypopara (right note)</b> — Labeling refractory hypocalcemia as primary hypoparathyroidism without checking magnesium is the classic exam trap — always measure and correct Mg first, because calcium and PTH simply will not recover while magnesium is low.</li><li><b>Postsurgical / autoimmune causes (left bottom)</b> — Post-thyroidectomy hypocalcemia with perioral tingling is sometimes attributed to anxiety/hyperventilation — but new tetany, a positive Trousseau sign, and prolonged QT after neck surgery should trigger immediate calcium check and treatment for surgical hypoparathyroidism.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Ca down / PO4 up — who's to blame? (banner)</div><div class="rte">Low calcium WITH high phosphate is the discriminating combination that narrows hypocalcemia to three buckets: true hypoparathyroidism (low PTH), pseudohypoparathyroidism (PTH resistance, high PTH), and CKD (high PTH). The shared logic: when PTH is absent OR not heard, the kidney stops dumping phosphate, so phosphate climbs while calcium falls. Contrast with vitamin D deficiency, where BOTH calcium and phosphate fall because high secondary PTH still wastes phosphate. Check serum corrected Ca (add 0.8 mg/dL per 1 g/dL albumin below 4) or ionized Ca before acting.</div><div class="rtt">⚠️ A student sees low Ca and reflexively orders vitamin D — but if phosphate is also LOW that points to vitamin D deficiency/malabsorption, not this PTH-axis group. The HIGH phosphate is the discriminator that sends you toward hypoPTH/PHP/CKD; ordering 25-OH vitamin D first wastes a step.</div></div><div class="rt"><div class="rtl">2. Activating CaSR mutation (ADH mimic)</div><div class="rte">An activating (gain-of-function) calcium-sensing receptor mutation causes autosomal dominant hypocalcemia (ADH type 1): the parathyroid 'thinks' calcium is high at normal levels, so it shuts off PTH. Result is low Ca with inappropriately LOW or normal PTH plus relative hypercalciuria (the kidney CaSR also over-senses, dumping calcium). This is the mirror image of FHH (inactivating CaSR mutation → hypercalcemia). Many patients are mildly symptomatic and do not need aggressive treatment.</div><div class="rtt">⚠️ Treating ADH like ordinary hypoparathyroidism with high-dose calcium and calcitriol is the trap — it drives marked hypercalciuria, nephrocalcinosis, and stones because the overactive renal CaSR keeps wasting calcium. Aim only to relieve symptoms, keep Ca low-normal, and consider thiazides to cut urinary calcium.</div></div><div class="rt"><div class="rtl">3. Hypoparathyroidism — gland problem (LEFT)</div><div class="rte">True hypoparathyroidism is a primary GLAND failure: the parathyroids cannot make/release adequate PTH, so calcium falls and phosphate rises (no PTH-driven phosphaturia). Hallmark labs: low Ca, high PO4, LOW or inappropriately normal PTH, with low/normal calcitriol. Most common cause overall is post-surgical (thyroid/parathyroid/neck surgery); autoimmune and DiGeorge are the other big ones.</div><div class="rtt">⚠️ The classic miss is calling refractory hypocalcemia 'idiopathic hypoparathyroidism' before checking magnesium — severe hypomagnesemia produces functional hypoPTH that looks identical but reverses with Mg repletion, not lifelong calcitriol.</div></div><div class="rt"><div class="rtl">4. Empty gland / low PTH</div><div class="rte">In hypoparathyroidism PTH is inappropriately LOW (or 'normal' when it should be sky-high) for the degree of hypocalcemia — that inappropriateness is the diagnostic point. Without PTH there is no bone resorption, no renal Ca reabsorption, and no activation of 1-alpha-hydroxylase, so calcitriol is also low. Patients present with perioral numbness, tetany, Chvostek and Trousseau signs, and prolonged QT.</div><div class="rtt">⚠️ Don't be reassured by a 'normal' PTH value — with a calcium of 6–7 mg/dL the PTH should be markedly elevated, so a mid-normal PTH is functionally LOW and still diagnoses hypoparathyroidism.</div></div><div class="rt"><div class="rtl">5. HypoPTH: avoid over-treatment / stones</div><div class="rte">Treat chronic hypoparathyroidism with oral calcium (carbonate/citrate) PLUS active vitamin D — calcitriol 0.25–0.5 mcg BID — because the kidney can't 1-alpha-hydroxylate plain vitamin D without PTH. Target a LOW-normal serum calcium (around 8 mg/dL) just enough to relieve symptoms, not full normalization. Add a thiazide if hypercalciuria develops; recombinant PTH (1-84) is reserved for refractory cases.</div><div class="rtt">⚠️ Aiming to fully normalize serum calcium is the trap — without PTH the kidney cannot reabsorb the filtered calcium load, so 'normal' blood calcium dumps massive urinary calcium, causing nephrocalcinosis and stones. Keep Ca low-normal and monitor 24-hour urine calcium.</div></div><div class="rt"><div class="rtl">6. Pseudohypoparathyroidism — receptor problem (CENTER)</div><div class="rte">Pseudohypoparathyroidism (PHP) is end-organ RESISTANCE to PTH from a defect in the Gs-alpha protein encoded by GNAS. The gland secretes plenty of PTH, but kidney/bone receptors can't transduce the signal, so you get the hypoPTH biochemistry (low Ca, high PO4) despite a HIGH PTH. PHP type 1a results from a maternally-inherited GNAS mutation (genomic imprinting) and combines hormone resistance with the physical phenotype Albright hereditary osteodystrophy.</div><div class="rtt">⚠️ Confusing PHP-1a with pseudoPSEUDOhypoparathyroidism is the high-yield trap: pseudopseudo (paternally-inherited GNAS mutation) has the SAME Albright body habitus — short stature, round face, brachydactyly — but NORMAL calcium, phosphate, and PTH because the renal allele is unaffected. Body looks the same; labs are normal.</div></div><div class="rt"><div class="rtl">7. Gland full / PTH UP (megaphone)</div><div class="rte">In PHP the parathyroid is shouting — PTH is HIGH because the gland correctly senses the low calcium, but the target organs are deaf to it (Gs-alpha/GNAS resistance). Functionally the patient is hypoparathyroid (low Ca, high PO4) yet biochemically hyperparathyroid (high PTH). The classic confirmatory test is the Ellsworth-Howard test: giving exogenous PTH fails to raise urinary cAMP/phosphate in PHP-1a.</div><div class="rtt">⚠️ HIGH PTH with low Ca and high PO4 is the signature that separates pseudohypoparathyroidism from true hypoparathyroidism (where PTH is low) — students who anchor on the low calcium alone miss that the PTH direction flips the diagnosis.</div></div><div class="rt"><div class="rtl">8. PTH-resistant kidney ('I don't listen')</div><div class="rte">Renal PTH resistance is the core lesion of PHP: the proximal tubule won't excrete phosphate (no phosphaturia → hyperphosphatemia) and won't activate 1-alpha-hydroxylase (low calcitriol → low gut Ca absorption). The net effect is low Ca and high PO4 despite abundant circulating PTH. Treatment mirrors hypoparathyroidism: calcium plus calcitriol, with the bonus that high PTH protects bone somewhat.</div><div class="rtt">⚠️ Because PHP shares the exact low-Ca/high-PO4/high-PTH triad with CKD, ordering more PTH assays won't separate them — you must check renal function. Normal creatinine with that triad = PHP; elevated creatinine = CKD secondary hyperparathyroidism.</div></div><div class="rt"><div class="rtl">9. CKD — kidney problem (RIGHT)</div><div class="rte">In chronic kidney disease the failing kidney both retains phosphate (low GFR → reduced excretion) and loses 1-alpha-hydroxylase capacity (low calcitriol → low gut calcium absorption). Both push calcium down, which drives the parathyroids to secrete more PTH — secondary hyperparathyroidism. Classic labs: low/normal Ca, high PO4, high PTH, low calcitriol, and an early rise in FGF23.</div><div class="rtt">⚠️ CKD secondary HPT and PHP are biochemically identical (low Ca, high PO4, high PTH); the trap is treating them the same — CKD needs phosphate binders and active vitamin D analogs aimed at the failing kidney, and the elevated creatinine is what tells you it's CKD, not a receptor defect.</div></div><div class="rt"><div class="rtl">10. CKD-MBD failed activation / PO4 retained</div><div class="rte">CKD-Mineral and Bone Disorder (CKD-MBD) is driven by two kidney failures: impaired 1-alpha-hydroxylation (calcitriol falls, gut absorbs less calcium) and impaired phosphate excretion (phosphate accumulates). Rising FGF23 partly compensates by promoting phosphaturia but further suppresses calcitriol. Over years this causes secondary hyperparathyroidism and renal osteodystrophy (high-turnover osteitis fibrosa cystica or, if over-treated, low-turnover adynamic bone).</div><div class="rtt">⚠️ Giving plain cholecalciferol/ergocalciferol to a CKD patient is the trap — the diseased kidney can't activate it; you need ACTIVE vitamin D (calcitriol, paricalcitol) that bypasses the missing 1-alpha-hydroxylase step.</div></div><div class="rt"><div class="rtl">11. Creatinine separates PHP from CKD</div><div class="rte">Workup algorithm: PTH direction sorts hypocalcemia first (low PTH = hypoPTH; high PTH = PHP or CKD or vitamin D deficiency). Among the high-PTH/high-PO4 disorders, CREATININE is the separator — both PHP and CKD secondary HPT show low Ca, high PO4, high PTH, so a HIGH creatinine indicates CKD while a NORMAL creatinine (especially in a young patient with brachydactyly) indicates PHP.</div><div class="rtt">⚠️ Repeating the PTH or chasing vitamin D levels to distinguish PHP from CKD is the trap — they overlap perfectly on those tests. The single discriminating value is renal function (creatinine/eGFR).</div></div><div class="rt"><div class="rtl">12. Mg low → functional hypopara (right note)</div><div class="rte">Hypomagnesemia (Mg &lt;1 mg/dL) causes a functional hypoparathyroidism by both BLOCKING PTH secretion and inducing end-organ PTH resistance, producing low Ca that won't respond to calcium alone. Common causes: PPIs, loop/thiazide diuretics, alcoholism, diarrhea, aminoglycosides. The fix is IV/oral magnesium repletion, after which PTH and calcium normalize within hours to days.</div><div class="rtt">⚠️ Labeling refractory hypocalcemia as primary hypoparathyroidism without checking magnesium is the classic exam trap — always measure and correct Mg first, because calcium and PTH simply will not recover while magnesium is low.</div></div><div class="rt"><div class="rtl">13. Postsurgical / autoimmune causes (left bottom)</div><div class="rte">Major causes of true hypoparathyroidism: (1) POST-SURGICAL — the most common, from thyroidectomy/parathyroidectomy/neck dissection, watch for tetany 24–72h post-op; (2) AUTOIMMUNE — isolated or as part of autoimmune polyglandular syndrome type 1 (APS-1: hypoPTH + adrenal insufficiency + mucocutaneous candidiasis, AIRE gene); (3) DiGeorge syndrome (22q11.2 deletion) — congenital absence of parathyroids plus thymic aplasia, cardiac defects, and the CATCH-22 features.</div><div class="rtt">⚠️ Post-thyroidectomy hypocalcemia with perioral tingling is sometimes attributed to anxiety/hyperventilation — but new tetany, a positive Trousseau sign, and prolonged QT after neck surgery should trigger immediate calcium check and treatment for surgical hypoparathyroidism.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_12_phpt_surgery.html" title="Calcium/PTH/VitD — The PHPT Surgery Decision Tree">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="capth_03_pthrp_imposter.html" title="Calcium/PTH/VitD — The PTHrP Tumor Imposter">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

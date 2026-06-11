@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hemolytic Anemia — Paroxysmal Nocturnal Hemoglobinuria (PNH)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>PIGA mutation</b> — PNH is an inherited germline mutation. WRONG — PNH arises from an ACQUIRED somatic PIGA mutation in a single hematopoietic stem cell; it is clonal but not inherited and there is no family history. Discriminator: contrast with hereditary membrane disorders — PNH is acquired and presents in adults, and the clone is detected by flow cytometry, not by genetic pedigree.</li><li><b>Lost CD55 &amp; CD59</b> — WRONG: 'Loss of CD55 alone is sufficient to cause the brisk intravascular hemolysis of PNH.' Discriminator: CD59 (the MAC inhibitor) is the critical regulator — isolated CD55 deficiency (Inab phenotype) causes minimal hemolysis, whereas isolated CD59 deficiency produces a PNH-like hemolytic/thrombotic syndrome; PNH lacks BOTH because the shared GPI anchor is gone.</li><li><b>Complement-mediated intravascular lysis</b> — PNH is extravascular hemolysis. WRONG — PNH is the prototypical chronic INTRAVASCULAR hemolysis (MAC-mediated), with hemoglobinuria, very high LDH, and absent haptoglobin. Discriminator: extravascular hemolysis (e.g., HS, warm AIHA) shows spherocytes, splenomegaly, and indirect hyperbilirubinemia WITHOUT hemoglobinuria — PNH's free hemoglobin in urine is the tell.</li><li><b>PNH triad</b> — WRONG: 'A positive direct Coombs test in a patient with intravascular hemolysis and thrombosis supports PNH.' Discriminator: PNH hemolysis is complement/MAC-driven, so the DIRECT COOMBS IS NEGATIVE — a positive Coombs points instead to autoimmune hemolytic anemia; confirm PNH with flow cytometry for GPI-anchored proteins.</li><li><b>Thrombosis (Budd-Chiari)</b> — WRONG: 'New-onset Budd-Chiari syndrome in a young adult should be worked up for inherited thrombophilias and JAK2 myeloproliferative disease, but PNH is unlikely without overt hemolysis.' Discriminator: PNH is a classic cause of Budd-Chiari and atypical-site venous thrombosis and must be screened for with flow cytometry — hemolysis may be subclinical at presentation.</li><li><b>PNH-aplastic anemia link</b> — WRONG: 'A small PNH clone detected in an aplastic anemia patient is an incidental finding requiring no monitoring.' Discriminator: PNH clones in marrow failure can expand and cause hemolysis/thrombosis over time and carry prognostic and treatment implications — they should be monitored serially by flow cytometry, not dismissed.</li><li><b>Pancytopenia / marrow failure</b> — WRONG: 'Pancytopenia in PNH is entirely explained by complement-mediated destruction of all three cell lines.' Discriminator: complement lysis primarily destroys RBCs; the leukopenia/thrombocytopenia reflect the underlying MARROW FAILURE (the AA-PNH overlap) — which is why eculizumab controls hemolysis but does not fix the cytopenias from aplasia.</li><li><b>Flow cytometry = gold standard</b> — Ham/sucrose test is the current gold standard. WRONG — flow cytometry for GPI-anchored proteins (with FLAER) is the modern gold standard; the Ham acid-hemolysis and sucrose-lysis tests are OBSOLETE. Discriminator: also assess GRANULOCYTES, not just RBCs, because hemolysis and transfusion deplete the abnormal RBC population and underestimate clone size.</li><li><b>Ham/sucrose obsolete</b> — WRONG: 'A negative Ham test reliably excludes PNH.' Discriminator: the Ham/sucrose tests are insensitive and obsolete — a negative result does not exclude PNH; flow cytometry with FLAER is required to confirm or rule out the diagnosis.</li><li><b>Eculizumab (anti-C5)</b> — WRONG: 'Eculizumab eliminates all hemolysis in PNH by blocking complement.' Discriminator: by blocking only TERMINAL complement (C5), eculizumab stops intravascular MAC lysis but leaves C3 fragments to opsonize RBCs, which can then undergo EXTRAVASCULAR hemolysis (residual anemia despite treatment) — addressed by proximal C3 inhibitors like pegcetacoplan.</li><li><b>Meningococcal vaccine before</b> — WRONG: 'A single meningococcal ACWY vaccine the day eculizumab is started provides adequate protection.' Discriminator: you need BOTH MenACWY and MenB vaccines given ideally ≥2 weeks BEFORE therapy, plus antibiotic prophylaxis if treatment can't be delayed — late or incomplete vaccination leaves the patient exposed to fulminant meningococcemia.</li><li><b>Breakthrough → pegcetacoplan (C3)</b> — WRONG: 'Persistent anemia on eculizumab means the diagnosis of PNH was incorrect.' Discriminator: residual anemia on a C5 inhibitor is typically C3-mediated EXTRAVASCULAR hemolysis (the disease is still PNH) — the answer is to switch/add a proximal inhibitor like pegcetacoplan or iptacopan, not to abandon the diagnosis.</li><li><b>Schistocytes / renal in severe</b> — WRONG: 'Hemolysis with renal failure and red-cell fragments is diagnostic of a thrombotic microangiopathy (TTP/HUS), so PNH can be excluded.' Discriminator: PNH causes intravascular hemolysis and AKI via hemoglobinuria/microthrombosis with a NEGATIVE Coombs and a normal ADAMTS13 — flow cytometry distinguishes it from TTP/HUS, which it can mimic.</li><li><b>Allogeneic BMT = only cure</b> — Eculizumab cures PNH. WRONG — eculizumab/ravulizumab control hemolysis and thrombosis but do NOT eradicate the PIGA clone; stopping therapy risks severe rebound hemolysis. Discriminator: the only curative option is ALLOGENEIC stem cell transplant; complement inhibition is lifelong disease control, not a cure.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. PIGA mutation</div><div class="rte">PNH is caused by an ACQUIRED somatic mutation in PIGA (phosphatidylinositol glycan class A) in a hematopoietic STEM cell. PIGA is X-linked, so a single hit silences it; its product is required to synthesize the glycosylphosphatidylinositol (GPI) anchor. Without GPI, dozens of surface proteins — including the complement regulators CD55 and CD59 — cannot attach. The mutant clone expands (often on a background of marrow injury/aplastic anemia) and seeds all blood lineages.</div><div class="rtt">⚠️ PNH is an inherited germline mutation. WRONG — PNH arises from an ACQUIRED somatic PIGA mutation in a single hematopoietic stem cell; it is clonal but not inherited and there is no family history. Discriminator: contrast with hereditary membrane disorders — PNH is acquired and presents in adults, and the clone is detected by flow cytometry, not by genetic pedigree.</div></div><div class="rt"><div class="rtl">2. Lost CD55 &amp; CD59</div><div class="rte">CD55 (decay-accelerating factor, DAF) and CD59 (membrane inhibitor of reactive lysis, MIRL) are GPI-anchored complement regulators. CD55 inhibits C3 convertase formation; CD59 is the key one — it blocks assembly of the C5b-9 membrane attack complex (MAC). Loss of both (especially CD59) leaves RBCs defenseless against autologous complement, so they are continuously lysed in the circulation. These two markers are exactly what flow cytometry measures to diagnose PNH.</div><div class="rtt">⚠️ WRONG: 'Loss of CD55 alone is sufficient to cause the brisk intravascular hemolysis of PNH.' Discriminator: CD59 (the MAC inhibitor) is the critical regulator — isolated CD55 deficiency (Inab phenotype) causes minimal hemolysis, whereas isolated CD59 deficiency produces a PNH-like hemolytic/thrombotic syndrome; PNH lacks BOTH because the shared GPI anchor is gone.</div></div><div class="rt"><div class="rtl">3. Complement-mediated intravascular lysis</div><div class="rte">Without CD59 the terminal complement pathway runs unchecked: C5b-9 inserts into the RBC membrane forming the MAC pore → INTRAVASCULAR hemolysis with hemoglobinemia, hemoglobinuria (cola-colored urine), markedly elevated LDH, undetectable haptoglobin, and nitric-oxide scavenging by free Hb causing fatigue, esophageal spasm/dysphagia, abdominal pain, and erectile dysfunction. Hemolysis is chronic with paroxysmal exacerbations during complement-activating stress (infection, surgery).</div><div class="rtt">⚠️ PNH is extravascular hemolysis. WRONG — PNH is the prototypical chronic INTRAVASCULAR hemolysis (MAC-mediated), with hemoglobinuria, very high LDH, and absent haptoglobin. Discriminator: extravascular hemolysis (e.g., HS, warm AIHA) shows spherocytes, splenomegaly, and indirect hyperbilirubinemia WITHOUT hemoglobinuria — PNH's free hemoglobin in urine is the tell.</div></div><div class="rt"><div class="rtl">4. PNH triad</div><div class="rte">The classic PNH triad is (1) Coombs-NEGATIVE intravascular hemolytic anemia, (2) venous (often atypical-site) THROMBOSIS, and (3) cytopenias / bone marrow failure. Suspect PNH in any patient with unexplained intravascular hemolysis, thrombosis at unusual sites, or pancytopenia/aplastic anemia. The direct antiglobulin test is negative because destruction is complement-MAC mediated, not antibody-coated-cell mediated.</div><div class="rtt">⚠️ WRONG: 'A positive direct Coombs test in a patient with intravascular hemolysis and thrombosis supports PNH.' Discriminator: PNH hemolysis is complement/MAC-driven, so the DIRECT COOMBS IS NEGATIVE — a positive Coombs points instead to autoimmune hemolytic anemia; confirm PNH with flow cytometry for GPI-anchored proteins.</div></div><div class="rt"><div class="rtl">5. Thrombosis (Budd-Chiari)</div><div class="rte">Thrombosis is the LEADING CAUSE OF DEATH in PNH and characteristically occurs at unusual VENOUS sites — hepatic veins (Budd-Chiari syndrome), portal, mesenteric, splenic, and cerebral (dural sinus) veins. Mechanism: complement-activated platelets, free hemoglobin scavenging nitric oxide, and microvesicle release create a hypercoagulable state. Eculizumab dramatically reduces thrombotic risk; PNH is a key cause to remember for any young patient with Budd-Chiari.</div><div class="rtt">⚠️ WRONG: 'New-onset Budd-Chiari syndrome in a young adult should be worked up for inherited thrombophilias and JAK2 myeloproliferative disease, but PNH is unlikely without overt hemolysis.' Discriminator: PNH is a classic cause of Budd-Chiari and atypical-site venous thrombosis and must be screened for with flow cytometry — hemolysis may be subclinical at presentation.</div></div><div class="rt"><div class="rtl">6. PNH-aplastic anemia link</div><div class="rte">PNH and aplastic anemia are intimately linked: in immune-mediated marrow failure, autoreactive T cells target GPI-anchored antigens on normal stem cells, so the GPI-NEGATIVE (PIGA-mutant) clone is relatively SPARED and selectively expands ('escape' theory). Up to ~50% of aplastic anemia patients harbor a small PNH clone, and PNH can evolve from, or into, aplastic anemia. Always screen aplastic anemia/MDS patients for a PNH clone by flow cytometry.</div><div class="rtt">⚠️ WRONG: 'A small PNH clone detected in an aplastic anemia patient is an incidental finding requiring no monitoring.' Discriminator: PNH clones in marrow failure can expand and cause hemolysis/thrombosis over time and carry prognostic and treatment implications — they should be monitored serially by flow cytometry, not dismissed.</div></div><div class="rt"><div class="rtl">7. Pancytopenia / marrow failure</div><div class="rte">Cytopenias in PNH stem from the associated bone marrow failure (the shared pathophysiology with aplastic anemia), not just from peripheral hemolysis — patients can present with anemia, leukopenia, and thrombocytopenia. This distinguishes PNH from a pure hemolytic anemia and explains why some patients need immunosuppression or transplant for the marrow component rather than complement inhibition alone.</div><div class="rtt">⚠️ WRONG: 'Pancytopenia in PNH is entirely explained by complement-mediated destruction of all three cell lines.' Discriminator: complement lysis primarily destroys RBCs; the leukopenia/thrombocytopenia reflect the underlying MARROW FAILURE (the AA-PNH overlap) — which is why eculizumab controls hemolysis but does not fix the cytopenias from aplasia.</div></div><div class="rt"><div class="rtl">8. Flow cytometry = gold standard</div><div class="rte">Flow cytometry is the GOLD-STANDARD diagnostic for PNH: it detects deficiency of GPI-anchored proteins (CD55, CD59) on RBCs and granulocytes, and uses FLAER (fluorescent aerolysin, which binds the GPI anchor directly) on granulocytes/monocytes for the most sensitive clone detection. Test granulocytes (not just RBCs, which are skewed by hemolysis and transfusion) to size the clone accurately.</div><div class="rtt">⚠️ Ham/sucrose test is the current gold standard. WRONG — flow cytometry for GPI-anchored proteins (with FLAER) is the modern gold standard; the Ham acid-hemolysis and sucrose-lysis tests are OBSOLETE. Discriminator: also assess GRANULOCYTES, not just RBCs, because hemolysis and transfusion deplete the abnormal RBC population and underestimate clone size.</div></div><div class="rt"><div class="rtl">9. Ham/sucrose obsolete</div><div class="rte">The historical Ham test (acidified serum activates complement to lyse the patient's complement-sensitive RBCs) and the sucrose lysis screening test demonstrated complement sensitivity but are now obsolete, replaced by far more sensitive and quantitative flow cytometry/FLAER. They remain board trivia mostly to be recognized as the OLD method.</div><div class="rtt">⚠️ WRONG: 'A negative Ham test reliably excludes PNH.' Discriminator: the Ham/sucrose tests are insensitive and obsolete — a negative result does not exclude PNH; flow cytometry with FLAER is required to confirm or rule out the diagnosis.</div></div><div class="rt"><div class="rtl">10. Eculizumab (anti-C5)</div><div class="rte">Eculizumab (and the longer-acting ravulizumab) is a monoclonal antibody against complement C5 that blocks cleavage to C5a/C5b, preventing MAC assembly → halts intravascular hemolysis, reduces transfusion need, and markedly lowers thrombotic risk and mortality. Dosing: eculizumab 600 mg weekly x4 then 900 mg q2 weeks; ravulizumab is weight-based q8 weeks. It controls but does not cure disease; lifelong therapy.</div><div class="rtt">⚠️ WRONG: 'Eculizumab eliminates all hemolysis in PNH by blocking complement.' Discriminator: by blocking only TERMINAL complement (C5), eculizumab stops intravascular MAC lysis but leaves C3 fragments to opsonize RBCs, which can then undergo EXTRAVASCULAR hemolysis (residual anemia despite treatment) — addressed by proximal C3 inhibitors like pegcetacoplan.</div></div><div class="rt"><div class="rtl">11. Meningococcal vaccine before</div><div class="rte">Blocking terminal complement (C5) removes the MAC that normally lyses Neisseria, so anti-C5 therapy sharply raises the risk of meningococcal sepsis (boxed warning). Vaccinate against Neisseria meningitidis (both ACWY and B) at least 2 weeks before starting eculizumab/ravulizumab; if therapy must begin sooner, give antibiotic prophylaxis (e.g., penicillin) to cover the gap. Patients carry a safety card.</div><div class="rtt">⚠️ WRONG: 'A single meningococcal ACWY vaccine the day eculizumab is started provides adequate protection.' Discriminator: you need BOTH MenACWY and MenB vaccines given ideally ≥2 weeks BEFORE therapy, plus antibiotic prophylaxis if treatment can't be delayed — late or incomplete vaccination leaves the patient exposed to fulminant meningococcemia.</div></div><div class="rt"><div class="rtl">12. Breakthrough → pegcetacoplan (C3)</div><div class="rte">Pegcetacoplan is a PEGylated peptide that inhibits PROXIMAL complement at C3, blocking BOTH the MAC (intravascular) and C3-opsonization-driven extravascular hemolysis. It is used for patients with persistent anemia or breakthrough/extravascular hemolysis on a C5 inhibitor. Newer factor B (iptacopan) and factor D (danicopan) oral inhibitors target the alternative pathway similarly. C3 blockade also raises encapsulated-organism infection risk → vaccinate.</div><div class="rtt">⚠️ WRONG: 'Persistent anemia on eculizumab means the diagnosis of PNH was incorrect.' Discriminator: residual anemia on a C5 inhibitor is typically C3-mediated EXTRAVASCULAR hemolysis (the disease is still PNH) — the answer is to switch/add a proximal inhibitor like pegcetacoplan or iptacopan, not to abandon the diagnosis.</div></div><div class="rt"><div class="rtl">13. Schistocytes / renal in severe</div><div class="rte">Severe PNH paroxysms can cause acute kidney injury from massive hemoglobinuria (pigment nephropathy) and microthrombi, while CHRONIC intravascular hemolysis with hemosiderinuria leads to urinary iron loss and possible iron deficiency. Smear may show polychromasia/reticulocytosis; schistocytes are not the dominant feature (PNH is not primarily microangiopathic). Chronic renal iron deposition can cause CKD over time.</div><div class="rtt">⚠️ WRONG: 'Hemolysis with renal failure and red-cell fragments is diagnostic of a thrombotic microangiopathy (TTP/HUS), so PNH can be excluded.' Discriminator: PNH causes intravascular hemolysis and AKI via hemoglobinuria/microthrombosis with a NEGATIVE Coombs and a normal ADAMTS13 — flow cytometry distinguishes it from TTP/HUS, which it can mimic.</div></div><div class="rt"><div class="rtl">14. Allogeneic BMT = only cure</div><div class="rte">Allogeneic hematopoietic stem cell transplantation is the ONLY definitive CURE for PNH (it replaces the mutant clone and treats associated marrow failure), but carries significant transplant-related mortality/GVHD and is generally reserved for severe aplastic anemia, transplant-eligible young patients, or those failing/clonal-evolving on complement inhibition. Complement inhibitors control disease but must be continued indefinitely.</div><div class="rtt">⚠️ Eculizumab cures PNH. WRONG — eculizumab/ravulizumab control hemolysis and thrombosis but do NOT eradicate the PIGA clone; stopping therapy risks severe rebound hemolysis. Discriminator: the only curative option is ALLOGENEIC stem cell transplant; complement inhibition is lifelong disease control, not a cure.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hemol_membrane.html" title="Hemolytic Anemia — Membrane Architecture (Spectrin/Ankyrin Defects)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hemol_physiology.html" title="Hemolytic Anemia — RBC Physiology &amp; Hemolysis Consequences">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

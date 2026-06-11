@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Polycythemia / MPN — Approach to polycythemia (workup)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Erythrocytosis detected</b> — A WRONG move is to start phlebotomy or order a JAK2/EPO panel off one mildly elevated Hct. The discriminator: repeat the CBC and assess plasma volume first — transient dehydration or lab error mimics erythrocytosis, and treating it commits the patient to an unnecessary MPN workup.</li><li><b>Plasma volume / RCM</b> — The trap is assuming every high Hct means more red cells. WRONG — if plasma volume is contracted (the small plasma bag), red cell mass can be normal. Discriminator: a normal calculated/measured RCM with low plasma volume = relative polycythemia, which needs hydration and med review, not a hematologic workup.</li><li><b>Relative (Gaisböck)</b> — A classic boards stem: hypertensive overweight male smoker with mildly high Hct — the WRONG answer is polycythemia vera with phlebotomy. The discriminator is a NORMAL red cell mass and absence of splenomegaly/pruritus/JAK2; this is relative polycythemia, treated with lifestyle and addressing diuretics, not bloodletting.</li><li><b>Gate 1: need RCM</b> — WRONG to demand a chromium-51 RCM study in a patient with Hct 65% before acting — at extreme values RCM is presumed elevated. Discriminator: reserve formal RCM for borderline counts; chasing it at extreme values delays diagnosis and the isotope test is rarely available.</li><li><b>JAK2 detector &gt;95%</b> — The trap: a positive JAK2 V617F is NOT specific for PV — it also appears in ~50–60% of ET and ~50% of primary myelofibrosis. So JAK2+ alone does not equal PV. Discriminator: combine JAK2 with a SUPPRESSED EPO and red-cell predominance; JAK2+ with high EPO and isolated thrombocytosis points elsewhere.</li><li><b>EPO level meter</b> — High EPO does NOT mean PV. WRONG answer — students invert the logic. In PV the marrow makes red cells on its own and feedback SUPPRESSES EPO (low). High/normal EPO points to a SECONDARY cause (hypoxia, tumor, doping). Discriminator: low EPO + JAK2+ = PV; high EPO = go hunting for hypoxia or an EPO source.</li><li><b>Low EPO → PV</b> — WRONG to call any erythrocytosis with low EPO 'PV' without confirming JAK2 — congenital high-O2-affinity hemoglobinopathies and EPO-receptor mutations can also have low EPO. Discriminator: PV needs the JAK2 mutation (or exon 12); JAK2-negative low-EPO erythrocytosis in a young patient suggests a congenital cause.</li><li><b>Secondary / exclude PV</b> — The trap is treating secondary polycythemia like PV with aggressive phlebotomy. WRONG — in hypoxia-driven secondary polycythemia the high Hct is compensatory; aggressive phlebotomy can worsen tissue oxygen delivery. Discriminator: fix the underlying cause (oxygen, CPAP, resect tumor); phlebotomy is reserved for symptomatic hyperviscosity.</li><li><b>Hypoxia</b> — A boards trap: a heavy smoker with high Hct and a NORMAL pulse-ox SaO2 — calling it PV is WRONG. Pulse oximetry cannot detect carboxyhemoglobin; the discriminator is an elevated carboxyhemoglobin level (co-oximetry), revealing smoker's polycythemia, which resolves with cessation.</li><li><b>EPO-secreting tumors</b> — WRONG to stop at 'secondary polycythemia' once EPO is high without imaging for a tumor. Discriminator: a non-smoker with high EPO, no hypoxia, and a flank mass or new headache needs CT abdomen/MRI brain — missing an EPO-secreting RCC or cerebellar hemangioblastoma (think von Hippel–Lindau) is the tested error.</li><li><b>Renal causes</b> — Post-transplant erythrocytosis treated with phlebotomy alone is the WRONG approach. Discriminator: first-line therapy is an ACE inhibitor or ARB, which lowers EPO and Hct; reserving phlebotomy for refractory/symptomatic cases is the tested point.</li><li><b>Drugs (testosterone)</b> — An older man on testosterone replacement with Hct 56% being diagnosed as PV is the WRONG call. Discriminator: medication history reveals exogenous androgen; management is dose reduction/holding testosterone and therapeutic phlebotomy — not committing to lifelong MPN therapy. EPO is typically LOW here too (androgens suppress endogenous EPO), so don't be fooled into the PV pathway.</li><li><b>Familial / high-affinity Hb</b> — A young adult with lifelong high Hct and JAK2-negative testing labeled 'PV' is WRONG. Discriminator: order a hemoglobin-oxygen dissociation curve (p50) and family studies — a low p50 indicates a high-affinity hemoglobin, a benign congenital condition, not a clonal MPN.</li><li><b>Arterial O2 saturation probe</b> — Relying on a normal finger pulse-ox to exclude hypoxia is the WRONG move. Discriminator: pulse oximetry misses carboxyhemoglobin (smokers) and overnight desaturation (OSA); the tested next steps are co-oximetry/ABG and, when suspected, a sleep study before concluding the polycythemia is unexplained.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Erythrocytosis detected</div><div class="rte">Entry point: confirm a TRUE, sustained elevation before launching a workup. Diagnostic thresholds for erythrocytosis are Hgb &gt;16.5 g/dL or Hct &gt;49% in men, and Hgb &gt;16.0 g/dL or Hct &gt;48% in women (2016 WHO PV criteria). Always repeat the CBC — a single high value may be hemoconcentration. Mnemonic: 'TRUE before CHASE' — prove the red cell mass is really up before you order EPO, JAK2, and imaging.</div><div class="rtt">⚠️ A WRONG move is to start phlebotomy or order a JAK2/EPO panel off one mildly elevated Hct. The discriminator: repeat the CBC and assess plasma volume first — transient dehydration or lab error mimics erythrocytosis, and treating it commits the patient to an unnecessary MPN workup.</div></div><div class="rt"><div class="rtl">2. Plasma volume / RCM</div><div class="rte">Gate 1 separates TRUE polycythemia (absolute rise in red cell mass) from RELATIVE/spurious polycythemia (normal red cell mass with a contracted plasma volume). Hct is a ratio, so a shrunken plasma denominator falsely raises it. The historic gold standard is a chromium-51–labeled red cell mass study, but in practice very high Hgb/Hct (men Hgb &gt;18.5, women &gt;16.5) is taken as presumptive true erythrocytosis and RCM testing is reserved for borderline cases. Mnemonic: 'numerator vs denominator.'</div><div class="rtt">⚠️ The trap is assuming every high Hct means more red cells. WRONG — if plasma volume is contracted (the small plasma bag), red cell mass can be normal. Discriminator: a normal calculated/measured RCM with low plasma volume = relative polycythemia, which needs hydration and med review, not a hematologic workup.</div></div><div class="rt"><div class="rtl">3. Relative (Gaisböck)</div><div class="rte">Relative (spurious/apparent) polycythemia = NORMAL red cell mass with reduced plasma volume. Causes: dehydration, diuretics, vomiting/burns, and Gaisböck syndrome (stress erythrocytosis in middle-aged hypertensive overweight male smokers). Management is treating the cause — rehydrate, stop diuretics, control BP, smoking cessation — not phlebotomy. Mnemonic: 'Gaisböck = the stressed, smoking, hypertensive businessman.'</div><div class="rtt">⚠️ A classic boards stem: hypertensive overweight male smoker with mildly high Hct — the WRONG answer is polycythemia vera with phlebotomy. The discriminator is a NORMAL red cell mass and absence of splenomegaly/pruritus/JAK2; this is relative polycythemia, treated with lifestyle and addressing diuretics, not bloodletting.</div></div><div class="rt"><div class="rtl">4. Gate 1: need RCM</div><div class="rte">When values are very high (e.g., Hct &gt;60% in men, &gt;56% in women), red cell mass is essentially always elevated and formal RCM measurement is unnecessary. In the intermediate zone (the warning-triangle Hgb &lt;20 / Hct &lt;60% range), an isotope red cell mass study can confirm true erythrocytosis when the diagnosis is unclear. Mnemonic: 'sky-high Hct skips the RCM step.'</div><div class="rtt">⚠️ WRONG to demand a chromium-51 RCM study in a patient with Hct 65% before acting — at extreme values RCM is presumed elevated. Discriminator: reserve formal RCM for borderline counts; chasing it at extreme values delays diagnosis and the isotope test is rarely available.</div></div><div class="rt"><div class="rtl">5. JAK2 detector &gt;95%</div><div class="rte">Gate 2 molecular testing: JAK2 V617F (exon 14) is present in ~95% of polycythemia vera; the remaining ~3–4% carry JAK2 exon 12 mutations, so a V617F-negative but clinically suspicious case gets reflex exon 12 testing. JAK2 is a constitutively active tyrosine kinase driving EPO-independent erythroid proliferation. A positive JAK2 is a MAJOR WHO criterion for PV. Mnemonic: 'JAK2 — the master switch jammed ON.'</div><div class="rtt">⚠️ The trap: a positive JAK2 V617F is NOT specific for PV — it also appears in ~50–60% of ET and ~50% of primary myelofibrosis. So JAK2+ alone does not equal PV. Discriminator: combine JAK2 with a SUPPRESSED EPO and red-cell predominance; JAK2+ with high EPO and isolated thrombocytosis points elsewhere.</div></div><div class="rt"><div class="rtl">6. EPO level meter</div><div class="rte">Serum EPO is the pivotal discriminating test. In PV the autonomous JAK2-driven erythropoiesis suppresses EPO via negative feedback, so EPO is LOW (or low-normal). In secondary polycythemia the rise is EPO-DRIVEN, so EPO is HIGH or inappropriately normal. A low EPO is itself a MINOR WHO criterion for PV. Mnemonic: 'LOW EPO = Lesion in the marrow (PV); HIGH EPO = Hypoxia/tumor (secondary).'</div><div class="rtt">⚠️ High EPO does NOT mean PV. WRONG answer — students invert the logic. In PV the marrow makes red cells on its own and feedback SUPPRESSES EPO (low). High/normal EPO points to a SECONDARY cause (hypoxia, tumor, doping). Discriminator: low EPO + JAK2+ = PV; high EPO = go hunting for hypoxia or an EPO source.</div></div><div class="rt"><div class="rtl">7. Low EPO → PV</div><div class="rte">Suppressed EPO + JAK2 mutation = polycythemia vera. WHO 2016 PV diagnosis = all 3 major OR first 2 major + the minor criterion: (1) elevated Hgb/Hct or RCM, (2) bone marrow trilineage panmyelosis with pleomorphic megakaryocytes, (3) JAK2 mutation; minor = subnormal EPO. Treat with phlebotomy to Hct &lt;45% plus low-dose aspirin; add hydroxyurea (or ruxolitinib/interferon) if high-risk (age &gt;60 or prior thrombosis). Mnemonic: 'PV = Pruritus, Plethora, Phlebotomy.'</div><div class="rtt">⚠️ WRONG to call any erythrocytosis with low EPO 'PV' without confirming JAK2 — congenital high-O2-affinity hemoglobinopathies and EPO-receptor mutations can also have low EPO. Discriminator: PV needs the JAK2 mutation (or exon 12); JAK2-negative low-EPO erythrocytosis in a young patient suggests a congenital cause.</div></div><div class="rt"><div class="rtl">8. Secondary / exclude PV</div><div class="rte">An elevated or inappropriately normal EPO shifts the diagnosis to SECONDARY polycythemia and effectively excludes PV (where EPO should be suppressed). Next steps: pulse oximetry/ABG and carboxyhemoglobin for hypoxia, then imaging (renal/hepatic/CNS) to hunt for an EPO-secreting tumor if no hypoxia is found. Mnemonic: 'EPO up → look UP the airway and INSIDE the organs.'</div><div class="rtt">⚠️ The trap is treating secondary polycythemia like PV with aggressive phlebotomy. WRONG — in hypoxia-driven secondary polycythemia the high Hct is compensatory; aggressive phlebotomy can worsen tissue oxygen delivery. Discriminator: fix the underlying cause (oxygen, CPAP, resect tumor); phlebotomy is reserved for symptomatic hyperviscosity.</div></div><div class="rt"><div class="rtl">9. Hypoxia</div><div class="rte">Most common cause of secondary polycythemia: chronic tissue hypoxia driving appropriate EPO release. Causes: COPD, obstructive sleep apnea (Pickwickian/obesity-hypoventilation), high-altitude residence, cyanotic congenital heart disease with right-to-left shunt, and smoking (carboxyhemoglobin causes a left-shift and functional hypoxia). Check SaO2 and carboxyhemoglobin. Mnemonic: 'high CO from cigarettes hides as normal SaO2.'</div><div class="rtt">⚠️ A boards trap: a heavy smoker with high Hct and a NORMAL pulse-ox SaO2 — calling it PV is WRONG. Pulse oximetry cannot detect carboxyhemoglobin; the discriminator is an elevated carboxyhemoglobin level (co-oximetry), revealing smoker's polycythemia, which resolves with cessation.</div></div><div class="rt"><div class="rtl">10. EPO-secreting tumors</div><div class="rte">Tumors that autonomously secrete EPO cause secondary polycythemia with HIGH EPO and no hypoxia. Classic four: Renal cell carcinoma, Hepatocellular carcinoma, cerebellar Hemangioblastoma, and uterine leiomyomata (fibroids); also pheochromocytoma and parathyroid adenomas. Mnemonic: 'EPO tumors — Renal, Hepatic, Hemangioblastoma, uterine fibroids (the 4 H-driven sources).'</div><div class="rtt">⚠️ WRONG to stop at 'secondary polycythemia' once EPO is high without imaging for a tumor. Discriminator: a non-smoker with high EPO, no hypoxia, and a flank mass or new headache needs CT abdomen/MRI brain — missing an EPO-secreting RCC or cerebellar hemangioblastoma (think von Hippel–Lindau) is the tested error.</div></div><div class="rt"><div class="rtl">11. Renal causes</div><div class="rte">Renal pathology raises EPO either by local hypoxia or autonomous production: post-renal-transplant erythrocytosis (10–15% of transplants, treat with ACE inhibitor/ARB), renal artery stenosis, polycystic kidney disease, hydronephrosis, and renal cell carcinoma. Mnemonic: 'a kidney that's squeezed, cystic, or cancerous cranks out EPO.'</div><div class="rtt">⚠️ Post-transplant erythrocytosis treated with phlebotomy alone is the WRONG approach. Discriminator: first-line therapy is an ACE inhibitor or ARB, which lowers EPO and Hct; reserving phlebotomy for refractory/symptomatic cases is the tested point.</div></div><div class="rt"><div class="rtl">12. Drugs (testosterone)</div><div class="rte">Drug/iatrogenic erythrocytosis: exogenous testosterone and anabolic-androgenic steroids stimulate erythropoiesis (a dose-limiting side effect of testosterone replacement — monitor Hct and hold if &gt;54%); recombinant EPO/darbepoetin doping in athletes; and SGLT2 inhibitors mildly raise Hct. Mnemonic: 'the gym/anti-aging clinic patient with a high Hct = testosterone.'</div><div class="rtt">⚠️ An older man on testosterone replacement with Hct 56% being diagnosed as PV is the WRONG call. Discriminator: medication history reveals exogenous androgen; management is dose reduction/holding testosterone and therapeutic phlebotomy — not committing to lifelong MPN therapy. EPO is typically LOW here too (androgens suppress endogenous EPO), so don't be fooled into the PV pathway.</div></div><div class="rt"><div class="rtl">13. Familial / high-affinity Hb</div><div class="rte">Congenital erythrocytosis: high-oxygen-affinity hemoglobin variants (left-shifted O2 dissociation curve, low p50 — Hb releases O2 poorly so tissues sense hypoxia), EPO-receptor truncation mutations (primary familial polycythemia, LOW EPO), 2,3-BPG deficiency, and VHL Chuvash polycythemia. Suspect in young patients with a family history. Mnemonic: 'young + family history + low p50 = high-affinity Hb.'</div><div class="rtt">⚠️ A young adult with lifelong high Hct and JAK2-negative testing labeled 'PV' is WRONG. Discriminator: order a hemoglobin-oxygen dissociation curve (p50) and family studies — a low p50 indicates a high-affinity hemoglobin, a benign congenital condition, not a clonal MPN.</div></div><div class="rt"><div class="rtl">14. Arterial O2 saturation probe</div><div class="rte">After EPO is found high/normal, measure arterial oxygenation: SaO2 by ABG (not just pulse ox) and carboxyhemoglobin by co-oximetry to detect smoker's/CO-mediated hypoxia. SaO2 &lt;92% supports a hypoxic secondary cause. If oxygenation is normal, pivot to imaging for an EPO-secreting tumor. Mnemonic: 'EPO high → check the O2 probe → if normal, hunt the tumor.'</div><div class="rtt">⚠️ Relying on a normal finger pulse-ox to exclude hypoxia is the WRONG move. Discriminator: pulse oximetry misses carboxyhemoglobin (smokers) and overnight desaturation (OSA); the tested next steps are co-oximetry/ABG and, when suspected, a sleep study before concluding the polycythemia is unexplained.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="bmf_aa_treatment.html" title="Bone Marrow Failure — The Rescue Station (AA Treatment)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pcv_et.html" title="Polycythemia / MPN — Essential thrombocythemia">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

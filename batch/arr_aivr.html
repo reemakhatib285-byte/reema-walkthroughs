@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Arrhythmias — AIVR, CAST &amp; PVC Suppression</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>AIVR = reperfusion rhythm</b> — Calling AIVR a dangerous fast VT and rushing to treat it is the trap — true VT is &gt;100 bpm and unstable, whereas AIVR is slow (&lt;100), hemodynamically tolerated, and a reassuring sign of reperfusion, not a threat.</li><li><b>Don't suppress AIVR</b> — Cardioverting AIVR to 'restore sinus rhythm' is wrong and dangerous — it can suppress the only functioning escape pacemaker, causing asystole; the correct move for the rare symptomatic patient is atropine, not a shock.</li><li><b>Slow rate distinguishes AIVR</b> — Seeing a wide-complex rhythm and assuming VT is the trap — rate is the discriminator: ≥100-120 bpm wide-complex is VT (treat), while a wide-complex rhythm under ~100 with fusion beats is benign AIVR (observe).</li><li><b>CAST trial</b> — Believing that fewer PVCs on the monitor means a healthier patient is exactly the error CAST disproved — PVC suppression with class IC agents post-MI increased death, so do not 'treat the ectopy' in structural heart disease.</li><li><b>Class I Na blockers — structural disease</b> — Prescribing flecainide/propafenone to a patient with prior MI, heart failure, or significant LVH is the trap — these drugs are only safe in structurally normal hearts; in scarred myocardium they raise mortality.</li><li><b>↑Mortality despite ↓PVCs</b> — Equating a cleaner-looking monitor with clinical benefit is the trap CAST embodies — improvement in a surrogate marker (PVC count) does not equal improved survival and can mask increased harm.</li><li><b>Flecainide / encainide</b> — Assuming flecainide is universally safe because it is still on formulary is the trap — its CAST legacy means it is contraindicated whenever there is ischemic or structural heart disease.</li><li><b>No routine PVC suppression</b> — Starting an antiarrhythmic for incidentally found asymptomatic PVCs is the trap — there is no survival benefit; reassurance and observation (plus correcting reversible triggers) is correct unless symptoms or a cardiomyopathy develop.</li><li><b>Correct K / Mg; beta-blocker</b> — Reaching for a class I or amiodarone drip for PVCs in an ischemic patient is the trap — the evidence-based moves are electrolyte repletion and beta-blockade, which actually reduce VF and death.</li><li><b>Drugs = symptoms, ICD = prognosis</b> — Choosing amiodarone (or any antiarrhythmic) to improve survival in a patient with low EF is the trap — drugs treat symptoms; the ICD is what improves prognosis. Amiodarone does NOT substitute for an ICD.</li><li><b>ICD timing post-MI</b> — Implanting a primary-prevention ICD during the acute MI admission is the trap — early implantation gives no net benefit; you must wait ≥40 days and re-evaluate EF, since stunned myocardium may recover function and obviate the device.</li><li><b>PVC burden &gt;10/h</b> — Dismissing all PVCs as benign is the trap — when burden is high and EF drops with no other cause, the PVCs ARE the cardiomyopathy, and ablation/suppression can reverse it rather than just being cosmetic.</li><li><b>VF — the lethal endpoint</b> — Treating a wide-complex rhythm as if any of it could be reassuring AIVR when the patient is pulseless is the trap — pulseless VF/VT gets immediate defibrillation, not observation; hemodynamics and pulse, not just QRS width, drive the response.</li><li><b>Lidocaine — transient use only</b> — Giving prophylactic lidocaine to every acute MI patient to prevent VF is the trap — it offers no mortality benefit and risks bradyasystole; antiarrhythmics here are reserved for actual sustained VT/VF, used briefly.</li><li><b>ICD survival benefit (numbers)</b> — Quoting an ICD for an asymptomatic patient with preserved EF is the trap — the survival data apply to reduced EF (≤35%) with appropriate NYHA class and the ≥40-day post-MI waiting period; outside those criteria the benefit is not established.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. AIVR = reperfusion rhythm</div><div class="rte">Accelerated idioventricular rhythm (AIVR) is a wide-complex ventricular escape rhythm running at 40-120 bpm (by definition &lt;100, hence 'slow VT'), arising when an enhanced ventricular focus outpaces a suppressed sinus node. It is the classic, benign marker of successful reperfusion after thrombolysis or PCI in acute MI and is typically transient and self-limited. The turtle = slow; reperfusion = the focus 'wakes up' once blood flow returns.</div><div class="rtt">⚠️ Calling AIVR a dangerous fast VT and rushing to treat it is the trap — true VT is &gt;100 bpm and unstable, whereas AIVR is slow (&lt;100), hemodynamically tolerated, and a reassuring sign of reperfusion, not a threat.</div></div><div class="rt"><div class="rtl">2. Don't suppress AIVR</div><div class="rte">AIVR is benign and self-resolves, so it is NOT suppressed or cardioverted. Treat only the rare symptomatic case where loss of AV synchrony drops cardiac output — give atropine to speed the sinus rate so it recaptures the ventricle (out-pacing the ectopic focus). Antiarrhythmics like lidocaine are avoided because abolishing the escape rhythm can leave no underlying rhythm.</div><div class="rtt">⚠️ Cardioverting AIVR to 'restore sinus rhythm' is wrong and dangerous — it can suppress the only functioning escape pacemaker, causing asystole; the correct move for the rare symptomatic patient is atropine, not a shock.</div></div><div class="rt"><div class="rtl">3. Slow rate distinguishes AIVR</div><div class="rte">The hallmark distinguishing AIVR from VT is the slow rate (40-120, usually &lt;100 bpm) plus fusion and capture beats, which appear as the sinus node and ventricular focus compete at similar rates. Fusion beats (hybrid QRS) are a tell-tale sign that a ventricular focus is firing near the sinus rate.</div><div class="rtt">⚠️ Seeing a wide-complex rhythm and assuming VT is the trap — rate is the discriminator: ≥100-120 bpm wide-complex is VT (treat), while a wide-complex rhythm under ~100 with fusion beats is benign AIVR (observe).</div></div><div class="rt"><div class="rtl">4. CAST trial</div><div class="rte">The Cardiac Arrhythmia Suppression Trial (CAST, 1989) tested class IC antiarrhythmics (flecainide, encainide, moricizine) to suppress PVCs in post-MI patients. Despite effectively reducing PVCs, the drugs roughly tripled mortality from arrhythmic death, leading to early termination. It is the landmark proof that surrogate endpoints (fewer PVCs) can diverge fatally from real outcomes.</div><div class="rtt">⚠️ Believing that fewer PVCs on the monitor means a healthier patient is exactly the error CAST disproved — PVC suppression with class IC agents post-MI increased death, so do not 'treat the ectopy' in structural heart disease.</div></div><div class="rt"><div class="rtl">5. Class I Na blockers — structural disease</div><div class="rte">Class I sodium-channel blockers — especially class IC agents flecainide and propafenone — are contraindicated in structural or ischemic heart disease because they slow conduction in scarred myocardium and are proarrhythmic, promoting re-entrant ventricular arrhythmias. They are reserved for rhythm control in structurally normal hearts ('pill-in-pocket' for AF with no CAD/LVH).</div><div class="rtt">⚠️ Prescribing flecainide/propafenone to a patient with prior MI, heart failure, or significant LVH is the trap — these drugs are only safe in structurally normal hearts; in scarred myocardium they raise mortality.</div></div><div class="rt"><div class="rtl">6. ↑Mortality despite ↓PVCs</div><div class="rte">The CAST paradox: the drugs achieved their pharmacologic goal (fewer PVCs) yet killed more patients — a textbook surrogate-endpoint failure where the monitor looked better but the patient did worse. Teaching point: treat the patient and the prognosis, not the cosmetic appearance of the rhythm strip.</div><div class="rtt">⚠️ Equating a cleaner-looking monitor with clinical benefit is the trap CAST embodies — improvement in a surrogate marker (PVC count) does not equal improved survival and can mask increased harm.</div></div><div class="rt"><div class="rtl">7. Flecainide / encainide</div><div class="rte">Flecainide and encainide were the class IC drugs in CAST that increased post-MI death; encainide was later withdrawn from the market. Flecainide remains useful today but ONLY in structurally normal hearts (AF/SVT rhythm control). Mechanism: potent Na-channel blockade markedly slows phase-0 depolarization, widening QRS and promoting re-entry around ischemic scar.</div><div class="rtt">⚠️ Assuming flecainide is universally safe because it is still on formulary is the trap — its CAST legacy means it is contraindicated whenever there is ischemic or structural heart disease.</div></div><div class="rt"><div class="rtl">8. No routine PVC suppression</div><div class="rte">Routine antiarrhythmic suppression of asymptomatic PVCs provides no mortality benefit and may cause harm, so asymptomatic ectopy is generally just observed. The exception is a high PVC burden causing LV dysfunction (PVC-induced cardiomyopathy), where targeted suppression or ablation is warranted.</div><div class="rtt">⚠️ Starting an antiarrhythmic for incidentally found asymptomatic PVCs is the trap — there is no survival benefit; reassurance and observation (plus correcting reversible triggers) is correct unless symptoms or a cardiomyopathy develop.</div></div><div class="rt"><div class="rtl">9. Correct K / Mg; beta-blocker</div><div class="rte">In ischemia and post-MI, correct electrolytes (keep K+ ~4.0-4.5 mEq/L and Mg2+ &gt;2.0 mg/dL) and use beta-blockers, which reduce ventricular fibrillation risk and lower mortality. Beta-blockers are the antiarrhythmic with a proven survival benefit after MI, unlike class I agents.</div><div class="rtt">⚠️ Reaching for a class I or amiodarone drip for PVCs in an ischemic patient is the trap — the evidence-based moves are electrolyte repletion and beta-blockade, which actually reduce VF and death.</div></div><div class="rt"><div class="rtl">10. Drugs = symptoms, ICD = prognosis</div><div class="rte">Antiarrhythmic drugs (e.g., amiodarone) reduce symptoms and arrhythmia burden but do NOT improve survival in high-risk structural disease; only an implantable cardioverter-defibrillator (ICD) improves prognosis by aborting sudden VF/VT. SCD-HeFT showed amiodarone offered no survival benefit over placebo, while the ICD reduced mortality.</div><div class="rtt">⚠️ Choosing amiodarone (or any antiarrhythmic) to improve survival in a patient with low EF is the trap — drugs treat symptoms; the ICD is what improves prognosis. Amiodarone does NOT substitute for an ICD.</div></div><div class="rt"><div class="rtl">11. ICD timing post-MI</div><div class="rte">A primary-prevention ICD post-MI is deferred until ≥40 days after the infarct (and ≥90 days after revascularization), with reassessment of LVEF (≤30-35% with NYHA II-III qualifies). Implanting during the acute/early window shows no benefit — DINAMIT and IRIS found early ICD implantation reduced arrhythmic death but increased non-arrhythmic death, netting no survival gain.</div><div class="rtt">⚠️ Implanting a primary-prevention ICD during the acute MI admission is the trap — early implantation gives no net benefit; you must wait ≥40 days and re-evaluate EF, since stunned myocardium may recover function and obviate the device.</div></div><div class="rt"><div class="rtl">12. PVC burden &gt;10/h</div><div class="rte">A very high PVC burden (often cited as &gt;10,000-20,000/day, or roughly &gt;10-15% of total beats) can cause a reversible PVC-induced cardiomyopathy with depressed EF. Here, unlike asymptomatic low-burden ectopy, targeted suppression with beta-blockers, or definitively catheter ablation of the PVC focus, can restore LV function.</div><div class="rtt">⚠️ Dismissing all PVCs as benign is the trap — when burden is high and EF drops with no other cause, the PVCs ARE the cardiomyopathy, and ablation/suppression can reverse it rather than just being cosmetic.</div></div><div class="rt"><div class="rtl">13. VF — the lethal endpoint</div><div class="rte">Ventricular fibrillation is the lethal endpoint these slides guard against — disorganized ventricular activity with no effective output, requiring immediate unsynchronized defibrillation. The fear of VF is precisely why post-MI risk stratification (EF, electrolytes, beta-blockers, ICD timing) matters; ironically, the CAST drugs meant to prevent VF caused more arrhythmic death.</div><div class="rtt">⚠️ Treating a wide-complex rhythm as if any of it could be reassuring AIVR when the patient is pulseless is the trap — pulseless VF/VT gets immediate defibrillation, not observation; hemodynamics and pulse, not just QRS width, drive the response.</div></div><div class="rt"><div class="rtl">14. Lidocaine — transient use only</div><div class="rte">Lidocaine (a class IB Na-channel blocker that preferentially acts on ischemic/depolarized tissue) and amiodarone are used acutely and transiently after sustained VT/VF in the peri-arrest setting, not as chronic prophylaxis. Prophylactic lidocaine for all MI patients was abandoned because it did not reduce mortality and increased asystole.</div><div class="rtt">⚠️ Giving prophylactic lidocaine to every acute MI patient to prevent VF is the trap — it offers no mortality benefit and risks bradyasystole; antiarrhythmics here are reserved for actual sustained VT/VF, used briefly.</div></div><div class="rt"><div class="rtl">15. ICD survival benefit (numbers)</div><div class="rte">The ICD's mortality benefit is concrete: in MADIT-II and SCD-HeFT, patients with LVEF ≤35% and NYHA II-III had absolute reductions in death over several years (the strip's ~36% vs 29% mortality contrast illustrates the survival gap). The device fires for VT/VF, converting an otherwise fatal arrhythmia.</div><div class="rtt">⚠️ Quoting an ICD for an asymptomatic patient with preserved EF is the trap — the survival data apply to reduced EF (≤35%) with appropriate NYHA class and the ≥40-day post-MI waiting period; outside those criteria the benefit is not established.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="ihd_stress_testing.html" title="IHD — Stress Testing &amp; CTA Decision Tree">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="arr_avnrt.html" title="Arrhythmias — AVNRT (Paroxysmal SVT)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

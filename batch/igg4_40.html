@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">IgG4-Related Disease — 'Looks Like Cancer, Responds to Steroids' Ballroom</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Looks like cancer / responds to steroids</b> — WRONG answer: taking a patient with a pancreatic/orbital/retroperitoneal 'mass' straight to oncologic resection (e.g., Whipple) for presumed cancer. Discriminator: a steroid-responsive mass with elevated serum IgG4 and storiform fibrosis on biopsy is IgG4-RD, not carcinoma — confirm with tissue before irreversible surgery, since the disease regresses on glucocorticoids.</li><li><b>Older male predominance</b> — WRONG answer: diagnosing primary Sjögren syndrome in an older man with bilateral salivary/lacrimal gland swelling. Discriminator: Sjögren favors women, is anti-Ro/La (SSA/SSB) positive with sicca symptoms and focal lymphocytic sialadenitis; IgG4-RD favors older men, is typically anti-Ro/La NEGATIVE, shows IgG4+ plasma cells with storiform fibrosis, and responds briskly to steroids.</li><li><b>Storiform fibrosis</b> — WRONG answer: dismissing the biopsy as 'nonspecific chronic inflammation' because only lymphocytes/plasma cells were noted. Discriminator: the specific architecture matters — storiform fibrosis + obliterative phlebitis are the discriminating features that separate IgG4-RD from a generic inflammatory infiltrate; their presence (not just IgG4+ cell counts) anchors the pathologic diagnosis.</li><li><b>Obliterative phlebitis</b> — WRONG answer: concluding IgG4-RD from elevated tissue IgG4+ plasma cell counts ALONE. Discriminator: IgG4+ plasma cells also appear in malignancies (pancreatic cancer), infections, ANCA vasculitis, and other inflammatory conditions; the combination of storiform fibrosis PLUS obliterative phlebitis PLUS an IgG4+/IgG ratio &gt;40% is what makes the histology specific.</li><li><b>IgG4+ plasma cells</b> — WRONG answer: ruling IgG4-RD in or out on serum IgG4 alone. Discriminator: serum IgG4 is neither sensitive nor specific — it can be normal in active disease and elevated in mimics (pancreatic cancer, Castleman, infection); TISSUE IgG4+ plasma cells with an IgG4+/IgG ratio &gt;40% in the right histologic context is the discriminating finding.</li><li><b>Tissue eosinophils</b> — WRONG answer: labeling marked peripheral eosinophilia + multi-organ disease as eosinophilic granulomatosis with polyangiitis (EGPA/Churg-Strauss). Discriminator: EGPA shows asthma, ANCA (often MPO/p-ANCA) positivity, necrotizing small-vessel vasculitis, and very high eosinophil counts; IgG4-RD shows only MILD eosinophilia, storiform fibrosis, obliterative phlebitis, IgG4+ plasma cells, and is typically ANCA-negative.</li><li><b>Sausage-shaped pancreas (Type 1 AIP)</b> — WRONG answer: reflexively diagnosing pancreatic adenocarcinoma in an older patient with painless jaundice and a pancreatic mass and proceeding to Whipple. Discriminator: a DIFFUSE sausage-shaped gland with duct narrowing, elevated serum IgG4, other-organ involvement, and a dramatic steroid response favors Type 1 AIP; a focal mass with a dilated upstream duct and CA 19-9 elevation favors cancer — get tissue/EUS-FNA before resection.</li><li><b>Submandibular swelling / Mikulicz</b> — WRONG answer: calling bilateral gland swelling Sjögren syndrome and ordering only anti-Ro/La. Discriminator: IgG4 Mikulicz disease occurs in older men, is anti-Ro/La NEGATIVE, shows storiform fibrosis with IgG4+ plasma cells on biopsy, and responds to steroids — whereas Sjögren shows positive SSA/SSB, prominent dryness, and focus-score-positive lymphocytic sialadenitis.</li><li><b>Orbital pseudotumor / dacryoadenitis</b> — WRONG answer: assuming a steroid response confirms benign idiopathic orbital inflammation and skipping biopsy. Discriminator: orbital LYMPHOMA (especially MALT lymphoma) can also enlarge lacrimal glands and partially respond to steroids; biopsy with IgG4 staining and flow cytometry/clonality is needed to distinguish IgG4 dacryoadenitis from lymphoma before committing to immunosuppression.</li><li><b>Allergy corner</b> — WRONG answer: treating an allergic history plus elevated IgE/eosinophils as sufficient to diagnose IgG4-RD. Discriminator: allergic features are common but nonspecific; the diagnosis still requires the characteristic histology (storiform fibrosis, obliterative phlebitis, IgG4+ plasma cells with IgG4+/IgG &gt;40%) integrated with imaging, organ pattern, and serology — atopy alone proves nothing.</li><li><b>Serum IgG4 elevated but not diagnostic</b> — WRONG answer: excluding IgG4-RD because serum IgG4 came back normal, or confirming it because the level is mildly high. Discriminator: a normal serum IgG4 does NOT rule out disease (request dilution to defeat prozone if clinical suspicion is high), and an isolated elevation does NOT rule it in — tissue histology remains the diagnostic anchor; serum IgG4 is best for supporting the diagnosis and monitoring treatment response.</li><li><b>Often afebrile, normal CRP</b> — WRONG answer: excluding IgG4-RD because the patient is afebrile with a normal CRP. Discriminator: unlike pyogenic infection, Castleman disease, or many vasculitides (which raise CRP/ESR and cause fevers), IgG4-RD usually has bland acute-phase reactants — so a normal CRP and absence of fever should NOT remove it from the differential when imaging and histology fit.</li><li><b>Diagnosis = clinical + serology + imaging + pathology</b> — WRONG answer: making the diagnosis on serology or imaging alone and starting steroids without tissue. Discriminator: because cancer (pancreatic carcinoma, lymphoma) and infection can mimic IgG4-RD clinically, radiologically, and even serologically, biopsy showing the characteristic histology is the load-bearing step — empiric steroids without excluding malignancy can mask and delay a cancer diagnosis.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Looks like cancer / responds to steroids</div><div class="rte">IgG4-related disease (IgG4-RD) is a systemic autoimmune fibroinflammatory disorder that forms tumor-like masses mimicking malignancy, infection, or other immune diseases, yet shrinks dramatically with corticosteroids — the central teaching point. Pathogenesis involves CD4+ cytotoxic T cells and T-follicular-helper cells driving B-cell/plasmablast expansion, IgG4 class-switching, and progressive fibrosis. The triad of histology is storiform fibrosis + dense lymphoplasmacytic infiltrate rich in IgG4+ plasma cells + obliterative phlebitis. Mnemonic: 'mass that melts with steroids.'</div><div class="rtt">⚠️ WRONG answer: taking a patient with a pancreatic/orbital/retroperitoneal 'mass' straight to oncologic resection (e.g., Whipple) for presumed cancer. Discriminator: a steroid-responsive mass with elevated serum IgG4 and storiform fibrosis on biopsy is IgG4-RD, not carcinoma — confirm with tissue before irreversible surgery, since the disease regresses on glucocorticoids.</div></div><div class="rt"><div class="rtl">2. Older male predominance</div><div class="rte">IgG4-RD characteristically affects older men, with a male-to-female ratio of roughly 2:1 to 4:1 and typical onset in the 50s–70s (middle-aged to elderly). This demographic skew is a useful board discriminator because the closest mimic, Sjögren syndrome, overwhelmingly favors middle-aged women. The age/sex profile, combined with multi-organ mass-forming disease, should push IgG4-RD up the differential.</div><div class="rtt">⚠️ WRONG answer: diagnosing primary Sjögren syndrome in an older man with bilateral salivary/lacrimal gland swelling. Discriminator: Sjögren favors women, is anti-Ro/La (SSA/SSB) positive with sicca symptoms and focal lymphocytic sialadenitis; IgG4-RD favors older men, is typically anti-Ro/La NEGATIVE, shows IgG4+ plasma cells with storiform fibrosis, and responds briskly to steroids.</div></div><div class="rt"><div class="rtl">3. Storiform fibrosis</div><div class="rte">Storiform (cartwheel/whirled, 'straw-mat') fibrosis is the histologic hallmark of IgG4-RD — fibroblasts and inflammatory cells radiate in an irregular swirling pattern. It is one of the two major pathologic features (with obliterative phlebitis) and is required for a histologically confident diagnosis under the consensus criteria, alongside a dense IgG4+ lymphoplasmacytic infiltrate. Late/burnt-out lesions are dominated by this fibrosis with fewer plasma cells, explaining steroid resistance in advanced disease.</div><div class="rtt">⚠️ WRONG answer: dismissing the biopsy as 'nonspecific chronic inflammation' because only lymphocytes/plasma cells were noted. Discriminator: the specific architecture matters — storiform fibrosis + obliterative phlebitis are the discriminating features that separate IgG4-RD from a generic inflammatory infiltrate; their presence (not just IgG4+ cell counts) anchors the pathologic diagnosis.</div></div><div class="rt"><div class="rtl">4. Obliterative phlebitis</div><div class="rte">Obliterative phlebitis — inflammatory infiltration and partial-to-complete obliteration of vein lumens (while adjacent arteries are spared) — is the second cardinal histologic feature of IgG4-RD. With storiform fibrosis it forms the pathologic backbone of the diagnosis. (Pancreatic and lung lesions show it most reliably; lacrimal/salivary lesions and lymph nodes less so.) An elastic stain helps reveal the obliterated vein.</div><div class="rtt">⚠️ WRONG answer: concluding IgG4-RD from elevated tissue IgG4+ plasma cell counts ALONE. Discriminator: IgG4+ plasma cells also appear in malignancies (pancreatic cancer), infections, ANCA vasculitis, and other inflammatory conditions; the combination of storiform fibrosis PLUS obliterative phlebitis PLUS an IgG4+/IgG ratio &gt;40% is what makes the histology specific.</div></div><div class="rt"><div class="rtl">5. IgG4+ plasma cells</div><div class="rte">A dense lymphoplasmacytic infiltrate rich in IgG4+ plasma cells is the third defining tissue finding. Diagnostic thresholds: an IgG4+/IgG plasma cell ratio &gt;40%, plus an absolute IgG4+ count exceeding an organ-specific cutoff (e.g., &gt;10/hpf in some sites, &gt;50/hpf in pancreas/others). The ratio matters more than the raw count because IgG4+ cells are nonspecific in isolation. Tissue staining, not serum level, is the more reliable diagnostic anchor.</div><div class="rtt">⚠️ WRONG answer: ruling IgG4-RD in or out on serum IgG4 alone. Discriminator: serum IgG4 is neither sensitive nor specific — it can be normal in active disease and elevated in mimics (pancreatic cancer, Castleman, infection); TISSUE IgG4+ plasma cells with an IgG4+/IgG ratio &gt;40% in the right histologic context is the discriminating finding.</div></div><div class="rt"><div class="rtl">6. Tissue eosinophils</div><div class="rte">Mild tissue eosinophilia (and sometimes peripheral blood eosinophilia with elevated IgE) frequently accompanies IgG4-RD, reflecting a Th2/allergic component of the immune response. About 30–40% of patients have a personal or family history of atopy. Eosinophils are a supportive, not defining, feature — they help build the picture alongside the obligatory storiform fibrosis and IgG4+ infiltrate.</div><div class="rtt">⚠️ WRONG answer: labeling marked peripheral eosinophilia + multi-organ disease as eosinophilic granulomatosis with polyangiitis (EGPA/Churg-Strauss). Discriminator: EGPA shows asthma, ANCA (often MPO/p-ANCA) positivity, necrotizing small-vessel vasculitis, and very high eosinophil counts; IgG4-RD shows only MILD eosinophilia, storiform fibrosis, obliterative phlebitis, IgG4+ plasma cells, and is typically ANCA-negative.</div></div><div class="rt"><div class="rtl">7. Sausage-shaped pancreas (Type 1 AIP)</div><div class="rte">Type 1 autoimmune pancreatitis (AIP) is the prototypic IgG4 manifestation: a diffusely enlarged, 'sausage-shaped' pancreas with a capsule-like rim and irregular narrowing of the main pancreatic duct on imaging. It classically presents with PAINLESS obstructive jaundice, weight loss, and sometimes new-onset diabetes — a near-perfect pancreatic cancer mimic. Serum IgG4 is often markedly elevated; it responds rapidly to steroids.</div><div class="rtt">⚠️ WRONG answer: reflexively diagnosing pancreatic adenocarcinoma in an older patient with painless jaundice and a pancreatic mass and proceeding to Whipple. Discriminator: a DIFFUSE sausage-shaped gland with duct narrowing, elevated serum IgG4, other-organ involvement, and a dramatic steroid response favors Type 1 AIP; a focal mass with a dilated upstream duct and CA 19-9 elevation favors cancer — get tissue/EUS-FNA before resection.</div></div><div class="rt"><div class="rtl">8. Submandibular swelling / Mikulicz</div><div class="rte">Painless, firm, bilateral salivary and lacrimal gland enlargement — Mikulicz disease (now recognized as IgG4-RD) and Küttner tumor (chronic sclerosing sialadenitis of the submandibular gland) — is a classic presentation. Unlike Sjögren, sicca symptoms are often mild because glandular fibrosis rather than focal lymphocytic destruction predominates early. It is steroid-responsive.</div><div class="rtt">⚠️ WRONG answer: calling bilateral gland swelling Sjögren syndrome and ordering only anti-Ro/La. Discriminator: IgG4 Mikulicz disease occurs in older men, is anti-Ro/La NEGATIVE, shows storiform fibrosis with IgG4+ plasma cells on biopsy, and responds to steroids — whereas Sjögren shows positive SSA/SSB, prominent dryness, and focus-score-positive lymphocytic sialadenitis.</div></div><div class="rt"><div class="rtl">9. Orbital pseudotumor / dacryoadenitis</div><div class="rte">IgG4-RD is a leading cause of orbital pseudotumor (idiopathic orbital inflammation) and lacrimal gland enlargement (dacryoadenitis), producing painless periorbital swelling, proptosis, and sometimes extraocular muscle involvement or infraorbital nerve enlargement. It responds to corticosteroids and is part of the head-and-neck spectrum with Mikulicz disease.</div><div class="rtt">⚠️ WRONG answer: assuming a steroid response confirms benign idiopathic orbital inflammation and skipping biopsy. Discriminator: orbital LYMPHOMA (especially MALT lymphoma) can also enlarge lacrimal glands and partially respond to steroids; biopsy with IgG4 staining and flow cytometry/clonality is needed to distinguish IgG4 dacryoadenitis from lymphoma before committing to immunosuppression.</div></div><div class="rt"><div class="rtl">10. Allergy corner</div><div class="rte">A large minority of IgG4-RD patients (around 30–40%) have a background of atopy/allergic disease — allergic rhinitis, asthma, nasal polyps, peripheral eosinophilia, and elevated serum IgE — reflecting the Th2-skewed immune milieu. These features are supportive clues that raise pretest probability, especially when paired with multi-organ mass-forming disease in an older man.</div><div class="rtt">⚠️ WRONG answer: treating an allergic history plus elevated IgE/eosinophils as sufficient to diagnose IgG4-RD. Discriminator: allergic features are common but nonspecific; the diagnosis still requires the characteristic histology (storiform fibrosis, obliterative phlebitis, IgG4+ plasma cells with IgG4+/IgG &gt;40%) integrated with imaging, organ pattern, and serology — atopy alone proves nothing.</div></div><div class="rt"><div class="rtl">11. Serum IgG4 elevated but not diagnostic</div><div class="rte">Serum IgG4 is elevated in most but not all patients; roughly 20–40% of biopsy-proven cases have NORMAL serum IgG4, so a normal value does not exclude disease. Conversely, mild elevations are nonspecific (seen in cancer, infection, Castleman disease, vasculitis). Very high IgG4 levels can paradoxically read falsely LOW on nephelometry due to the prozone (antigen-excess) effect — dilution of the sample unmasks the true high value.</div><div class="rtt">⚠️ WRONG answer: excluding IgG4-RD because serum IgG4 came back normal, or confirming it because the level is mildly high. Discriminator: a normal serum IgG4 does NOT rule out disease (request dilution to defeat prozone if clinical suspicion is high), and an isolated elevation does NOT rule it in — tissue histology remains the diagnostic anchor; serum IgG4 is best for supporting the diagnosis and monitoring treatment response.</div></div><div class="rt"><div class="rtl">12. Often afebrile, normal CRP</div><div class="rte">IgG4-RD is typically AFEBRILE with normal or only mildly elevated CRP — it is an indolent fibroinflammatory disease, not an acute febrile/septic one. Disease activity is better tracked by serum IgG4, IgE, eosinophils, plasmablast counts (by flow), and complement (which may fall in active disease) than by CRP. The bland inflammatory markers can falsely reassure clinicians.</div><div class="rtt">⚠️ WRONG answer: excluding IgG4-RD because the patient is afebrile with a normal CRP. Discriminator: unlike pyogenic infection, Castleman disease, or many vasculitides (which raise CRP/ESR and cause fevers), IgG4-RD usually has bland acute-phase reactants — so a normal CRP and absence of fever should NOT remove it from the differential when imaging and histology fit.</div></div><div class="rt"><div class="rtl">13. Diagnosis = clinical + serology + imaging + pathology</div><div class="rte">There is NO single diagnostic test for IgG4-RD; diagnosis integrates the clinical/organ pattern, serum IgG4 (and ancillary IgE, eosinophils, complement, plasmablasts), characteristic imaging, and — most importantly — histopathology showing storiform fibrosis, obliterative phlebitis, and an IgG4+ lymphoplasmacytic infiltrate (IgG4+/IgG &gt;40%). The 2019 ACR/EULAR classification criteria combine inclusion features with exclusion criteria (e.g., must rule out malignancy and mimics).</div><div class="rtt">⚠️ WRONG answer: making the diagnosis on serology or imaging alone and starting steroids without tissue. Discriminator: because cancer (pancreatic carcinoma, lymphoma) and infection can mimic IgG4-RD clinically, radiologically, and even serologically, biopsy showing the characteristic histology is the load-bearing step — empiric steroids without excluding malignancy can mask and delay a cancer diagnosis.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="fmf_34.html" title="FMF — Mediterranean Pharmacy Stall (Pyrin, Attacks &amp; Amyloidosis)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="igg4_41.html" title="IgG4-Related Disease — The Organ Gallery (Any Organ, Fibrosis &amp; Treatment)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

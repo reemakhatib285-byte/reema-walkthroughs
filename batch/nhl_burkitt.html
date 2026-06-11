@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">NHL — Burkitt's Express (railway station)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>MYC engine</b> — A board stem describing a translocation but naming t(14;18)/BCL2 is follicular lymphoma, and t(11;14)/cyclin D1 is mantle cell — neither is Burkitt. Burkitt is MYC-driven (8;14), and an isolated MYC rearrangement with high Ki-67 in a young patient with an abdominal or jaw mass should point you to Burkitt, not DLBCL.</li><li><b>Speedometer / doubling time</b> — Choosing a low/intermediate Ki-67 for a starry-sky, MYC+ lymphoma is the trap; Burkitt's Ki-67 is essentially 100%. A Ki-67 well below 100% in an aggressive B-cell lymphoma with MYC rearrangement should make you consider high-grade B-cell lymphoma (double-hit, MYC + BCL2/BCL6) rather than classic Burkitt.</li><li><b>BCL2-negative tag</b> — WRONG to call a MYC+/BCL2+ lymphoma 'Burkitt.' The discriminator is BCL2: classic Burkitt is BCL2-negative. A MYC+ AND BCL2+ tumor is double-hit high-grade B-cell lymphoma — a separate, poor-prognosis entity requiring DA-EPOCH-R, not the Burkitt label.</li><li><b>Endemic / sporadic / HIV</b> — A child in Africa with a JAW mass is endemic (EBV-driven) Burkitt — do not default to 'sporadic.' Conversely, a US patient with a rapidly enlarging abdominal/ileocecal mass is sporadic Burkitt, where EBV is usually NEGATIVE, so a stem hinging on EBV positivity to confirm sporadic Burkitt is the trap.</li><li><b>DA-EPOCH-R train</b> — Standard R-CHOP is INADEQUATE for Burkitt and is the classic wrong answer — its dosing and CNS coverage are insufficient for a tumor doubling in under 24 hours. Forgetting intrathecal CNS prophylaxis is the second trap; Burkitt has high CNS tropism and untreated CNS disease drives relapse.</li><li><b>TLS / rasburicase</b> — Choosing allopurinol for a high-tumor-burden Burkitt with already-elevated uric acid is the trap — allopurinol only blocks new urate formation and cannot clear the existing load, so rasburicase is preferred when uric acid is high or TLS is established. A second trap: rasburicase is contraindicated in G6PD deficiency (causes hemolysis/methemoglobinemia).</li><li><b>80-90% cure banner</b> — Assuming 'aggressive = incurable' is the conceptual trap. Aggressive B-cell lymphomas (Burkitt, DLBCL) are CURABLE with chemo, whereas indolent lymphomas (follicular, mantle cell) are typically incurable but slow — the prognosis logic is inverted from solid tumors.</li><li><b>Relapse switch &gt;12mo</b> — Reflexively sending every relapsed DLBCL to CAR-T is the trap. For late (&gt;12mo) chemosensitive relapse, salvage chemo + autologous transplant is still standard and curative — CAR-T is reserved for early/primary-refractory disease.</li><li><b>Relapse switch &lt;12mo</b> — Routing an early-relapsing/primary-refractory DLBCL to autologous transplant is the trap — these tumors are chemo-resistant and do poorly with the old salvage-then-auto pathway. Per ZUMA-7/TRANSFORM, CD19 CAR-T is the better second-line choice for relapse under 12 months.</li><li><b>DLBCL Heavy Hauler</b> — Calling follicular lymphoma the 'most common aggressive' NHL is the trap — FL is the most common INDOLENT NHL; DLBCL is the most common aggressive one. Also, a transformed follicular lymphoma can present as DLBCL, so a rapidly growing node with rising LDH in a known FL patient should prompt re-biopsy.</li><li><b>CAR-T / ZUMA-7</b> — Mistaking CAR-T-related CRS for sepsis and withholding tocilizumab is a management trap. High fever and hypotension shortly after CAR-T infusion is CRS until proven otherwise; tocilizumab (anti-IL-6R) is the targeted treatment, alongside supportive care.</li><li><b>R-CHOP car</b> — Giving R-CHOP without screening for hepatitis B is the safety trap — rituximab can reactivate HBV and cause fulminant hepatitis. Also do not use R-CHOP for Burkitt; its intensity and CNS coverage are inadequate for that disease.</li><li><b>Pola-R-CHP</b> — Assuming Pola-R-CHP replaces R-CHOP for everyone is the trap — its benefit was shown mainly in higher-risk (IPI ≥2) DLBCL, and R-CHOP remains standard for many. Polatuzumab adds its own neuropathy risk (it is a microtubule-inhibitor conjugate).</li><li><b>Novel agents (POLA/ADC)</b> — Forgetting that bispecific antibodies also cause CRS (not just CAR-T) is the trap — glofitamab/epcoritamab require step-up dosing and CRS monitoring. Treating CRS from a bispecific as infection alone, rather than with tocilizumab/steroids when indicated, is the management error.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. MYC engine</div><div class="rte">Burkitt lymphoma is driven by translocation of the c-MYC oncogene on chromosome 8 to an immunoglobulin enhancer, most often t(8;14)(q24;q32) placing MYC under the IgH heavy-chain promoter (~80% of cases); variants are t(2;8) (kappa) and t(8;22) (lambda light chains). MYC is a master transcription factor that drives the cell cycle, so constitutive overexpression produces relentless proliferation. A MYC rearrangement is present in roughly 95% of Burkitt cases and is the central diagnostic feature. Mnemonic: Burkitt is the MYC train — '8;14, MYC takes flight.'</div><div class="rtt">⚠️ A board stem describing a translocation but naming t(14;18)/BCL2 is follicular lymphoma, and t(11;14)/cyclin D1 is mantle cell — neither is Burkitt. Burkitt is MYC-driven (8;14), and an isolated MYC rearrangement with high Ki-67 in a young patient with an abdominal or jaw mass should point you to Burkitt, not DLBCL.</div></div><div class="rt"><div class="rtl">2. Speedometer / doubling time</div><div class="rte">Burkitt is the fastest-growing human tumor, with a doubling time often under 24 hours and a Ki-67 (MIB-1) proliferation index approaching 100% — essentially every cell is cycling. This explosive turnover is why patients can present acutely over days to weeks and why bulky disease carries an extreme risk of spontaneous and treatment-induced tumor lysis syndrome. The near-100% Ki-67 is a classic distinguishing feature versus the lower indices of indolent lymphomas (follicular ~&lt;20%). Mnemonic: Burkitt 'burns' through cell cycles — Ki-67 ~100%.</div><div class="rtt">⚠️ Choosing a low/intermediate Ki-67 for a starry-sky, MYC+ lymphoma is the trap; Burkitt's Ki-67 is essentially 100%. A Ki-67 well below 100% in an aggressive B-cell lymphoma with MYC rearrangement should make you consider high-grade B-cell lymphoma (double-hit, MYC + BCL2/BCL6) rather than classic Burkitt.</div></div><div class="rt"><div class="rtl">3. BCL2-negative tag</div><div class="rte">Classic Burkitt is BCL2-NEGATIVE (or only weakly positive): it is a pure MYC-driven tumor without BCL2 overexpression, which contrasts with BCL2+ follicular lymphoma. This matters because a lymphoma that carries BOTH a MYC and a BCL2 (and/or BCL6) rearrangement is a 'double-hit / high-grade B-cell lymphoma,' a distinct, aggressive entity that behaves worse than DLBCL and is NOT classic Burkitt. The starry-sky pattern (sheets of monomorphic blue blasts studded with pale tingible-body macrophages clearing apoptotic debris) plus BCL2-negativity and ~100% Ki-67 nails the Burkitt diagnosis.</div><div class="rtt">⚠️ WRONG to call a MYC+/BCL2+ lymphoma 'Burkitt.' The discriminator is BCL2: classic Burkitt is BCL2-negative. A MYC+ AND BCL2+ tumor is double-hit high-grade B-cell lymphoma — a separate, poor-prognosis entity requiring DA-EPOCH-R, not the Burkitt label.</div></div><div class="rt"><div class="rtl">4. Endemic / sporadic / HIV</div><div class="rte">Three epidemiologic forms of Burkitt. Endemic (equatorial Africa, malaria-belt): EBV-positive in ~95%, peaks in children, classically a JAW or facial bone mass. Sporadic (Western, the form tested most in US boards): EBV-positive in only ~20%, presents as an abdominal/ileocecal mass (right lower quadrant), can mimic appendicitis or intussusception. Immunodeficiency-associated: HIV/AIDS (often at relatively preserved CD4 counts) and other immunosuppressed states. Mnemonic: Endemic = jaw + EBV + Africa; Sporadic = abdomen.</div><div class="rtt">⚠️ A child in Africa with a JAW mass is endemic (EBV-driven) Burkitt — do not default to 'sporadic.' Conversely, a US patient with a rapidly enlarging abdominal/ileocecal mass is sporadic Burkitt, where EBV is usually NEGATIVE, so a stem hinging on EBV positivity to confirm sporadic Burkitt is the trap.</div></div><div class="rt"><div class="rtl">5. DA-EPOCH-R train</div><div class="rte">Burkitt requires INTENSIVE, dose-dense multi-agent chemoimmunotherapy because of its explosive kinetics: standard regimens are DA-EPOCH-R (dose-adjusted etoposide, prednisone, vincristine, cyclophosphamide, doxorubicin, rituximab) or CODOX-M/IVAC (the Magrath regimen) plus rituximab. CNS prophylaxis with intrathecal methotrexate/cytarabine is mandatory given high CNS relapse risk. Therapy must be paired with tumor lysis prophylaxis (hydration + rasburicase). Mnemonic: Burkitt rides the fast train — EPOCH or CODOX, never the slow R-CHOP local.</div><div class="rtt">⚠️ Standard R-CHOP is INADEQUATE for Burkitt and is the classic wrong answer — its dosing and CNS coverage are insufficient for a tumor doubling in under 24 hours. Forgetting intrathecal CNS prophylaxis is the second trap; Burkitt has high CNS tropism and untreated CNS disease drives relapse.</div></div><div class="rt"><div class="rtl">6. TLS / rasburicase</div><div class="rte">Tumor lysis syndrome (TLS) is the major acute emergency: massive cell turnover releases potassium, phosphate, and nucleic acids, producing HYPERkalemia, HYPERphosphatemia, HYPERuricemia, and secondary HYPOcalcemia, risking acute kidney injury and arrhythmia. Prophylaxis is aggressive IV hydration plus a urate-lowering agent: rasburicase (recombinant urate oxidase, e.g., 0.2 mg/kg IV) for high tumor burden/high uric acid, or allopurinol for lower risk. Avoid urinary alkalinization with rasburicase. Monitor electrolytes, uric acid, and creatinine closely. Mnemonic: high-high-high-low — K, PO4, urate up; Ca down.</div><div class="rtt">⚠️ Choosing allopurinol for a high-tumor-burden Burkitt with already-elevated uric acid is the trap — allopurinol only blocks new urate formation and cannot clear the existing load, so rasburicase is preferred when uric acid is high or TLS is established. A second trap: rasburicase is contraindicated in G6PD deficiency (causes hemolysis/methemoglobinemia).</div></div><div class="rt"><div class="rtl">7. 80-90% cure banner</div><div class="rte">The curability paradox: despite being the most aggressive, fastest-doubling human malignancy, Burkitt is HIGHLY CURABLE with intensive chemoimmunotherapy — cure rates ~80-90% in children and good-risk adults (lower with advanced age, CNS or bone-marrow involvement, or poor performance status). The same high proliferative fraction that makes it dangerous also makes it exquisitely chemosensitive. Mnemonic: fast to grow, fast to go — aggressive but curable.</div><div class="rtt">⚠️ Assuming 'aggressive = incurable' is the conceptual trap. Aggressive B-cell lymphomas (Burkitt, DLBCL) are CURABLE with chemo, whereas indolent lymphomas (follicular, mantle cell) are typically incurable but slow — the prognosis logic is inverted from solid tumors.</div></div><div class="rt"><div class="rtl">8. Relapse switch &gt;12mo</div><div class="rte">For aggressive B-cell lymphoma (DLBCL), the timing of relapse after first-line therapy steers second-line choice. LATE relapse (&gt;12 months from completing R-CHOP) generally remains chemosensitive, so the path is salvage chemotherapy (e.g., R-ICE, R-DHAP) followed by high-dose chemo with AUTOLOGOUS stem-cell transplant in responders. Mnemonic: late train (&gt;12mo) → salvage chemo + auto-SCT.</div><div class="rtt">⚠️ Reflexively sending every relapsed DLBCL to CAR-T is the trap. For late (&gt;12mo) chemosensitive relapse, salvage chemo + autologous transplant is still standard and curative — CAR-T is reserved for early/primary-refractory disease.</div></div><div class="rt"><div class="rtl">9. Relapse switch &lt;12mo</div><div class="rte">EARLY DLBCL relapse (within 12 months) or primary-refractory disease behaves as chemo-resistant. Landmark trials ZUMA-7 (axicabtagene ciloleucel) and TRANSFORM (lisocabtagene maraleucel) showed anti-CD19 CAR-T improves event-free survival over salvage chemo + autologous transplant in this group, making CAR-T the preferred second-line option. Mnemonic: early train (&lt;12mo) → straight to CAR-T.</div><div class="rtt">⚠️ Routing an early-relapsing/primary-refractory DLBCL to autologous transplant is the trap — these tumors are chemo-resistant and do poorly with the old salvage-then-auto pathway. Per ZUMA-7/TRANSFORM, CD19 CAR-T is the better second-line choice for relapse under 12 months.</div></div><div class="rt"><div class="rtl">10. DLBCL Heavy Hauler</div><div class="rte">Diffuse large B-cell lymphoma is the MOST COMMON aggressive NHL (~30% of all NHL) and the most common NHL overall. It presents as a rapidly enlarging nodal or extranodal mass, often with B symptoms and elevated LDH. First-line R-CHOP cures roughly 60% of patients; cell-of-origin (germinal-center B-cell vs activated B-cell) and double-hit status refine prognosis. Mnemonic: DLBCL = the big blue hauler, R-CHOP is its standard engine.</div><div class="rtt">⚠️ Calling follicular lymphoma the 'most common aggressive' NHL is the trap — FL is the most common INDOLENT NHL; DLBCL is the most common aggressive one. Also, a transformed follicular lymphoma can present as DLBCL, so a rapidly growing node with rising LDH in a known FL patient should prompt re-biopsy.</div></div><div class="rt"><div class="rtl">11. CAR-T / ZUMA-7</div><div class="rte">Anti-CD19 chimeric antigen receptor T-cell therapy (axicabtagene ciloleucel, lisocabtagene maraleucel, tisagenlecleucel) reprograms the patient's T cells to target CD19. Based on ZUMA-7 and TRANSFORM it is now second-line for early-relapsed/refractory DLBCL. Key toxicities to recognize: cytokine release syndrome (fever, hypotension — treat with tocilizumab/IL-6 blockade ± steroids) and ICANS (immune effector cell-associated neurotoxicity — managed with steroids). Mnemonic: CAR-T fires, CRS and ICANS are the recoil.</div><div class="rtt">⚠️ Mistaking CAR-T-related CRS for sepsis and withholding tocilizumab is a management trap. High fever and hypotension shortly after CAR-T infusion is CRS until proven otherwise; tocilizumab (anti-IL-6R) is the targeted treatment, alongside supportive care.</div></div><div class="rt"><div class="rtl">12. R-CHOP car</div><div class="rte">R-CHOP is the backbone for DLBCL: Rituximab (anti-CD20), Cyclophosphamide, Hydroxydaunorubicin/doxorubicin (the 'H'), Vincristine (Oncovin, the 'O'), and Prednisone, given every 21 days for ~6 cycles. Doxorubicin is cardiotoxic (check ejection fraction; cumulative dose limit), vincristine causes peripheral neuropathy, and rituximab mandates hepatitis B screening before use. Mnemonic: CHOP = Cyclophosphamide, Hydroxydaunorubicin, Oncovin, Prednisone; add R for Rituximab.</div><div class="rtt">⚠️ Giving R-CHOP without screening for hepatitis B is the safety trap — rituximab can reactivate HBV and cause fulminant hepatitis. Also do not use R-CHOP for Burkitt; its intensity and CNS coverage are inadequate for that disease.</div></div><div class="rt"><div class="rtl">13. Pola-R-CHP</div><div class="rte">Pola-R-CHP (from the POLARIX trial) substitutes the antibody-drug conjugate polatuzumab vedotin (anti-CD79b–MMAE) for vincristine, giving Polatuzumab + Rituximab + Cyclophosphamide + Doxorubicin (H) + Prednisone. It improved progression-free survival versus R-CHOP in higher-risk DLBCL (IPI 2-5), making it a frontline option for those patients. Mnemonic: drop the O (vincristine), add Pola — 'Pola swaps the Oncovin.'</div><div class="rtt">⚠️ Assuming Pola-R-CHP replaces R-CHOP for everyone is the trap — its benefit was shown mainly in higher-risk (IPI ≥2) DLBCL, and R-CHOP remains standard for many. Polatuzumab adds its own neuropathy risk (it is a microtubule-inhibitor conjugate).</div></div><div class="rt"><div class="rtl">14. Novel agents (POLA/ADC)</div><div class="rte">The relapsed/refractory aggressive-NHL toolkit beyond chemo: antibody-drug conjugates (polatuzumab vedotin anti-CD79b, loncastuximab tesirine anti-CD19), CD20xCD3 bispecific antibodies (glofitamab, epcoritamab) that bridge T cells to tumor, CD19 CAR-T, and tafasitamab (anti-CD19) + lenalidomide. Bispecifics, like CAR-T, can cause cytokine release syndrome. Mnemonic: when chemo fails, redirect the immune system — ADCs deliver the toxin, bispecifics/CAR-T deliver the T cell.</div><div class="rtt">⚠️ Forgetting that bispecific antibodies also cause CRS (not just CAR-T) is the trap — glofitamab/epcoritamab require step-up dosing and CRS monitoring. Treating CRS from a bispecific as infection alone, rather than with tocilizumab/steroids when indicated, is the management error.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="cll_treatment.html" title="CLL — Treatment: BTK Inhibitors, Venetoclax &amp; FCR">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="nhl_indolent.html" title="NHL — Indolent Garden (botanical garden)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

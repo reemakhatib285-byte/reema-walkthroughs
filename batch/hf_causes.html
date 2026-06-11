@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — SCENE 1 — HF CAUSES &amp; PATHOGENESIS</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>MI battering ram (ischemic = #1)</b> — WRONG answer: 'idiopathic dilated cardiomyopathy is the most common cause of HFrEF.' Discriminator: idiopathic DCM is a leading NON-ischemic cause, but ischemic heart disease/CAD is overall #1 — always exclude coronary disease before labeling a cardiomyopathy 'idiopathic.'</li><li><b>HFrEF tower (EF ≤40)</b> — WRONG answer: 'HFrEF means EF in the 41–49% range.' Discriminator: EF 41–49% is HFmrEF (mildly reduced); HFrEF requires EF ≤40% — getting the cutoff wrong changes which GDMT/device indications apply.</li><li><b>HFmrEF (EF 41-49)</b> — WRONG answer: 'HFmrEF patients should not receive any GDMT because the evidence is only for HFrEF.' Discriminator: HFmrEF warrants consideration of HFrEF-type GDMT (notably SGLT2i, with Class I benefit across EF), so withholding all therapy is incorrect.</li><li><b>HFpEF tower (EF ≥50)</b> — WRONG answer: 'HFpEF is caused by reduced myocardial contractility.' Discriminator: contractility/EF is PRESERVED in HFpEF — the defect is diastolic (stiff ventricle, impaired relaxation/filling), not systolic pump failure.</li><li><b>HTN cannons → HFpEF</b> — WRONG answer: 'hypertension is the #1 cause of heart failure overall.' Discriminator: HTN is a MAJOR contributor (and the top HFpEF driver), but ischemic heart disease/CAD is the single most common cause of HF overall — HTN ranks second.</li><li><b>Pressure overload → concentric</b> — WRONG answer: 'pressure overload (e.g., aortic stenosis) produces eccentric chamber dilation.' Discriminator: pressure overload → concentric (parallel sarcomeres, thick walls); it is VOLUME overload that produces eccentric dilation — do not swap them.</li><li><b>Volume overload → eccentric</b> — WRONG answer: 'chronic mitral or aortic regurgitation causes concentric hypertrophy with a small cavity.' Discriminator: regurgitant (volume) lesions cause eccentric dilation (series sarcomeres, enlarged cavity); concentric hypertrophy is the response to pressure overload.</li><li><b>Neurohormonal: SNS / RAAS</b> — WRONG answer: 'inotropes that boost sympathetic drive improve long-term survival in chronic HFrEF.' Discriminator: chronic neurohormonal activation is MALADAPTIVE — drugs that ANTAGONIZE it (beta-blockers, RAAS inhibitors) prolong life, whereas sympathomimetic inotropes increase mortality in chronic HF.</li><li><b>Natriuretic peptides / neprilysin</b> — WRONG answer: 'combine sacubitril/valsartan (ARNI) with an ACE inhibitor for additive benefit.' Discriminator: ARNI + ACEi causes dangerous ANGIOEDEMA — require a ≥36-hour washout when switching from an ACEi to ARNI; the two are never given together.</li><li><b>LBBB → CRT</b> — WRONG answer: 'CRT benefits all HFrEF patients with a wide QRS regardless of morphology.' Discriminator: CRT benefit is greatest with true LBBB and QRS ≥150 ms; non-LBBB or narrow QRS (&lt;130 ms) patients derive little/no benefit (and CRT may harm in QRS &lt;130 ms — EchoCRT).</li><li><b>High-output HF causes</b> — WRONG answer: 'high-output heart failure means the cardiac output is low.' Discriminator: in high-output HF the cardiac output is HIGH (often &gt;8 L/min) — failure occurs because demand/shunting outstrips even that elevated output; warm extremities and bounding pulses distinguish it from low-output (cold) HF.</li><li><b>Infiltrative / toxic cardiomyopathy</b> — WRONG answer: 'discordance between low ECG voltage and a thick-walled ventricle on echo is just measurement error.' Discriminator: low voltage WITH increased wall thickness is the classic fingerprint of cardiac AMYLOIDOSIS (infiltration, not true hypertrophy) — a key board pattern, not an artifact.</li><li><b>Infectious causes (Chagas, HIV)</b> — WRONG answer: 'a young patient with a recent viral illness and new HF/arrhythmia most likely has a chronic ischemic cardiomyopathy.' Discriminator: new HF in a young person after a viral prodrome points to acute VIRAL MYOCARDITIS (consider endomyocardial biopsy/MRI), not CAD — and giant-cell myocarditis is a fulminant variant needing urgent recognition.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. MI battering ram (ischemic = #1)</div><div class="rte">Ischemic heart disease (coronary artery disease / prior MI) is the SINGLE most common cause of HFrEF in the developed world, accounting for roughly two-thirds of cases. Loss of viable myocardium after infarction triggers adverse remodeling: infarct expansion, eccentric dilation, and neurohormonal activation. This is why every new HFrEF patient gets coronary evaluation (angiography or CT) — revascularizing viable/hibernating myocardium can recover function.</div><div class="rtt">⚠️ WRONG answer: 'idiopathic dilated cardiomyopathy is the most common cause of HFrEF.' Discriminator: idiopathic DCM is a leading NON-ischemic cause, but ischemic heart disease/CAD is overall #1 — always exclude coronary disease before labeling a cardiomyopathy 'idiopathic.'</div></div><div class="rt"><div class="rtl">2. HFrEF tower (EF ≤40)</div><div class="rte">HFrEF = HF with reduced ejection fraction ≤40%: a problem of systolic contractility with eccentric, dilated (chamber-enlarged) remodeling. This is the EF category with the strongest, most extensive evidence base — all four GDMT pillars (ARNI/ACEi-ARB, beta-blocker, MRA, SGLT2i) carry Class I mortality benefit here, plus device therapy (ICD for EF ≤35%, CRT for EF ≤35% with LBBB/QRS ≥150 ms).</div><div class="rtt">⚠️ WRONG answer: 'HFrEF means EF in the 41–49% range.' Discriminator: EF 41–49% is HFmrEF (mildly reduced); HFrEF requires EF ≤40% — getting the cutoff wrong changes which GDMT/device indications apply.</div></div><div class="rt"><div class="rtl">3. HFmrEF (EF 41-49)</div><div class="rte">HFmrEF = HF with mildly reduced EF, 41–49%, an intermediate category (formerly 'borderline'). Many of these patients are transitioning — either recovering from HFrEF or declining toward it; trajectory matters. Guidelines give a weaker (Class IIb) recommendation to consider the same GDMT used in HFrEF (especially SGLT2i, which benefit across the full EF spectrum).</div><div class="rtt">⚠️ WRONG answer: 'HFmrEF patients should not receive any GDMT because the evidence is only for HFrEF.' Discriminator: HFmrEF warrants consideration of HFrEF-type GDMT (notably SGLT2i, with Class I benefit across EF), so withholding all therapy is incorrect.</div></div><div class="rt"><div class="rtl">4. HFpEF tower (EF ≥50)</div><div class="rte">HFpEF = HF with preserved EF ≥50%: the heart contracts normally but is STIFF — diastolic dysfunction with concentric hypertrophy and impaired relaxation/filling, so filling pressures rise. Diagnosis combines symptoms + preserved EF + evidence of elevated filling pressures (elevated NT-proBNP, E/e′, LA enlargement; H2FPEF or HFA-PEFF scores). SGLT2 inhibitors are the first drug class with proven outcome benefit (EMPEROR-Preserved, DELIVER); treat comorbidities (HTN, AF, obesity).</div><div class="rtt">⚠️ WRONG answer: 'HFpEF is caused by reduced myocardial contractility.' Discriminator: contractility/EF is PRESERVED in HFpEF — the defect is diastolic (stiff ventricle, impaired relaxation/filling), not systolic pump failure.</div></div><div class="rt"><div class="rtl">5. HTN cannons → HFpEF</div><div class="rte">Hypertension is the leading cause/risk factor for HFpEF and the second most common cause of HF overall: chronic pressure overload → concentric LV hypertrophy → a stiff, poorly relaxing ventricle with elevated diastolic filling pressures. Aggressive BP control (target &lt;130/80) is the key preventive/therapeutic lever (SPRINT showed intensive BP lowering reduced incident HF).</div><div class="rtt">⚠️ WRONG answer: 'hypertension is the #1 cause of heart failure overall.' Discriminator: HTN is a MAJOR contributor (and the top HFpEF driver), but ischemic heart disease/CAD is the single most common cause of HF overall — HTN ranks second.</div></div><div class="rt"><div class="rtl">6. Pressure overload → concentric</div><div class="rte">PRESSURE overload (hypertension, aortic stenosis) forces the ventricle to generate higher systolic pressure → sarcomeres added in PARALLEL → CONCENTRIC hypertrophy: walls thicken, cavity stays normal/small (increased wall-thickness-to-radius ratio). This normalizes wall stress (Laplace) initially but produces a stiff chamber → diastolic dysfunction/HFpEF. Mnemonic: Pressure = Parallel sarcomeres = thick walls.</div><div class="rtt">⚠️ WRONG answer: 'pressure overload (e.g., aortic stenosis) produces eccentric chamber dilation.' Discriminator: pressure overload → concentric (parallel sarcomeres, thick walls); it is VOLUME overload that produces eccentric dilation — do not swap them.</div></div><div class="rt"><div class="rtl">7. Volume overload → eccentric</div><div class="rte">VOLUME overload (mitral regurgitation, aortic regurgitation, large left-to-right shunts) increases diastolic wall stress → sarcomeres added in SERIES → ECCENTRIC hypertrophy: the chamber DILATES with proportional wall thinning. Over time this progresses to systolic dysfunction/HFrEF. Mnemonic: Volume = series sarcomeres = dilated chamber.</div><div class="rtt">⚠️ WRONG answer: 'chronic mitral or aortic regurgitation causes concentric hypertrophy with a small cavity.' Discriminator: regurgitant (volume) lesions cause eccentric dilation (series sarcomeres, enlarged cavity); concentric hypertrophy is the response to pressure overload.</div></div><div class="rt"><div class="rtl">8. Neurohormonal: SNS / RAAS</div><div class="rte">Falling cardiac output triggers maladaptive neurohormonal activation: the sympathetic nervous system (↑catecholamines → tachycardia, ↑afterload, myocyte toxicity/apoptosis, arrhythmia) and the RAAS (angiotensin II → vasoconstriction; aldosterone → Na/water retention and myocardial FIBROSIS). Reactivation of the FETAL gene program drives pathologic remodeling. This cascade is the rationale for GDMT — beta-blockers, ACEi/ARB/ARNI, and MRAs each BLOCK an arm and improve survival.</div><div class="rtt">⚠️ WRONG answer: 'inotropes that boost sympathetic drive improve long-term survival in chronic HFrEF.' Discriminator: chronic neurohormonal activation is MALADAPTIVE — drugs that ANTAGONIZE it (beta-blockers, RAAS inhibitors) prolong life, whereas sympathomimetic inotropes increase mortality in chronic HF.</div></div><div class="rt"><div class="rtl">9. Natriuretic peptides / neprilysin</div><div class="rte">Natriuretic peptides (ANP from atria, BNP from ventricles) are the heart's protective counter-regulators — released in response to wall stretch, they cause vasodilation, natriuresis/diuresis, and oppose RAAS. Neprilysin is the enzyme that DEGRADES them. ARNI (sacubitril/valsartan) pairs a neprilysin inhibitor (boosts protective peptides) with an ARB (blocks Ang II); PARADIGM-HF showed ARNI beat enalapril for CV death/HF hospitalization.</div><div class="rtt">⚠️ WRONG answer: 'combine sacubitril/valsartan (ARNI) with an ACE inhibitor for additive benefit.' Discriminator: ARNI + ACEi causes dangerous ANGIOEDEMA — require a ≥36-hour washout when switching from an ACEi to ARNI; the two are never given together.</div></div><div class="rt"><div class="rtl">10. LBBB → CRT</div><div class="rte">A wide LBBB produces electrical and mechanical DYSSYNCHRONY (the septum and lateral wall contract out of phase), worsening efficiency in HFrEF. Cardiac resynchronization therapy (CRT, biventricular pacing) re-coordinates contraction. Best candidates (Class I): EF ≤35%, LBBB morphology, QRS ≥150 ms, NYHA II–IV on GDMT — these gain the most mortality/symptom benefit.</div><div class="rtt">⚠️ WRONG answer: 'CRT benefits all HFrEF patients with a wide QRS regardless of morphology.' Discriminator: CRT benefit is greatest with true LBBB and QRS ≥150 ms; non-LBBB or narrow QRS (&lt;130 ms) patients derive little/no benefit (and CRT may harm in QRS &lt;130 ms — EchoCRT).</div></div><div class="rt"><div class="rtl">11. High-output HF causes</div><div class="rte">High-output HF = the heart pumps a HIGH cardiac output yet still fails to meet metabolic demand or compensate for reduced systemic vascular resistance/shunting. Causes (mnemonic AABBCC-PT): Anemia (severe/chronic), AV fistula (incl. dialysis access), Beriberi (thiamine/B1 deficiency — 'wet beriberi'), Cirrhosis, Carcinoid, Paget disease of bone, Thyrotoxicosis, plus obesity/pregnancy. Look for warm extremities, bounding pulses, wide pulse pressure.</div><div class="rtt">⚠️ WRONG answer: 'high-output heart failure means the cardiac output is low.' Discriminator: in high-output HF the cardiac output is HIGH (often &gt;8 L/min) — failure occurs because demand/shunting outstrips even that elevated output; warm extremities and bounding pulses distinguish it from low-output (cold) HF.</div></div><div class="rt"><div class="rtl">12. Infiltrative / toxic cardiomyopathy</div><div class="rte">Non-ischemic cardiomyopathies to know: INFILTRATIVE/restrictive — amyloidosis (low-voltage ECG with paradoxical LVH wall thickening; transthyretin-type treated with tafamidis), sarcoidosis (granulomas → heart block/VT, treat with steroids ± device), hemochromatosis. TOXIC/dilated — anthracycline chemotherapy (dose-dependent, e.g., doxorubicin) and trastuzumab (reversible); ALCOHOL (chronic, dose-dependent, may reverse with abstinence). Takotsubo (stress) cardiomyopathy: apical ballooning after emotional/physical stress, usually reversible.</div><div class="rtt">⚠️ WRONG answer: 'discordance between low ECG voltage and a thick-walled ventricle on echo is just measurement error.' Discriminator: low voltage WITH increased wall thickness is the classic fingerprint of cardiac AMYLOIDOSIS (infiltration, not true hypertrophy) — a key board pattern, not an artifact.</div></div><div class="rt"><div class="rtl">13. Infectious causes (Chagas, HIV)</div><div class="rte">Infective/inflammatory dilated cardiomyopathy: Chagas disease (Trypanosoma cruzi — leading infectious DCM cause in Latin America; classically apical aneurysm, RBBB + left anterior fascicular block, megaesophagus/megacolon), HIV cardiomyopathy, VIRAL myocarditis (Coxsackie B, parvovirus B19, HHV-6; can follow a viral prodrome and present as new HF, arrhythmia, or sudden death), and autoimmune (SLE). PERIPARTUM cardiomyopathy: HFrEF in the last month of pregnancy through ~5 months postpartum, often recovers but may recur with subsequent pregnancies.</div><div class="rtt">⚠️ WRONG answer: 'a young patient with a recent viral illness and new HF/arrhythmia most likely has a chronic ischemic cardiomyopathy.' Discriminator: new HF in a young person after a viral prodrome points to acute VIRAL MYOCARDITIS (consider endomyocardial biopsy/MRI), not CAD — and giant-cell myocarditis is a fulminant variant needing urgent recognition.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_pathophys.html" title="Heart Failure — Pathophysiology correlation of general therapeutic HF">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_evaluation_nyha.html" title="Heart Failure — SCENE 2 — HF EVALUATION &amp; NYHA">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

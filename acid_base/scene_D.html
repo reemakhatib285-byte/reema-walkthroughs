@@ -10,6 +10,27 @@
     --yellow:#ffd166; --body:#d1d5db; --muted:#9ca3af; --green:#4ade80;
   }
   *{box-sizing:border-box}
+  /* PDF-style study panels below the interactive scene */
+  .panels{max-width:1000px;margin:0 auto;padding:8px 18px 60px}
+  details.panel{background:var(--panel);border:1px solid #1f2a3a;border-radius:12px;margin:12px 0;overflow:hidden}
+  details.panel>summary{cursor:pointer;list-style:none;padding:14px 18px;font-size:15px;font-weight:700;
+    color:var(--white);background:#16223a;border-left:4px solid var(--accent);display:flex;align-items:center;gap:10px}
+  details.panel>summary::-webkit-details-marker{display:none}
+  details.panel>summary em{font-style:normal;font-size:12px;font-weight:700;color:#fff;
+    background:var(--accent);border-radius:20px;padding:2px 9px}
+  ol.traps{margin:0;padding:14px 18px 16px 38px;color:var(--body);font-size:14px;line-height:1.55}
+  ol.traps li{margin:0 0 9px}
+  ol.traps b{color:var(--yellow)}
+  .rtwrap{padding:8px 18px 14px}
+  .rt{padding:12px 0;border-bottom:1px solid #1f2a3a}
+  .rt:last-child{border-bottom:none}
+  .rtl{color:var(--white);font-weight:700;font-size:14px;margin-bottom:4px}
+  .rte{color:var(--body);font-size:14px;line-height:1.55}
+  .rtt{color:#fca5a5;font-size:13px;line-height:1.5;margin-top:5px}
+  table.drug{width:calc(100% - 36px);margin:8px 18px 16px;border-collapse:collapse;font-size:13px}
+  table.drug th{background:#16223a;color:var(--white);text-align:left;padding:8px 10px;border:1px solid #2a3a52}
+  table.drug td{padding:8px 10px;border:1px solid #1f2a3a;color:var(--body);vertical-align:top;line-height:1.45}
+  table.drug tr:nth-child(even) td{background:#0f1827}
   html,body{margin:0;height:100%;background:var(--bg);
     font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--body)}
   .wrap{display:flex;height:100vh;gap:0}
@@ -61,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -119,6 +153,8 @@
     <h1 class="scene-title">Acid–Base D — Renal Tubular Acidosis (Tubule Repair Workshop)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -127,9 +163,15 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
+<div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>All RTA = normal-AG acidosis (NH4+)</b> — RTA is a normal-AG acidosis — a HIGH AG points elsewhere (ketoacidosis, toxins, lactate).</li><li><b>Type 1 (distal) — can't secrete H+</b> — Failure to acidify urine despite acidemia is the hallmark of distal RTA.</li><li><b>Type 1 — urine pH stays &gt; 5.5</b> — An acidemic patient with urine pH &gt; 5.5 = distal RTA (Type 2 can still acidify below 5.5).</li><li><b>Type 1 — HYPOkalemia</b> — Low K+ with normal-AG acidosis + alkaline urine = Type 1, not Type 4 (which is hyperkalemic).</li><li><b>Type 1 — stones &amp; nephrocalcinosis</b> — Nephrocalcinosis / Ca-phosphate stones go with Type 1, not Type 2.</li><li><b>Type 1 — autoimmune (Sjögren)</b> — A normal-AG acidosis in a Sjögren patient should prompt distal RTA.</li><li><b>Type 2 (proximal) — HCO3 wasting</b> — The defect is HCO3 reabsorption, not H+ secretion (that's Type 1).</li><li><b>Type 2 — Fanconi syndrome</b> — Glucosuria with a NORMAL serum glucose + normal-AG acidosis = proximal RTA / Fanconi.</li><li><b>Type 2 — urine pH variable (&lt;5.5)</b> — Ability to drop urine pH &lt; 5.5 separates Type 2 from Type 1.</li><li><b>Type 2 — alkali (large) + K, thiazide</b> — Small bicarbonate doses fail in Type 2 — most spills back into the urine.</li><li><b>Type 4 — HYPERkalemia</b> — High K+ with a normal-AG acidosis = Type 4 (Types 1 &amp; 2 are hypokalemic).</li><li><b>Type 4 — hypoaldosteronism &amp; drug causes</b> — Trimethoprim and ACEi/ARB are classic exam triggers for Type 4.</li><li><b>Type 4 — acidic urine; treat fludrocortisone</b> — Unlike Type 1, Type 4 still acidifies urine (pH &lt; 5.5) — the problem is ammonium, not H+ pumps.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. All RTA = normal-AG acidosis (NH4+)</div><div class="rte">All RTAs cause a NORMAL anion-gap (hyperchloremic) metabolic acidosis from impaired acid handling. Urine ammonium / positive urine anion gap signals a renal cause.</div><div class="rtt">⚠️ RTA is a normal-AG acidosis — a HIGH AG points elsewhere (ketoacidosis, toxins, lactate).</div></div><div class="rt"><div class="rtl">2. Type 1 (distal) — can't secrete H+</div><div class="rte">Distal (Type 1) RTA: the α-intercalated cell fails to secrete H+, so acid can't be excreted.</div><div class="rtt">⚠️ Failure to acidify urine despite acidemia is the hallmark of distal RTA.</div></div><div class="rt"><div class="rtl">3. Type 1 — urine pH stays &gt; 5.5</div><div class="rte">Because H+ can't be secreted, urine pH stays inappropriately high (&gt; 5.5) even with systemic acidosis.</div><div class="rtt">⚠️ An acidemic patient with urine pH &gt; 5.5 = distal RTA (Type 2 can still acidify below 5.5).</div></div><div class="rt"><div class="rtl">4. Type 1 — HYPOkalemia</div><div class="rte">Distal RTA classically causes hypokalemia.</div><div class="rtt">⚠️ Low K+ with normal-AG acidosis + alkaline urine = Type 1, not Type 4 (which is hyperkalemic).</div></div><div class="rt"><div class="rtl">5. Type 1 — stones &amp; nephrocalcinosis</div><div class="rte">Alkaline urine + hypocitraturia + hypercalciuria → calcium-phosphate stones and nephrocalcinosis. Treat with alkali (bicarbonate / potassium citrate).</div><div class="rtt">⚠️ Nephrocalcinosis / Ca-phosphate stones go with Type 1, not Type 2.</div></div><div class="rt"><div class="rtl">6. Type 1 — autoimmune (Sjögren)</div><div class="rte">Distal RTA is associated with autoimmune disease, especially Sjögren syndrome (also RA, lupus).</div><div class="rtt">⚠️ A normal-AG acidosis in a Sjögren patient should prompt distal RTA.</div></div><div class="rt"><div class="rtl">7. Type 2 (proximal) — HCO3 wasting</div><div class="rte">Proximal (Type 2) RTA: the proximal tubule can't reabsorb filtered bicarbonate → bicarbonaturia.</div><div class="rtt">⚠️ The defect is HCO3 reabsorption, not H+ secretion (that's Type 1).</div></div><div class="rt"><div class="rtl">8. Type 2 — Fanconi syndrome</div><div class="rte">Proximal RTA often comes with Fanconi: glucosuria (normal glucose), aminoaciduria, phosphaturia, uricosuria. Causes: myeloma, tenofovir, acetazolamide.</div><div class="rtt">⚠️ Glucosuria with a NORMAL serum glucose + normal-AG acidosis = proximal RTA / Fanconi.</div></div><div class="rt"><div class="rtl">9. Type 2 — urine pH variable (&lt;5.5)</div><div class="rte">Distal acidification is intact, so once serum HCO3 falls below the lowered threshold the urine CAN acidify (pH &lt; 5.5).</div><div class="rtt">⚠️ Ability to drop urine pH &lt; 5.5 separates Type 2 from Type 1.</div></div><div class="rt"><div class="rtl">10. Type 2 — alkali (large) + K, thiazide</div><div class="rte">Needs LARGE doses of alkali plus potassium (giving HCO3 worsens K+ wasting); thiazides can help.</div><div class="rtt">⚠️ Small bicarbonate doses fail in Type 2 — most spills back into the urine.</div></div><div class="rt"><div class="rtl">11. Type 4 — HYPERkalemia</div><div class="rte">Type 4 RTA is the only HYPERkalemic RTA — driven by hypoaldosteronism / aldosterone resistance.</div><div class="rtt">⚠️ High K+ with a normal-AG acidosis = Type 4 (Types 1 &amp; 2 are hypokalemic).</div></div><div class="rt"><div class="rtl">12. Type 4 — hypoaldosteronism &amp; drug causes</div><div class="rte">Caused by low/ineffective aldosterone — diabetic hyporeninemic hypoaldosteronism, and drugs: ACEi/ARB, NSAIDs, trimethoprim, heparin, spironolactone.</div><div class="rtt">⚠️ Trimethoprim and ACEi/ARB are classic exam triggers for Type 4.</div></div><div class="rt"><div class="rtl">13. Type 4 — acidic urine; treat fludrocortisone</div><div class="rte">Urine pH is usually &lt; 5.5 (acidification intact); impaired ammoniagenesis limits acid excretion. Treat by lowering K+, low-K diet, and fludrocortisone if hypoaldosterone.</div><div class="rtt">⚠️ Unlike Type 1, Type 4 still acidifies urine (pH &lt; 5.5) — the problem is ammonium, not H+ pumps.</div></div></div></details></div>
 <script>
 const DATA = [{"label": "Full scene", "x": 50, "y": 50, "z": 1.0, "see": "The whole scene at once.", "encodes": "Use this to orient, then arrow through each symbol.", "trap": ""}, {"label": "All RTA = normal-AG acidosis (NH4+)", "x": 45, "y": 91, "z": 3, "see": "The ‘NH4+’ floor drain where the pipes empty.", "encodes": "All RTAs cause a NORMAL anion-gap (hyperchloremic) metabolic acidosis from impaired acid handling. Urine ammonium / positive urine anion gap signals a renal cause.", "trap": "RTA is a normal-AG acidosis — a HIGH AG points elsewhere (ketoacidosis, toxins, lactate)."}, {"label": "Type 1 (distal) — can't secrete H+", "x": 37, "y": 55, "z": 3, "see": "The worker at the ‘DISTAL TUBULE’ pipe unable to push H+ through.", "encodes": "Distal (Type 1) RTA: the α-intercalated cell fails to secrete H+, so acid can't be excreted.", "trap": "Failure to acidify urine despite acidemia is the hallmark of distal RTA."}, {"label": "Type 1 — urine pH stays > 5.5", "x": 12, "y": 52, "z": 3, "see": "The ‘pH > 5.5’ gauge on the left wall.", "encodes": "Because H+ can't be secreted, urine pH stays inappropriately high (> 5.5) even with systemic acidosis.", "trap": "An acidemic patient with urine pH > 5.5 = distal RTA (Type 2 can still acidify below 5.5)."}, {"label": "Type 1 — HYPOkalemia", "x": 20, "y": 42, "z": 3, "see": "The ‘LOW / LOW’ gauge and banana on the left bench.", "encodes": "Distal RTA classically causes hypokalemia.", "trap": "Low K+ with normal-AG acidosis + alkaline urine = Type 1, not Type 4 (which is hyperkalemic)."}, {"label": "Type 1 — stones & nephrocalcinosis", "x": 13, "y": 71, "z": 3, "see": "‘CALCIUM STONES / NO CITRATE / HYPERCALCIURIA’ on the lower drawer.", "encodes": "Alkaline urine + hypocitraturia + hypercalciuria → calcium-phosphate stones and nephrocalcinosis. Treat with alkali (bicarbonate / potassium citrate).", "trap": "Nephrocalcinosis / Ca-phosphate stones go with Type 1, not Type 2."}, {"label": "Type 1 — autoimmune (Sjögren)", "x": 9, "y": 17, "z": 3, "see": "The ‘SJÖGREN’ IV bag and patient at top-left.", "encodes": "Distal RTA is associated with autoimmune disease, especially Sjögren syndrome (also RA, lupus).", "trap": "A normal-AG acidosis in a Sjögren patient should prompt distal RTA."}, {"label": "Type 2 (proximal) — HCO3 wasting", "x": 45, "y": 45, "z": 3, "see": "The broken counter pouring water — bicarbonate spilling out of the proximal tubule.", "encodes": "Proximal (Type 2) RTA: the proximal tubule can't reabsorb filtered bicarbonate → bicarbonaturia.", "trap": "The defect is HCO3 reabsorption, not H+ secretion (that's Type 1)."}, {"label": "Type 2 — Fanconi syndrome", "x": 53, "y": 40, "z": 3, "see": "Spilled ‘GLUCOSE / AMINO ACIDS / PO4’ jars.", "encodes": "Proximal RTA often comes with Fanconi: glucosuria (normal glucose), aminoaciduria, phosphaturia, uricosuria. Causes: myeloma, tenofovir, acetazolamide.", "trap": "Glucosuria with a NORMAL serum glucose + normal-AG acidosis = proximal RTA / Fanconi."}, {"label": "Type 2 — urine pH variable (<5.5)", "x": 37, "y": 29, "z": 3, "see": "The ‘< 5.5 → > 5.5 pH’ gauge above the workshop.", "encodes": "Distal acidification is intact, so once serum HCO3 falls below the lowered threshold the urine CAN acidify (pH < 5.5).", "trap": "Ability to drop urine pH < 5.5 separates Type 2 from Type 1."}, {"label": "Type 2 — alkali (large) + K, thiazide", "x": 48, "y": 17, "z": 3, "see": "The ‘K+ citrate’ and ‘NaHCO3’ vials on the top shelf.", "encodes": "Needs LARGE doses of alkali plus potassium (giving HCO3 worsens K+ wasting); thiazides can help.", "trap": "Small bicarbonate doses fail in Type 2 — most spills back into the urine."}, {"label": "Type 4 — HYPERkalemia", "x": 73, "y": 45, "z": 3, "see": "The red ‘HIGH’ gauge on the right wall.", "encodes": "Type 4 RTA is the only HYPERkalemic RTA — driven by hypoaldosteronism / aldosterone resistance.", "trap": "High K+ with a normal-AG acidosis = Type 4 (Types 1 & 2 are hypokalemic)."}, {"label": "Type 4 — hypoaldosteronism & drug causes", "x": 82, "y": 72, "z": 3, "see": "Bottles labelled ‘ACEi / ARB / NSAIDs / TMP’ at the right bench.", "encodes": "Caused by low/ineffective aldosterone — diabetic hyporeninemic hypoaldosteronism, and drugs: ACEi/ARB, NSAIDs, trimethoprim, heparin, spironolactone.", "trap": "Trimethoprim and ACEi/ARB are classic exam triggers for Type 4."}, {"label": "Type 4 — acidic urine; treat fludrocortisone", "x": 89, "y": 50, "z": 3, "see": "The ‘LOW’ gauge and ‘FLUDRO’ / ‘K+ FIRST’ tags on the right.", "encodes": "Urine pH is usually < 5.5 (acidification intact); impaired ammoniagenesis limits acid excretion. Treat by lowering K+, low-K diet, and fludrocortisone if hypoaldosterone.", "trap": "Unlike Type 1, Type 4 still acidifies urine (pH < 5.5) — the problem is ammonium, not H+ pumps."}];
 const META = {"title": "Acid–Base D — Renal Tubular Acidosis (Tubule Repair Workshop)", "image": "/Users/rimakhatib/Desktop/skts/electrolytes /acid_base/SCENE D — Renal Tubular Acidosis  Setting- The Tubule Repair Workshop.jpeg"};
@@ -147,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -217,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -231,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -249,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -283,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="scene_C.html" title="Acid–Base C — DKA, AKA, MALA (Ketone Kitchen)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="scene_E.html" title="Acid–Base E — Metabolic Alkalosis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

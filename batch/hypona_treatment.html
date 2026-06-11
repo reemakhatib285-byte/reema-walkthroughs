@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyponatremia — Treatment, Correction Limits &amp; ODS</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>ODS from rapid correction</b> — Stem: chronic hyponatremia (Na 112 for a week), and a choice says 'correct quickly to normal to prevent complications.' WRONG — speed is the danger; a fast rise causes ODS. Slow, controlled correction (&lt;8/24h) is protective. Only acute (&lt;48h) or actively seizing patients get a deliberate rapid initial bump (4–6 mEq) with hypertonic saline.</li><li><b>Limits protect / overcorrection kills</b> — A choice prioritizes 'getting the number normal' over the correction rate. WRONG — exceeding the rate limit converts an effective therapy into a brain injury. The board-safe posture is: define the 24h ceiling, check Na q2–4h, and actively re-lower if the trajectory exceeds target.</li><li><b>Correction limit 8-10/24h</b> — A choice sets a 24h goal of '12 mEq' or 'normalize Na to 140.' WRONG — even an otherwise correct therapy becomes harmful past ~8 mEq/24h (ODS risk). The maximum is a CEILING, not a target; aim well under it and use DDAVP/D5W to stay within bounds.</li><li><b>High-risk for ODS</b> — Applying the standard &lt;8/24h limit to a high-risk patient (e.g., malnourished alcoholic). WRONG — they need an even slower target (4–6/24h) and pre-emptive control; the usual ceiling is too aggressive and these are precisely the brains most prone to ODS.</li><li><b>Central pontine myelinolysis</b> — Ordering an early MRI to 'rule out ODS' and reassuring the patient when it's normal. WRONG — MRI changes lag the clinical syndrome by days, so a normal early scan does NOT exclude ODS. Diagnosis rests on the overcorrection history plus delayed neuro signs; prevention (rate limits) is the only reliable safeguard.</li><li><b>ODS clinical signs</b> — A biphasic course (initial improvement, then new dysarthria/quadriparesis days later) misread as a new stroke or seizure. WRONG framing — in the setting of recent rapid Na correction, this delayed neurologic decline is ODS. Recognize the pattern and, if overcorrection is caught early, re-lower Na (D5W + DDAVP) to mitigate.</li><li><b>Delayed 1 plus days</b> — Stopping vigilance because 'the patient is fine right after correction.' WRONG — ODS is delayed; a good immediate appearance does not mean you're safe. If the 24h rise was excessive, actively re-lower with D5W + DDAVP NOW rather than waiting for symptoms.</li><li><b>Severe/seizing: 3% hypertonic</b> — Withholding 3% saline in a seizing hyponatremic patient 'for fear of ODS,' or using slow 0.9% NS instead. WRONG — in acute symptomatic hyponatremia the immediate threat is cerebral edema/herniation, and the initial 4–6 mEq emergent rise with 3% saline is appropriate and lifesaving. ODS comes from the TOTAL 24h overshoot, which you then cap — not from the emergent bolus itself.</li><li><b>NS for dry / hypovolemic</b> — Giving 0.9% NS to a SIADH or hypervolemic (CHF/cirrhosis) patient. WRONG — in SIADH, NS can paradoxically WORSEN hyponatremia (the kidney excretes the Na but retains the water due to high Uosm); in hypervolemia it worsens edema. NS is for the DRY patient; euvolemic/wet patients get restriction (± vaptan/loop).</li><li><b>Fluid restrict SIADH/hypervol</b> — Fluid-restricting a HYPOVOLEMIC patient. WRONG — the dry patient needs VOLUME (NS); restriction deepens hypovolemia and the hyponatremia. Restriction is reserved for euvolemic (SIADH) and hypervolemic states. Also note vaptans are useless in low-solute/primary polydipsia where ADH is already suppressed.</li><li><b>Overcorrection rescue DDAVP</b> — Letting an overcorrection 'ride' or only stopping further saline. WRONG — passive stopping isn't enough once you've overshot; actively re-lower with DDAVP + D5W to get back under the 24h ceiling and prevent ODS. The mantra: overcorrection is a reversible emergency if you act.</li><li><b>DDAVP clamp</b> — Assuming DDAVP is only a rescue after overshoot. Refinement — it's also a PROACTIVE strategy: clamping the diuresis up front in high-risk patients prevents the wild autocorrection that causes ODS. Pairing a DDAVP clamp with controlled 3% saline gives the most predictable, board-favored correction.</li><li><b>Fluid restriction ratio clue</b> — Prescribing the same fluid restriction to every SIADH patient. WRONG — if the urine:serum electrolyte ratio is &gt;1, ordinary restriction fails (the kidney retains free water regardless) and you need strict &lt;500 mL/day ± salt/urea/vaptan; if &lt;1, modest restriction suffices. Tailor the restriction to the ratio.</li><li><b>K replacement raises Na</b> — Ignoring potassium's contribution and giving full-dose saline PLUS aggressive K repletion. WRONG — the combined effect can overcorrect Na well past the limit unexpectedly (a classic in hypokalemic, malnourished, high-risk patients). Tally K replacement into your correction math and reduce the saline accordingly.</li><li><b>Goal-direction compass</b> — Applying one therapy to all hyponatremia (e.g., 'always give saline' or 'always restrict'). WRONG — the right move depends on symptoms and volume status: hypertonic for emergencies, NS for dry, restriction for euvolemic/wet. Match the quadrant first, then cap the correction rate.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ODS from rapid correction</div><div class="rte">Osmotic demyelination syndrome (ODS), including central pontine myelinolysis, is caused by OVERLY FAST correction of CHRONIC (&gt;48h) hyponatremia, NOT by the low Na itself. In chronic hyponatremia, brain cells extrude organic osmolytes to avoid swelling; a rapid Na rise then draws water OUT and shrinks/demyelinates neurons. The cure is preventive: respect the rate limit (&lt;8 mEq/L/24h; 4–6 if high-risk).</div><div class="rtt">⚠️ Stem: chronic hyponatremia (Na 112 for a week), and a choice says 'correct quickly to normal to prevent complications.' WRONG — speed is the danger; a fast rise causes ODS. Slow, controlled correction (&lt;8/24h) is protective. Only acute (&lt;48h) or actively seizing patients get a deliberate rapid initial bump (4–6 mEq) with hypertonic saline.</div></div><div class="rt"><div class="rtl">2. Limits protect / overcorrection kills</div><div class="rte">Central principle: the brain tolerates a chronically LOW Na far better than a rapid RISE. Therapy is governed by RATE limits, not by how low the Na is. Always pick the 24h target, monitor frequently, and be ready to re-lower (D5W + DDAVP) if you overshoot. Count ALL contributors to the rise — hypertonic saline, NS, autocorrection after volume repletion, and K replacement.</div><div class="rtt">⚠️ A choice prioritizes 'getting the number normal' over the correction rate. WRONG — exceeding the rate limit converts an effective therapy into a brain injury. The board-safe posture is: define the 24h ceiling, check Na q2–4h, and actively re-lower if the trajectory exceeds target.</div></div><div class="rt"><div class="rtl">3. Correction limit 8-10/24h</div><div class="rte">THE board number: limit serum Na rise to &lt;8 mEq/L per 24h (some references allow up to 10) in average patients, and to ~4–6 mEq/L/24h in high-risk patients (alcoholic, malnourished, hypokalemic, Na &lt;105, liver disease). A useful estimate: 1 mL/kg of 3% saline raises Na ~1 mEq/L. Recheck Na q2–4h during active correction so you can slow or reverse before overshooting.</div><div class="rtt">⚠️ A choice sets a 24h goal of '12 mEq' or 'normalize Na to 140.' WRONG — even an otherwise correct therapy becomes harmful past ~8 mEq/24h (ODS risk). The maximum is a CEILING, not a target; aim well under it and use DDAVP/D5W to stay within bounds.</div></div><div class="rt"><div class="rtl">4. High-risk for ODS</div><div class="rte">High-risk groups needing the stricter 4–6 mEq/L/24h ceiling: chronic ALCOHOLISM, MALNUTRITION/frailty, HYPOKALEMIA, advanced LIVER disease / liver transplant, and very low starting Na (&lt;105). Beer-potomania and tea-and-toast patients are classic members. In these patients, plan a proactive DDAVP clamp and correct K cautiously (K repletion itself raises Na).</div><div class="rtt">⚠️ Applying the standard &lt;8/24h limit to a high-risk patient (e.g., malnourished alcoholic). WRONG — they need an even slower target (4–6/24h) and pre-emptive control; the usual ceiling is too aggressive and these are precisely the brains most prone to ODS.</div></div><div class="rt"><div class="rtl">5. Central pontine myelinolysis</div><div class="rte">ODS classically targets the PONS (central pontine myelinolysis), but extrapontine sites (basal ganglia, thalamus, cerebellum) can be involved too. Pathology: non-inflammatory demyelination from osmotic shrinkage of neurons during a too-rapid Na rise. MRI shows the lesion but is often delayed/normal early; diagnosis is clinical + history of overcorrection.</div><div class="rtt">⚠️ Ordering an early MRI to 'rule out ODS' and reassuring the patient when it's normal. WRONG — MRI changes lag the clinical syndrome by days, so a normal early scan does NOT exclude ODS. Diagnosis rests on the overcorrection history plus delayed neuro signs; prevention (rate limits) is the only reliable safeguard.</div></div><div class="rt"><div class="rtl">6. ODS clinical signs</div><div class="rte">ODS presents DAYS after overcorrection with dysarthria, dysphagia, spastic quadriparesis, pseudobulbar palsy, and in severe cases 'locked-in' syndrome (awake but unable to move/speak). It is often permanent. The classic clue: a patient improves transiently after Na correction, then deteriorates neurologically 2–6 days later.</div><div class="rtt">⚠️ A biphasic course (initial improvement, then new dysarthria/quadriparesis days later) misread as a new stroke or seizure. WRONG framing — in the setting of recent rapid Na correction, this delayed neurologic decline is ODS. Recognize the pattern and, if overcorrection is caught early, re-lower Na (D5W + DDAVP) to mitigate.</div></div><div class="rt"><div class="rtl">7. Delayed 1 plus days</div><div class="rte">ODS symptoms are DELAYED — typically 1 day to ~1 week after the overcorrection — so the patient can look perfectly fine immediately after Na normalizes. This delay is exactly why frequent post-correction monitoring and willingness to re-lower Na matter even in an asymptomatic patient.</div><div class="rtt">⚠️ Stopping vigilance because 'the patient is fine right after correction.' WRONG — ODS is delayed; a good immediate appearance does not mean you're safe. If the 24h rise was excessive, actively re-lower with D5W + DDAVP NOW rather than waiting for symptoms.</div></div><div class="rt"><div class="rtl">8. Severe/seizing: 3% hypertonic</div><div class="rte">SEVERE symptomatic hyponatremia (seizures, coma, obtundation) is a neuro-emergency from cerebral edema: give 3% hypertonic saline as a BOLUS — 100–150 mL over ~10 min, repeat up to 2–3 times until symptoms abate — to raise Na ~4–6 mEq/L quickly. That initial bump reverses herniation risk and is enough to stop seizures; after it, revert to the slow &lt;8 mEq/24h plan (the emergent rise counts toward the daily total).</div><div class="rtt">⚠️ Withholding 3% saline in a seizing hyponatremic patient 'for fear of ODS,' or using slow 0.9% NS instead. WRONG — in acute symptomatic hyponatremia the immediate threat is cerebral edema/herniation, and the initial 4–6 mEq emergent rise with 3% saline is appropriate and lifesaving. ODS comes from the TOTAL 24h overshoot, which you then cap — not from the emergent bolus itself.</div></div><div class="rt"><div class="rtl">9. NS for dry / hypovolemic</div><div class="rte">Hypovolemic (dry) hyponatremia: 0.9% normal saline (154 mEq/L Na) restores effective circulating volume, which removes the baroreceptor stimulus and shuts OFF ADH. Watch closely afterward — as ADH falls, a brisk water diuresis (autocorrection) can raise Na faster than intended, so cap the rise and be ready with D5W ± DDAVP.</div><div class="rtt">⚠️ Giving 0.9% NS to a SIADH or hypervolemic (CHF/cirrhosis) patient. WRONG — in SIADH, NS can paradoxically WORSEN hyponatremia (the kidney excretes the Na but retains the water due to high Uosm); in hypervolemia it worsens edema. NS is for the DRY patient; euvolemic/wet patients get restriction (± vaptan/loop).</div></div><div class="rt"><div class="rtl">10. Fluid restrict SIADH/hypervol</div><div class="rte">SIADH and hypervolemic states: FLUID RESTRICTION (often &lt;800–1000 mL/day) is first-line. Adjuncts for SIADH: oral salt tablets, urea, loop diuretic (to spoil the medullary gradient), or a vaptan (V2 antagonist, e.g., tolvaptan) for refractory cases. Hypervolemic states (HF, cirrhosis): water/salt restriction + loop diuretic + treat the underlying organ failure.</div><div class="rtt">⚠️ Fluid-restricting a HYPOVOLEMIC patient. WRONG — the dry patient needs VOLUME (NS); restriction deepens hypovolemia and the hyponatremia. Restriction is reserved for euvolemic (SIADH) and hypervolemic states. Also note vaptans are useless in low-solute/primary polydipsia where ADH is already suppressed.</div></div><div class="rt"><div class="rtl">11. Overcorrection rescue DDAVP</div><div class="rte">If Na rises too fast, RESCUE by re-lowering: give DDAVP (desmopressin) to CLAMP the renal free-water diuresis plus D5W (electrolyte-free water, e.g., ~3 mL/kg drops Na ~1 mEq/L) to bring Na back to a safe trajectory. This is indicated whenever the 24h rise exceeds target, even before symptoms appear.</div><div class="rtt">⚠️ Letting an overcorrection 'ride' or only stopping further saline. WRONG — passive stopping isn't enough once you've overshot; actively re-lower with DDAVP + D5W to get back under the 24h ceiling and prevent ODS. The mantra: overcorrection is a reversible emergency if you act.</div></div><div class="rt"><div class="rtl">12. DDAVP clamp</div><div class="rte">The 'DDAVP clamp' = give DDAVP proactively/continuously (e.g., 1–2 mcg IV q6–8h) to FIX urine output at a maximally concentrated state, eliminating unpredictable free-water diuresis, then raise Na in a controlled way with 3% saline. This is especially useful in high-risk patients (alcoholic, malnourished, very low Na, post-volume-repletion) to keep the rise within 4–6 mEq/24h.</div><div class="rtt">⚠️ Assuming DDAVP is only a rescue after overshoot. Refinement — it's also a PROACTIVE strategy: clamping the diuresis up front in high-risk patients prevents the wild autocorrection that causes ODS. Pairing a DDAVP clamp with controlled 3% saline gives the most predictable, board-favored correction.</div></div><div class="rt"><div class="rtl">13. Fluid restriction ratio clue</div><div class="rte">The urine-to-serum electrolyte ratio = (urine Na + urine K) / serum Na predicts how aggressively to restrict free water in SIADH-type hyponatremia: &gt;1 = electrolyte-free water is being RETAINED → strict restriction (&lt;500 mL/day); ~1 = moderate restriction (~500–700 mL/day); &lt;1 = the kidney is excreting free water → fluid restriction will work readily (liberal). It estimates whether the patient can actually clear ingested water.</div><div class="rtt">⚠️ Prescribing the same fluid restriction to every SIADH patient. WRONG — if the urine:serum electrolyte ratio is &gt;1, ordinary restriction fails (the kidney retains free water regardless) and you need strict &lt;500 mL/day ± salt/urea/vaptan; if &lt;1, modest restriction suffices. Tailor the restriction to the ratio.</div></div><div class="rt"><div class="rtl">14. K replacement raises Na</div><div class="rte">Repleting POTASSIUM raises serum Na: to stay electroneutral, infused K+ moves INTO cells while Na+ shifts OUT into the extracellular fluid (and K is osmotically active intracellularly, drawing water in). So giving KCl behaves like giving Na for the purpose of correction — COUNT the K toward the 24h Na-rise total to avoid an unplanned overshoot.</div><div class="rtt">⚠️ Ignoring potassium's contribution and giving full-dose saline PLUS aggressive K repletion. WRONG — the combined effect can overcorrect Na well past the limit unexpectedly (a classic in hypokalemic, malnourished, high-risk patients). Tally K replacement into your correction math and reduce the saline accordingly.</div></div><div class="rt"><div class="rtl">15. Goal-direction compass</div><div class="rte">Treatment compass by status: EMERGENT (seizing/comatose) → 3% hypertonic saline bolus (raise 4–6 mEq); DRY (hypovolemic) → 0.9% NS; EUVOLEMIC SIADH → fluid restriction ± salt/urea/loop/vaptan; WET (hypervolemic HF/cirrhosis) → fluid + salt restriction + loop diuretic. Overarching all four: respect the &lt;8 mEq/24h (4–6 high-risk) correction limit and re-lower with D5W+DDAVP if you overshoot.</div><div class="rtt">⚠️ Applying one therapy to all hyponatremia (e.g., 'always give saline' or 'always restrict'). WRONG — the right move depends on symptoms and volume status: hypertonic for emergencies, NS for dry, restriction for euvolemic/wet. Match the quadrant first, then cap the correction rate.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hypona_osmolality.html" title="Hyponatremia — Serum Osmolality First (Rule Out Pseudo)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hypona_volume_status.html" title="Hyponatremia — Volume Status Crossroads">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

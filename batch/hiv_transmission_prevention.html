@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">HIV — Transmission, U=U &amp; Prevention</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>15</em></summary><ol class="traps"><li><b>Transmission Risk League Table</b> — WRONG: 'Casual contact (hugging, sharing utensils, toilet seats, mosquitoes) can transmit HIV.' These do NOT transmit HIV — the virus requires direct exposure of blood/genital secretions/breast milk to mucosa or bloodstream. The discriminator: only blood, sexual fluids, and breast milk are infectious routes; environmental/casual contact is not.</li><li><b>Blood transfusion — top risk</b> — WRONG: 'Transfusion is no longer a meaningful HIV risk so it ranks low.' Although rare today due to NAT/antigen donor screening, transfusion remains the HIGHEST per-act transmission risk when an infected unit is given. Ranking it low confuses real-world frequency (very low) with per-exposure efficiency (highest) — the question is about per-act risk.</li><li><b>Receptive anal intercourse</b> — WRONG: 'Insertive and receptive partners share equal risk.' The receptive partner is at far higher risk than the insertive partner for any sexual act (anal or vaginal). The discriminator is mucosal exposure: receptive &gt;&gt; insertive. Treating risk as symmetric between partners is the trap.</li><li><b>Needlestick — occupational</b> — WRONG: 'Needlestick risk is the same regardless of injury type.' Risk is modified by depth of injury, a hollow-bore (vs solid suture) needle, visible blood on the device, and high source viral load. A deep stick with a blood-filled hollow needle from a high-VL source is much higher risk than a superficial solid-needle injury — these factors guide PEP urgency.</li><li><b>Receptive vaginal intercourse</b> — WRONG: 'Vaginal transmission is unaffected by other infections.' Co-existing STIs and genital ulcer disease (syphilis, HSV, chancroid) substantially increase per-act transmission in BOTH directions by recruiting target cells and breaching mucosa. Ignoring concurrent STI status as a risk multiplier is the trap.</li><li><b>Biting/spitting — negligible</b> — WRONG: 'A human bite or being spat on requires HIV PEP.' Saliva does not transmit HIV; PEP is not indicated for spitting or typical bites. The rare theoretical exception requires fresh blood in the saliva with a deep bite — but plain saliva exposure is the classic distractor that does not warrant prophylaxis.</li><li><b>U=U flag</b> — WRONG: 'U=U means the patient can safely stop ART or skip condoms in all situations.' U=U applies only to SEXUAL transmission and only with SUSTAINED viral suppression on continuous ART — it is not a license to stop ART (viral load would rebound) and does not protect against other STIs. The discriminator: sustained suppression on ongoing therapy, sexual route only.</li><li><b>Viral load &lt;20 copies/mL</b> — WRONG: 'One undetectable viral load result makes the patient untransmittable.' A single undetectable result is insufficient — U=U requires SUSTAINED suppression (typically confirmed undetectable for ≥6 months and maintained on adherent ART). A lone result, or a recent ART start, does not yet confer U=U protection.</li><li><b>MTCT Prevention Station</b> — WRONG: 'Without intervention, perinatal transmission is uncommon.' Untreated MTCT risk is high — about 15–35% (including breastfeeding) — but full intervention drops it to &lt;1–2%. Underestimating the baseline untreated risk, or assuming one component (e.g., C-section alone) suffices, is the trap; it's the combined bundle that achieves &lt;1–2%.</li><li><b>ART throughout pregnancy &amp; delivery</b> — WRONG: 'Stop or pause ART during the first trimester due to teratogenicity concerns.' Do NOT delay or interrupt ART in pregnancy — interruption raises viral load and transmission risk. Modern preferred regimens (including dolutegravir) are considered safe; suppressing maternal VL outweighs theoretical drug concerns. Stopping ART is the trap.</li><li><b>Infant antiretroviral prophylaxis</b> — WRONG: 'Diagnose HIV in an exposed newborn with an antibody test.' Infant antibody tests are unreliable due to transplacental maternal IgG until ~18 months — use HIV nucleic acid (PCR) testing for early infant diagnosis. Also, infant prophylaxis complements, and does not replace, maternal ART. Relying on infant serology is the trap.</li><li><b>Cesarean if VL elevated</b> — WRONG: 'All HIV-positive mothers should deliver by cesarean.' C-section is only beneficial when maternal VL is &gt;1000 (or unknown) near delivery; with suppressed/undetectable VL, scheduled C-section confers no added benefit and vaginal delivery is acceptable. Recommending universal C-section ignores the viral-load-dependent indication.</li><li><b>Avoid breastfeeding</b> — WRONG: 'Breastfeeding is always contraindicated with maternal HIV everywhere.' In resource-LIMITED settings where safe water/formula is unavailable, WHO advises exclusive breastfeeding WITH maternal ART, because the risk of formula-related infant mortality outweighs residual transmission risk. The answer is setting-dependent, not absolute.</li><li><b>PrEP — tenofovir/emtricitabine</b> — WRONG: 'Start PrEP without confirming the patient is HIV-negative.' You MUST exclude established HIV first (including acute HIV via 4th-gen Ag/Ab and, if acute infection suspected, RNA) — giving two-drug PrEP to someone with undiagnosed HIV risks resistance. PrEP is for HIV-negative people only; starting it in an undiagnosed positive is the trap.</li><li><b>PEP — within 72 hours</b> — WRONG: 'Begin PEP whenever the patient presents, even days later.' PEP must be started within 72 hours of exposure — beyond that window efficacy drops sharply and it is generally not offered. Also, a patient with ongoing/repeated exposures should be transitioned to PrEP, not serial PEP courses. Starting PEP late, or using PEP for ongoing risk instead of PrEP, is the trap.</li></ol></details><details class="panel"><summary>📖 Read-through — all 15 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Transmission Risk League Table</div><div class="rte">Per-exposure HIV transmission risk varies by orders of magnitude by route, so board questions often ask you to rank exposures. Descending order to know: blood transfusion (~90%+) &gt;&gt; perinatal/needle-sharing &gt; receptive anal &gt; needlestick &gt; receptive vaginal &gt; insertive routes &gt;&gt; bites/saliva (negligible). Risk is amplified by high source viral load, genital ulcers/STIs, and breaches in mucosa.</div><div class="rtt">⚠️ WRONG: 'Casual contact (hugging, sharing utensils, toilet seats, mosquitoes) can transmit HIV.' These do NOT transmit HIV — the virus requires direct exposure of blood/genital secretions/breast milk to mucosa or bloodstream. The discriminator: only blood, sexual fluids, and breast milk are infectious routes; environmental/casual contact is not.</div></div><div class="rt"><div class="rtl">2. Blood transfusion — top risk</div><div class="rte">Transfusion of HIV-infected blood is the single highest per-exposure transmission risk, roughly 90%+ (about 9,250+/10,000 acts). The huge inoculum delivered directly intravascularly accounts for the near-certainty of transmission. This is why blood-bank screening (antibody, p24 antigen, and nucleic acid testing) is universal and has made transfusion-related HIV extremely rare in resource-rich settings.</div><div class="rtt">⚠️ WRONG: 'Transfusion is no longer a meaningful HIV risk so it ranks low.' Although rare today due to NAT/antigen donor screening, transfusion remains the HIGHEST per-act transmission risk when an infected unit is given. Ranking it low confuses real-world frequency (very low) with per-exposure efficiency (highest) — the question is about per-act risk.</div></div><div class="rt"><div class="rtl">3. Receptive anal intercourse</div><div class="rte">Receptive anal intercourse is the highest-risk SEXUAL exposure (~138/10,000 acts, ~1.4%) because the rectal mucosa is thin, single-layered, richly vascular, and easily traumatized, giving the virus direct access to target cells. Risk rises further with ejaculation, mucosal tears, concurrent STIs, and high source viral load.</div><div class="rtt">⚠️ WRONG: 'Insertive and receptive partners share equal risk.' The receptive partner is at far higher risk than the insertive partner for any sexual act (anal or vaginal). The discriminator is mucosal exposure: receptive &gt;&gt; insertive. Treating risk as symmetric between partners is the trap.</div></div><div class="rt"><div class="rtl">4. Needlestick — occupational</div><div class="rte">Occupational percutaneous needlestick from an HIV-positive source carries ~0.3% risk (~23/10,000). This is the trigger for occupational post-exposure prophylaxis (PEP): start a 3-drug ART regimen ASAP, ideally within hours and no later than 72 hours, and continue for 28 days. Baseline and follow-up HIV testing of the exposed worker is required.</div><div class="rtt">⚠️ WRONG: 'Needlestick risk is the same regardless of injury type.' Risk is modified by depth of injury, a hollow-bore (vs solid suture) needle, visible blood on the device, and high source viral load. A deep stick with a blood-filled hollow needle from a high-VL source is much higher risk than a superficial solid-needle injury — these factors guide PEP urgency.</div></div><div class="rt"><div class="rtl">5. Receptive vaginal intercourse</div><div class="rte">Receptive vaginal intercourse carries higher risk (~8/10,000) than insertive vaginal intercourse (~4/10,000). The vaginal/cervical mucosa is more exposed than the insertive partner's, and microabrasions increase transmission. Risk is heavily modulated by source viral load (U=U eliminates sexual risk when undetectable).</div><div class="rtt">⚠️ WRONG: 'Vaginal transmission is unaffected by other infections.' Co-existing STIs and genital ulcer disease (syphilis, HSV, chancroid) substantially increase per-act transmission in BOTH directions by recruiting target cells and breaching mucosa. Ignoring concurrent STI status as a risk multiplier is the trap.</div></div><div class="rt"><div class="rtl">6. Biting/spitting — negligible</div><div class="rte">Saliva, biting, and spitting are NOT significant routes of HIV transmission — saliva contains inhibitory factors and very low viral concentrations. These rank at the bottom of the league table as effectively negligible exposures in normal circumstances.</div><div class="rtt">⚠️ WRONG: 'A human bite or being spat on requires HIV PEP.' Saliva does not transmit HIV; PEP is not indicated for spitting or typical bites. The rare theoretical exception requires fresh blood in the saliva with a deep bite — but plain saliva exposure is the classic distractor that does not warrant prophylaxis.</div></div><div class="rt"><div class="rtl">7. U=U flag</div><div class="rte">U=U (Undetectable = Untransmittable): a person on ART with a sustained undetectable plasma viral load does NOT sexually transmit HIV. This is a landmark, evidence-based prevention principle (PARTNER/PARTNER2 studies showed zero linked transmissions). It reinforces ART adherence and reduces stigma, and underpins treatment-as-prevention.</div><div class="rtt">⚠️ WRONG: 'U=U means the patient can safely stop ART or skip condoms in all situations.' U=U applies only to SEXUAL transmission and only with SUSTAINED viral suppression on continuous ART — it is not a license to stop ART (viral load would rebound) and does not protect against other STIs. The discriminator: sustained suppression on ongoing therapy, sexual route only.</div></div><div class="rt"><div class="rtl">8. Viral load &lt;20 copies/mL</div><div class="rte">Durable virologic suppression (commonly &lt;200 copies/mL, ideally undetectable, e.g., &lt;20–50 copies/mL by assay) is the threshold underlying U=U; at this level there is effectively zero sexual transmission. Most guidelines define 'undetectable for U=U' as sustained &lt;200 copies/mL on ART, confirmed over time.</div><div class="rtt">⚠️ WRONG: 'One undetectable viral load result makes the patient untransmittable.' A single undetectable result is insufficient — U=U requires SUSTAINED suppression (typically confirmed undetectable for ≥6 months and maintained on adherent ART). A lone result, or a recent ART start, does not yet confer U=U protection.</div></div><div class="rt"><div class="rtl">9. MTCT Prevention Station</div><div class="rte">Mother-to-child (perinatal/vertical) transmission is highly preventable through a bundle: maternal ART throughout pregnancy and delivery, appropriate delivery mode based on viral load, neonatal antiretroviral prophylaxis, and avoidance of breastfeeding where formula is safe. Maternal viral suppression at delivery is the single most important protective factor.</div><div class="rtt">⚠️ WRONG: 'Without intervention, perinatal transmission is uncommon.' Untreated MTCT risk is high — about 15–35% (including breastfeeding) — but full intervention drops it to &lt;1–2%. Underestimating the baseline untreated risk, or assuming one component (e.g., C-section alone) suffices, is the trap; it's the combined bundle that achieves &lt;1–2%.</div></div><div class="rt"><div class="rtl">10. ART throughout pregnancy &amp; delivery</div><div class="rte">Start or continue ART in ALL pregnant women living with HIV regardless of CD4, with the goal of an undetectable viral load by delivery. Integrase inhibitor-based regimens (e.g., dolutegravir) are now preferred in pregnancy for rapid suppression. Suppressed maternal viral load is the dominant determinant of preventing vertical transmission.</div><div class="rtt">⚠️ WRONG: 'Stop or pause ART during the first trimester due to teratogenicity concerns.' Do NOT delay or interrupt ART in pregnancy — interruption raises viral load and transmission risk. Modern preferred regimens (including dolutegravir) are considered safe; suppressing maternal VL outweighs theoretical drug concerns. Stopping ART is the trap.</div></div><div class="rt"><div class="rtl">11. Infant antiretroviral prophylaxis</div><div class="rte">Neonatal post-exposure prophylaxis is given for ~4–6 weeks after birth (zidovudine for low-risk; multi-drug regimens for higher-risk exposures) to further reduce transmission. The infant is monitored with HIV nucleic acid (DNA/RNA PCR) testing at intervals, because maternal antibodies cross the placenta and make infant antibody tests unreliable until ~18 months.</div><div class="rtt">⚠️ WRONG: 'Diagnose HIV in an exposed newborn with an antibody test.' Infant antibody tests are unreliable due to transplacental maternal IgG until ~18 months — use HIV nucleic acid (PCR) testing for early infant diagnosis. Also, infant prophylaxis complements, and does not replace, maternal ART. Relying on infant serology is the trap.</div></div><div class="rt"><div class="rtl">12. Cesarean if VL elevated</div><div class="rte">Scheduled (pre-labor, pre-rupture) cesarean section at ~38 weeks reduces intrapartum transmission when the maternal viral load is NOT suppressed (typically &gt;1000 copies/mL near delivery). Add intrapartum IV zidovudine when VL is elevated/unknown. If VL is suppressed/undetectable, vaginal delivery is appropriate.</div><div class="rtt">⚠️ WRONG: 'All HIV-positive mothers should deliver by cesarean.' C-section is only beneficial when maternal VL is &gt;1000 (or unknown) near delivery; with suppressed/undetectable VL, scheduled C-section confers no added benefit and vaginal delivery is acceptable. Recommending universal C-section ignores the viral-load-dependent indication.</div></div><div class="rt"><div class="rtl">13. Avoid breastfeeding</div><div class="rte">In resource-rich settings, formula feeding is recommended because breast milk transmits HIV and safe alternatives exist. Breastfeeding accounts for a substantial share of vertical transmission when mothers nurse. The recommendation is context-dependent on the availability of safe, sustainable replacement feeding.</div><div class="rtt">⚠️ WRONG: 'Breastfeeding is always contraindicated with maternal HIV everywhere.' In resource-LIMITED settings where safe water/formula is unavailable, WHO advises exclusive breastfeeding WITH maternal ART, because the risk of formula-related infant mortality outweighs residual transmission risk. The answer is setting-dependent, not absolute.</div></div><div class="rt"><div class="rtl">14. PrEP — tenofovir/emtricitabine</div><div class="rte">Pre-exposure prophylaxis (PrEP): daily oral tenofovir/emtricitabine (TDF/FTC, or TAF/FTC) for HIV-NEGATIVE people at substantial risk (serodiscordant partners, condomless sex with high-risk partners, recent STI, PWID). Long-acting injectable cabotegravir every 8 weeks is an alternative. PrEP is highly effective (&gt;90% with adherence). Confirm HIV-negative status before starting and re-test every ~3 months; monitor renal function.</div><div class="rtt">⚠️ WRONG: 'Start PrEP without confirming the patient is HIV-negative.' You MUST exclude established HIV first (including acute HIV via 4th-gen Ag/Ab and, if acute infection suspected, RNA) — giving two-drug PrEP to someone with undiagnosed HIV risks resistance. PrEP is for HIV-negative people only; starting it in an undiagnosed positive is the trap.</div></div><div class="rt"><div class="rtl">15. PEP — within 72 hours</div><div class="rte">Post-exposure prophylaxis (PEP): after a high-risk exposure (occupational needlestick, sexual assault, condom failure with a positive/unknown source), start a 3-drug ART regimen (e.g., tenofovir/emtricitabine + dolutegravir or raltegravir) ASAP and within 72 hours, continued for 28 days. Obtain baseline HIV testing and follow-up testing; assess source when possible.</div><div class="rtt">⚠️ WRONG: 'Begin PEP whenever the patient presents, even days later.' PEP must be started within 72 hours of exposure — beyond that window efficacy drops sharply and it is generally not offered. Also, a patient with ongoing/repeated exposures should be transitioned to PrEP, not serial PEP courses. Starting PEP late, or using PEP for ongoing risk instead of PrEP, is the trap.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hiv_oi_treatment.html" title="HIV — OI Treatment Wards (PCP, Cryptococcus, MAC, PML)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="mening_organisms.html" title="Meningitis — Bacterial Organisms by Age &amp; Host">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

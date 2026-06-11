@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — SCENE 4 — HFrEF GDMT: The Four-Pillar Apothecary</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>GDMT goal: mortality ↓ + reverse remodeling</b> — Trap: a stem implies that improving symptoms (with diuretics) equals improving survival. WRONG — only the four pillars (plus, in selected groups, hydralazine/ISDN and device therapy) reduce mortality; diuretics, digoxin, and ivabradine are symptom/hospitalization tools without a mortality benefit. Discriminator: 'reduces mortality / reverse remodeling' should map you to the four pillars, never to a diuretic.</li><li><b>Pillar 1: RAAS block — ARNI &gt; ACEi &gt; ARB</b> — Trap: combining ACEi + ARB (or any two RAAS agents) for 'additive' benefit. WRONG — dual RAAS blockade markedly increases hyperkalemia, hypotension, and acute kidney injury without survival benefit (ONTARGET). Discriminator: pick exactly ONE RAAS agent; if switching ACEi→ARNI, do not overlap (see washout).</li><li><b>ARNI preferred / 36h washout</b> — Trap: starting ARNI the morning after the last lisinopril dose (or co-administering them). WRONG — you must wait 36 hours after the last ACEi dose; failing this raises angioedema risk. Discriminator: ACEi→ARNI = 36h washout; ARB→ARNI = no washout. Also avoid ARNI within 36h of an ACEi for the same reason.</li><li><b>No triple RAAS / angioedema warning</b> — Trap: prescribing an ARNI to a patient who had ACEi-associated angioedema, assuming the new drug class is safe. WRONG — prior angioedema (to ACEi or otherwise) contraindicates ARNI because neprilysin inhibition independently raises bradykinin. Discriminator: history of angioedema → choose an ARB-based regimen or another pillar, not ARNI or ACEi.</li><li><b>Pillar 2: Beta-blocker (only 3 save lives)</b> — Trap: 'all beta-blockers are equivalent in HFrEF (class effect).' WRONG — it is NOT a class effect; atenolol, metoprolol TARTRATE, propranolol, and nebivolol (in the US) are not first-line mortality agents for HFrEF. Discriminator: only carvedilol, bisoprolol, and metoprolol succinate. Also never START or uptitrate a beta-blocker during acute decompensation/cardiogenic shock.</li><li><b>Metoprolol tartrate ✗</b> — Trap: a HFrEF patient on metoprolol tartrate is described as 'already on guideline beta-blocker therapy,' so the answer is no change. WRONG — switch tartrate to succinate (or to carvedilol/bisoprolol) to obtain the mortality benefit. Discriminator: succinate = once-daily, mortality-proven; tartrate = twice-daily, not proven for chronic HFrEF survival.</li><li><b>Pillar 3: MRA (NYHA II-IV)</b> — Trap: starting/continuing an MRA when K+ is 5.4 or eGFR is 25, or in a patient on potassium supplements/high-K diet. WRONG — this courts life-threatening hyperkalemia (the major RALES real-world harm). Discriminator: MRA requires K+ &lt;5.0 and eGFR &gt;30; hold for K+ ≥5.5 and recheck labs. Don't combine an MRA with another potassium-sparing agent or NSAID.</li><li><b>MRA: monitor K+ / gynecomastia</b> — Trap: a man on spironolactone develops gynecomastia and the answer is to stop all MRA therapy (losing mortality benefit). WRONG — switch to eplerenone, which preserves the MRA mortality benefit without the antiandrogenic side effects. Discriminator: gynecomastia is a spironolactone-specific (off-target) effect, not a reason to abandon the MRA pillar.</li><li><b>Pillar 4: SGLT2i (DM or not)</b> — Trap: 'SGLT2i only help HFrEF patients who have diabetes.' WRONG — the HF mortality/hospitalization benefit is INDEPENDENT of diabetes (non-diabetic patients benefited equally in DAPA-HF and EMPEROR-Reduced). Discriminator: prescribe an SGLT2i in any eligible HFrEF patient (eGFR permitting, generally ≥20–25), diabetic or not.</li><li><b>SGLT2i: fixed 10mg, no titration</b> — Trap: a stem reports a small early creatinine bump after starting an SGLT2i and the answer is to stop the drug. WRONG — the initial eGFR dip is hemodynamic and reversible; continue the drug for its cardiorenal benefit. Discriminator: unlike RAAS/BB, SGLT2i need no titration and the early eGFR dip is expected, not a stop signal (hold only for acute illness/DKA risk).</li><li><b>Diuretics = symptom only, no mortality</b> — Trap: 'loop diuretics improve survival in heart failure.' WRONG — diuretics treat congestion/symptoms only and have no proven mortality benefit; over-diuresis can worsen renal function and activate the RAAS. Discriminator: if a question asks which therapy reduces mortality, never pick a diuretic — pick one of the four pillars (or hydralazine/ISDN in Black patients).</li><li><b>Hydralazine + ISDN (Black patients)</b> — Trap: choosing hydralazine/ISDN as a first-line substitute for RAAS blockade in the general HFrEF population. WRONG — its proven additive mortality benefit is in Black patients with advanced (NYHA III–IV) HFrEF already on GDMT; in others it's mainly a fallback when RAAS inhibitors can't be used. Discriminator: the trial-supported benefit is population-specific (A-HeFT).</li><li><b>Titrate to target dose</b> — Trap: leaving a patient indefinitely on a 'starter' low dose because they are tolerating it without symptoms. WRONG — failing to uptitrate to target deprives the patient of full mortality benefit (a common real-world quality gap). Discriminator: tolerance without side effects is a reason to KEEP titrating toward target, not to stop.</li><li><b>Start early, go fast</b> — Trap: the old sequential dogma — fully maximize one agent before adding the next, taking months. WRONG by current guidelines — early simultaneous initiation of all four pillars saves more lives than slow sequential build-up. Discriminator: 'start low/go slow' applies to titration of an individual beta-blocker, NOT to delaying the other three pillars.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. GDMT goal: mortality ↓ + reverse remodeling</div><div class="rte">The four foundational pillars of HFrEF (LVEF ≤40%) GDMT — ARNI/ACEi/ARB, evidence-based beta-blocker, MRA, and SGLT2i — each independently reduce all-cause mortality and HF hospitalization, and together produce reverse remodeling (LVEF improvement, reduced LV volumes). Combined use confers roughly a 60–70% relative mortality reduction vs none. Modern teaching: start all four EARLY and rapidly (within weeks, even in-hospital) rather than the old slow sequential approach.</div><div class="rtt">⚠️ Trap: a stem implies that improving symptoms (with diuretics) equals improving survival. WRONG — only the four pillars (plus, in selected groups, hydralazine/ISDN and device therapy) reduce mortality; diuretics, digoxin, and ivabradine are symptom/hospitalization tools without a mortality benefit. Discriminator: 'reduces mortality / reverse remodeling' should map you to the four pillars, never to a diuretic.</div></div><div class="rt"><div class="rtl">2. Pillar 1: RAAS block — ARNI &gt; ACEi &gt; ARB</div><div class="rte">Pillar 1 = RAAS inhibition; choose ONE agent. Preference order: ARNI (sacubitril/valsartan) &gt; ACEi &gt; ARB. ARNI (PARADIGM-HF) was superior to enalapril for CV death/HF hospitalization. Use an ACEi (e.g., lisinopril, enalapril) if ARNI is unavailable; reserve an ARB (valsartan, candesartan, losartan) for ACEi-intolerant (cough/angioedema) patients. Start low and titrate every 1–2 weeks to target; monitor K+, creatinine, and BP.</div><div class="rtt">⚠️ Trap: combining ACEi + ARB (or any two RAAS agents) for 'additive' benefit. WRONG — dual RAAS blockade markedly increases hyperkalemia, hypotension, and acute kidney injury without survival benefit (ONTARGET). Discriminator: pick exactly ONE RAAS agent; if switching ACEi→ARNI, do not overlap (see washout).</div></div><div class="rt"><div class="rtl">3. ARNI preferred / 36h washout</div><div class="rte">ARNI = sacubitril (neprilysin inhibitor) + valsartan; start 49/51 mg BID (or 24/26 mg BID if low BP, elderly, renal/hepatic impairment, or ACEi/ARB-naïve) and double toward target 97/103 mg BID. When switching from an ACEi, observe a 36-HOUR WASHOUT before the first ARNI dose because overlapping ACE + neprilysin inhibition stacks bradykinin and causes angioedema. No washout is needed switching from an ARB.</div><div class="rtt">⚠️ Trap: starting ARNI the morning after the last lisinopril dose (or co-administering them). WRONG — you must wait 36 hours after the last ACEi dose; failing this raises angioedema risk. Discriminator: ACEi→ARNI = 36h washout; ARB→ARNI = no washout. Also avoid ARNI within 36h of an ACEi for the same reason.</div></div><div class="rt"><div class="rtl">4. No triple RAAS / angioedema warning</div><div class="rte">Never combine ACEi + ARB + ARNI (these all block the RAAS axis): triple/dual blockade causes hyperkalemia, hypotension, and renal failure with no added benefit. ARNI and ACEi are absolutely contraindicated with any prior history of angioedema; ARNI is also contraindicated in pregnancy and with concomitant aliskiren in diabetics. Hold/avoid in bilateral renal artery stenosis.</div><div class="rtt">⚠️ Trap: prescribing an ARNI to a patient who had ACEi-associated angioedema, assuming the new drug class is safe. WRONG — prior angioedema (to ACEi or otherwise) contraindicates ARNI because neprilysin inhibition independently raises bradykinin. Discriminator: history of angioedema → choose an ARB-based regimen or another pillar, not ARNI or ACEi.</div></div><div class="rt"><div class="rtl">5. Pillar 2: Beta-blocker (only 3 save lives)</div><div class="rte">Pillar 2 = a mortality-proven beta-blocker — ONLY carvedilol (target 25 mg BID, 50 mg BID if &gt;85 kg), bisoprolol (target 10 mg daily), and metoprolol SUCCINATE (extended-release, target 200 mg daily). They blunt chronic sympathetic toxicity and promote reverse remodeling (CIBIS-II, MERIT-HF, COPERNICUS). Start LOW only when EUVOLEMIC/stable and 'start low, go slow,' doubling every ~2 weeks; transient symptom worsening can occur early.</div><div class="rtt">⚠️ Trap: 'all beta-blockers are equivalent in HFrEF (class effect).' WRONG — it is NOT a class effect; atenolol, metoprolol TARTRATE, propranolol, and nebivolol (in the US) are not first-line mortality agents for HFrEF. Discriminator: only carvedilol, bisoprolol, and metoprolol succinate. Also never START or uptitrate a beta-blocker during acute decompensation/cardiogenic shock.</div></div><div class="rt"><div class="rtl">6. Metoprolol tartrate ✗</div><div class="rte">Metoprolol TARTRATE (immediate-release, dosed BID) is NOT a proven mortality-reducing beta-blocker for HFrEF — the MERIT-HF survival data are specific to metoprolol SUCCINATE (CR/XL, once daily). If a patient is on tartrate, convert to succinate for the chronic HFrEF mortality benefit (tartrate is acceptable for acute rate control/peri-MI situations).</div><div class="rtt">⚠️ Trap: a HFrEF patient on metoprolol tartrate is described as 'already on guideline beta-blocker therapy,' so the answer is no change. WRONG — switch tartrate to succinate (or to carvedilol/bisoprolol) to obtain the mortality benefit. Discriminator: succinate = once-daily, mortality-proven; tartrate = twice-daily, not proven for chronic HFrEF survival.</div></div><div class="rt"><div class="rtl">7. Pillar 3: MRA (NYHA II-IV)</div><div class="rte">Pillar 3 = a mineralocorticoid receptor antagonist (spironolactone or eplerenone), which reduces mortality and HF hospitalization in HFrEF (RALES in NYHA III–IV; EMPHASIS-HF starting at NYHA II) and post-MI LV dysfunction (EPHESUS). Typical: spironolactone start 12.5–25 mg daily → target 25–50 mg; eplerenone 25 → 50 mg daily. Eligibility gate: K+ &lt;5.0 mEq/L and eGFR &gt;30 mL/min; recheck K+/creatinine at ~3 days, 1 week, then periodically.</div><div class="rtt">⚠️ Trap: starting/continuing an MRA when K+ is 5.4 or eGFR is 25, or in a patient on potassium supplements/high-K diet. WRONG — this courts life-threatening hyperkalemia (the major RALES real-world harm). Discriminator: MRA requires K+ &lt;5.0 and eGFR &gt;30; hold for K+ ≥5.5 and recheck labs. Don't combine an MRA with another potassium-sparing agent or NSAID.</div></div><div class="rt"><div class="rtl">8. MRA: monitor K+ / gynecomastia</div><div class="rte">MRA key adverse effects: HYPERKALEMIA and worsening renal function (monitor K+/Cr), plus spironolactone's antiandrogenic effects — painful GYNECOMASTIA, breast tenderness, and menstrual irregularity (up to ~10% in RALES). Eplerenone is the selective MRA and largely avoids these endocrine effects, so switch a man who develops gynecomastia from spironolactone to eplerenone.</div><div class="rtt">⚠️ Trap: a man on spironolactone develops gynecomastia and the answer is to stop all MRA therapy (losing mortality benefit). WRONG — switch to eplerenone, which preserves the MRA mortality benefit without the antiandrogenic side effects. Discriminator: gynecomastia is a spironolactone-specific (off-target) effect, not a reason to abandon the MRA pillar.</div></div><div class="rt"><div class="rtl">9. Pillar 4: SGLT2i (DM or not)</div><div class="rte">Pillar 4 = an SGLT2 inhibitor — dapagliflozin (DAPA-HF) or empagliflozin (EMPEROR-Reduced) — which reduces CV death and HF hospitalization in HFrEF REGARDLESS of diabetes status. Benefit is rapid (within weeks) and independent of glycemic control, driven by natriuresis, reduced preload/afterload, and cardiac metabolic effects. Watch for genital mycotic infections, volume depletion, and (rarely) euglycemic DKA — hold during acute illness/surgery (sick-day rules).</div><div class="rtt">⚠️ Trap: 'SGLT2i only help HFrEF patients who have diabetes.' WRONG — the HF mortality/hospitalization benefit is INDEPENDENT of diabetes (non-diabetic patients benefited equally in DAPA-HF and EMPEROR-Reduced). Discriminator: prescribe an SGLT2i in any eligible HFrEF patient (eGFR permitting, generally ≥20–25), diabetic or not.</div></div><div class="rt"><div class="rtl">10. SGLT2i: fixed 10mg, no titration</div><div class="rte">SGLT2i are given at a FIXED dose with NO up-titration: dapagliflozin 10 mg daily or empagliflozin 10 mg daily — uniquely simple among the pillars, which makes them easy to start early/in-hospital. There is a small expected reversible early eGFR dip that should not prompt discontinuation.</div><div class="rtt">⚠️ Trap: a stem reports a small early creatinine bump after starting an SGLT2i and the answer is to stop the drug. WRONG — the initial eGFR dip is hemodynamic and reversible; continue the drug for its cardiorenal benefit. Discriminator: unlike RAAS/BB, SGLT2i need no titration and the early eGFR dip is expected, not a stop signal (hold only for acute illness/DKA risk).</div></div><div class="rt"><div class="rtl">11. Diuretics = symptom only, no mortality</div><div class="rte">Loop diuretics (furosemide, torsemide, bumetanide) relieve congestion/volume overload and improve symptoms but do NOT reduce mortality; use the LOWEST effective dose to maintain euvolemia. Torsemide/bumetanide have more reliable oral absorption than furosemide in gut edema. Add a thiazide (metolazone) for diuretic resistance (sequential nephron blockade), monitoring for hypokalemia/hyponatremia and azotemia.</div><div class="rtt">⚠️ Trap: 'loop diuretics improve survival in heart failure.' WRONG — diuretics treat congestion/symptoms only and have no proven mortality benefit; over-diuresis can worsen renal function and activate the RAAS. Discriminator: if a question asks which therapy reduces mortality, never pick a diuretic — pick one of the four pillars (or hydralazine/ISDN in Black patients).</div></div><div class="rt"><div class="rtl">12. Hydralazine + ISDN (Black patients)</div><div class="rte">Hydralazine + isosorbide dinitrate (balanced arterial + venous vasodilation; nitrate supplies NO, hydralazine limits nitrate tolerance) adds a mortality benefit ON TOP of standard GDMT in self-identified Black/African-American patients with NYHA III–IV HFrEF (A-HeFT). It is also the go-to RAAS alternative when ACEi/ARB/ARNI are contraindicated (e.g., advanced CKD, hyperkalemia, prior angioedema, pregnancy).</div><div class="rtt">⚠️ Trap: choosing hydralazine/ISDN as a first-line substitute for RAAS blockade in the general HFrEF population. WRONG — its proven additive mortality benefit is in Black patients with advanced (NYHA III–IV) HFrEF already on GDMT; in others it's mainly a fallback when RAAS inhibitors can't be used. Discriminator: the trial-supported benefit is population-specific (A-HeFT).</div></div><div class="rt"><div class="rtl">13. Titrate to target dose</div><div class="rte">For RAAS inhibitors, beta-blockers, and MRAs, uptitrate to the maximally tolerated/target dose used in the trials, because higher doses yield greater benefit; reassess and double roughly every 1–2 weeks (beta-blockers when stable/euvolemic). SGLT2i are the exception — fixed dose, no titration. Monitor BP, HR, K+, and renal function at each step.</div><div class="rtt">⚠️ Trap: leaving a patient indefinitely on a 'starter' low dose because they are tolerating it without symptoms. WRONG — failing to uptitrate to target deprives the patient of full mortality benefit (a common real-world quality gap). Discriminator: tolerance without side effects is a reason to KEEP titrating toward target, not to stop.</div></div><div class="rt"><div class="rtl">14. Start early, go fast</div><div class="rte">Modern strategy (e.g., STRONG-HF): initiate ALL FOUR pillars early and rapidly — often simultaneously and even before/at hospital discharge — then up-titrate quickly with close follow-up (labs and a visit within ~1–2 weeks). Rapid quadruple therapy reduced death/readmission vs. slow usual care. Order can be individualized (e.g., low-BP patients may lead with SGLT2i + a low-dose pillar).</div><div class="rtt">⚠️ Trap: the old sequential dogma — fully maximize one agent before adding the next, taking months. WRONG by current guidelines — early simultaneous initiation of all four pillars saves more lives than slow sequential build-up. Discriminator: 'start low/go slow' applies to titration of an individual beta-blocker, NOT to delaying the other three pillars.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_diagnosis_bnp.html" title="Heart Failure — SCENE 3 — HF DIAGNOSIS, BNP TRAPS &amp; DDx">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_mortality_curve.html" title="Heart Failure — SCENE 5 — HFrEF MORTALITY U-CURVE">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

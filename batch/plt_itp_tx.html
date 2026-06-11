@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Platelet disorders — ITP treatment (Basedball treatment)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>&gt;30K observe</b> — The classic distractor is to start prednisone on every patient with a low platelet count. An asymptomatic adult with platelets of 40,000–60,000 needs OBSERVATION, not steroids. Treating the number alone (especially above 30,000) is the wrong management — exposure to steroid toxicity without benefit.</li><li><b>&lt;30K treat</b> — Don't withhold treatment just because the absolute count is 'only mildly low' if the patient is actively bleeding — significant bleeding is itself an indication to treat regardless of the number. The mirror trap is treating a stable count of 35,000 with no bleeding; the threshold for the non-bleeder is &lt;30,000.</li><li><b>Vaccinate before splenectomy</b> — Forgetting the encapsulated-organism vaccines before splenectomy (or giving them the day of surgery instead of ≥2 weeks prior) is the planted error. Pneumococcus is the single most important. The wrong answer skips vaccination — asplenic patients face lethal OPSI from Strep pneumoniae, H. influenzae, and Neisseria meningitidis.</li><li><b>Glucocorticoids first-line</b> — Choosing splenectomy or rituximab as INITIAL therapy is wrong — those are second-line. Steroids are first-line for the stable, non-emergent patient. The other trap is expecting an instant response: steroids take a few days, so for a bleeding emergency you must ADD IVIG, not rely on steroids alone for speed.</li><li><b>IVIG / anti-D fast</b> — Relying on IVIG/anti-D for DURABLE control is the trap — their effect is temporary (weeks), so they are bridges for emergencies or procedures, not maintenance therapy. Also don't substitute IVIG for source control in life-threatening bleeding: severe ICH-level bleeding needs steroids + IVIG + platelet transfusion together, not IVIG alone.</li><li><b>Anti-D Rh+ only</b> — Giving anti-D to an Rh-NEGATIVE patient or to someone who is post-SPLENECTOMY is the wrong answer — it cannot work without Rh+ red cells for the spleen to consume. Also watch for its boxed risk: rare severe intravascular hemolysis/DIC, so it is monitored. Use IVIG instead when anti-D's prerequisites are not met.</li><li><b>TPO-RA when steroids fail</b> — Two traps: (1) TPO-RAs are NOT first-line — don't pick them over steroids initially; (2) they raise thrombotic risk and eltrombopag is hepatotoxic and requires chelation-style spacing from polyvalent cations (calcium, antacids, dairy) that block its absorption. The wrong answer ignores these and co-administers eltrombopag with calcium/antacids.</li><li><b>High-dose steroid inpatient</b> — Sequential, single-agent therapy in a crashing ITP bleed is the error — you do NOT start steroids and 'wait to see' before adding IVIG. Life-threatening hemorrhage demands all available modalities at once (steroids + IVIG ± platelets). Picking monotherapy for an ICH-level bleed costs time the patient does not have.</li><li><b>Platelet transfusion not standard</b> — Routinely transfusing platelets to 'fix the number' in stable ITP is the wrong answer — they are consumed within hours and accomplish little. Note the contrast with TTP, where platelets are CONTRAINDICATED (fuel thrombosis); in ITP they are merely ineffective/not-standard but ARE permitted as a rescue in life-threatening hemorrhage.</li><li><b>IVIG aseptic meningitis</b> — Calling post-IVIG headache + meningismus a bacterial/infectious meningitis and starting empiric antibiotics is the trap — recognize the temporal link to the recent infusion. IVIG aseptic meningitis is sterile and resolves on its own; also remember to screen IgA-deficient patients before IVIG to avoid anaphylaxis.</li><li><b>Rituximab chronic</b> — Using rituximab as initial therapy is wrong — it is second-line. Board-relevant risks: reactivation of HEPATITIS B (screen HBsAg/anti-HBc and treat/prophylax before giving it) and the rare risk of PML. The trap answer gives rituximab without checking hepatitis B serologies first.</li><li><b>Splenectomy</b> — Rushing to splenectomy as an early or first-line maneuver is the trap — modern practice defers it, exhausts medical options first, and reserves it for chronic refractory disease. And never forget the prerequisite: encapsulated-organism vaccination ≥2 weeks before surgery and lifelong OPSI awareness afterward.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. &gt;30K observe</div><div class="rte">If platelets are &gt;30,000 AND there is no bleeding, the answer is OBSERVE — no treatment, because spontaneous serious bleeding is rare above this threshold and stable mild ITP carries no increased mortality. You treat the patient/bleeding, not the number. Counts of 30,000–50,000 with no bleeding are watched, often indefinitely.</div><div class="rtt">⚠️ The classic distractor is to start prednisone on every patient with a low platelet count. An asymptomatic adult with platelets of 40,000–60,000 needs OBSERVATION, not steroids. Treating the number alone (especially above 30,000) is the wrong management — exposure to steroid toxicity without benefit.</div></div><div class="rt"><div class="rtl">2. &lt;30K treat</div><div class="rte">Initiate treatment when platelets are &lt;30,000 OR there is clinically significant bleeding at any count. The first-line agent for the non-bleeding patient is corticosteroids; add IVIG/anti-D when you need a fast rise. Procedures have their own thresholds (e.g., aim ~50,000 for surgery, ~80,000–100,000 for neurosurgery).</div><div class="rtt">⚠️ Don't withhold treatment just because the absolute count is 'only mildly low' if the patient is actively bleeding — significant bleeding is itself an indication to treat regardless of the number. The mirror trap is treating a stable count of 35,000 with no bleeding; the threshold for the non-bleeder is &lt;30,000.</div></div><div class="rt"><div class="rtl">3. Vaccinate before splenectomy</div><div class="rte">Before an elective splenectomy, vaccinate against the ENCAPSULATED organisms — pneumococcus (most important), H. influenzae type b, and meningococcus — ideally ≥2 weeks pre-op to allow an immune response. This prevents overwhelming post-splenectomy infection (OPSI), a lifelong asplenia risk.</div><div class="rtt">⚠️ Forgetting the encapsulated-organism vaccines before splenectomy (or giving them the day of surgery instead of ≥2 weeks prior) is the planted error. Pneumococcus is the single most important. The wrong answer skips vaccination — asplenic patients face lethal OPSI from Strep pneumoniae, H. influenzae, and Neisseria meningitidis.</div></div><div class="rt"><div class="rtl">4. Glucocorticoids first-line</div><div class="rte">FIRST-LINE pharmacologic therapy is corticosteroids: either prednisone ~1 mg/kg/day tapered over weeks, OR pulsed high-dose dexamethasone 40 mg/day × 4 days. They work by reducing splenic macrophage clearance and antibody production. Response takes days; most relapse on taper, which is why steroids are rarely a durable single solution.</div><div class="rtt">⚠️ Choosing splenectomy or rituximab as INITIAL therapy is wrong — those are second-line. Steroids are first-line for the stable, non-emergent patient. The other trap is expecting an instant response: steroids take a few days, so for a bleeding emergency you must ADD IVIG, not rely on steroids alone for speed.</div></div><div class="rt"><div class="rtl">5. IVIG / anti-D fast</div><div class="rte">For a RAPID platelet rise — active bleeding or before an urgent procedure — give IVIG (1 g/kg/day × 1–2 days) or anti-D, alongside steroids. IVIG works fast (24–72 h) by saturating splenic macrophage Fc receptors so they stop eating coated platelets. The effect is quick but transient (a few weeks).</div><div class="rtt">⚠️ Relying on IVIG/anti-D for DURABLE control is the trap — their effect is temporary (weeks), so they are bridges for emergencies or procedures, not maintenance therapy. Also don't substitute IVIG for source control in life-threatening bleeding: severe ICH-level bleeding needs steroids + IVIG + platelet transfusion together, not IVIG alone.</div></div><div class="rt"><div class="rtl">6. Anti-D Rh+ only</div><div class="rte">Anti-D (Rho) immunoglobulin only works in Rh(D)-POSITIVE patients who still HAVE a spleen. Mechanism: it coats the patient's own Rh+ red cells, and the spleen preferentially clears those antibody-coated RBCs instead of platelets — a controlled, mild hemolysis that 'distracts' the spleen. No spleen or Rh-negative = no effect.</div><div class="rtt">⚠️ Giving anti-D to an Rh-NEGATIVE patient or to someone who is post-SPLENECTOMY is the wrong answer — it cannot work without Rh+ red cells for the spleen to consume. Also watch for its boxed risk: rare severe intravascular hemolysis/DIC, so it is monitored. Use IVIG instead when anti-D's prerequisites are not met.</div></div><div class="rt"><div class="rtl">7. TPO-RA when steroids fail</div><div class="rte">Thrombopoietin receptor agonists — eltrombopag and avatrombopag (oral) and romiplostim (subcutaneous) — stimulate megakaryocytes to make MORE platelets, directly countering the production-block arm of ITP. They are SECOND-LINE for chronic/persistent or steroid-refractory ITP and are often used long-term.</div><div class="rtt">⚠️ Two traps: (1) TPO-RAs are NOT first-line — don't pick them over steroids initially; (2) they raise thrombotic risk and eltrombopag is hepatotoxic and requires chelation-style spacing from polyvalent cations (calcium, antacids, dairy) that block its absorption. The wrong answer ignores these and co-administers eltrombopag with calcium/antacids.</div></div><div class="rt"><div class="rtl">8. High-dose steroid inpatient</div><div class="rte">For SEVERE or life-threatening bleeding (e.g., intracranial hemorrhage, count &lt;10,000 with wet purpura), give COMBINATION therapy SIMULTANEOUSLY: high-dose IV corticosteroids (e.g., methylprednisolone) PLUS IVIG, and add platelet transfusion if life-threatening. Hitting multiple mechanisms at once gives the fastest, highest peak count.</div><div class="rtt">⚠️ Sequential, single-agent therapy in a crashing ITP bleed is the error — you do NOT start steroids and 'wait to see' before adding IVIG. Life-threatening hemorrhage demands all available modalities at once (steroids + IVIG ± platelets). Picking monotherapy for an ICH-level bleed costs time the patient does not have.</div></div><div class="rt"><div class="rtl">9. Platelet transfusion not standard</div><div class="rte">Platelet transfusion is NOT standard therapy in ITP because transfused platelets are rapidly opsonized and destroyed by the same autoantibody, so they barely raise the count. Reserve transfusion for LIFE-THREATENING bleeding only, and give it together with IVIG/steroids to blunt destruction.</div><div class="rtt">⚠️ Routinely transfusing platelets to 'fix the number' in stable ITP is the wrong answer — they are consumed within hours and accomplish little. Note the contrast with TTP, where platelets are CONTRAINDICATED (fuel thrombosis); in ITP they are merely ineffective/not-standard but ARE permitted as a rescue in life-threatening hemorrhage.</div></div><div class="rt"><div class="rtl">10. IVIG aseptic meningitis</div><div class="rte">The most board-tested adverse effect of IVIG is ASEPTIC MENINGITIS — severe headache, photophobia, neck stiffness, and a sterile CSF pleocytosis appearing within a day or two of infusion; it is self-limited. Other IVIG harms: volume overload, acute kidney injury, thrombosis, and (rarely) anaphylaxis in IgA-deficient patients.</div><div class="rtt">⚠️ Calling post-IVIG headache + meningismus a bacterial/infectious meningitis and starting empiric antibiotics is the trap — recognize the temporal link to the recent infusion. IVIG aseptic meningitis is sterile and resolves on its own; also remember to screen IgA-deficient patients before IVIG to avoid anaphylaxis.</div></div><div class="rt"><div class="rtl">11. Rituximab chronic</div><div class="rte">Rituximab, an anti-CD20 monoclonal antibody, depletes B cells and thereby reduces autoantibody production; it is a SECOND-LINE option preferred for chronic/refractory ITP, especially when wanting to avoid or defer splenectomy. Responses can be durable but are not universal.</div><div class="rtt">⚠️ Using rituximab as initial therapy is wrong — it is second-line. Board-relevant risks: reactivation of HEPATITIS B (screen HBsAg/anti-HBc and treat/prophylax before giving it) and the rare risk of PML. The trap answer gives rituximab without checking hepatitis B serologies first.</div></div><div class="rt"><div class="rtl">12. Splenectomy</div><div class="rte">Splenectomy removes both the main site of platelet destruction and the main antibody factory, producing SUSTAINED long-term remission in roughly two-thirds of patients (commonly cited ~30%+ durable cure-level remission). It is used LESS often now that TPO-RAs and rituximab exist, and is typically deferred ~6–12 months to allow spontaneous/medical remission.</div><div class="rtt">⚠️ Rushing to splenectomy as an early or first-line maneuver is the trap — modern practice defers it, exhausts medical options first, and reserves it for chronic refractory disease. And never forget the prerequisite: encapsulated-organism vaccination ≥2 weeks before surgery and lifelong OPSI awareness afterward.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="plt_itp.html" title="Platelet disorders — ITP (The ITP Baseball Stadium)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="plt_ttp.html" title="Platelet disorders — TTP (TTP Defect factory)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

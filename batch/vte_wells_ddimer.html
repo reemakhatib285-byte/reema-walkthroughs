@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">VTE — Wells Score &amp; D-dimer Pretest Probability</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Wells DVT booth</b> — WRONG: 'order a compression ultrasound first on every leg-pain patient regardless of score.' In a low-probability (unlikely) patient a negative high-sensitivity D-dimer rules out DVT without imaging — leading with ultrasound everywhere wastes resources and misses the algorithm.</li><li><b>Active cancer (+1)</b> — WRONG: 'a normal D-dimer rules out DVT in a low-Wells patient who has metastatic cancer.' D-dimer is chronically elevated in active malignancy, so it loses specificity and the negative-D-dimer rule-out is unreliable — these patients generally go to ultrasound.</li><li><b>Unilateral calf swelling &gt;3cm (+1)</b> — WRONG: 'bilateral leg swelling makes DVT the top diagnosis.' Bilateral edema points toward systemic causes (heart failure, cirrhosis, nephrotic syndrome) — DVT classically causes UNILATERAL swelling, and the Wells criteria reward asymmetry.</li><li><b>Alternative dx as likely (−2)</b> — WRONG: 'tally only the positive criteria and skip the −2.' Omitting the −2 falsely inflates the score and can push an 'unlikely' patient into the 'likely' category, triggering unnecessary imaging — this minus-2 modifier is a classic exam point.</li><li><b>Wells PE booth</b> — WRONG: 'a PE-likely (Wells &gt;4) patient with a negative D-dimer can be discharged.' At high pretest probability the negative predictive value of D-dimer is inadequate — you must image (CTPA). D-dimer only rules out in low/moderate probability.</li><li><b>Clinical signs of DVT (+3)</b> — WRONG: 'absence of leg symptoms makes PE unlikely.' Many PEs arise from clinically silent proximal DVTs; lack of leg findings does not exclude PE — it simply omits this +3 item while other criteria (tachycardia, gestalt) can still make PE likely.</li><li><b>PE most likely diagnosis (+3)</b> — WRONG: 'gestalt doesn't matter, only objective vitals count in Wells.' The single most heavily weighted PE criterion is the subjective 'PE is the leading diagnosis' (+3) — discounting clinician judgment is the error the score deliberately guards against.</li><li><b>HR &gt;100 (+1.5)</b> — WRONG: 'a normal heart rate argues strongly against PE.' Tachycardia is sensitive-ish but absent in many PEs; a normal HR (and even a normal A-a gradient) cannot exclude PE — use the full pretest-probability pathway.</li><li><b>D-dimer sentry</b> — WRONG: 'a positive D-dimer confirms VTE.' D-dimer rises in countless conditions and can never rule IN VTE — a positive result only mandates further testing (ultrasound or CTPA). It is a rule-out, never a rule-in test.</li><li><b>False positives</b> — WRONG: 'use a standard D-dimer cutoff to exclude PE in a third-trimester pregnant patient.' Pregnancy physiologically raises D-dimer so the standard cutoff rarely returns negative; pregnancy-specific algorithms (e.g. YEARS) or imaging (lower-extremity US, then V/Q or low-dose CTPA) are used.</li><li><b>Not useful in hospitalized patients</b> — WRONG: 'order a D-dimer to screen a post-op inpatient with new dyspnea.' It will be elevated from surgery regardless of clot status and cannot exclude PE — go straight to CTPA in the symptomatic hospitalized patient.</li><li><b>Age-adjusted D-dimer</b> — WRONG: 'apply the age-adjusted cutoff to a high-probability patient to avoid CTPA.' Age adjustment is only valid for non-high pretest probability; a high-probability patient still goes directly to imaging regardless of D-dimer value.</li><li><b>High-prob express → skip D-dimer</b> — WRONG: 'order a D-dimer in a high-probability patient and send them home if it's negative.' A negative D-dimer in a high-probability patient is a false reassurance — the residual PE risk remains too high; imaging is mandatory.</li><li><b>DVT mimics</b> — WRONG: 'unilateral warm erythematous swollen calf must be DVT, start anticoagulation.' Cellulitis presents identically (warmth, erythema, swelling, tenderness) — confirm with ultrasound before anticoagulating, since treating cellulitis as DVT (or vice versa) is a classic miss.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Wells DVT booth</div><div class="rte">The Wells DVT score stratifies pretest probability: the traditional 3-tier read is ≤0 low, 1-2 moderate, ≥3 high. The dichotomized version is DVT 'unlikely' (≤1) vs 'likely' (≥2). Low/moderate (unlikely) → check D-dimer; high (likely) → compression ultrasound. Always assign pretest probability BEFORE ordering any test.</div><div class="rtt">⚠️ WRONG: 'order a compression ultrasound first on every leg-pain patient regardless of score.' In a low-probability (unlikely) patient a negative high-sensitivity D-dimer rules out DVT without imaging — leading with ultrasound everywhere wastes resources and misses the algorithm.</div></div><div class="rt"><div class="rtl">2. Active cancer (+1)</div><div class="rte">Active cancer (treatment within 6 months or palliative) adds +1 to the Wells DVT score — malignancy is prothrombotic via tissue factor expression and is itself a strong VTE risk factor. Other +1 items include paralysis/recent cast immobilization and recent bedridden &gt;3 days or major surgery within 12 weeks.</div><div class="rtt">⚠️ WRONG: 'a normal D-dimer rules out DVT in a low-Wells patient who has metastatic cancer.' D-dimer is chronically elevated in active malignancy, so it loses specificity and the negative-D-dimer rule-out is unreliable — these patients generally go to ultrasound.</div></div><div class="rt"><div class="rtl">3. Unilateral calf swelling &gt;3cm (+1)</div><div class="rte">Calf swelling &gt;3 cm versus the asymptomatic leg (measured 10 cm below tibial tuberosity) = +1, as do pitting edema confined to the symptomatic leg (+1), tenderness localized along the deep venous system (+1), entire-leg swelling (+1), and collateral superficial (non-varicose) veins (+1). These objective unilateral findings raise pretest probability.</div><div class="rtt">⚠️ WRONG: 'bilateral leg swelling makes DVT the top diagnosis.' Bilateral edema points toward systemic causes (heart failure, cirrhosis, nephrotic syndrome) — DVT classically causes UNILATERAL swelling, and the Wells criteria reward asymmetry.</div></div><div class="rt"><div class="rtl">4. Alternative dx as likely (−2)</div><div class="rte">If an alternative diagnosis is AT LEAST AS LIKELY as DVT, SUBTRACT 2 points — the only negative item in the Wells DVT score and the most commonly forgotten modifier. It encodes clinical gestalt: a plausible cellulitis or Baker's cyst should lower your DVT probability.</div><div class="rtt">⚠️ WRONG: 'tally only the positive criteria and skip the −2.' Omitting the −2 falsely inflates the score and can push an 'unlikely' patient into the 'likely' category, triggering unnecessary imaging — this minus-2 modifier is a classic exam point.</div></div><div class="rt"><div class="rtl">5. Wells PE booth</div><div class="rte">The Wells PE score: dichotomized as ≤4 'PE unlikely' vs &gt;4 'PE likely.' PE unlikely → high-sensitivity D-dimer (or apply PERC first); PE likely → go straight to CT pulmonary angiography. The simplified Wells uses 1 point per item with ≤1 = unlikely.</div><div class="rtt">⚠️ WRONG: 'a PE-likely (Wells &gt;4) patient with a negative D-dimer can be discharged.' At high pretest probability the negative predictive value of D-dimer is inadequate — you must image (CTPA). D-dimer only rules out in low/moderate probability.</div></div><div class="rt"><div class="rtl">6. Clinical signs of DVT (+3)</div><div class="rte">Clinical signs/symptoms of DVT (leg swelling, pain on palpation of deep veins) = +3 — one of the 'Big Two' heaviest Wells PE criteria. A coexisting DVT makes concurrent PE far more likely, so this item carries the most weight along with clinician judgment.</div><div class="rtt">⚠️ WRONG: 'absence of leg symptoms makes PE unlikely.' Many PEs arise from clinically silent proximal DVTs; lack of leg findings does not exclude PE — it simply omits this +3 item while other criteria (tachycardia, gestalt) can still make PE likely.</div></div><div class="rt"><div class="rtl">7. PE most likely diagnosis (+3)</div><div class="rte">'PE is the #1 diagnosis (no alternative more likely)' = +3, the other 'Big Two' criterion. This clinical-gestalt item is heavily weighted and frequently the swing factor that tips a patient over the &gt;4 threshold into 'PE likely' → CTPA.</div><div class="rtt">⚠️ WRONG: 'gestalt doesn't matter, only objective vitals count in Wells.' The single most heavily weighted PE criterion is the subjective 'PE is the leading diagnosis' (+3) — discounting clinician judgment is the error the score deliberately guards against.</div></div><div class="rt"><div class="rtl">8. HR &gt;100 (+1.5)</div><div class="rte">Heart rate &gt;100 = +1.5, as do prior DVT/PE (+1.5) and immobilization ≥3 days or surgery within 4 weeks (+1.5). Hemoptysis (+1) and active malignancy (+1) round out the score. Tachycardia is the most common — and most nonspecific — vital sign in PE.</div><div class="rtt">⚠️ WRONG: 'a normal heart rate argues strongly against PE.' Tachycardia is sensitive-ish but absent in many PEs; a normal HR (and even a normal A-a gradient) cannot exclude PE — use the full pretest-probability pathway.</div></div><div class="rt"><div class="rtl">9. D-dimer sentry</div><div class="rte">D-dimer is a fibrin degradation product that is highly SENSITIVE (&gt;95% with the ELISA/high-sensitivity assay) but poorly SPECIFIC. Its value is as a rule-OUT test: in a LOW or MODERATE pretest-probability patient, a NEGATIVE high-sensitivity D-dimer effectively excludes VTE and no imaging is needed. Use the high-sensitivity (quantitative ELISA) assay for this purpose.</div><div class="rtt">⚠️ WRONG: 'a positive D-dimer confirms VTE.' D-dimer rises in countless conditions and can never rule IN VTE — a positive result only mandates further testing (ultrasound or CTPA). It is a rule-out, never a rule-in test.</div></div><div class="rt"><div class="rtl">10. False positives</div><div class="rte">D-dimer is falsely elevated in pregnancy, sepsis/infection, active cancer, recent surgery/trauma, recent MI, advanced age, liver disease, and DIC. These conditions wreck its specificity, so a positive value in such patients is uninformative and a negative value may be hard to obtain.</div><div class="rtt">⚠️ WRONG: 'use a standard D-dimer cutoff to exclude PE in a third-trimester pregnant patient.' Pregnancy physiologically raises D-dimer so the standard cutoff rarely returns negative; pregnancy-specific algorithms (e.g. YEARS) or imaging (lower-extremity US, then V/Q or low-dose CTPA) are used.</div></div><div class="rt"><div class="rtl">11. Not useful in hospitalized patients</div><div class="rte">In hospitalized, post-op, or acutely ill inpatients D-dimer is almost universally elevated, so it carries essentially no rule-out value in this population. For these patients move directly to definitive imaging rather than ordering a D-dimer you already know will be positive.</div><div class="rtt">⚠️ WRONG: 'order a D-dimer to screen a post-op inpatient with new dyspnea.' It will be elevated from surgery regardless of clot status and cannot exclude PE — go straight to CTPA in the symptomatic hospitalized patient.</div></div><div class="rt"><div class="rtl">12. Age-adjusted D-dimer</div><div class="rte">For patients &gt;50 years, use an AGE-ADJUSTED cutoff = age × 10 µg/L (FEU) instead of the fixed 500. This raises specificity (fewer needless CTPAs in older patients) while preserving sensitivity, validated in the ADJUST-PE study. Apply only to low/moderate (PE-unlikely) probability.</div><div class="rtt">⚠️ WRONG: 'apply the age-adjusted cutoff to a high-probability patient to avoid CTPA.' Age adjustment is only valid for non-high pretest probability; a high-probability patient still goes directly to imaging regardless of D-dimer value.</div></div><div class="rt"><div class="rtl">13. High-prob express → skip D-dimer</div><div class="rte">High pretest probability (Wells PE 'likely', &gt;4) → BYPASS D-dimer and go straight to CTPA (or V/Q if contrast contraindicated/renal failure/pregnancy). At high probability a negative D-dimer cannot lower post-test probability enough to be safe, so the test adds nothing.</div><div class="rtt">⚠️ WRONG: 'order a D-dimer in a high-probability patient and send them home if it's negative.' A negative D-dimer in a high-probability patient is a false reassurance — the residual PE risk remains too high; imaging is mandatory.</div></div><div class="rt"><div class="rtl">14. DVT mimics</div><div class="rte">DVT mimics that should trigger the Wells '−2 alternative diagnosis': ruptured Baker's cyst, muscle strain/tear/hematoma, cellulitis, and chronic venous insufficiency/post-thrombotic syndrome. PE mimics include pneumonia, asthma/COPD exacerbation, pericarditis, pleurisy, rib fracture, pneumothorax, ACS, and anxiety. Recognizing a strong mimic lowers pretest probability.</div><div class="rtt">⚠️ WRONG: 'unilateral warm erythematous swollen calf must be DVT, start anticoagulation.' Cellulitis presents identically (warmth, erythema, swelling, tenderness) — confirm with ultrasound before anticoagulating, since treating cellulitis as DVT (or vice versa) is a classic miss.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="vte_risk_duration_prophylaxis.html" title="VTE — Risk Stratification, Treatment Duration &amp; Prophylaxis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aps_classification.html" title="APS — 2023 ACR/EULAR Classification (Phospholipid Courthouse)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

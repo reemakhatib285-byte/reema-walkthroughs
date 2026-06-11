@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Arrhythmias — Wide-Complex Tachycardia Approach &amp; Treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>SVT vs VT misclassified</b> — WRONG: 'A young-looking, hemodynamically stable patient with a wide-complex tachycardia can't have VT, so treat as SVT.' Hemodynamic stability does NOT exclude VT — patients can tolerate VT for hours. The discriminator is the ECG (AV dissociation, capture/fusion beats, concordance) and the history of structural disease, not how 'sick' the patient looks.</li><li><b>ICD = safety net</b> — WRONG: 'Implanting an ICD reduces the number of VT episodes a patient experiences.' The discriminator is mechanism: the ICD only aborts events after they occur and may even deliver shocks for them — to REDUCE the burden of episodes you need antiarrhythmic drugs and/or catheter ablation, not the device itself.</li><li><b>Drugs suppress, ablation prevents</b> — WRONG: 'A patient getting frequent appropriate ICD shocks for recurrent VT should have the ICD's detection turned off to stop the shocks.' The discriminator is that the shocks are appropriate (life-saving) — the correct response is to suppress the VT itself with amiodarone/sotalol and/or VT ablation, not to disable therapy.</li><li><b>Class I Na-channel blocker</b> — WRONG: 'Flecainide or propafenone is a good maintenance antiarrhythmic for VT in a patient with reduced EF.' The discriminator is structure: class IC agents are contraindicated in structural/ischemic heart disease (CAST trial showed increased mortality) and are reserved for AF/SVT in structurally NORMAL hearts.</li><li><b>Avoid in structural disease</b> — WRONG: 'Suppressing post-MI PVCs with flecainide will lower the patient's mortality.' This is the exact CAST-trial fallacy — the discriminator is that suppressing ectopy is a surrogate that does NOT equal survival; flecainide INCREASED mortality in this population, so it is contraindicated.</li><li><b>Mortality post-MI</b> — WRONG: 'A post-MI patient with reduced EF and frequent VT should be started on oral flecainide for rhythm control.' The discriminator is the post-MI structural substrate — flecainide raises mortality here; amiodarone is the structurally-safe choice, layered onto an ICD.</li><li><b>Amiodarone</b> — WRONG: 'IV amiodarone is the first move for an UNSTABLE wide-complex tachycardia.' The discriminator is hemodynamic status — unstable VT (hypotension, ischemia, shock, altered mental status) demands immediate synchronized cardioversion (or defibrillation if pulseless/VF), with amiodarone only as an adjunct AFTER electrical therapy.</li><li><b>Procainamide first-line (stable)</b> — WRONG: 'Procainamide is the agent of choice for stable VT regardless of ventricular function.' The discriminator is LV function and renal clearance — procainamide is negatively inotropic and can accumulate; in severe LV dysfunction or with active ischemia, amiodarone is generally preferred, and unstable patients still get cardioversion first.</li><li><b>ATP — painless</b> — WRONG: 'ATP can be used to terminate ventricular fibrillation and very fast polymorphic VT.' The discriminator is organization and rate — ATP only works on organized, monomorphic, re-entrant VT; disorganized VF and very rapid/polymorphic VT require a defibrillation shock, not pacing.</li><li><b>Shock — painful, rapid VT/VF</b> — WRONG: 'For an unstable wide-complex tachycardia, give a trial of IV amiodarone before attempting cardioversion.' The discriminator is instability — hypotension/ischemia/shock/altered mentation mandates immediate synchronized cardioversion (or defibrillation if pulseless); delaying electrical therapy for a drug trial is the classic dangerous wrong answer.</li><li><b>Idiopathic = good outcome</b> — WRONG: 'All VT carries the same poor prognosis and the same ablation success rate.' The discriminator is the substrate — idiopathic VT in a normal heart has an excellent prognosis and high ablation cure rate, whereas NICM VT is the most resistant; lumping them together misjudges both prognosis and the right verapamil-responsive vs amiodarone-requiring therapy.</li><li><b>Ablation prevents</b> — WRONG: 'A successful VT ablation in a structural-heart-disease patient means the ICD is no longer needed.' The discriminator is residual SCD risk — ablation lowers VT burden and shocks but does not eliminate the risk of future VF, so the ICD stays; ablation is curative only for idiopathic VT in a structurally normal heart.</li><li><b>Sotalol / dofetilide shelf</b> — WRONG: 'Sotalol and dofetilide can be started as outpatients without monitoring because they are well tolerated.' The discriminator is QT-driven proarrhythmia — both prolong the QT and risk torsades, so dofetilide legally requires in-hospital telemetry loading and both require renal dosing and QT surveillance.</li><li><b>Outcomes: poor LV function</b> — WRONG: 'A patient with preserved EF and NSVT has the same SCD risk as a patient with EF 25%, so both need an ICD.' The discriminator is EF — primary-prevention ICD hinges on a depressed EF (≤35%); a preserved-EF patient with NSVT generally does not meet primary-prevention criteria absent a high-risk substrate (e.g., LMNA, sarcoid, HCM risk markers).</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. SVT vs VT misclassified</div><div class="rte">Every regular wide-complex tachycardia (QRS ≥120 ms) must be assumed to be VT until proven otherwise — overall ~80% of WCTs are VT, rising to &gt;95% with prior MI or structural heart disease. Features that PROVE VT: AV dissociation, capture beats (an occasional normal narrow QRS), fusion beats (hybrid QRS), a QRS &gt;140 ms with RBBB shape or &gt;160 ms with LBBB shape, extreme/northwest axis, and positive or negative QRS concordance across V1–V6. Mnemonic: 'old + wide + regular = VT.' Misclassifying VT as SVT-with-aberrancy and giving the wrong drug is the #1 complication.</div><div class="rtt">⚠️ WRONG: 'A young-looking, hemodynamically stable patient with a wide-complex tachycardia can't have VT, so treat as SVT.' Hemodynamic stability does NOT exclude VT — patients can tolerate VT for hours. The discriminator is the ECG (AV dissociation, capture/fusion beats, concordance) and the history of structural disease, not how 'sick' the patient looks.</div></div><div class="rt"><div class="rtl">2. ICD = safety net</div><div class="rte">An ICD detects and terminates VT/VF (by anti-tachycardia pacing or shock) but does NOT prevent the arrhythmia from starting — it is the cornerstone of SECONDARY prevention after a survived VT/VF arrest or sustained VT with structural disease, and of PRIMARY prevention when EF ≤35% on optimal therapy. Antiarrhythmics and ablation are layered on to cut the frequency of episodes and shocks.</div><div class="rtt">⚠️ WRONG: 'Implanting an ICD reduces the number of VT episodes a patient experiences.' The discriminator is mechanism: the ICD only aborts events after they occur and may even deliver shocks for them — to REDUCE the burden of episodes you need antiarrhythmic drugs and/or catheter ablation, not the device itself.</div></div><div class="rt"><div class="rtl">3. Drugs suppress, ablation prevents</div><div class="rte">Antiarrhythmic drugs (chiefly amiodarone, sotalol) suppress VT frequency and reduce ICD shocks; catheter ablation targets and eliminates the re-entrant circuit to prevent recurrence. Both are adjuncts to — not substitutes for — the ICD in structural heart disease. Ablation is favored for incessant VT, electrical storm, or when drugs fail or are not tolerated.</div><div class="rtt">⚠️ WRONG: 'A patient getting frequent appropriate ICD shocks for recurrent VT should have the ICD's detection turned off to stop the shocks.' The discriminator is that the shocks are appropriate (life-saving) — the correct response is to suppress the VT itself with amiodarone/sotalol and/or VT ablation, not to disable therapy.</div></div><div class="rt"><div class="rtl">4. Class I Na-channel blocker</div><div class="rte">Class I antiarrhythmics block fast sodium channels, slowing phase-0 depolarization and prolonging the QRS. Class IA (procainamide, quinidine) and IC (flecainide, propafenone) are the relevant VT agents; class IB (lidocaine, mexiletine) preferentially works on ischemic/depolarized tissue. The key board pitfall is their proarrhythmia in scarred myocardium — slowing conduction in scar promotes re-entry.</div><div class="rtt">⚠️ WRONG: 'Flecainide or propafenone is a good maintenance antiarrhythmic for VT in a patient with reduced EF.' The discriminator is structure: class IC agents are contraindicated in structural/ischemic heart disease (CAST trial showed increased mortality) and are reserved for AF/SVT in structurally NORMAL hearts.</div></div><div class="rt"><div class="rtl">5. Avoid in structural disease</div><div class="rte">Class IC agents (flecainide, propafenone) must be AVOIDED in any structural or ischemic heart disease because they increase mortality — the central lesson of the CAST trial, where flecainide/encainide raised death rates in post-MI patients despite suppressing PVCs. The mechanism is use-dependent conduction slowing in scar that facilitates re-entrant VT. Safe-use rule: class IC only with structurally normal hearts.</div><div class="rtt">⚠️ WRONG: 'Suppressing post-MI PVCs with flecainide will lower the patient's mortality.' This is the exact CAST-trial fallacy — the discriminator is that suppressing ectopy is a surrogate that does NOT equal survival; flecainide INCREASED mortality in this population, so it is contraindicated.</div></div><div class="rt"><div class="rtl">6. Mortality post-MI</div><div class="rte">Sodium-channel blockers (class IC) increase mortality after MI (CAST), which is the core fact driving drug choice in structural VT: in scarred/ischemic hearts you reach for amiodarone (or sotalol/dofetilide with monitoring), not flecainide/propafenone. Poor ventricular function further worsens prognosis and raises arrhythmic death risk.</div><div class="rtt">⚠️ WRONG: 'A post-MI patient with reduced EF and frequent VT should be started on oral flecainide for rhythm control.' The discriminator is the post-MI structural substrate — flecainide raises mortality here; amiodarone is the structurally-safe choice, layered onto an ICD.</div></div><div class="rt"><div class="rtl">7. Amiodarone</div><div class="rte">Amiodarone is the broadly effective, structurally-safe antiarrhythmic for VT — it works in ischemic and non-ischemic cardiomyopathy where class I drugs are dangerous. Acute IV dose for stable VT/VF: 150 mg IV over 10 minutes, may repeat, then 1 mg/min for 6 h and 0.5 mg/min for 18 h (or 300 mg IV push in pulseless VT/VF arrest). Because it causes phlebitis, give via central line if used &gt;24 h. Long-term toxicities: thyroid, pulmonary fibrosis, hepatic, corneal/skin.</div><div class="rtt">⚠️ WRONG: 'IV amiodarone is the first move for an UNSTABLE wide-complex tachycardia.' The discriminator is hemodynamic status — unstable VT (hypotension, ischemia, shock, altered mental status) demands immediate synchronized cardioversion (or defibrillation if pulseless/VF), with amiodarone only as an adjunct AFTER electrical therapy.</div></div><div class="rt"><div class="rtl">8. Procainamide first-line (stable)</div><div class="rte">For STABLE, well-tolerated regular monomorphic VT, IV procainamide is a guideline-preferred first-line agent (PROCAMIO trial showed fewer adverse events and better termination than amiodarone) — dose ~10–17 mg/kg IV at ≤50 mg/min until VT terminates, hypotension occurs, or QRS widens &gt;50%. Amiodarone is the alternative, especially with poor LV function. Stop infusion if QRS widens excessively or hypotension develops.</div><div class="rtt">⚠️ WRONG: 'Procainamide is the agent of choice for stable VT regardless of ventricular function.' The discriminator is LV function and renal clearance — procainamide is negatively inotropic and can accumulate; in severe LV dysfunction or with active ischemia, amiodarone is generally preferred, and unstable patients still get cardioversion first.</div></div><div class="rt"><div class="rtl">9. ATP — painless</div><div class="rte">Anti-tachycardia pacing (ATP) is an ICD function that delivers a rapid burst of pacing slightly faster than the VT to penetrate and break the re-entrant circuit, terminating organized MONOMORPHIC VT painlessly and without a shock. It is tried first for slower, organized VT to spare the patient a shock and preserve battery.</div><div class="rtt">⚠️ WRONG: 'ATP can be used to terminate ventricular fibrillation and very fast polymorphic VT.' The discriminator is organization and rate — ATP only works on organized, monomorphic, re-entrant VT; disorganized VF and very rapid/polymorphic VT require a defibrillation shock, not pacing.</div></div><div class="rt"><div class="rtl">10. Shock — painful, rapid VT/VF</div><div class="rte">ICD shock (synchronized cardioversion for organized VT, unsynchronized defibrillation for VF) is the therapy for fast VT and VF and for unstable rhythms. In a coding patient, pulseless VT/VF gets immediate unsynchronized defibrillation; an unstable but perfusing VT gets synchronized cardioversion. Electrical therapy is the priority — drugs are secondary.</div><div class="rtt">⚠️ WRONG: 'For an unstable wide-complex tachycardia, give a trial of IV amiodarone before attempting cardioversion.' The discriminator is instability — hypotension/ischemia/shock/altered mentation mandates immediate synchronized cardioversion (or defibrillation if pulseless); delaying electrical therapy for a drug trial is the classic dangerous wrong answer.</div></div><div class="rt"><div class="rtl">11. Idiopathic = good outcome</div><div class="rte">Prognosis tracks the substrate: idiopathic VT in a structurally NORMAL heart (fascicular VT, RVOT VT) has the best outcome and is often curable by ablation; ischemic VT has a defined subendocardial target with good ablation success; NICM VT is the hardest to ablate (deep/epicardial scar) with higher recurrence. Idiopathic VTs also respond to specific drugs — verapamil for fascicular VT, beta-blockers/verapamil/adenosine for RVOT VT.</div><div class="rtt">⚠️ WRONG: 'All VT carries the same poor prognosis and the same ablation success rate.' The discriminator is the substrate — idiopathic VT in a normal heart has an excellent prognosis and high ablation cure rate, whereas NICM VT is the most resistant; lumping them together misjudges both prognosis and the right verapamil-responsive vs amiodarone-requiring therapy.</div></div><div class="rt"><div class="rtl">12. Ablation prevents</div><div class="rte">Catheter ablation maps and destroys the VT circuit (or scar channels) to prevent recurrence and reduce ICD shocks — it is favored for incessant VT, electrical storm, drug-refractory VT, and idiopathic VT (where it can be curative). Endocardial ablation suffices for subendocardial ischemic scar; epicardial access is often needed for NICM/ARVC. Temporary overdrive pacing can also suppress pause-dependent or incessant arrhythmias acutely.</div><div class="rtt">⚠️ WRONG: 'A successful VT ablation in a structural-heart-disease patient means the ICD is no longer needed.' The discriminator is residual SCD risk — ablation lowers VT burden and shocks but does not eliminate the risk of future VF, so the ICD stays; ablation is curative only for idiopathic VT in a structurally normal heart.</div></div><div class="rt"><div class="rtl">13. Sotalol / dofetilide shelf</div><div class="rte">Sotalol (class III + non-selective beta-blocker) and dofetilide (pure class III IKr blocker) are alternative antiarrhythmics that suppress VT/AF; both prolong the QT and can cause torsades de pointes, so dofetilide initiation requires inpatient monitoring with renal dose-adjustment, and sotalol needs QT/renal monitoring. Sotalol is an option for VT suppression layered on an ICD when amiodarone is undesirable.</div><div class="rtt">⚠️ WRONG: 'Sotalol and dofetilide can be started as outpatients without monitoring because they are well tolerated.' The discriminator is QT-driven proarrhythmia — both prolong the QT and risk torsades, so dofetilide legally requires in-hospital telemetry loading and both require renal dosing and QT surveillance.</div></div><div class="rt"><div class="rtl">14. Outcomes: poor LV function</div><div class="rte">Reduced LV systolic function is the dominant prognostic driver in structural VT — the worse the EF, the higher the arrhythmic mortality and the stronger the ICD indication (primary prevention at EF ≤35% on optimal therapy ≥3 months). EF, not symptom tolerance, drives risk stratification and device decisions.</div><div class="rtt">⚠️ WRONG: 'A patient with preserved EF and NSVT has the same SCD risk as a patient with EF 25%, so both need an ICD.' The discriminator is EF — primary-prevention ICD hinges on a depressed EF (≤35%); a preserved-EF patient with NSVT generally does not meet primary-prevention criteria absent a high-risk substrate (e.g., LMNA, sarcoid, HCM risk markers).</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="arr_wpw.html" title="Arrhythmias — WPW &amp; Accessory Pathways (AVRT)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="peri_acute.html" title="Pericardial Disease — Acute Pericarditis">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

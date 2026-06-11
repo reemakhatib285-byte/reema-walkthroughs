@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hyperkalemia — redistribution (transcellular shift)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Total body K+ normal</b> — WRONG answer: aggressively dumping total-body potassium with binders or dialysis for a pure shift. The discriminator is that the deficit is positional, not absolute — over-removal plus reversal of the trigger (e.g., giving insulin in DKA) causes dangerous rebound hypokalemia. Stabilize/shift and treat the cause first.</li><li><b>Acidosis H+/K+</b> — WRONG answer: assuming every acidosis raises K+ via the H+/K+ exchange. Organic-anion (high anion gap) acidoses — lactic acidosis and DKA — do NOT meaningfully drive this exchange because the accompanying organic anion follows H+ into the cell. Their hyperkalemia comes from other mechanisms (insulin deficiency, hyperosmolality).</li><li><b>NAGMA shifts</b> — WRONG answer: attributing DKA or lactic-acidosis hyperkalemia to the acidosis itself. In DKA, the dominant driver is insulin deficiency plus hyperosmolality; the patient is usually total-body K+ DEPLETED, and K+ will plummet once insulin is started. Discriminator: check the anion gap — gap acidosis means look beyond the H+ shift.</li><li><b>Insulin deficiency</b> — WRONG answer: seeing a 'normal' or high K+ in DKA and concluding K+ stores are fine. The discriminator is that insulin therapy unmasks profound total-body depletion — anticipate hypokalemia, and hold/replace K+ (start K+ if serum K+ &lt; 5.3, hold insulin if K+ &lt; 3.3) per DKA protocols.</li><li><b>Hyperosmolality</b> — WRONG answer: confusing this with the H+/K+ acidosis mechanism. The discriminator is the trigger — here it is the osmotic gradient (glucose, mannitol), not pH. Correcting hyperglycemia/osmolality alone (plus the insulin it requires) will lower K+ without binders.</li><li><b>Na/K-ATPase</b> — WRONG answer: thinking pump inhibition raises K+ only modestly in all cases. Discriminator: massive acute digoxin overdose can block enough pumps to cause life-threatening hyperkalemia, and the K+ level is a recognized prognostic marker of digoxin toxicity severity.</li><li><b>Digoxin toxicity</b> — WRONG answer: giving IV calcium for the hyperkalemia of digoxin toxicity. Classic teaching warns of the 'stone heart' (calcium worsening digoxin-induced intracellular calcium overload and causing intractable contraction/arrhythmia) — give calcium slowly/cautiously or avoid it, and reach for digoxin-specific Fab instead.</li><li><b>Succinylcholine</b> — WRONG answer: using succinylcholine for rapid-sequence intubation in a patient with burns, crush injury, spinal cord injury/denervation, or prolonged immobilization. Discriminator: in these patients use a non-depolarizing agent (e.g., rocuronium). The danger window for burns/denervation begins around 48–72 hours and persists for months.</li><li><b>Beta-blocker</b> — WRONG answer: blaming a cardioselective beta-1 blocker for significant hyperkalemia. Discriminator: it is the beta-2 blockade (non-selective agents) that matters; selective beta-1 agents have minimal effect. Conversely, the beta-2 AGONIST albuterol is a treatment that shifts K+ in.</li><li><b>Rhabdomyolysis</b> — WRONG answer: forgetting that rhabdo causes HYPOcalcemia early. Discriminator: the released phosphate binds calcium and calcium deposits in damaged muscle, so early hypocalcemia is expected — do not over-correct it early, as calcium can mobilize back out during recovery and cause rebound hypercalcemia.</li><li><b>Tumor lysis</b> — WRONG answer: giving calcium for the hypocalcemia of TLS routinely. Discriminator: in hyperphosphatemic states, exogenous calcium promotes calcium-phosphate precipitation and worsens renal injury — treat hypocalcemia only if symptomatic, and prioritize lowering phosphate and uric acid.</li><li><b>Hemolysis/burns</b> — WRONG answer: treating an isolated high K+ from a hemolyzed specimen as true hyperkalemia. Discriminator: pseudohyperkalemia has no ECG changes and a 'hemolyzed' lab comment or extreme platelet/WBC counts; redraw without a tourniquet/fist-clenching before treating.</li><li><b>Familial HyperKPP</b> — WRONG answer: confusing hyper- and hypokalemic periodic paralysis. Discriminator: HyperKPP attacks are precipitated by potassium loads and rest-after-exercise and improve with carbohydrate/beta-agonist; hypoKPP attacks follow heavy carbohydrate meals and improve with potassium. Check the K+ DURING an attack.</li><li><b>Correct the trigger</b> — WRONG answer: managing a shift identically to a true K+ overload. Discriminator: the leak is positional. Treat the trigger and recheck K+ — if you also strip out total-body K+, the patient overshoots into hypokalemia when cells reclaim their K+.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Total body K+ normal</div><div class="rte">In redistribution (transcellular shift), K+ moves from the intracellular compartment (where ~98% of body K+ lives, ICF ~140 mEq/L) into the extracellular space, so the measured serum K+ rises even though total body K+ is unchanged. This is the key conceptual split from true K+ excess (renal/intake causes). Recognizing a shift changes management: you fix the trigger and watch for rebound HYPOkalemia once cells take the K+ back up.</div><div class="rtt">⚠️ WRONG answer: aggressively dumping total-body potassium with binders or dialysis for a pure shift. The discriminator is that the deficit is positional, not absolute — over-removal plus reversal of the trigger (e.g., giving insulin in DKA) causes dangerous rebound hypokalemia. Stabilize/shift and treat the cause first.</div></div><div class="rt"><div class="rtl">2. Acidosis H+/K+</div><div class="rte">In MINERAL (non-anion-gap) acidosis, excess extracellular H+ enters cells to be buffered, and to maintain electroneutrality K+ is exchanged outward — roughly a 0.6 mEq/L rise in K+ per 0.1 fall in pH (highly variable). The classic exam pairing is hyperchloremic NAGMA from diarrhea or RTA. The mnemonic: H+ IN, K+ OUT.</div><div class="rtt">⚠️ WRONG answer: assuming every acidosis raises K+ via the H+/K+ exchange. Organic-anion (high anion gap) acidoses — lactic acidosis and DKA — do NOT meaningfully drive this exchange because the accompanying organic anion follows H+ into the cell. Their hyperkalemia comes from other mechanisms (insulin deficiency, hyperosmolality).</div></div><div class="rt"><div class="rtl">3. NAGMA shifts</div><div class="rte">Only non-anion-gap (hyperchloremic) metabolic acidosis — diarrhea, RTA (type 4 especially), TPN, acetazolamide — reliably shifts K+ out of cells via the H+/K+ exchanger. The retained chloride anion cannot easily follow H+ intracellularly, so K+ exits instead. Tie this to the type 4 RTA panel where hyperkalemia and NAGMA coexist.</div><div class="rtt">⚠️ WRONG answer: attributing DKA or lactic-acidosis hyperkalemia to the acidosis itself. In DKA, the dominant driver is insulin deficiency plus hyperosmolality; the patient is usually total-body K+ DEPLETED, and K+ will plummet once insulin is started. Discriminator: check the anion gap — gap acidosis means look beyond the H+ shift.</div></div><div class="rt"><div class="rtl">4. Insulin deficiency</div><div class="rte">Insulin normally drives K+ into cells by stimulating the Na/K-ATPase (independent of glucose entry). In insulin-deficient states (DKA, HHS), this pump action is lost and K+ exits cells, so the serum K+ can be high or normal despite a large total-body K+ deficit from osmotic diuresis. This is exactly why insulin is a cornerstone of hyperkalemia treatment.</div><div class="rtt">⚠️ WRONG answer: seeing a 'normal' or high K+ in DKA and concluding K+ stores are fine. The discriminator is that insulin therapy unmasks profound total-body depletion — anticipate hypokalemia, and hold/replace K+ (start K+ if serum K+ &lt; 5.3, hold insulin if K+ &lt; 3.3) per DKA protocols.</div></div><div class="rt"><div class="rtl">5. Hyperosmolality</div><div class="rte">A rise in extracellular osmolality (severe hyperglycemia, mannitol, hypertonic saline/contrast) pulls water out of cells via solvent drag, and K+ is carried along with that water by frictional/convective drag, raising serum K+. This is additive to insulin deficiency in DKA/HHS. Roughly a 0.3–0.6 mEq/L K+ rise per 10 mOsm/kg increase in effective osmolality.</div><div class="rtt">⚠️ WRONG answer: confusing this with the H+/K+ acidosis mechanism. The discriminator is the trigger — here it is the osmotic gradient (glucose, mannitol), not pH. Correcting hyperglycemia/osmolality alone (plus the insulin it requires) will lower K+ without binders.</div></div><div class="rt"><div class="rtl">6. Na/K-ATPase</div><div class="rte">The Na/K-ATPase actively pumps K+ INTO cells (3 Na+ out, 2 K+ in per ATP) and is the master regulator of internal K+ balance; it is stimulated by insulin and beta-2 agonists. Anything that inhibits it — digoxin, or loss of its activators — causes K+ to accumulate extracellularly. This single pump links insulin deficiency, beta-blockade, and digoxin into one mechanistic story.</div><div class="rtt">⚠️ WRONG answer: thinking pump inhibition raises K+ only modestly in all cases. Discriminator: massive acute digoxin overdose can block enough pumps to cause life-threatening hyperkalemia, and the K+ level is a recognized prognostic marker of digoxin toxicity severity.</div></div><div class="rt"><div class="rtl">7. Digoxin toxicity</div><div class="rte">Digoxin competitively inhibits the Na/K-ATPase; in acute toxicity this blocks K+ entry into cells and produces hyperkalemia. Serum K+ correlates with mortality in acute digoxin poisoning (K+ &gt; 5.0–5.5 historically predicted high mortality before Fab fragments). The definitive treatment is digoxin-specific antibody (Fab) fragments, which also corrects the hyperkalemia.</div><div class="rtt">⚠️ WRONG answer: giving IV calcium for the hyperkalemia of digoxin toxicity. Classic teaching warns of the 'stone heart' (calcium worsening digoxin-induced intracellular calcium overload and causing intractable contraction/arrhythmia) — give calcium slowly/cautiously or avoid it, and reach for digoxin-specific Fab instead.</div></div><div class="rt"><div class="rtl">8. Succinylcholine</div><div class="rte">Succinylcholine, a depolarizing neuromuscular blocker, opens acetylcholine receptors and causes K+ efflux, normally raising serum K+ by ~0.5 mEq/L. In states with upregulated/extrajunctional ACh receptors — burns, crush injury, denervation, prolonged immobility, muscular dystrophy, severe sepsis — the efflux is exaggerated and can be lethal.</div><div class="rtt">⚠️ WRONG answer: using succinylcholine for rapid-sequence intubation in a patient with burns, crush injury, spinal cord injury/denervation, or prolonged immobilization. Discriminator: in these patients use a non-depolarizing agent (e.g., rocuronium). The danger window for burns/denervation begins around 48–72 hours and persists for months.</div></div><div class="rt"><div class="rtl">9. Beta-blocker</div><div class="rte">Beta-2 adrenergic stimulation normally drives K+ into cells via the Na/K-ATPase, so non-selective beta-blockers (e.g., propranolol, labetalol) blunt cellular K+ uptake and cause a mild rise in serum K+ (usually &lt; 0.5 mEq/L). The effect is usually clinically trivial alone but additive with other causes (CKD, ACEi).</div><div class="rtt">⚠️ WRONG answer: blaming a cardioselective beta-1 blocker for significant hyperkalemia. Discriminator: it is the beta-2 blockade (non-selective agents) that matters; selective beta-1 agents have minimal effect. Conversely, the beta-2 AGONIST albuterol is a treatment that shifts K+ in.</div></div><div class="rt"><div class="rtl">10. Rhabdomyolysis</div><div class="rte">Skeletal muscle breakdown releases intracellular contents into the blood: K+, phosphate, uric acid, myoglobin, and markedly elevated creatine kinase (CK often &gt; 5,000–10,000, frequently &gt; 15,000). The triad of high K+, high PO4, and high CK with low calcium (calcium deposits in injured muscle) points here. Myoglobinuria can cause pigment-induced AKI, which then compounds the hyperkalemia.</div><div class="rtt">⚠️ WRONG answer: forgetting that rhabdo causes HYPOcalcemia early. Discriminator: the released phosphate binds calcium and calcium deposits in damaged muscle, so early hypocalcemia is expected — do not over-correct it early, as calcium can mobilize back out during recovery and cause rebound hypercalcemia.</div></div><div class="rt"><div class="rtl">11. Tumor lysis</div><div class="rte">Tumor lysis syndrome follows cytotoxic therapy (or spontaneously in bulky, high-turnover tumors like Burkitt lymphoma, ALL) and dumps intracellular contents: hyperkalemia, hyperphosphatemia, hyperuricemia, elevated LDH, and resultant HYPOcalcemia (phosphate binds calcium). It causes AKI from uric acid/calcium-phosphate crystals. Prophylaxis is hydration plus allopurinol or rasburicase.</div><div class="rtt">⚠️ WRONG answer: giving calcium for the hypocalcemia of TLS routinely. Discriminator: in hyperphosphatemic states, exogenous calcium promotes calcium-phosphate precipitation and worsens renal injury — treat hypocalcemia only if symptomatic, and prioritize lowering phosphate and uric acid.</div></div><div class="rt"><div class="rtl">12. Hemolysis/burns</div><div class="rte">Massive intravascular hemolysis, large-volume transfusion of stored (potassium-leaking) red cells, and thermal injury all release intracellular K+ into the circulation. Note the separate, common artifact: PSEUDOhyperkalemia from in-vitro hemolysis of a poorly drawn/fist-clenched sample, thrombocytosis, or leukocytosis — a normal ECG with isolated high K+ should prompt a repeat draw.</div><div class="rtt">⚠️ WRONG answer: treating an isolated high K+ from a hemolyzed specimen as true hyperkalemia. Discriminator: pseudohyperkalemia has no ECG changes and a 'hemolyzed' lab comment or extreme platelet/WBC counts; redraw without a tourniquet/fist-clenching before treating.</div></div><div class="rt"><div class="rtl">13. Familial HyperKPP</div><div class="rte">Familial hyperkalemic periodic paralysis is an autosomal-dominant SCN4A skeletal muscle sodium-channel mutation causing episodic flaccid weakness, often triggered by rest after exercise, fasting, cold, or potassium ingestion; attacks last minutes to hours with mildly elevated K+. Contrast with hypokalemic periodic paralysis (CACNA1S/SCN4A), where attacks occur with LOW K+ after carbohydrate/insulin or exercise.</div><div class="rtt">⚠️ WRONG answer: confusing hyper- and hypokalemic periodic paralysis. Discriminator: HyperKPP attacks are precipitated by potassium loads and rest-after-exercise and improve with carbohydrate/beta-agonist; hypoKPP attacks follow heavy carbohydrate meals and improve with potassium. Check the K+ DURING an attack.</div></div><div class="rt"><div class="rtl">14. Correct the trigger</div><div class="rte">For redistribution hyperkalemia the cure is mechanism-directed: insulin (+/- glucose) for insulin deficiency/hyperosmolality, beta-2 agonist (albuterol) to drive K+ in, fluids for the dehydrated diabetic, and digoxin Fab for dig toxicity. Because total body K+ is normal, you generally do NOT need binders or dialysis once the trigger is reversed — and you must anticipate post-treatment hypokalemia.</div><div class="rtt">⚠️ WRONG answer: managing a shift identically to a true K+ overload. Discriminator: the leak is positional. Treat the trigger and recheck K+ — if you also strip out total-body K+, the patient overshoots into hypokalemia when cells reclaim their K+.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperk_nephron_secretion.html" title="Hyperkalemia — nephron K+ secretion (4 pillars)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperk_treatment.html" title="Hyperkalemia — treatment (stabilize, shift, remove)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

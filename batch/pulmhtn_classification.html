@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Pulmonary Hypertension — Definition &amp; Hemodynamic Classification</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>mPAP &gt;20 mmHg</b> — WRONG: defining PH only by an elevated PA SYSTOLIC pressure on echo. Discriminator: the definition uses MEAN PAP &gt;20 mmHg by right heart catheterization — echo only screens/estimates and can over- or under-call PH.</li><li><b>&gt;25 is the OLD rule</b> — WRONG: choosing mPAP ≥25 mmHg as the current definition of PH. Discriminator: ≥25 is the historical number — the modern hemodynamic cutoff is mPAP &gt;20 mmHg (with PVR &gt;2 WU for pre-capillary disease).</li><li><b>Abnormal PVR &gt;2 WU</b> — WRONG: assuming any elevated mPAP means high PVR / intrinsic vascular disease. Discriminator: high mPAP with NORMAL PVR (≤2 WU) and high PAWP is post-capillary (left heart) disease, not a remodeled pulmonary bed — PVR is what proves the vasculature itself is diseased.</li><li><b>&gt;3 WU outdated</b> — WRONG: using PVR &gt;3 WU as the modern threshold for pre-capillary PH. Discriminator: &gt;3 WU is the old number; current criteria use PVR &gt;2 WU.</li><li><b>Pre-capillary pipe</b> — WRONG: starting PAH-specific therapy (e.g., endothelin antagonists, PDE5 inhibitors, prostacyclins) for any pre-capillary picture. Discriminator: PAH-targeted drugs are validated for Group 1; in Group 3 they can worsen V/Q mismatch and hypoxemia — confirm the WHO group first.</li><li><b>Isolated post-capillary</b> — WRONG: treating Group 2 (left heart) PH with pulmonary vasodilators. Discriminator: isolated post-capillary PH (high PAWP, normal PVR) responds to optimizing left-heart disease; PAH drugs can cause pulmonary edema by increasing flow into a congested left atrium.</li><li><b>Combined pre+post</b> — WRONG: labeling combined pre/post-capillary PH as PAH and treating it like Group 1. Discriminator: the elevated PAWP keeps it rooted in left-heart disease (Group 2); the high PVR just marks added remodeling — manage the underlying left heart first.</li><li><b>PAWP = the knife</b> — WRONG: ignoring PAWP and classifying PH by mPAP alone. Discriminator: without PAWP you cannot tell PAH from left-heart PH — the wedge pressure is the dividing line, and it changes management entirely.</li><li><b>PAWP &lt;=15 = pre</b> — WRONG: assuming a low/normal wedge automatically means Group 1 PAH. Discriminator: PAWP ≤15 only confirms PRE-capillary — you still must distinguish Group 1 vs Group 3 (lung disease) vs Group 4 (CTEPH) by PFTs, imaging, and V/Q scan.</li><li><b>PAWP &gt;15 = left heart</b> — WRONG: calling an elevated PAWP a Group 1 PAH finding. Discriminator: PAH (Group 1) requires a LOW wedge (≤15); a high PAWP shifts the diagnosis to Group 2 left-heart disease and away from PAH-specific therapy.</li><li><b>Group tags by pipe</b> — WRONG: equating 'pulmonary hypertension' with PAH (Group 1). Discriminator: Group 1 PAH is the rare pre-capillary subset; Group 2 (left heart) and Group 3 (lung disease) are far more common — the WHO group, not just the pressures, drives treatment.</li><li><b>Diuresis trap</b> — WRONG: diagnosing PAH (Group 1) after a recently/over-diuresed patient shows a normal wedge. Discriminator: catheterize at euvolemia and use a provocative fluid challenge — a wedge that rises with volume reveals masked left-heart (Group 2) disease, not PAH.</li><li><b>COPD barrel chest</b> — WRONG: attributing markedly elevated mPAP (e.g., 44 mmHg) entirely to COPD and starting PAH-specific vasodilators. Discriminator: Group 3 PH is typically modest — severe/out-of-proportion PH or a high PAWP signals an added cause (left heart, CTEPH); PAH drugs in Group 3 worsen V/Q matching and hypoxemia.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. mPAP &gt;20 mmHg</div><div class="rte">Pulmonary hypertension is now defined as a mean pulmonary arterial pressure (mPAP) &gt;20 mmHg AT REST, measured invasively by right heart catheterization (normal mPAP is ~14 mmHg). mPAP is the integrated pressure, not the systolic PA pressure echo estimates. The 2022 ESC/ERS guidelines added a PVR threshold (&gt;2 Wood units) to the definition so that PH also requires evidence of true pulmonary vascular disease, not just high flow or high left-sided pressure.</div><div class="rtt">⚠️ WRONG: defining PH only by an elevated PA SYSTOLIC pressure on echo. Discriminator: the definition uses MEAN PAP &gt;20 mmHg by right heart catheterization — echo only screens/estimates and can over- or under-call PH.</div></div><div class="rt"><div class="rtl">2. &gt;25 is the OLD rule</div><div class="rte">The legacy threshold of mPAP ≥25 mmHg is OUTDATED. The cutoff was lowered to &gt;20 mmHg because the 20-24 mmHg 'borderline' range carries increased mortality and disease progression, allowing EARLIER detection. Note PH is still NOT diagnosed on the borderline range alone without an abnormal PVR.</div><div class="rtt">⚠️ WRONG: choosing mPAP ≥25 mmHg as the current definition of PH. Discriminator: ≥25 is the historical number — the modern hemodynamic cutoff is mPAP &gt;20 mmHg (with PVR &gt;2 WU for pre-capillary disease).</div></div><div class="rt"><div class="rtl">3. Abnormal PVR &gt;2 WU</div><div class="rte">Pulmonary vascular resistance (PVR) = (mPAP − PAWP) / cardiac output, expressed in Wood units. PVR &gt;2 WU defines abnormal PRE-CAPILLARY vascular remodeling and is now part of the PAH definition. It distinguishes a vessel/remodeling problem from a pure flow or pressure-transmission problem.</div><div class="rtt">⚠️ WRONG: assuming any elevated mPAP means high PVR / intrinsic vascular disease. Discriminator: high mPAP with NORMAL PVR (≤2 WU) and high PAWP is post-capillary (left heart) disease, not a remodeled pulmonary bed — PVR is what proves the vasculature itself is diseased.</div></div><div class="rt"><div class="rtl">4. &gt;3 WU outdated</div><div class="rte">The prior PVR cutoff of &gt;3 Wood units has been LOWERED to &gt;2 WU in the 2022 criteria, paralleling the lower mPAP threshold to capture earlier pulmonary vascular disease.</div><div class="rtt">⚠️ WRONG: using PVR &gt;3 WU as the modern threshold for pre-capillary PH. Discriminator: &gt;3 WU is the old number; current criteria use PVR &gt;2 WU.</div></div><div class="rt"><div class="rtl">5. Pre-capillary pipe</div><div class="rte">PRE-capillary PH: PAWP ≤15 mmHg AND PVR &gt;2 WU (with mPAP &gt;20). The problem is upstream of the pulmonary capillaries — the arterioles/vessels themselves. This profile defines WHO Groups 1 (PAH), 3 (lung disease/hypoxia), 4 (CTEPH), and 5 (multifactorial). Treat Group 1 with PAH-specific vasodilators; do NOT give those drugs to Groups 2/3 reflexively.</div><div class="rtt">⚠️ WRONG: starting PAH-specific therapy (e.g., endothelin antagonists, PDE5 inhibitors, prostacyclins) for any pre-capillary picture. Discriminator: PAH-targeted drugs are validated for Group 1; in Group 3 they can worsen V/Q mismatch and hypoxemia — confirm the WHO group first.</div></div><div class="rt"><div class="rtl">6. Isolated post-capillary</div><div class="rte">ISOLATED POST-capillary PH: PAWP &gt;15 mmHg WITH normal PVR ≤2 WU. The pulmonary vasculature is passively transmitting elevated LEFT-heart pressure (HFrEF, HFpEF, valvular disease) — WHO Group 2, the MOST COMMON cause of PH overall. Treatment targets the left heart (diurese, treat HF/valve), not the pulmonary arteries.</div><div class="rtt">⚠️ WRONG: treating Group 2 (left heart) PH with pulmonary vasodilators. Discriminator: isolated post-capillary PH (high PAWP, normal PVR) responds to optimizing left-heart disease; PAH drugs can cause pulmonary edema by increasing flow into a congested left atrium.</div></div><div class="rt"><div class="rtl">7. Combined pre+post</div><div class="rte">COMBINED pre- and post-capillary PH (Cpc-PH): PAWP &gt;15 mmHg AND PVR &gt;2 WU. Long-standing left-heart disease causes secondary pulmonary vascular remodeling on top of the passive pressure rise — a worse prognosis than isolated post-capillary disease. Seen in Group 2 and contributing in Groups 4/5.</div><div class="rtt">⚠️ WRONG: labeling combined pre/post-capillary PH as PAH and treating it like Group 1. Discriminator: the elevated PAWP keeps it rooted in left-heart disease (Group 2); the high PVR just marks added remodeling — manage the underlying left heart first.</div></div><div class="rt"><div class="rtl">8. PAWP = the knife</div><div class="rte">Pulmonary artery WEDGE pressure (PAWP, ≈ PCWP) is the single number that CUTS pre- from post-capillary PH. It estimates left atrial / left ventricular end-diastolic pressure. Cutoff: ≤15 mmHg = pre-capillary; &gt;15 mmHg = post-capillary (left heart). Measure it at end-expiration and at euvolemia for accuracy.</div><div class="rtt">⚠️ WRONG: ignoring PAWP and classifying PH by mPAP alone. Discriminator: without PAWP you cannot tell PAH from left-heart PH — the wedge pressure is the dividing line, and it changes management entirely.</div></div><div class="rt"><div class="rtl">9. PAWP &lt;=15 = pre</div><div class="rte">PAWP ≤15 mmHg points to PRE-capillary disease — the elevated pressure originates in the pulmonary vasculature itself (intrinsic arteriolar remodeling, hypoxic vasoconstriction, or thromboembolic obstruction), i.e., Groups 1, 3, 4, 5.</div><div class="rtt">⚠️ WRONG: assuming a low/normal wedge automatically means Group 1 PAH. Discriminator: PAWP ≤15 only confirms PRE-capillary — you still must distinguish Group 1 vs Group 3 (lung disease) vs Group 4 (CTEPH) by PFTs, imaging, and V/Q scan.</div></div><div class="rt"><div class="rtl">10. PAWP &gt;15 = left heart</div><div class="rte">PAWP &gt;15 mmHg indicates LEFT HEART disease (WHO Group 2) — HFrEF, HFpEF, or left-sided valvular disease — the MOST COMMON cause of PH worldwide. The high left atrial pressure transmits backward into the pulmonary circulation.</div><div class="rtt">⚠️ WRONG: calling an elevated PAWP a Group 1 PAH finding. Discriminator: PAH (Group 1) requires a LOW wedge (≤15); a high PAWP shifts the diagnosis to Group 2 left-heart disease and away from PAH-specific therapy.</div></div><div class="rt"><div class="rtl">11. Group tags by pipe</div><div class="rte">The hemodynamic profile maps onto the WHO 5-group classification: PRE-capillary (PAWP ≤15, PVR &gt;2) = Groups 1 (PAH: idiopathic, heritable, drug/toxin, connective-tissue disease, congenital shunts), 3 (lung disease/hypoxia), 4 (CTEPH), 5 (multifactorial). ISOLATED POST-capillary (PAWP &gt;15, PVR ≤2) = Group 2 (left heart). COMBINED (PAWP &gt;15, PVR &gt;2) = Group 2 with remodeling, and seen in 4/5.</div><div class="rtt">⚠️ WRONG: equating 'pulmonary hypertension' with PAH (Group 1). Discriminator: Group 1 PAH is the rare pre-capillary subset; Group 2 (left heart) and Group 3 (lung disease) are far more common — the WHO group, not just the pressures, drives treatment.</div></div><div class="rt"><div class="rtl">12. Diuresis trap</div><div class="rte">Aggressive DIURESIS lowers left-heart filling pressure, so a true Group 2 (post-capillary) patient can be catheterized with a falsely normal PAWP (≤15) and be MISLABELED as pre-capillary PAH. Always measure hemodynamics at EUVOLEMIA; if the wedge is borderline, a fluid challenge or exercise can unmask occult left-heart disease (HFpEF).</div><div class="rtt">⚠️ WRONG: diagnosing PAH (Group 1) after a recently/over-diuresed patient shows a normal wedge. Discriminator: catheterize at euvolemia and use a provocative fluid challenge — a wedge that rises with volume reveals masked left-heart (Group 2) disease, not PAH.</div></div><div class="rt"><div class="rtl">13. COPD barrel chest</div><div class="rte">The barrel chest signals WHO Group 3 (PH due to lung disease / chronic hypoxia, classically COPD or ILD) — chronic hypoxic pulmonary vasoconstriction remodels the vessels. When a COPD patient ALSO has left-heart disease (high PAWP) plus high PVR, the result is COMBINED PH (here mPAP 44, PAWP 19, PVR &gt;2). Group 3 PH is usually mild; mPAP &gt;35-40 ('severe' / out of proportion to the lung disease) should prompt looking for a second cause and referral to a PH center. Cornerstone therapy is treating hypoxia (long-term O2), not PAH drugs.</div><div class="rtt">⚠️ WRONG: attributing markedly elevated mPAP (e.g., 44 mmHg) entirely to COPD and starting PAH-specific vasodilators. Discriminator: Group 3 PH is typically modest — severe/out-of-proportion PH or a high PAWP signals an added cause (left heart, CTEPH); PAH drugs in Group 3 worsen V/Q matching and hypoxemia.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="pleural_pneumothorax.html" title="Pleural Disease — Pneumothorax &amp; Malignant Effusion">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="pulmhtn_diagnosis.html" title="Pulmonary Hypertension — Diagnostic Workup &amp; Vasoreactivity">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Liver Approach — Detective's Lab</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>16</em></summary><ol class="traps"><li><b>ALT poster (woman)</b> — WRONG answer: equating a normal ALT with a healthy liver. Discriminator: ALT can be normal in cirrhosis (few hepatocytes left to leak) and is only mildly elevated in NAFLD — judge the liver by the whole pattern (ratio, ALP, synthetic markers), not by ALT alone.</li><li><b>AST poster (man, heart)</b> — WRONG answer: diagnosing liver disease from an isolated high AST with a normal ALT. Discriminator: order CK (muscle), a hemolysis panel and troponin if relevant — extrahepatic sources raise AST without true hepatocellular injury; genuine liver disease usually elevates ALT too.</li><li><b>AST&gt;ALT 2:1 glasses</b> — WRONG answer: calling an AST:ALT &gt;2:1 pattern viral hepatitis. Discriminator: viral hepatitis (and NAFLD) give ALT &gt; AST (ratio &lt;1); a ratio &gt;2:1 argues AGAINST simple viral hepatitis and toward alcohol — though end-stage NAFLD cirrhosis can also flip the ratio.</li><li><b>&gt;3:1 = ALD</b> — WRONG answer: using the &gt;3:1 ratio to gauge how SICK the patient is or the prognosis. Discriminator: the ratio identifies the alcohol etiology, but prognosis/treatment thresholds come from Maddrey's discriminant function (&gt;=32) or MELD — don't grade severity off the ratio.</li><li><b>Beer + whiskey bottles</b> — WRONG answer: assuming a heavy drinker's transaminases in the thousands are 'just the alcohol.' Discriminator: alcohol caps AST around 300-400; values &gt;1000 mean a superimposed insult — coingested acetaminophen (alcoholics are especially susceptible), shock/ischemic hepatitis, or acute viral hepatitis.</li><li><b>AST max 400</b> — WRONG answer: attributing transaminases in the thousands to alcoholic hepatitis. Discriminator: &gt;1000 IU/L is NOT alcohol — it points to ischemic, viral, or toxic (acetaminophen) hepatitis; an apparent alcoholic with very high values needs a hunt for the additional cause.</li><li><b>Raised hand / STOP</b> — WRONG answer: including biliary obstruction or alcohol in the &gt;1000 differential. Discriminator: mechanical obstruction raises ALP/bilirubin (a stone passing can give a transient AST/ALT spike that falls within ~24-48h, but sustained &gt;1000 is not obstruction), and alcohol caps near 400 — sustained &gt;1000 = ischemia/viral/toxin.</li><li><b>Viral cylinder</b> — WRONG answer: assuming any &gt;1000 transaminase elevation with no obvious toxin must be viral. Discriminator: ischemic hepatitis peaks faster and falls faster with an obvious hypotensive trigger and a high LDH (low ALT:LDH ratio), and acetaminophen is dose/timeline-driven with a nomogram — use history, LDH, and acetaminophen level to separate the three.</li><li><b>Ischemia (BP cuff)</b> — WRONG answer: confusing ischemic hepatitis with acute viral hepatitis. Discriminator: ischemia has a clear hemodynamic trigger, a very high LDH (low ALT:LDH ratio), and rapid rise-then-fall over days; viral hepatitis lacks the hypotensive trigger, has a relatively higher ALT:LDH ratio and positive serologies.</li><li><b>Toxin bottle</b> — WRONG answer: excluding acetaminophen because the patient denies overdose or the level is initially normal. Discriminator: a single normal acetaminophen level can miss late or staggered ingestion — check the time since ingestion, trend the level, and start N-acetylcysteine empirically if toxicity is plausible (especially in alcoholics, where lower doses are toxic).</li><li><b>ALP bucket</b> — WRONG answer: launching a biliary workup for any isolated high ALP. Discriminator: confirm the source with GGT (or the ALP isoenzyme) — if GGT is normal, the ALP is bone/placental (growth, fracture, Paget's, pregnancy), not liver, and no cholestasis workup is needed.</li><li><b>GGT meter + green light</b> — WRONG answer: treating an isolated high GGT (normal ALP) as evidence of cholestatic biliary disease. Discriminator: GGT alone most often reflects alcohol use or drug enzyme induction; you need ALP also elevated to call it cholestasis — isolated GGT does not justify a full biliary workup.</li><li><b>US FIRST megaphone</b> — WRONG answer: jumping to MRCP, biopsy, or ERCP before ultrasound. Discriminator: US comes first in cholestasis; ERCP in particular is therapeutic/last-line with a 3-5% pancreatitis risk and is never the initial diagnostic step.</li><li><b>MRCP / biopsy / p-ANCA X</b> — WRONG answer: ordering MRCP/biopsy/p-ANCA up front for a new cholestatic patient. Discriminator: ultrasound first; escalate to these only when US shows non-dilated ducts or the cause remains unclear — leading with them is premature and over-tests.</li><li><b>GGT normal = bone</b> — WRONG answer: working up the biliary tree (US/MRCP) for an isolated high ALP when GGT is normal. Discriminator: normal GGT redirects you to a skeletal/placental cause — order calcium/phosphate/vitamin D, a bone scan or pregnancy test, not biliary imaging.</li><li><b>GGT alcohol marker</b> — WRONG answer: triggering a full cholestasis workup because an isolated GGT is elevated. Discriminator: isolated GGT (with normal ALP) usually means alcohol/drug induction — pair it with a high ALP before calling cholestasis; alone it warrants asking about alcohol, not biliary imaging.</li></ol></details><details class="panel"><summary>📖 Read-through — all 16 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ALT poster (woman)</div><div class="rte">ALT (alanine aminotransferase) is the MOST liver-specific transaminase — it is concentrated almost entirely in hepatocytes, so an elevation localizes injury to the liver itself. A hepatocellular pattern is defined by AST/ALT rising disproportionately to ALP (high R-ratio). ALT-predominant elevation classically points to viral hepatitis or NAFLD/MASLD.</div><div class="rtt">⚠️ WRONG answer: equating a normal ALT with a healthy liver. Discriminator: ALT can be normal in cirrhosis (few hepatocytes left to leak) and is only mildly elevated in NAFLD — judge the liver by the whole pattern (ratio, ALP, synthetic markers), not by ALT alone.</div></div><div class="rt"><div class="rtl">2. AST poster (man, heart)</div><div class="rte">AST (aspartate aminotransferase) is NON-specific: it is also released from cardiac and skeletal muscle, kidney and red blood cells. So an isolated AST rise can come from MI, rhabdomyolysis/myositis, strenuous exercise or hemolysis rather than the liver, and must be cross-checked.</div><div class="rtt">⚠️ WRONG answer: diagnosing liver disease from an isolated high AST with a normal ALT. Discriminator: order CK (muscle), a hemolysis panel and troponin if relevant — extrahepatic sources raise AST without true hepatocellular injury; genuine liver disease usually elevates ALT too.</div></div><div class="rt"><div class="rtl">3. AST&gt;ALT 2:1 glasses</div><div class="rte">An AST:ALT (De Ritis) ratio &gt;2:1 in a hepatocellular pattern strongly suggests alcoholic liver disease, mechanistically because alcoholics are pyridoxine (B6) deficient and B6 is needed to make ALT, so ALT falls and the ratio climbs. The wine-glass imagery cements the alcohol link.</div><div class="rtt">⚠️ WRONG answer: calling an AST:ALT &gt;2:1 pattern viral hepatitis. Discriminator: viral hepatitis (and NAFLD) give ALT &gt; AST (ratio &lt;1); a ratio &gt;2:1 argues AGAINST simple viral hepatitis and toward alcohol — though end-stage NAFLD cirrhosis can also flip the ratio.</div></div><div class="rt"><div class="rtl">4. &gt;3:1 = ALD</div><div class="rte">An AST:ALT ratio &gt;3:1 is even more specific for established alcoholic liver disease. Severity is then quantified by Maddrey's discriminant function (&gt;=32 indicates severe alcoholic hepatitis and a steroid trial) or MELD, not by the ratio itself.</div><div class="rtt">⚠️ WRONG answer: using the &gt;3:1 ratio to gauge how SICK the patient is or the prognosis. Discriminator: the ratio identifies the alcohol etiology, but prognosis/treatment thresholds come from Maddrey's discriminant function (&gt;=32) or MELD — don't grade severity off the ratio.</div></div><div class="rt"><div class="rtl">5. Beer + whiskey bottles</div><div class="rte">Alcohol is the prototypical cause of the AST-predominant pattern. The mechanism is twofold: pyridoxine (B6) deficiency lowers ALT, and alcohol injures mitochondria (the source of mitochondrial AST), both pushing AST above ALT.</div><div class="rtt">⚠️ WRONG answer: assuming a heavy drinker's transaminases in the thousands are 'just the alcohol.' Discriminator: alcohol caps AST around 300-400; values &gt;1000 mean a superimposed insult — coingested acetaminophen (alcoholics are especially susceptible), shock/ischemic hepatitis, or acute viral hepatitis.</div></div><div class="rt"><div class="rtl">6. AST max 400</div><div class="rte">Pure alcoholic hepatitis rarely drives AST above ~400 IU/L even when the patient is critically ill — the disease is defined by the AST:ALT &gt;2 ratio, not by the absolute magnitude. This ceiling is a high-yield board discriminator from the &gt;1000 etiologies.</div><div class="rtt">⚠️ WRONG answer: attributing transaminases in the thousands to alcoholic hepatitis. Discriminator: &gt;1000 IU/L is NOT alcohol — it points to ischemic, viral, or toxic (acetaminophen) hepatitis; an apparent alcoholic with very high values needs a hunt for the additional cause.</div></div><div class="rt"><div class="rtl">7. Raised hand / STOP</div><div class="rte">Transaminases &gt;1000 IU/L narrow the differential to a classic triad: Ischemia ('shock liver'), Viral (acute hepatitis A/B, HSV), and Toxin (acetaminophen). Autoimmune hepatitis is the occasional fourth. The very high magnitude itself is the clue that this is one of these severe hepatocellular insults.</div><div class="rtt">⚠️ WRONG answer: including biliary obstruction or alcohol in the &gt;1000 differential. Discriminator: mechanical obstruction raises ALP/bilirubin (a stone passing can give a transient AST/ALT spike that falls within ~24-48h, but sustained &gt;1000 is not obstruction), and alcohol caps near 400 — sustained &gt;1000 = ischemia/viral/toxin.</div></div><div class="rt"><div class="rtl">8. Viral cylinder</div><div class="rte">Acute VIRAL hepatitis (HAV, HBV, also HSV/EBV) is a cause of transaminases &gt;1000, typically ALT &gt;= AST, often with a prodrome and positive serologies (anti-HAV IgM, HBsAg/anti-HBc IgM). HSV hepatitis is the classic anicteric, very-high-transaminase cause in pregnant/immunocompromised patients needing empiric acyclovir.</div><div class="rtt">⚠️ WRONG answer: assuming any &gt;1000 transaminase elevation with no obvious toxin must be viral. Discriminator: ischemic hepatitis peaks faster and falls faster with an obvious hypotensive trigger and a high LDH (low ALT:LDH ratio), and acetaminophen is dose/timeline-driven with a nomogram — use history, LDH, and acetaminophen level to separate the three.</div></div><div class="rt"><div class="rtl">9. Ischemia (BP cuff)</div><div class="rte">Ischemic ('shock') hepatitis follows a hypotensive/hypoperfusion event (sepsis, cardiac arrest, heart failure). Transaminases spike massively and rapidly (often &gt;1000-5000), peak early, and then fall quickly once perfusion is restored; a markedly elevated LDH with a low ALT:LDH ratio (&lt;1.5) and an acute rise in creatinine/LFTs supports it.</div><div class="rtt">⚠️ WRONG answer: confusing ischemic hepatitis with acute viral hepatitis. Discriminator: ischemia has a clear hemodynamic trigger, a very high LDH (low ALT:LDH ratio), and rapid rise-then-fall over days; viral hepatitis lacks the hypotensive trigger, has a relatively higher ALT:LDH ratio and positive serologies.</div></div><div class="rt"><div class="rtl">10. Toxin bottle</div><div class="rte">Toxins — classically acetaminophen/paracetamol — cause transaminases in the thousands. Acetaminophen toxicity is dose/timeline-based (treat with N-acetylcysteine guided by the Rumack-Matthew nomogram); the toxic metabolite NAPQI depletes glutathione. Other hepatotoxins: Amanita mushrooms, isoniazid, halothane, herbal supplements.</div><div class="rtt">⚠️ WRONG answer: excluding acetaminophen because the patient denies overdose or the level is initially normal. Discriminator: a single normal acetaminophen level can miss late or staggered ingestion — check the time since ingestion, trend the level, and start N-acetylcysteine empirically if toxicity is plausible (especially in alcoholics, where lower doses are toxic).</div></div><div class="rt"><div class="rtl">11. ALP bucket</div><div class="rte">A rise in alkaline phosphatase (ALP) out of proportion to AST/ALT defines the CHOLESTATIC pattern — impaired bile flow from biliary obstruction or infiltration. ALP also comes from bone, placenta and intestine, so an isolated ALP elevation must be confirmed as hepatic with GGT before working up the biliary tree.</div><div class="rtt">⚠️ WRONG answer: launching a biliary workup for any isolated high ALP. Discriminator: confirm the source with GGT (or the ALP isoenzyme) — if GGT is normal, the ALP is bone/placental (growth, fracture, Paget's, pregnancy), not liver, and no cholestasis workup is needed.</div></div><div class="rt"><div class="rtl">12. GGT meter + green light</div><div class="rte">GGT (gamma-glutamyl transferase) confirms that an elevated ALP is HEPATOBILIARY in origin: when ALP and GGT rise together, the cholestasis is from the liver/biliary tree. GGT is sensitive but non-specific (also induced by alcohol and enzyme-inducing drugs), so it is a confirmatory partner to ALP, not a standalone diagnostic.</div><div class="rtt">⚠️ WRONG answer: treating an isolated high GGT (normal ALP) as evidence of cholestatic biliary disease. Discriminator: GGT alone most often reflects alcohol use or drug enzyme induction; you need ALP also elevated to call it cholestasis — isolated GGT does not justify a full biliary workup.</div></div><div class="rt"><div class="rtl">13. US FIRST megaphone</div><div class="rte">Once a cholestatic pattern is confirmed (high ALP + GGT, conjugated bilirubin), the FIRST imaging step is RUQ abdominal ultrasound to assess for ductal dilatation and stones — then MRCP for diagnosis and ERCP for therapy. US is non-invasive, radiation-free and answers the dilated-vs-non-dilated fork.</div><div class="rtt">⚠️ WRONG answer: jumping to MRCP, biopsy, or ERCP before ultrasound. Discriminator: US comes first in cholestasis; ERCP in particular is therapeutic/last-line with a 3-5% pancreatitis risk and is never the initial diagnostic step.</div></div><div class="rt"><div class="rtl">14. MRCP / biopsy / p-ANCA X</div><div class="rte">MRCP, liver biopsy and p-ANCA are NOT first-line in the initial LFT/cholestasis evaluation — they are reserved for unexplained or non-dilated cases after ultrasound (MRCP to map ducts, p-ANCA toward PSC, biopsy when serology/imaging are inconclusive).</div><div class="rtt">⚠️ WRONG answer: ordering MRCP/biopsy/p-ANCA up front for a new cholestatic patient. Discriminator: ultrasound first; escalate to these only when US shows non-dilated ducts or the cause remains unclear — leading with them is premature and over-tests.</div></div><div class="rt"><div class="rtl">15. GGT normal = bone</div><div class="rte">An isolated high ALP with a NORMAL GGT means the ALP is from BONE (or placenta), not the liver — think Paget's disease, healing fracture, osteomalacia, bony metastases, adolescent growth, or normal pregnancy. The normal GGT effectively excludes a hepatobiliary source.</div><div class="rtt">⚠️ WRONG answer: working up the biliary tree (US/MRCP) for an isolated high ALP when GGT is normal. Discriminator: normal GGT redirects you to a skeletal/placental cause — order calcium/phosphate/vitamin D, a bone scan or pregnancy test, not biliary imaging.</div></div><div class="rt"><div class="rtl">16. GGT alcohol marker</div><div class="rte">GGT is a sensitive but non-specific marker of alcohol use and of microsomal enzyme induction (phenytoin, phenobarbital, rifampin) — it is a clue to alcohol intake, not a diagnostic test for liver disease by itself. It is most useful to confirm a hepatic ALP source or to corroborate suspected alcohol use.</div><div class="rtt">⚠️ WRONG answer: triggering a full cholestasis workup because an isolated GGT is elevated. Discriminator: isolated GGT (with normal ALP) usually means alcohol/drug induction — pair it with a high ALP before calling cholestasis; alone it warrants asking about alcohol, not biliary imaging.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="livapp_autoantibodies.html" title="Liver Approach — Cellar Shelves">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="livapp_bilirubin.html" title="Liver Approach — Harbor Dock">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

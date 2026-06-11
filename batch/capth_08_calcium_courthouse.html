@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Calcium/PTH/VitD — The Calcium Courthouse</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>12</em></summary><ol class="traps"><li><b>Ca UP banner</b> — WRONG to jump to a malignancy workup (CT, mammogram, SPEP) before checking PTH. PTH is cheap and instantly splits the differential — a high/normal PTH makes malignancy very unlikely and points to parathyroid disease. Skipping PTH is the classic inefficient-workup trap.</li><li><b>PTH high/normal branch</b> — WRONG to call a PTH within the lab's normal reference range 'normal' and stop. With high calcium, a normal PTH is pathologically inappropriate. The discriminator is to interpret PTH RELATIVE to the calcium, not against the reference interval alone.</li><li><b>PTH low branch</b> — WRONG to keep chasing parathyroid imaging (sestamibi/ultrasound) when PTH is suppressed — the parathyroids are innocent. Suppressed PTH redirects you entirely to malignancy and vitamin-D pathways. Sending a PTH-low patient to the surgeon is a category error.</li><li><b>Primary HPT figure</b> — WRONG to confuse it with malignant hypercalcemia, the most common INPATIENT cause. Malignancy gives suppressed PTH, faster/higher calcium rise, and a sick patient; primary HPT gives non-suppressed PTH and a well, chronically mildly hypercalcemic patient. PTH level and clinical tempo discriminate.</li><li><b>FHH / Ca-Cr &lt;0.01</b> — WRONG to send an FHH patient to parathyroidectomy — surgery fails because the CaSR defect is body-wide, not in the gland, and calcium stays high. Always compute the urine Ca/Cr clearance ratio before referring: &lt;0.01 = FHH (don't operate), &gt;0.02 = primary HPT. This is THE high-yield discriminator.</li><li><b>Lithium / CKD figures</b> — WRONG to rush a lithium patient to parathyroid surgery before a drug trial off lithium (when psychiatrically safe) — lithium hypercalcemia can be reversible. And WRONG to confuse SECONDARY HPT (low/normal Ca, high PTH from CKD) with TERTIARY (HIGH Ca, very high autonomous PTH). The calcium level distinguishes secondary from tertiary.</li><li><b>Corrected Ca / ionized podium</b> — WRONG to diagnose hypocalcemia in a hypoalbuminemic patient (cirrhosis, nephrotic, malnutrition) from a low TOTAL calcium — only the protein-bound fraction fell, ionized calcium is normal and the patient is asymptomatic. Correct for albumin or measure ionized Ca before treating. Conversely, acidosis raises ionized Ca for a given total.</li><li><b>Vitamins trap scroll</b> — WRONG to forget that THIAZIDES (decrease urinary Ca excretion) and excess vitamin A can independently raise calcium. In a hypercalcemic patient, review the med list (thiazide, lithium, vitamin D/A, calcium-antacids) before an expensive workup — drugs are reversible causes hiding in plain sight.</li><li><b>PTHrP / malignancy monster</b> — WRONG to expect a standard PTH assay to detect PTHrP — they are different molecules; intact PTH is LOW while PTHrP must be ordered as a separate test. Concluding 'PTH normal so parathyroids fine, no cause found' misses humoral malignancy. Order PTHrP explicitly when PTH is suppressed.</li><li><b>25-D excess / milk-alkali</b> — WRONG to lump granulomatous hypercalcemia with vitamin D INTOXICATION — toxicity raises 25-OH-D, whereas sarcoid/lymphoma raise 1,25-D (calcitriol) via macrophage 1-alpha-hydroxylase with normal/low 25-D. Check WHICH vitamin D metabolite is elevated; granulomatous disease also responds to glucocorticoids.</li><li><b>Myeloma / immobilized patient</b> — WRONG to read myeloma's lytic lesions as metastatic bone disease and order a bone scan — technetium bone scans are typically NEGATIVE in myeloma (no osteoblastic reaction). Use skeletal survey/low-dose whole-body CT or MRI plus SPEP/UPEP. Negative bone scan with lytic lesions points to myeloma.</li><li><b>Urine Ca / PO4 evidence</b> — WRONG to use a single spot urine calcium without the clearance ratio when separating FHH from primary HPT — the formula (UCa × SCr) / (SCa × UCr) corrects for renal function and diet. A naked spot urine Ca can mislead; the calculated Ca/Cr CLEARANCE ratio (&lt;0.01 FHH, &gt;0.02 primary HPT) is the validated cutoff.</li></ol></details><details class="panel"><summary>📖 Read-through — all 12 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Ca UP banner</div><div class="rte">The single most important first move in any hypercalcemia workup is to measure intact PTH, which dichotomizes every cause into PTH-mediated (high/inappropriately normal PTH) versus non-PTH-mediated (suppressed PTH). Confirm true hypercalcemia first by correcting for albumin or measuring ionized Ca. The two outpatient heavyweights are primary hyperparathyroidism (PTH up) and malignancy (PTH suppressed), which together cause &gt;90% of cases.</div><div class="rtt">⚠️ WRONG to jump to a malignancy workup (CT, mammogram, SPEP) before checking PTH. PTH is cheap and instantly splits the differential — a high/normal PTH makes malignancy very unlikely and points to parathyroid disease. Skipping PTH is the classic inefficient-workup trap.</div></div><div class="rt"><div class="rtl">2. PTH high/normal branch</div><div class="rte">A PTH that is frankly high OR even mid-normal in the face of hypercalcemia is INAPPROPRIATE — normal feedback should suppress PTH to near-undetectable when calcium is high. This 'inappropriately normal' PTH defines the PTH-dependent group: primary hyperparathyroidism (most common), familial hypocalciuric hypercalcemia (FHH), tertiary HPT, and lithium therapy.</div><div class="rtt">⚠️ WRONG to call a PTH within the lab's normal reference range 'normal' and stop. With high calcium, a normal PTH is pathologically inappropriate. The discriminator is to interpret PTH RELATIVE to the calcium, not against the reference interval alone.</div></div><div class="rt"><div class="rtl">3. PTH low branch</div><div class="rte">A suppressed (low) PTH with hypercalcemia means the parathyroids are correctly responding to a non-PTH source of calcium. Causes: malignancy (PTHrP, osteolytic mets, lymphoma-derived 1,25-D), vitamin D toxicity, granulomatous disease (sarcoid, TB), milk-alkali, thyrotoxicosis, immobilization, vitamin A excess, and Addisonian crisis. Next steps are PTHrP, 25-OH-D, and 1,25-D levels.</div><div class="rtt">⚠️ WRONG to keep chasing parathyroid imaging (sestamibi/ultrasound) when PTH is suppressed — the parathyroids are innocent. Suppressed PTH redirects you entirely to malignancy and vitamin-D pathways. Sending a PTH-low patient to the surgeon is a category error.</div></div><div class="rt"><div class="rtl">4. Primary HPT figure</div><div class="rte">Primary hyperparathyroidism is the most common cause of OUTPATIENT (asymptomatic, incidentally found) hypercalcemia, usually a single adenoma (~85%). Labs: high Ca, LOW phosphate (PTH causes renal PO4 wasting), high/inappropriately-normal PTH, high-normal/high urine calcium, and high 1,25-D. Mostly detected on routine chemistry in postmenopausal women.</div><div class="rtt">⚠️ WRONG to confuse it with malignant hypercalcemia, the most common INPATIENT cause. Malignancy gives suppressed PTH, faster/higher calcium rise, and a sick patient; primary HPT gives non-suppressed PTH and a well, chronically mildly hypercalcemic patient. PTH level and clinical tempo discriminate.</div></div><div class="rt"><div class="rtl">5. FHH / Ca-Cr &lt;0.01</div><div class="rte">Familial hypocalciuric hypercalcemia is an autosomal dominant inactivating CaSR mutation that biochemically mimics mild primary HPT (high Ca, high/normal PTH) but is benign and lifelong. The separator is LOW urine calcium: 24-hour calcium-to-creatinine clearance ratio &lt;0.01. No surgery, no treatment needed.</div><div class="rtt">⚠️ WRONG to send an FHH patient to parathyroidectomy — surgery fails because the CaSR defect is body-wide, not in the gland, and calcium stays high. Always compute the urine Ca/Cr clearance ratio before referring: &lt;0.01 = FHH (don't operate), &gt;0.02 = primary HPT. This is THE high-yield discriminator.</div></div><div class="rt"><div class="rtl">6. Lithium / CKD figures</div><div class="rte">Lithium shifts the parathyroid calcium set-point upward (reduces CaSR sensitivity), causing hypercalcemia with high/normal PTH and low urine Ca — a drug-induced FHH-like picture. Tertiary hyperparathyroidism arises in long-standing CKD/secondary HPT when chronically stimulated glands become AUTONOMOUS, now over-secreting PTH and driving calcium HIGH despite the original hypocalcemic stimulus.</div><div class="rtt">⚠️ WRONG to rush a lithium patient to parathyroid surgery before a drug trial off lithium (when psychiatrically safe) — lithium hypercalcemia can be reversible. And WRONG to confuse SECONDARY HPT (low/normal Ca, high PTH from CKD) with TERTIARY (HIGH Ca, very high autonomous PTH). The calcium level distinguishes secondary from tertiary.</div></div><div class="rt"><div class="rtl">7. Corrected Ca / ionized podium</div><div class="rte">About 40% of serum calcium is albumin-bound, so total calcium tracks albumin. Corrected Ca = measured Ca + 0.8 × (4.0 − albumin g/dL). The physiologically active fraction is IONIZED calcium, which is what the CaSR senses; when in doubt (low albumin, critical illness, acid-base derangement) measure ionized calcium directly.</div><div class="rtt">⚠️ WRONG to diagnose hypocalcemia in a hypoalbuminemic patient (cirrhosis, nephrotic, malnutrition) from a low TOTAL calcium — only the protein-bound fraction fell, ionized calcium is normal and the patient is asymptomatic. Correct for albumin or measure ionized Ca before treating. Conversely, acidosis raises ionized Ca for a given total.</div></div><div class="rt"><div class="rtl">8. Vitamins trap scroll</div><div class="rte">The 'VITAMINS TRAP' mnemonic catalogs non-PTH (PTH-suppressed) hypercalcemia: Vitamin D/A excess, Immobilization, Thyrotoxicosis, Addison disease, Milk-alkali, Inflammatory/granulomatous (sarcoid, TB), Neoplasm, Sarcoidosis, Thiazides, Rhabdomyolysis (recovery), Aids/Adenoma overlap, Paget, Parenteral nutrition. Granulomas and lymphoma raise calcium via macrophage 1-alpha-hydroxylase producing 1,25-D.</div><div class="rtt">⚠️ WRONG to forget that THIAZIDES (decrease urinary Ca excretion) and excess vitamin A can independently raise calcium. In a hypercalcemic patient, review the med list (thiazide, lithium, vitamin D/A, calcium-antacids) before an expensive workup — drugs are reversible causes hiding in plain sight.</div></div><div class="rt"><div class="rtl">9. PTHrP / malignancy monster</div><div class="rte">Malignancy is the most common cause of inpatient/severe hypercalcemia, via three mechanisms: (1) humoral — PTHrP from squamous cell (lung, head/neck), renal, breast, bladder cancers; (2) osteolytic metastases and myeloma releasing local cytokines/RANKL; (3) lymphoma producing 1,25-D. All show SUPPRESSED endogenous PTH. Acute management: aggressive IV normal saline, then a bisphosphonate (zoledronic acid) ± calcitonin for rapid bridging; denosumab if bisphosphonate-refractory or renal failure.</div><div class="rtt">⚠️ WRONG to expect a standard PTH assay to detect PTHrP — they are different molecules; intact PTH is LOW while PTHrP must be ordered as a separate test. Concluding 'PTH normal so parathyroids fine, no cause found' misses humoral malignancy. Order PTHrP explicitly when PTH is suppressed.</div></div><div class="rt"><div class="rtl">10. 25-D excess / milk-alkali</div><div class="rte">Vitamin D intoxication raises 25-OH-D (the storage form measured to confirm it) and increases gut absorption of BOTH calcium and phosphate, so it gives high Ca AND high PO4 with suppressed PTH. Milk-alkali syndrome (large calcium + absorbable alkali intake, e.g., calcium carbonate for dyspepsia/osteoporosis) classically gives the triad of hypercalcemia, metabolic ALKALOSIS, and acute kidney injury.</div><div class="rtt">⚠️ WRONG to lump granulomatous hypercalcemia with vitamin D INTOXICATION — toxicity raises 25-OH-D, whereas sarcoid/lymphoma raise 1,25-D (calcitriol) via macrophage 1-alpha-hydroxylase with normal/low 25-D. Check WHICH vitamin D metabolite is elevated; granulomatous disease also responds to glucocorticoids.</div></div><div class="rt"><div class="rtl">11. Myeloma / immobilized patient</div><div class="rte">Multiple myeloma causes hypercalcemia through plasma-cell cytokine/RANKL-driven osteoclastic resorption (osteolytic 'punched-out' lesions), with suppressed PTH. Immobilization causes hypercalcemia (especially in high-turnover states like Paget or young patients) by uncoupling resorption from formation. Workup clues for myeloma: anemia, renal failure, high total protein/gap, SPEP/UPEP monoclonal spike.</div><div class="rtt">⚠️ WRONG to read myeloma's lytic lesions as metastatic bone disease and order a bone scan — technetium bone scans are typically NEGATIVE in myeloma (no osteoblastic reaction). Use skeletal survey/low-dose whole-body CT or MRI plus SPEP/UPEP. Negative bone scan with lytic lesions points to myeloma.</div></div><div class="rt"><div class="rtl">12. Urine Ca / PO4 evidence</div><div class="rte">Ancillary biochemistry refines the PTH-high branch: primary HPT shows LOW serum PO4 (PTH wastes phosphate) with urine Ca/Cr clearance ratio &gt;0.02; FHH shows LOW urine calcium (ratio &lt;0.01). On the PTH-low branch, vitamin D toxicity raises both Ca and PO4. So the phosphate direction and the urine calcium together fingerprint the cause.</div><div class="rtt">⚠️ WRONG to use a single spot urine calcium without the clearance ratio when separating FHH from primary HPT — the formula (UCa × SCr) / (SCa × UCr) corrects for renal function and diet. A naked spot urine Ca can mislead; the calculated Ca/Cr CLEARANCE ratio (&lt;0.01 FHH, &gt;0.02 primary HPT) is the validated cutoff.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="capth_02_casr_thermostat.html" title="Calcium/PTH/VitD — The CaSR Thermostat Workshop">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="capth_11_calcium_crisis_er.html" title="Calcium/PTH/VitD — The Calcium Crisis ER Ladder">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

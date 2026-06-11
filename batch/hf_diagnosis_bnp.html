@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Heart Failure — SCENE 3 — HF DIAGNOSIS, BNP TRAPS &amp; DDx</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>CXR: cardiomegaly</b> — WRONG: a normal-sized heart on CXR rules out heart failure. Discriminator: acute HF (e.g., flash pulmonary edema from HTN or acute MI/papillary rupture) and HFpEF can present with a normal cardiac silhouette — the lungs (congestion) tell the acute story, not heart size.</li><li><b>Kerley B lines / alveolar edema</b> — WRONG: Kerley B lines and bilateral interstitial markings are specific for HF. Discriminator: they also occur in lymphangitic carcinomatosis, interstitial lung disease and viral pneumonitis — combine the CXR with BNP, JVP and echo before committing to HF.</li><li><b>ECG: low voltage, LBBB, AF</b> — WRONG: a normal ECG is irrelevant in suspected HF. Discriminator: a completely normal ECG has a high negative predictive value and makes systolic HF unlikely, redirecting the workup — use it as a screening clue, not a throwaway.</li><li><b>BNP / NT-proBNP machine</b> — WRONG: a high BNP confirms heart failure as the cause of dyspnea. Discriminator: BNP is a sensitive RULE-OUT test (high NPV), not a specific rule-in — it rises with AF, PE, sepsis, renal failure and age, so an elevated value needs an echo to confirm cardiac dysfunction.</li><li><b>Falsely LOW: obesity</b> — WRONG: obesity raises BNP. Discriminator: it LOWERS it — the classic board trap is the obese, dyspneic patient with a deceptively normal BNP who actually has HFpEF; don't be falsely reassured.</li><li><b>Falsely HIGH: AF, PE, PAH</b> — WRONG: an elevated BNP in a dyspneic patient means the cause is left heart failure, so anticoagulation for PE can wait. Discriminator: AF, PE and PAH all raise BNP via RV/atrial stretch — a mildly raised BNP must not anchor you onto HF and away from a missed PE.</li><li><b>Falsely HIGH: CKD, older/female</b> — WRONG: renal failure lowers NT-proBNP. Discriminator: it RAISES it because NT-proBNP is cleared by the kidney — a high value in a CKD patient may reflect reduced clearance, not new HF, so interpret against an age-/renal-adjusted threshold.</li><li><b>Echo = first-line imaging</b> — WRONG: a normal LVEF on echo excludes heart failure. Discriminator: HFpEF has EF ≥50% with abnormal diastolic indices (raised E/e′, LA enlargement) — you must look at diastology and filling pressures, not just the ejection fraction number.</li><li><b>Lab workup (TSH, iron, etc.)</b> — WRONG: checking TSH and iron studies in HF is low-yield box-ticking. Discriminator: both thyroid disease and iron deficiency are reversible/treatable contributors — missing thyrotoxic or hypothyroid cardiomyopathy, or iron deficiency amenable to IV iron, is a real management miss.</li><li><b>DDx — HF (JVP, orthopnea, diuretics help)</b> — WRONG: peripheral edema by itself diagnoses heart failure. Discriminator: edema is nonspecific (venous insufficiency, nephrotic syndrome, cirrhosis, calcium-channel blockers) — it is the COMBINATION with elevated JVP, S3 and orthopnea that points to HF.</li><li><b>DDx — COPD (normal JVP)</b> — WRONG: wheezing means asthma/COPD, so it cannot be heart failure. Discriminator: 'cardiac asthma' (HF can wheeze from peribronchial edema) — check JVP and BNP; normal JVP + normal BNP favors primary lung disease, raised both favor HF.</li><li><b>DDx — renal edema (poor diuretic response)</b> — WRONG: bilateral leg edema with poor diuretic response must be decompensated heart failure. Discriminator: a FLAT JVP points away from HF toward renal/hepatic/hypoalbuminemic edema — check urine protein and albumin rather than escalating cardiac therapy.</li><li><b>Cardiorenal syndrome</b> — WRONG: a creatinine bump during HF diuresis means you are over-diuresing and should stop the loop diuretic. Discriminator: in congestive cardiorenal syndrome continued decongestion frequently IMPROVES renal function — venous congestion, not volume depletion, is the driver; assess volume status before pulling back.</li><li><b>GDMT drugs at base</b> — WRONG: titrate one HFrEF pillar to its target dose before adding the next class. Discriminator: modern strategy (STRONG-HF) favors rapid simultaneous initiation of all four classes at low doses then up-titration — early quadruple therapy reduces mortality and readmissions versus slow sequential dosing.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. CXR: cardiomegaly</div><div class="rte">On chest X-ray, HF shows cardiomegaly defined as a cardiothoracic ratio &gt;0.5 on a PA film, plus signs of pulmonary venous congestion (cephalization of vessels, perihilar 'bat-wing' edema). Cardiomegaly reflects chronic chamber dilation/remodeling and supports a cardiac cause of dyspnea.</div><div class="rtt">⚠️ WRONG: a normal-sized heart on CXR rules out heart failure. Discriminator: acute HF (e.g., flash pulmonary edema from HTN or acute MI/papillary rupture) and HFpEF can present with a normal cardiac silhouette — the lungs (congestion) tell the acute story, not heart size.</div></div><div class="rt"><div class="rtl">2. Kerley B lines / alveolar edema</div><div class="rte">Kerley B lines are short horizontal peripheral lines from engorged interlobular septa; with alveolar/interstitial edema and pleural effusions (often right-sided) they indicate elevated pulmonary venous/wedge pressure. The radiographic congestion sequence: redistribution → interstitial (Kerley B) → alveolar edema as wedge pressure climbs above ~18–25 mmHg.</div><div class="rtt">⚠️ WRONG: Kerley B lines and bilateral interstitial markings are specific for HF. Discriminator: they also occur in lymphangitic carcinomatosis, interstitial lung disease and viral pneumonitis — combine the CXR with BNP, JVP and echo before committing to HF.</div></div><div class="rt"><div class="rtl">3. ECG: low voltage, LBBB, AF</div><div class="rte">ECG clues in HF: low QRS voltage with a 'thick' heart on echo suggests infiltrative cardiomyopathy (cardiac amyloidosis — voltage/mass mismatch); LBBB with EF ≤35% and QRS ≥150 ms flags a CRT candidate; AF both causes (tachycardia-mediated CM) and complicates HF. Q waves point to prior infarction/ischemic etiology.</div><div class="rtt">⚠️ WRONG: a normal ECG is irrelevant in suspected HF. Discriminator: a completely normal ECG has a high negative predictive value and makes systolic HF unlikely, redirecting the workup — use it as a screening clue, not a throwaway.</div></div><div class="rt"><div class="rtl">4. BNP / NT-proBNP machine</div><div class="rte">Natriuretic peptides are released from stretched ventricular myocytes. Use rule-out cutoffs in acute dyspnea: BNP &lt;100 pg/mL or NT-proBNP &lt;300 pg/mL make HF unlikely (high NPV). Rule-IN (age-adjusted NT-proBNP): &gt;450 (age &lt;50), &gt;900 (50–75), &gt;1800 (&gt;75). NT-proBNP is the inactive cleavage fragment with a longer half-life and renal clearance; sacubitril (ARNI) raises BNP but lowers NT-proBNP, so monitor NT-proBNP on ARNI.</div><div class="rtt">⚠️ WRONG: a high BNP confirms heart failure as the cause of dyspnea. Discriminator: BNP is a sensitive RULE-OUT test (high NPV), not a specific rule-in — it rises with AF, PE, sepsis, renal failure and age, so an elevated value needs an echo to confirm cardiac dysfunction.</div></div><div class="rt"><div class="rtl">5. Falsely LOW: obesity</div><div class="rte">Obesity FALSELY LOWERS BNP/NT-proBNP (likely via increased clearance/receptor expression in adipose tissue and altered handling). In an obese patient, a 'normal' or only mildly elevated BNP does NOT exclude HF — lower your threshold and lean on echo. This is the single most tested BNP pitfall.</div><div class="rtt">⚠️ WRONG: obesity raises BNP. Discriminator: it LOWERS it — the classic board trap is the obese, dyspneic patient with a deceptively normal BNP who actually has HFpEF; don't be falsely reassured.</div></div><div class="rt"><div class="rtl">6. Falsely HIGH: AF, PE, PAH</div><div class="rte">BNP/NT-proBNP rise from any cause of myocardial stretch or RV strain, not just LV failure: atrial fibrillation, pulmonary embolism, pulmonary arterial hypertension, sepsis, high-output states. In PE, an elevated BNP/troponin marks RV strain and worse prognosis — but it is not diagnostic of LV HF.</div><div class="rtt">⚠️ WRONG: an elevated BNP in a dyspneic patient means the cause is left heart failure, so anticoagulation for PE can wait. Discriminator: AF, PE and PAH all raise BNP via RV/atrial stretch — a mildly raised BNP must not anchor you onto HF and away from a missed PE.</div></div><div class="rt"><div class="rtl">7. Falsely HIGH: CKD, older/female</div><div class="rte">BNP and especially NT-proBNP rise with renal impairment (reduced clearance — NT-proBNP is renally cleared and most affected), with advancing age, and with female sex. This is exactly why NT-proBNP cutoffs are AGE-ADJUSTED (&gt;450 / &gt;900 / &gt;1800). In CKD, use higher rule-in thresholds (e.g., NT-proBNP &gt;1200) before attributing dyspnea to HF.</div><div class="rtt">⚠️ WRONG: renal failure lowers NT-proBNP. Discriminator: it RAISES it because NT-proBNP is cleared by the kidney — a high value in a CKD patient may reflect reduced clearance, not new HF, so interpret against an age-/renal-adjusted threshold.</div></div><div class="rt"><div class="rtl">8. Echo = first-line imaging</div><div class="rte">Transthoracic echocardiography is the FIRST-LINE imaging test in HF: it gives the LVEF (defining HFrEF ≤40, HFmrEF 41–49, HFpEF ≥50), wall motion, chamber size, diastolic function (E/e′), valve disease, pericardium and estimated PA pressures. Cardiac MRI is reserved for tissue characterization (amyloid, sarcoid, myocarditis, scar/viability).</div><div class="rtt">⚠️ WRONG: a normal LVEF on echo excludes heart failure. Discriminator: HFpEF has EF ≥50% with abnormal diastolic indices (raised E/e′, LA enlargement) — you must look at diastology and filling pressures, not just the ejection fraction number.</div></div><div class="rt"><div class="rtl">9. Lab workup (TSH, iron, etc.)</div><div class="rte">Baseline HF labs hunt for reversible drivers and comorbidities: CBC (anemia), electrolytes/renal function (baseline before RAAS/MRA and to track), LFTs/bilirubin (congestive hepatopathy), TSH (thyroid CM is reversible), iron studies (ferritin + transferrin sat — deficiency is common and treatable with IV iron), HbA1c/glucose, and natriuretic peptides.</div><div class="rtt">⚠️ WRONG: checking TSH and iron studies in HF is low-yield box-ticking. Discriminator: both thyroid disease and iron deficiency are reversible/treatable contributors — missing thyrotoxic or hypothyroid cardiomyopathy, or iron deficiency amenable to IV iron, is a real management miss.</div></div><div class="rt"><div class="rtl">10. DDx — HF (JVP, orthopnea, diuretics help)</div><div class="rte">HF dyspnea pattern: elevated JVP, an S3 gallop (volume overload, the most specific bedside sign of HFrEF), orthopnea and paroxysmal nocturnal dyspnea, bilateral basal crackles and edema, and clear symptomatic relief with diuresis. The most specific findings are S3 and raised JVP.</div><div class="rtt">⚠️ WRONG: peripheral edema by itself diagnoses heart failure. Discriminator: edema is nonspecific (venous insufficiency, nephrotic syndrome, cirrhosis, calcium-channel blockers) — it is the COMBINATION with elevated JVP, S3 and orthopnea that points to HF.</div></div><div class="rt"><div class="rtl">11. DDx — COPD (normal JVP)</div><div class="rte">COPD/asthma dyspnea: expiratory wheeze, prolonged expiration, cough with sputum, hyperinflation on CXR, NORMAL JVP, and a BNP that is typically normal or only mildly raised. Relief comes from bronchodilators, not diuresis. (Cor pulmonale from advanced COPD can raise JVP and BNP via RV strain — a later overlap.)</div><div class="rtt">⚠️ WRONG: wheezing means asthma/COPD, so it cannot be heart failure. Discriminator: 'cardiac asthma' (HF can wheeze from peribronchial edema) — check JVP and BNP; normal JVP + normal BNP favors primary lung disease, raised both favor HF.</div></div><div class="rt"><div class="rtl">12. DDx — renal edema (poor diuretic response)</div><div class="rte">Renal/nephrotic edema: heavy proteinuria, hypoalbuminemia, FLAT JVP, normal cardiac output, and a relatively poor/blunted response to loop diuretics (low oncotic pressure and avid sodium retention). Distinguished from HF by the flat JVP and the absence of S3/orthopnea.</div><div class="rtt">⚠️ WRONG: bilateral leg edema with poor diuretic response must be decompensated heart failure. Discriminator: a FLAT JVP points away from HF toward renal/hepatic/hypoalbuminemic edema — check urine protein and albumin rather than escalating cardiac therapy.</div></div><div class="rt"><div class="rtl">13. Cardiorenal syndrome</div><div class="rte">Cardiorenal syndrome is renal dysfunction in HF driven largely by elevated central VENOUS pressure/congestion (renal venous congestion lowering net glomerular perfusion), not merely by low forward cardiac output. The counterintuitive treatment is often decongestion (continue/intensify diuresis) rather than holding diuretics for a rising creatinine.</div><div class="rtt">⚠️ WRONG: a creatinine bump during HF diuresis means you are over-diuresing and should stop the loop diuretic. Discriminator: in congestive cardiorenal syndrome continued decongestion frequently IMPROVES renal function — venous congestion, not volume depletion, is the driver; assess volume status before pulling back.</div></div><div class="rt"><div class="rtl">14. GDMT drugs at base</div><div class="rte">Once HFrEF is diagnosed (EF ≤40%), start the FOUR pillars early and titrate: ARNI sacubitril-valsartan (preferred over ACEi/ARB), an evidence-based beta-blocker (carvedilol, metoprolol succinate, or bisoprolol), an MRA (spironolactone/eplerenone), and an SGLT2i (dapagliflozin/empagliflozin). Current practice initiates all four rapidly (in parallel) rather than sequentially over months.</div><div class="rtt">⚠️ WRONG: titrate one HFrEF pillar to its target dose before adding the next class. Discriminator: modern strategy (STRONG-HF) favors rapid simultaneous initiation of all four classes at low doses then up-titration — early quadruple therapy reduces mortality and readmissions versus slow sequential dosing.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hf_evaluation_nyha.html" title="Heart Failure — SCENE 2 — HF EVALUATION &amp; NYHA">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hf_gdmt_pillars.html" title="Heart Failure — SCENE 4 — HFrEF GDMT: The Four-Pillar Apothecary">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Platelet disorders — von Willebrand disease treatment</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>aPTT prolonged in severe</b> — WRONG: ruling out vWD because the aPTT and PT are both normal. Mild vWD frequently has a completely normal coagulation profile. Discriminator: order vWF antigen + activity directly when there is mucocutaneous bleeding or menorrhagia — do not rely on aPTT as a screen.</li><li><b>Low vWF ≠ diagnosis alone</b> — WRONG: diagnosing vWD off a single borderline-low vWF level in an asymptomatic patient. vWF rises with stress, exercise, inflammation, estrogen, and pregnancy, so one value can mislead either way. Discriminator: require bleeding symptoms + repeat/confirmatory testing before labeling someone with vWD.</li><li><b>Blood group O lowers vWF</b> — WRONG: diagnosing type 1 vWD in an asymptomatic type O patient with a mildly low vWF level. Discriminator: in blood group O, a slightly low vWF can be a physiologic normal variant — correlate with bleeding history and use blood-group-adjusted ranges before diagnosing.</li><li><b>Pregnancy raises vWF</b> — WRONG: stopping vWD precautions right after a smooth vaginal delivery because peripartum levels were normal. Discriminator: the postpartum vWF crash (days 1-3 to ~2 weeks) is the high-bleeding window — keep monitoring and treating after delivery, not just during it.</li><li><b>OCPs mask vWD</b> — WRONG: excluding vWD based on normal vWF levels drawn while the patient is on estrogen-containing OCPs. Discriminator: estrogen falsely raises vWF — repeat testing off hormones (or interpret with caution) when clinical suspicion remains.</li><li><b>Acquired vWS</b> — WRONG: labeling a new bleeding tendency in an elderly patient as 'late-onset hereditary vWD.' Discriminator: absence of lifelong/family bleeding history + an associated condition (MGUS, lymphoma, aortic stenosis, thrombocytosis) points to ACQUIRED vWS — search for and treat the cause.</li><li><b>Heyde / shear destruction</b> — WRONG: managing recurrent GI angiodysplasia bleeding in an aortic-stenosis patient with endoscopic cautery alone and ignoring the valve. Discriminator: in Heyde syndrome, valve REPLACEMENT addresses the root cause (restores large vWF multimers); endoscopic therapy treats only the symptom.</li><li><b>Extreme thrombocytosis</b> — WRONG: starting/continuing antiplatelet therapy for 'thrombosis prevention' in a patient with platelets &gt;1.5 million who is bleeding. Discriminator: at extreme counts the problem is acquired vWS-mediated BLEEDING — cytoreduce the platelets; do not reflexively add aspirin, which can precipitate hemorrhage.</li><li><b>DDAVP first-line type 1</b> — WRONG: using DDAVP without first documenting a response trial. Roughly 1 in 4 type 1 patients respond poorly, and type 2/3 patients respond poorly or are harmed. Discriminator: confirm a successful DDAVP challenge (adequate vWF/FVIII rise) before depending on it; if response is inadequate, use vWF concentrate.</li><li><b>DDAVP tachyphylaxis</b> — WRONG: continuing DDAVP every several hours for days for a major bleed/surgery. Discriminator: stores deplete (tachyphylaxis) and hyponatremia accrues — after ~2-3 spaced doses switch to vWF concentrate, restrict fluids, and monitor sodium.</li><li><b>DDAVP contraindications</b> — WRONG: reaching for desmopressin in a vWD patient who has thrombocytopenia + enhanced low-dose ristocetin (type 2B) or near-absent vWF (type 3). Discriminator: type 2B and type 3 → vWF concentrate, never DDAVP.</li><li><b>vWF replacement</b> — WRONG: substituting cryoprecipitate or fresh frozen plasma as the modern standard for vWD. Discriminator: virus-inactivated vWF/FVIII concentrate (or recombinant vWF) is preferred; cryoprecipitate is a last-resort/legacy option because it is not virally inactivated.</li><li><b>Antifibrinolytics adjunct</b> — WRONG: giving tranexamic acid for UPPER URINARY TRACT (renal/ureteral) bleeding. Antifibrinolytics promote clot retention in the collecting system → ureteral obstruction/clot colic. Discriminator: TXA is contraindicated in upper urinary tract bleeding; use it for mucosal/menstrual/dental bleeding instead.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. aPTT prolonged in severe</div><div class="rte">The aPTT in vWD is prolonged ONLY when vWF falls enough to drop carried Factor VIII below ~30-40%. In mild type 1 the FVIII is often normal, so the aPTT is NORMAL — meaning a normal aPTT does NOT exclude vWD. PT is always normal. The definitive panel is vWF:Ag, vWF activity (ristocetin cofactor / vWF:GpIbM), and FVIII level; PFA-100 closure time is the modern screen for primary-hemostasis defects.</div><div class="rtt">⚠️ WRONG: ruling out vWD because the aPTT and PT are both normal. Mild vWD frequently has a completely normal coagulation profile. Discriminator: order vWF antigen + activity directly when there is mucocutaneous bleeding or menorrhagia — do not rely on aPTT as a screen.</div></div><div class="rt"><div class="rtl">2. Low vWF ≠ diagnosis alone</div><div class="rte">Diagnosis of vWD requires the TRIAD of (1) low/dysfunctional vWF on labs, (2) a personal bleeding history (mucocutaneous bleeding, menorrhagia, post-surgical bleeding — quantified by a bleeding assessment tool), and (3) family history. 'Low vWF' (levels ~30-50 IU/dL) without bleeding is now often labeled a risk factor rather than disease. Levels are dynamic — repeat testing is often needed because vWF is an acute-phase reactant.</div><div class="rtt">⚠️ WRONG: diagnosing vWD off a single borderline-low vWF level in an asymptomatic patient. vWF rises with stress, exercise, inflammation, estrogen, and pregnancy, so one value can mislead either way. Discriminator: require bleeding symptoms + repeat/confirmatory testing before labeling someone with vWD.</div></div><div class="rt"><div class="rtl">3. Blood group O lowers vWF</div><div class="rte">ABO blood group is the largest genetic determinant of vWF level: type O individuals have vWF roughly 25-50% LOWER than non-O groups because the O glycan accelerates vWF clearance. Many labs use blood-group-adjusted reference ranges. This is why a mildly low vWF in a type O person with no bleeding is frequently a normal variant rather than true disease.</div><div class="rtt">⚠️ WRONG: diagnosing type 1 vWD in an asymptomatic type O patient with a mildly low vWF level. Discriminator: in blood group O, a slightly low vWF can be a physiologic normal variant — correlate with bleeding history and use blood-group-adjusted ranges before diagnosing.</div></div><div class="rt"><div class="rtl">4. Pregnancy raises vWF</div><div class="rte">vWF and FVIII rise PROGRESSIVELY in pregnancy (estrogen-driven), reaching ~3-5x baseline by the third trimester. Many type 1 patients normalize their levels and bleed minimally at delivery. The DANGER ZONE is POSTPARTUM: levels fall sharply over days 1-3 and can precipitate delayed primary or secondary postpartum hemorrhage — monitor vWF/FVIII and continue prophylaxis (DDAVP or concentrate) for several days after delivery.</div><div class="rtt">⚠️ WRONG: stopping vWD precautions right after a smooth vaginal delivery because peripartum levels were normal. Discriminator: the postpartum vWF crash (days 1-3 to ~2 weeks) is the high-bleeding window — keep monitoring and treating after delivery, not just during it.</div></div><div class="rt"><div class="rtl">5. OCPs mask vWD</div><div class="rte">Estrogen-containing oral contraceptives RAISE vWF and FVIII and can normalize labs, masking vWD. Conveniently, this also makes combined OCPs a useful TREATMENT for menorrhagia in known vWD. For diagnostic testing, ideally measure vWF off estrogen / in the early follicular phase; if a patient is on OCPs, a normal level does not exclude disease.</div><div class="rtt">⚠️ WRONG: excluding vWD based on normal vWF levels drawn while the patient is on estrogen-containing OCPs. Discriminator: estrogen falsely raises vWF — repeat testing off hormones (or interpret with caution) when clinical suspicion remains.</div></div><div class="rt"><div class="rtl">6. Acquired vWS</div><div class="rte">Acquired von Willebrand SYNDROME (AVWS) presents as new-onset mucocutaneous bleeding in an OLDER patient with NO family history. Major mechanisms: (1) autoantibody/adsorption in lymphoproliferative disorders &amp; MGUS, (2) adsorption onto malignant/clonal cells, (3) mechanical shear destruction (aortic stenosis, LVAD, extreme thrombocytosis). Workup the underlying disorder; treat the cause. For acute bleeding: IVIG often helps the MGUS-associated form; high-dose vWF concentrate or recombinant FVIIa for refractory bleeds.</div><div class="rtt">⚠️ WRONG: labeling a new bleeding tendency in an elderly patient as 'late-onset hereditary vWD.' Discriminator: absence of lifelong/family bleeding history + an associated condition (MGUS, lymphoma, aortic stenosis, thrombocytosis) points to ACQUIRED vWS — search for and treat the cause.</div></div><div class="rt"><div class="rtl">7. Heyde / shear destruction</div><div class="rte">Heyde syndrome = aortic STENOSIS + GI bleeding from angiodysplasia. High shear across the stenotic valve unfolds vWF and exposes it to ADAMTS13 cleavage, destroying the largest (most hemostatic) multimers → acquired type-2A-like vWS. The same shear mechanism occurs with LVADs. Definitive treatment is AORTIC VALVE REPLACEMENT, which corrects the multimer loss and typically stops the bleeding.</div><div class="rtt">⚠️ WRONG: managing recurrent GI angiodysplasia bleeding in an aortic-stenosis patient with endoscopic cautery alone and ignoring the valve. Discriminator: in Heyde syndrome, valve REPLACEMENT addresses the root cause (restores large vWF multimers); endoscopic therapy treats only the symptom.</div></div><div class="rt"><div class="rtl">8. Extreme thrombocytosis</div><div class="rte">Counterintuitively, EXTREME thrombocytosis (platelets &gt;1.0-1.5 million, as in essential thrombocythemia or reactive thrombocytosis) causes BLEEDING, not clotting, via acquired vWS: the huge platelet mass ADSORBS large vWF multimers off the plasma. Treatment is to LOWER the platelet count (cytoreduction, e.g., hydroxyurea ± aspirin caution) — and notably aspirin is risky at these extreme counts.</div><div class="rtt">⚠️ WRONG: starting/continuing antiplatelet therapy for 'thrombosis prevention' in a patient with platelets &gt;1.5 million who is bleeding. Discriminator: at extreme counts the problem is acquired vWS-mediated BLEEDING — cytoreduce the platelets; do not reflexively add aspirin, which can precipitate hemorrhage.</div></div><div class="rt"><div class="rtl">9. DDAVP first-line type 1</div><div class="rte">DESMOPRESSIN (DDAVP) is FIRST-LINE for type 1 vWD and mild hemophilia A. It is a synthetic vasopressin (V2) analog that triggers release of stored vWF and FVIII from endothelial Weibel-Palade bodies, raising levels ~2-4x. Dosing: 0.3 mcg/kg IV/SC, or intranasal 150 mcg (1 spray) for &lt;50 kg / 300 mcg (both nostrils) for ≥50 kg; peaks at ~30-60 min. Always do a TRIAL/challenge to confirm an adequate response before relying on it for surgery or bleeds. Add tranexamic acid for mucosal procedures.</div><div class="rtt">⚠️ WRONG: using DDAVP without first documenting a response trial. Roughly 1 in 4 type 1 patients respond poorly, and type 2/3 patients respond poorly or are harmed. Discriminator: confirm a successful DDAVP challenge (adequate vWF/FVIII rise) before depending on it; if response is inadequate, use vWF concentrate.</div></div><div class="rt"><div class="rtl">10. DDAVP tachyphylaxis</div><div class="rte">DDAVP works by depleting endothelial vWF STORES, so repeated dosing shows TACHYPHYLAXIS — the second and later doses release progressively less. Space doses every 12-24 h and limit to ~2-3 doses, then switch to vWF concentrate for ongoing needs. Its V2 antidiuretic effect causes free-water retention → HYPONATREMIA and seizures, so FLUID-RESTRICT and avoid in young children, elderly, and patients with active coronary/vascular disease.</div><div class="rtt">⚠️ WRONG: continuing DDAVP every several hours for days for a major bleed/surgery. Discriminator: stores deplete (tachyphylaxis) and hyponatremia accrues — after ~2-3 spaced doses switch to vWF concentrate, restrict fluids, and monitor sodium.</div></div><div class="rt"><div class="rtl">11. DDAVP contraindications</div><div class="rte">DDAVP is INEFFECTIVE in type 3 (no vWF stores to release) and CONTRAINDICATED in type 2B (releases hyperadhesive vWF → worsens platelet clumping and thrombocytopenia). It is also relatively contraindicated in significant cardiovascular disease (the released vWF/FVIII plus fluid shift add thrombotic and volume risk). Use vWF-containing concentrate instead in these settings.</div><div class="rtt">⚠️ WRONG: reaching for desmopressin in a vWD patient who has thrombocytopenia + enhanced low-dose ristocetin (type 2B) or near-absent vWF (type 3). Discriminator: type 2B and type 3 → vWF concentrate, never DDAVP.</div></div><div class="rt"><div class="rtl">12. vWF replacement</div><div class="rte">vWF-containing CONCENTRATE is the treatment for type 3, severe type 2, type 2B, DDAVP non-responders, and major bleeding/surgery. Options: plasma-derived vWF/FVIII concentrate (e.g., Humate-P/Wilate) or recombinant vWF (vonicog alfa, contains no FVIII so a first FVIII dose is co-given when FVIII is low). Dose and monitor by vWF:RCo (and FVIII) units, targeting hemostatic levels through the bleeding/surgical period.</div><div class="rtt">⚠️ WRONG: substituting cryoprecipitate or fresh frozen plasma as the modern standard for vWD. Discriminator: virus-inactivated vWF/FVIII concentrate (or recombinant vWF) is preferred; cryoprecipitate is a last-resort/legacy option because it is not virally inactivated.</div></div><div class="rt"><div class="rtl">13. Antifibrinolytics adjunct</div><div class="rte">Antifibrinolytics — TRANEXAMIC ACID (TXA) and aminocaproic acid — stabilize formed clot by blocking plasminogen activation. They are excellent ADJUNCTS for MUCOSAL bleeding: menorrhagia, epistaxis, and dental/oral procedures (oral rinse). TXA dosing is typically 1 g (or ~10-15 mg/kg) PO/IV q6-8h. They are also estrogen-free options for menorrhagia. Patients with vWD should AVOID aspirin/NSAIDs, which further impair platelet function.</div><div class="rtt">⚠️ WRONG: giving tranexamic acid for UPPER URINARY TRACT (renal/ureteral) bleeding. Antifibrinolytics promote clot retention in the collecting system → ureteral obstruction/clot colic. Discriminator: TXA is contraindicated in upper urinary tract bleeding; use it for mucosal/menstrual/dental bleeding instead.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="plt_vwd.html" title="Platelet disorders — von Willebrand disease (Von Willebrand Field)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="vte_anticoagulation.html" title="VTE — Anticoagulation: Treatment, Dosing &amp; Reversal">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

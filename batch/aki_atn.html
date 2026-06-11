@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">AKI — Intrinsic 1: ATN</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>17</em></summary><ol class="traps"><li><b>ATN</b> — ATN is confused with prerenal azotemia because both follow hypoperfusion — the discriminator is reversibility and labs: prerenal corrects rapidly with fluids and has FENa &lt;1%, BUN:Cr &gt;20:1, bland urine; established ATN does NOT correct quickly and shows FENa &gt;2% with muddy-brown casts.</li><li><b>Muddy brown casts</b> — A student picks WBC casts as diagnostic of ATN — WRONG. WBC casts indicate pyelonephritis or AIN; RBC casts indicate glomerulonephritis. ATN = MUDDY-BROWN GRANULAR casts. Mixing up the cast types is a high-yield trap.</li><li><b>FENa &gt;1-2%</b> — Two big traps: (1) thinking established ATN has FENa &lt;1% — that is prerenal; (2) trusting FENa in a patient on DIURETICS, where FENa is falsely elevated — use FEUrea instead (&lt;35% suggests prerenal). FENa can also be &lt;1% in early ATN, contrast nephropathy, rhabdomyolysis, and hepatorenal syndrome despite tubular injury.</li><li><b>Ischemia</b> — Assuming a hypotensive patient with rising creatinine just needs fluids (prerenal) — if hypoperfusion was prolonged, it has already become ATN, which will NOT respond promptly to volume. The discriminator is duration of insult plus urine findings.</li><li><b>Sepsis AKI</b> — Requiring documented hypotension before attributing AKI to sepsis is WRONG — septic AKI develops via cytokine-mediated and microvascular injury even with normal blood pressure. So a normotensive septic patient with rising creatinine still has sepsis-associated AKI.</li><li><b>Aortic cross-clamp</b> — Postop AKI after vascular/aortic surgery may be ATN from ischemia OR atheroembolic disease from plaque disruption — distinguish by timing and findings (atheroemboli give blue toes, livedo, eosinophilia, low complement; pure ischemic ATN does not).</li><li><b>Rhabdo / myoglobin</b> — A urine dipstick positive for blood with no RBCs on microscopy is misread as a bad sample — WRONG; it signals myoglobinuria (or hemoglobinuria). Also, FENa can be &lt;1% in pigment nephropathy despite true tubular injury, so don't use it to call this prerenal.</li><li><b>Crush / burns</b> — Underestimating fluid needs in burns/crush leads to under-resuscitation and ATN — but over-resuscitation causes abdominal compartment syndrome, itself a cause of AKI. The discriminator is careful volume titration, not a fixed rule.</li><li><b>Abd compartment</b> — Oliguria in a tense, distended postoperative/trauma abdomen is treated with more fluids — WRONG, that worsens compartment pressure. The discriminator is measuring bladder (intra-abdominal) pressure; treatment is decompression, not volume.</li><li><b>TMA triplet</b> — Treating suspected TTP/HUS with platelet transfusion is the classic wrong answer — it can fuel further thrombosis. Also, do NOT give antibiotics for Shiga-toxin HUS, as they may increase toxin release. The discriminator: plasma exchange for TTP, supportive care for typical HUS, eculizumab for aHUS.</li><li><b>Schistocytes</b> — A Coombs-POSITIVE hemolytic anemia points to autoimmune hemolysis, NOT a TMA — the negative Coombs plus schistocytes is the discriminator. Don't confuse TMA with DIC, which also has schistocytes but ADDS abnormal PT/PTT and low fibrinogen (TMA coags are normal).</li><li><b>Atheroemboli</b> — This is the great mimic of contrast nephropathy — the discriminator is TIMING and signs: contrast nephropathy peaks at 3–5 days and resolves in 7–10, whereas atheroembolic AKI starts days-to-weeks later, progresses stepwise, and adds blue toes/livedo, eosinophilia, and low complement.</li><li><b>Contrast / drugs</b> — Contrast nephropathy is overdiagnosed — a transient creatinine bump after contrast may instead be atheroembolic disease (later, stepwise, blue toes/eosinophilia). The discriminator is the time course and associated findings, not the mere fact contrast was given.</li><li><b>PV thrombosis</b> — Acute flank pain + hematuria + AKI is reflexively called a kidney stone — but in a nephrotic patient it may be renal vein thrombosis. The discriminator is the hypercoagulable/nephrotic context plus imaging (CT/Doppler), not assuming nephrolithiasis.</li><li><b>Viral sepsis triggers</b> — Attributing AKI in a febrile traveler or pandemic patient solely to dehydration misses viral cytokine-mediated ATN — the discriminator is the viral syndrome (rash, thrombocytopenia, exposure history) plus AKI that outlasts volume repletion.</li><li><b>One percent dialysis</b> — Reaching for ‘renal-protective’ agents (low-dose dopamine, mannitol, loop diuretics, fenoldopam) to prevent or treat ATN is the wrong answer — none improve recovery or mortality; they may convert oliguric to non-oliguric ATN without changing outcome.</li><li><b>Sudden flank pain + hematuria</b> — This presentation is misdiagnosed as nephrolithiasis or pyelonephritis — the discriminators are a very high LDH, an embolic source (AFib), and a wedge-shaped infarct on CT angiography rather than a stone or infection.</li></ol></details><details class="panel"><summary>📖 Read-through — all 17 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. ATN</div><div class="rte">Acute tubular necrosis (ATN) is the most common cause of INTRINSIC AKI, from ischemic or toxic death of tubular epithelial cells (most severe in the proximal tubule and the medullary thick ascending limb, the most metabolically active/hypoxia-prone segments). Sloughed cells form casts that obstruct tubules and back-leak filtrate. Course has three phases: initiation, maintenance (oliguric, lasting 1–3 weeks), and recovery (polyuric).</div><div class="rtt">⚠️ ATN is confused with prerenal azotemia because both follow hypoperfusion — the discriminator is reversibility and labs: prerenal corrects rapidly with fluids and has FENa &lt;1%, BUN:Cr &gt;20:1, bland urine; established ATN does NOT correct quickly and shows FENa &gt;2% with muddy-brown casts.</div></div><div class="rt"><div class="rtl">2. Muddy brown casts</div><div class="rte">The urinary hallmark of ATN is muddy-brown granular ‘dirty’ casts and renal tubular epithelial cell casts, formed from sloughed necrotic tubular cells. Their presence strongly supports ATN over prerenal AKI (which has a bland sediment).</div><div class="rtt">⚠️ A student picks WBC casts as diagnostic of ATN — WRONG. WBC casts indicate pyelonephritis or AIN; RBC casts indicate glomerulonephritis. ATN = MUDDY-BROWN GRANULAR casts. Mixing up the cast types is a high-yield trap.</div></div><div class="rt"><div class="rtl">3. FENa &gt;1-2%</div><div class="rte">In ATN, FENa is &gt;2% (and urine osmolality &lt;350, urine Na &gt;40) because damaged tubules lose the ability to reabsorb sodium and concentrate urine. FENa = (UNa × PCr)/(PNa × UCr) × 100. Prerenal AKI by contrast has FENa &lt;1% as intact tubules avidly retain sodium.</div><div class="rtt">⚠️ Two big traps: (1) thinking established ATN has FENa &lt;1% — that is prerenal; (2) trusting FENa in a patient on DIURETICS, where FENa is falsely elevated — use FEUrea instead (&lt;35% suggests prerenal). FENa can also be &lt;1% in early ATN, contrast nephropathy, rhabdomyolysis, and hepatorenal syndrome despite tubular injury.</div></div><div class="rt"><div class="rtl">4. Ischemia</div><div class="rte">Ischemic ATN results when prolonged prerenal hypoperfusion (sepsis, hemorrhage, hypotension, shock, cardiac arrest) is severe or sustained enough to cause actual tubular cell death — the continuum from prerenal azotemia to ATN. Restoring perfusion does not immediately reverse it; recovery takes weeks.</div><div class="rtt">⚠️ Assuming a hypotensive patient with rising creatinine just needs fluids (prerenal) — if hypoperfusion was prolonged, it has already become ATN, which will NOT respond promptly to volume. The discriminator is duration of insult plus urine findings.</div></div><div class="rt"><div class="rtl">5. Sepsis AKI</div><div class="rte">Sepsis is the leading cause of ATN in hospitalized patients, contributing to AKI in over 50% of severe sepsis. Injury occurs through inflammatory cytokines, microvascular dysfunction, and tubular stress — and importantly can happen even WITHOUT documented systemic hypotension.</div><div class="rtt">⚠️ Requiring documented hypotension before attributing AKI to sepsis is WRONG — septic AKI develops via cytokine-mediated and microvascular injury even with normal blood pressure. So a normotensive septic patient with rising creatinine still has sepsis-associated AKI.</div></div><div class="rt"><div class="rtl">6. Aortic cross-clamp</div><div class="rte">Postoperative ischemic ATN classically follows cardiac and aortic surgery, where aortic cross-clamping interrupts renal arterial perfusion. Cardiopulmonary bypass, large fluid shifts, hemolysis, and atheroemboli compound the risk.</div><div class="rtt">⚠️ Postop AKI after vascular/aortic surgery may be ATN from ischemia OR atheroembolic disease from plaque disruption — distinguish by timing and findings (atheroemboli give blue toes, livedo, eosinophilia, low complement; pure ischemic ATN does not).</div></div><div class="rt"><div class="rtl">7. Rhabdo / myoglobin</div><div class="rte">Pigment nephropathy: in rhabdomyolysis, released myoglobin is directly toxic to tubules, causes tubular obstruction, and triggers vasoconstriction → ATN. Clues: CK often &gt;5,000–10,000 (markedly elevated), dipstick POSITIVE for blood but FEW RBCs on microscopy (heme pigment, not cells), plus hyperkalemia, hyperphosphatemia, hypocalcemia, and elevated uric acid. Treat with aggressive IV isotonic fluids.</div><div class="rtt">⚠️ A urine dipstick positive for blood with no RBCs on microscopy is misread as a bad sample — WRONG; it signals myoglobinuria (or hemoglobinuria). Also, FENa can be &lt;1% in pigment nephropathy despite true tubular injury, so don't use it to call this prerenal.</div></div><div class="rt"><div class="rtl">8. Crush / burns</div><div class="rte">Burns (especially &gt;10–20% BSA), crush injury, and pancreatitis cause ATN through combined mechanisms: massive third-space/volume loss (prerenal → ischemic ATN) plus pigment release (myoglobin in crush) and a systemic inflammatory response.</div><div class="rtt">⚠️ Underestimating fluid needs in burns/crush leads to under-resuscitation and ATN — but over-resuscitation causes abdominal compartment syndrome, itself a cause of AKI. The discriminator is careful volume titration, not a fixed rule.</div></div><div class="rt"><div class="rtl">9. Abd compartment</div><div class="rte">Abdominal compartment syndrome (sustained intra-abdominal pressure &gt;20 mmHg with new organ dysfunction) compresses the renal veins and parenchyma, raising renal venous pressure and dropping renal perfusion pressure → oliguric AKI. Measured via bladder pressure; definitive treatment is decompression.</div><div class="rtt">⚠️ Oliguria in a tense, distended postoperative/trauma abdomen is treated with more fluids — WRONG, that worsens compartment pressure. The discriminator is measuring bladder (intra-abdominal) pressure; treatment is decompression, not volume.</div></div><div class="rt"><div class="rtl">10. TMA triplet</div><div class="rte">Thrombotic microangiopathies cause intrinsic AKI via platelet-fibrin microthrombi in glomerular capillaries: TTP (ADAMTS13 deficiency, more neuro/CNS-predominant), typical HUS (Shiga-toxin E. coli O157:H7, more renal-predominant, often after bloody diarrhea in children), and atypical HUS (complement dysregulation). TTP is treated with plasma exchange; aHUS with eculizumab.</div><div class="rtt">⚠️ Treating suspected TTP/HUS with platelet transfusion is the classic wrong answer — it can fuel further thrombosis. Also, do NOT give antibiotics for Shiga-toxin HUS, as they may increase toxin release. The discriminator: plasma exchange for TTP, supportive care for typical HUS, eculizumab for aHUS.</div></div><div class="rt"><div class="rtl">11. Schistocytes</div><div class="rte">TMA labs show microangiopathic hemolytic anemia (MAHA): schistocytes on smear, thrombocytopenia, elevated LDH and indirect bilirubin, low haptoglobin, and a NEGATIVE direct Coombs (mechanical, not antibody-mediated, hemolysis).</div><div class="rtt">⚠️ A Coombs-POSITIVE hemolytic anemia points to autoimmune hemolysis, NOT a TMA — the negative Coombs plus schistocytes is the discriminator. Don't confuse TMA with DIC, which also has schistocytes but ADDS abnormal PT/PTT and low fibrinogen (TMA coags are normal).</div></div><div class="rt"><div class="rtl">12. Atheroemboli</div><div class="rte">Atheroembolic (cholesterol crystal) AKI occurs DAYS TO WEEKS after an arterial procedure (cardiac cath, angiography, vascular surgery) or anticoagulation, when plaque cholesterol crystals shower distally. Classic triad: subacute/stepwise AKI, livedo reticularis with blue toes (with palpable pulses), and eosinophilia. Other clues: low complement, Hollenhorst plaques on funduscopy.</div><div class="rtt">⚠️ This is the great mimic of contrast nephropathy — the discriminator is TIMING and signs: contrast nephropathy peaks at 3–5 days and resolves in 7–10, whereas atheroembolic AKI starts days-to-weeks later, progresses stepwise, and adds blue toes/livedo, eosinophilia, and low complement.</div></div><div class="rt"><div class="rtl">13. Contrast / drugs</div><div class="rte">Nephrotoxic ATN from direct tubular toxins: iodinated contrast (contrast-induced nephropathy via vasoconstriction + tubular toxicity, peaks day 3–5), aminoglycosides, amphotericin B, cisplatin, and others; drug-induced TMA (e.g., calcineurin inhibitors, gemcitabine, quinine, cocaine-adulterants) and radiation nephritis are additional mechanisms.</div><div class="rtt">⚠️ Contrast nephropathy is overdiagnosed — a transient creatinine bump after contrast may instead be atheroembolic disease (later, stepwise, blue toes/eosinophilia). The discriminator is the time course and associated findings, not the mere fact contrast was given.</div></div><div class="rt"><div class="rtl">14. PV thrombosis</div><div class="rte">Renovascular causes of acute intrinsic AKI: bilateral renal artery thromboembolism/dissection and renal vein thrombosis. Renal vein thrombosis is classically associated with NEPHROTIC SYNDROME (especially membranous nephropathy) due to urinary antithrombin loss and hypercoagulability.</div><div class="rtt">⚠️ Acute flank pain + hematuria + AKI is reflexively called a kidney stone — but in a nephrotic patient it may be renal vein thrombosis. The discriminator is the hypercoagulable/nephrotic context plus imaging (CT/Doppler), not assuming nephrolithiasis.</div></div><div class="rt"><div class="rtl">15. Viral sepsis triggers</div><div class="rte">Viral infections are increasingly recognized causes of severe AKI: COVID-19 (cytokine storm, direct tubular injury, often with proteinuria/collapsing FSGS in APOL1-risk patients), hantavirus (hemorrhagic fever with renal syndrome — fever, AKI, thrombocytopenia), and dengue. These drive AKI via the same sepsis/cytokine pathway as bacterial sepsis.</div><div class="rtt">⚠️ Attributing AKI in a febrile traveler or pandemic patient solely to dehydration misses viral cytokine-mediated ATN — the discriminator is the viral syndrome (rash, thrombocytopenia, exposure history) plus AKI that outlasts volume repletion.</div></div><div class="rt"><div class="rtl">16. One percent dialysis</div><div class="rte">Most ATN is managed supportively with the expectation of tubular regeneration over 1–3 weeks; only a minority (often cited around 1% in some series, more in critically ill cohorts) of ATN/postop AKI patients ultimately require dialysis. There is no drug that reverses established ATN — care is supportive while waiting for recovery.</div><div class="rtt">⚠️ Reaching for ‘renal-protective’ agents (low-dose dopamine, mannitol, loop diuretics, fenoldopam) to prevent or treat ATN is the wrong answer — none improve recovery or mortality; they may convert oliguric to non-oliguric ATN without changing outcome.</div></div><div class="rt"><div class="rtl">17. Sudden flank pain + hematuria</div><div class="rte">Acute renal infarction (from arterial thromboembolism — e.g., atrial fibrillation, endocarditis — or dissection) presents with abrupt flank/abdominal pain, hematuria, and a markedly elevated LDH out of proportion to other findings. Diagnosis is by contrast CT angiography showing a wedge-shaped perfusion defect.</div><div class="rtt">⚠️ This presentation is misdiagnosed as nephrolithiasis or pyelonephritis — the discriminators are a very high LDH, an embolic source (AFib), and a wedge-shaped infarct on CT angiography rather than a stone or infection.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="aki_diagnosis.html" title="AKI — Diagnosis">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="aki_nephrotoxins.html" title="AKI — Intrinsic 2: Nephrotoxins">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

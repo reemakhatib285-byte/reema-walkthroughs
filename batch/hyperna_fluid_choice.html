@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Hypernatremia — Fluid Choice Algorithm</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Two questions</b> — WRONG: choosing the corrective fluid (D5W) based purely on the sodium number before assessing volume status/shock. Discriminator — a hypotensive hypernatremic patient needs perfusion (isotonic saline) first; the Na number is corrected second, never the other way around.</li><li><b>Step 1: in shock?</b> — WRONG: jumping straight to free-water deficit calculation in a clinically dry, hypotensive patient. Discriminator — restore perfusion first; deficit replacement is meaningless if the patient is in shock.</li><li><b>Shock &gt; Na number</b> — WRONG: prioritizing rapid Na lowering over blood pressure in an unstable patient. Discriminator — perfusion first; sodium is a 48–72h problem, shock is a now problem.</li><li><b>Shock → NS first</b> — WRONG: withholding isotonic saline because 'it has sodium' in a hypernatremic patient. Discriminator — NS is relatively hypotonic to severely hypernatremic serum and is the correct resuscitation fluid; perfusion is the priority.</li><li><b>D5W in shock = trap</b> — WRONG ANSWER on the exam: 'give D5W' to resuscitate the hypotensive hypernatremic patient. Why wrong — D5W does not expand the intravascular volume; only ~8% stays in the vessels. Discriminator — use NS for perfusion, reserve D5W for deficit correction after stabilization.</li><li><b>Switch to free water</b> — WRONG: staying on 0.9% NS after the patient is resuscitated. Discriminator — NS maintains volume but won't correct hypernatremia; you must transition to free water to lower the Na ≤10 mEq/L/day.</li><li><b>Hypovolemic-stable</b> — WRONG: giving pure D5W to a still-volume-depleted patient. Discriminator — if the patient is hypovolemic (not euvolemic), they need some sodium with their water, so hypotonic saline, not D5W, is the answer.</li><li><b>½ NS vs ¼ NS</b> — WRONG: treating ½ NS and ¼ NS as interchangeable. Discriminator — ½ NS for greater volume need, ¼ NS when the volume deficit is small but the free-water deficit is large.</li><li><b>Euvolemic → D5W/oral</b> — WRONG: routinely starting IV D5W when the patient could simply drink water. Discriminator — oral/enteral free water is the safest, cheapest first choice in a euvolemic patient with an intact, accessible gut; IV D5W is reserved for those who can't take enteral water.</li><li><b>Watch hyperglycemia</b> — WRONG: running D5W fast to 'catch up' the deficit. Discriminator — fast D5W → hyperglycemia → osmotic diuresis → more water loss AND risks overcorrection; correct slowly and monitor glucose and Na.</li><li><b>Hypervolemic → D5W + loop</b> — WRONG ANSWER: giving isotonic or hypotonic SALINE to a hypervolemic (Na-overload) hypernatremic patient. Why wrong — you'd be adding more sodium to a sodium-overloaded, edematous patient. Discriminator — Na-gain states need sodium REMOVAL (loop diuretic ± D5W), the opposite of the volume-depleted pathways.</li><li><b>Unstable → NS first</b> — WRONG: choosing free water/D5W for the unstable patient. Discriminator — instability always routes to isotonic saline first.</li><li><b>Hypovol+stable → hypotonic</b> — WRONG: giving pure D5W (free water only) to a hypovolemic patient who still needs some volume. Discriminator — stable + hypovolemic → hypotonic saline, not D5W.</li><li><b>Euvolemic → D5W/free water</b> — WRONG: correcting the euvolemic patient's Na quickly toward 140 in one day. Discriminator — regardless of pathway the maximum safe drop is ~10 mEq/L/24h; faster correction risks fatal cerebral edema.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Two questions</div><div class="rte">Hypernatremia (Na &gt;145 mEq/L) is always a free-water DEFICIT relative to sodium, but fluid choice is driven by two sequential questions. First: is the patient hemodynamically unstable and needing intravascular volume? Second: how large is the free-water deficit and how fast may it be corrected? Answering them in order prevents giving the wrong tonicity fluid.</div><div class="rtt">⚠️ WRONG: choosing the corrective fluid (D5W) based purely on the sodium number before assessing volume status/shock. Discriminator — a hypotensive hypernatremic patient needs perfusion (isotonic saline) first; the Na number is corrected second, never the other way around.</div></div><div class="rt"><div class="rtl">2. Step 1: in shock?</div><div class="rte">Step 1 is always hemodynamic: assess for shock/hypoperfusion (hypotension, tachycardia, oliguria, lactate, poor cap refill) before touching the sodium. Hemodynamics outrank the sodium number because circulatory collapse kills faster than hypertonicity. Only after circulation is secured do you move to the free-water-deficit math.</div><div class="rtt">⚠️ WRONG: jumping straight to free-water deficit calculation in a clinically dry, hypotensive patient. Discriminator — restore perfusion first; deficit replacement is meaningless if the patient is in shock.</div></div><div class="rt"><div class="rtl">3. Shock &gt; Na number</div><div class="rte">Mnemonic anchor: 'Shock beats the Na number.' Circulatory stabilization always takes priority over correcting tonicity. A markedly elevated Na is dangerous, but hypoperfusion/hypovolemic shock is immediately lethal, so you stabilize the circulation first and correct sodium gradually afterward.</div><div class="rtt">⚠️ WRONG: prioritizing rapid Na lowering over blood pressure in an unstable patient. Discriminator — perfusion first; sodium is a 48–72h problem, shock is a now problem.</div></div><div class="rt"><div class="rtl">4. Shock → NS first</div><div class="rte">If hemodynamically unstable, give 0.9% normal saline (isotonic) boluses first to refill the intravascular space and restore perfusion. Although NS contains 154 mEq/L Na (higher than plasma in absolute terms), it is still HYPOtonic relative to a patient whose serum Na is, say, 165, so it does not worsen hypernatremia while it resuscitates. Switch to free-water replacement only once the patient is perfused.</div><div class="rtt">⚠️ WRONG: withholding isotonic saline because 'it has sodium' in a hypernatremic patient. Discriminator — NS is relatively hypotonic to severely hypernatremic serum and is the correct resuscitation fluid; perfusion is the priority.</div></div><div class="rt"><div class="rtl">5. D5W in shock = trap</div><div class="rte">D5W (free water once glucose is metabolized) distributes across total body water and only ~1/12 stays intravascular, so it is useless for resuscitation. Giving it to a shocked patient fails to restore perfusion and can drop glucose-driven osmoles abruptly. Resuscitate with isotonic crystalloid (NS), then correct the deficit with free water.</div><div class="rtt">⚠️ WRONG ANSWER on the exam: 'give D5W' to resuscitate the hypotensive hypernatremic patient. Why wrong — D5W does not expand the intravascular volume; only ~8% stays in the vessels. Discriminator — use NS for perfusion, reserve D5W for deficit correction after stabilization.</div></div><div class="rt"><div class="rtl">6. Switch to free water</div><div class="rte">Once perfusion is restored and the patient is no longer in shock, switch from isotonic saline to hypotonic/free water (½ NS, ¼ NS, D5W, or oral water) to actually correct the elevated sodium. This two-phase approach — resuscitate, then correct — is the core algorithm. Continuing NS after perfusion is restored will fail to bring the Na down.</div><div class="rtt">⚠️ WRONG: staying on 0.9% NS after the patient is resuscitated. Discriminator — NS maintains volume but won't correct hypernatremia; you must transition to free water to lower the Na ≤10 mEq/L/day.</div></div><div class="rt"><div class="rtl">7. Hypovolemic-stable</div><div class="rte">Hypovolemic but hemodynamically stable (e.g. osmotic diuresis, partial volume loss): use hypotonic saline (½ NS 0.45% or ¼ NS 0.225%) which simultaneously replaces some volume AND delivers free water to correct Na. This straddles the two needs — unlike NS (volume only) or D5W (free water only).</div><div class="rtt">⚠️ WRONG: giving pure D5W to a still-volume-depleted patient. Discriminator — if the patient is hypovolemic (not euvolemic), they need some sodium with their water, so hypotonic saline, not D5W, is the answer.</div></div><div class="rt"><div class="rtl">8. ½ NS vs ¼ NS</div><div class="rte">½ NS (0.45%, 77 mEq/L Na) provides moderate volume plus free water — roughly half of each liter acts as free water. ¼ NS (0.225%, ~38 mEq/L Na) is mostly free water with minimal sodium, for milder volume deficits with a larger free-water gap. Choose based on how much volume vs free water the patient needs.</div><div class="rtt">⚠️ WRONG: treating ½ NS and ¼ NS as interchangeable. Discriminator — ½ NS for greater volume need, ¼ NS when the volume deficit is small but the free-water deficit is large.</div></div><div class="rt"><div class="rtl">9. Euvolemic → D5W/oral</div><div class="rte">Euvolemic hypernatremia = PURE water loss without significant Na loss (diabetes insipidus, insensible/respiratory losses, restricted access to water in elderly/intubated). Give pure free water: oral water is preferred whenever the gut works and the patient can drink/take NG water, otherwise IV D5W. Address the cause too (e.g. desmopressin for central DI).</div><div class="rtt">⚠️ WRONG: routinely starting IV D5W when the patient could simply drink water. Discriminator — oral/enteral free water is the safest, cheapest first choice in a euvolemic patient with an intact, accessible gut; IV D5W is reserved for those who can't take enteral water.</div></div><div class="rt"><div class="rtl">10. Watch hyperglycemia</div><div class="rte">D5W delivers free water only after the dextrose is metabolized; rapid infusion can outpace glucose clearance, causing hyperglycemia and a resulting osmotic diuresis that paradoxically worsens free-water loss. Monitor glucose, keep infusion rates measured (often ≤ a few hundred mL/h), and check Na every 2–4h during active correction.</div><div class="rtt">⚠️ WRONG: running D5W fast to 'catch up' the deficit. Discriminator — fast D5W → hyperglycemia → osmotic diuresis → more water loss AND risks overcorrection; correct slowly and monitor glucose and Na.</div></div><div class="rt"><div class="rtl">11. Hypervolemic → D5W + loop</div><div class="rte">Hypervolemic hypernatremia = sodium GAIN, not water loss (hypertonic saline infusion, sodium bicarbonate during codes, excess salt, mineralocorticoid excess). The problem is too much total-body sodium, so management is D5W to add free water PLUS a loop diuretic (furosemide) to excrete the excess sodium; consider dialysis if renal failure.</div><div class="rtt">⚠️ WRONG ANSWER: giving isotonic or hypotonic SALINE to a hypervolemic (Na-overload) hypernatremic patient. Why wrong — you'd be adding more sodium to a sodium-overloaded, edematous patient. Discriminator — Na-gain states need sodium REMOVAL (loop diuretic ± D5W), the opposite of the volume-depleted pathways.</div></div><div class="rt"><div class="rtl">12. Unstable → NS first</div><div class="rte">Quick-rule banner #1: UNSTABLE = 0.9% NS first. Isotonic saline restores perfusion regardless of the sodium number; you correct the Na after the hemodynamics are stabilized. This is the single most tested branch of the algorithm.</div><div class="rtt">⚠️ WRONG: choosing free water/D5W for the unstable patient. Discriminator — instability always routes to isotonic saline first.</div></div><div class="rt"><div class="rtl">13. Hypovol+stable → hypotonic</div><div class="rte">Quick-rule banner #2: HYPOVOLEMIC + STABLE = hypotonic saline (½ NS or ¼ NS) because the patient needs both some volume and free water. This is the middle path between pure resuscitation (NS) and pure free-water correction (D5W).</div><div class="rtt">⚠️ WRONG: giving pure D5W (free water only) to a hypovolemic patient who still needs some volume. Discriminator — stable + hypovolemic → hypotonic saline, not D5W.</div></div><div class="rt"><div class="rtl">14. Euvolemic → D5W/free water</div><div class="rte">Quick-rule banner #3: EUVOLEMIC = D5W / oral free water (pure water replacement) AND always correct slowly — lower Na ≤10 mEq/L per 24h. The slow-correction caveat applies to every pathway: too-fast lowering of a chronically high Na causes cerebral edema and seizures.</div><div class="rtt">⚠️ WRONG: correcting the euvolemic patient's Na quickly toward 140 in one day. Discriminator — regardless of pathway the maximum safe drop is ~10 mEq/L/24h; faster correction risks fatal cerebral edema.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="hyperna_diagnosis.html" title="Hypernatremia — Diagnostic Algorithm">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="hyperna_treatment_calc.html" title="Hypernatremia — Treatment Calculation">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

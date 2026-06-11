@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">VTE — How PE Kills: V/Q Mismatch, RV Strain &amp; Shock</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>14</em></summary><ol class="traps"><li><b>Embolus in pulmonary artery</b> — WRONG: 'A saddle embolus by itself mandates immediate systemic thrombolysis regardless of vitals.' Treatment is driven by hemodynamics, not clot location/size on CT — a normotensive patient with a saddle PE is treated as intermediate-risk (anticoagulate, monitor); thrombolysis is for hemodynamic instability.</li><li><b>Unexplained dyspnea</b> — WRONG: 'A young, otherwise healthy patient with sudden dyspnea and a clear chest X-ray has anxiety/hyperventilation, so no further workup is needed.' PE classically presents with dyspnea and a normal/near-normal CXR — anchoring on anxiety without applying a pretest score (Wells/PERC) misses a potentially fatal PE.</li><li><b>V/Q mismatch</b> — WRONG: 'PE causes hypoxemia mainly by alveolar hypoventilation with a normal A-a gradient.' PE hypoxemia is from V/Q mismatch (and shunt), which WIDENS the A-a gradient — a hypoventilation pattern (normal A-a gradient, high CO2) points to other causes like opioid overdose or neuromuscular disease.</li><li><b>Dead space</b> — WRONG: 'PE primarily creates a right-to-left shunt (ventilation absent, perfusion present).' PE's hallmark is DEAD SPACE (perfusion absent, ventilation present) — shunt is the opposite physiology (e.g., atelectasis, pneumonia); reversing them is a classic exam discriminator.</li><li><b>Increased A-a gradient</b> — WRONG: 'Normal oxygen saturation and a normal A-a gradient rule out PE.' Up to ~20% of PE patients have a normal A-a gradient and normal SpO2 — absence of hypoxemia does NOT exclude PE; rely on pretest probability, D-dimer, and imaging, not oxygenation.</li><li><b>Increased PVR / vasoconstriction</b> — WRONG: 'A mean pulmonary artery pressure of 70 mmHg in acute PE means the RV is fine because it generated that pressure.' A normal acute RV cannot sustain such pressures — markedly elevated PA pressure in 'acute' PE suggests chronic pulmonary hypertension/CTEPH (an adapted, hypertrophied RV) rather than purely acute disease.</li><li><b>RV dilation / dysfunction</b> — WRONG: 'A normotensive PE patient with echo RV dysfunction (submassive PE) should receive full-dose systemic thrombolysis.' PEITHO showed routine thrombolysis in intermediate-risk PE caused excess major bleeding and stroke without a mortality benefit — anticoagulate and monitor; reserve lysis for hemodynamic decompensation.</li><li><b>Septal shift / decreased LV filling</b> — WRONG: 'Aggressively bolus large volumes of IV fluid in a hypotensive PE patient to raise the blood pressure.' Excess fluid further distends the failing RV, worsening septal bowing and LV filling — give cautious fluids (≤500 mL) and add vasopressors (norepinephrine) and definitive reperfusion; over-resuscitation can precipitate RV collapse.</li><li><b>Troponin elevation</b> — WRONG: 'Elevated troponin plus dyspnea means acute coronary syndrome — take the patient to the cath lab.' In PE, troponin rises from RV strain, not ACS — anchoring on ACS and giving antiplatelets/cath while missing the PE (and its anticoagulation/reperfusion needs) is a dangerous error; integrate the whole picture (Wells, ECG, imaging).</li><li><b>BNP / NT-proBNP</b> — WRONG: 'A normal BNP rules out PE.' BNP/NT-proBNP are prognostic, not diagnostic — a normal value does not exclude PE (it suggests low risk if PE is confirmed); use D-dimer and imaging to diagnose, BNP/troponin/echo to risk-stratify.</li><li><b>Sinus tachycardia (ECG)</b> — WRONG: 'The classic S1Q3T3 pattern is the most common ECG finding in PE.' S1Q3T3 is the 'classic' but uncommon and insensitive RV-strain pattern — sinus tachycardia is the most common ECG finding; a normal ECG also does not exclude PE.</li><li><b>S1Q3T3</b> — WRONG: 'No S1Q3T3 on the ECG, so PE is unlikely.' S1Q3T3 appears in a minority of PEs — its absence has no rule-out value; pretest probability, D-dimer, and imaging determine the diagnosis, not this insensitive pattern.</li><li><b>Massive PE → shock</b> — WRONG: 'Hold thrombolytics in a hypotensive massive-PE patient until CTPA confirms the diagnosis.' In hemodynamically unstable suspected PE you don't delay for CTPA — bedside echo showing RV strain supports empiric thrombolysis; waiting for confirmatory imaging in shock risks death.</li><li><b>High-risk PE mortality</b> — WRONG: 'Treat a high-risk PE in shock with anticoagulation (heparin) alone and admit for monitoring.' Anticoagulation prevents new clot but does not rapidly relieve the existing obstruction — high-risk/massive PE requires reperfusion (thrombolysis or embolectomy) plus hemodynamic support; heparin alone is insufficient.</li></ol></details><details class="panel"><summary>📖 Read-through — all 14 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Embolus in pulmonary artery</div><div class="rte">Most pulmonary emboli originate from PROXIMAL lower-extremity DVT (popliteal/femoral/iliac), travel through the right heart, and wedge in the pulmonary arteries. A 'saddle' embolus straddles the main pulmonary artery bifurcation and can cause sudden obstructive shock. The hemodynamic impact depends on clot burden plus baseline cardiopulmonary reserve. Mnemonic: 'Leg clot → right heart → lung artery wedge.'</div><div class="rtt">⚠️ WRONG: 'A saddle embolus by itself mandates immediate systemic thrombolysis regardless of vitals.' Treatment is driven by hemodynamics, not clot location/size on CT — a normotensive patient with a saddle PE is treated as intermediate-risk (anticoagulate, monitor); thrombolysis is for hemodynamic instability.</div></div><div class="rt"><div class="rtl">2. Unexplained dyspnea</div><div class="rte">Sudden unexplained dyspnea is the MOST COMMON symptom of PE, often with pleuritic chest pain and tachypnea; it can masquerade as heart failure, pneumonia, ACS, or anxiety. Syncope or hemoptysis suggests larger/more central PE. A high index of suspicion plus a pretest score (Wells) drives the workup. Mnemonic: 'Sudden breathlessness out of nowhere = think PE.'</div><div class="rtt">⚠️ WRONG: 'A young, otherwise healthy patient with sudden dyspnea and a clear chest X-ray has anxiety/hyperventilation, so no further workup is needed.' PE classically presents with dyspnea and a normal/near-normal CXR — anchoring on anxiety without applying a pretest score (Wells/PERC) misses a potentially fatal PE.</div></div><div class="rt"><div class="rtl">3. V/Q mismatch</div><div class="rte">PE blocks perfusion to ventilated alveoli, creating ventilation–perfusion (V/Q) mismatch — the dominant mechanism of hypoxemia in PE. Blood is also redistributed to other units, causing relative over-perfusion and additional low-V/Q areas, while tachypnea drives respiratory alkalosis. Mnemonic: 'Air gets in, blood can't — V without Q.'</div><div class="rtt">⚠️ WRONG: 'PE causes hypoxemia mainly by alveolar hypoventilation with a normal A-a gradient.' PE hypoxemia is from V/Q mismatch (and shunt), which WIDENS the A-a gradient — a hypoventilation pattern (normal A-a gradient, high CO2) points to other causes like opioid overdose or neuromuscular disease.</div></div><div class="rt"><div class="rtl">4. Dead space</div><div class="rte">Beyond the occlusion, alveoli are ventilated but not perfused — physiologic dead space — so that ventilation is 'wasted' and does not participate in gas exchange. This raises the dead-space fraction and minute ventilation demand and underlies the elevated end-tidal-to-arterial CO2 gradient sometimes seen in PE. Mnemonic: 'Dead space = ventilation with no perfusion (the mirror of shunt).'</div><div class="rtt">⚠️ WRONG: 'PE primarily creates a right-to-left shunt (ventilation absent, perfusion present).' PE's hallmark is DEAD SPACE (perfusion absent, ventilation present) — shunt is the opposite physiology (e.g., atelectasis, pneumonia); reversing them is a classic exam discriminator.</div></div><div class="rt"><div class="rtl">5. Increased A-a gradient</div><div class="rte">PE typically widens the alveolar–arterial oxygen gradient due to V/Q mismatch and shunt, often with hypoxemia and a respiratory alkalosis from tachypnea (low PaCO2). However, A-a gradient and oxygen saturation can be normal, especially in young patients with good reserve. Mnemonic: 'Wide A-a gap + respiratory alkalosis = think PE — but normal doesn't exclude it.'</div><div class="rtt">⚠️ WRONG: 'Normal oxygen saturation and a normal A-a gradient rule out PE.' Up to ~20% of PE patients have a normal A-a gradient and normal SpO2 — absence of hypoxemia does NOT exclude PE; rely on pretest probability, D-dimer, and imaging, not oxygenation.</div></div><div class="rt"><div class="rtl">6. Increased PVR / vasoconstriction</div><div class="rte">PE raises pulmonary vascular resistance through mechanical obstruction PLUS hypoxic and serotonin/thromboxane-mediated vasoconstriction, producing acute pulmonary hypertension. The previously normal thin-walled RV cannot acutely generate high pressure (it fails above ~40 mmHg mean PA pressure), so afterload rises faster than the RV can compensate. Mnemonic: 'Clot + vasoconstrictors → PVR up → RV can't keep up.'</div><div class="rtt">⚠️ WRONG: 'A mean pulmonary artery pressure of 70 mmHg in acute PE means the RV is fine because it generated that pressure.' A normal acute RV cannot sustain such pressures — markedly elevated PA pressure in 'acute' PE suggests chronic pulmonary hypertension/CTEPH (an adapted, hypertrophied RV) rather than purely acute disease.</div></div><div class="rt"><div class="rtl">7. RV dilation / dysfunction</div><div class="rte">Acute afterload from PE causes the thin-walled RV to dilate and fail (RV dysfunction), the central event in PE mortality. Imaging/echo signs include RV:LV ratio &gt;1, RV hypokinesis with apical sparing (McConnell's sign), and septal flattening. RV dysfunction with normal blood pressure defines INTERMEDIATE-risk (submassive) PE and prompts close monitoring. Mnemonic: 'Strained RV = the engine that stalls in PE.'</div><div class="rtt">⚠️ WRONG: 'A normotensive PE patient with echo RV dysfunction (submassive PE) should receive full-dose systemic thrombolysis.' PEITHO showed routine thrombolysis in intermediate-risk PE caused excess major bleeding and stroke without a mortality benefit — anticoagulate and monitor; reserve lysis for hemodynamic decompensation.</div></div><div class="rt"><div class="rtl">8. Septal shift / decreased LV filling</div><div class="rte">As the RV dilates within the fixed pericardium, the interventricular septum bows toward (and the RV compresses) the LV — ventricular interdependence — reducing LV preload and stroke volume. The result is falling cardiac output and systemic hypotension, the pathway to obstructive shock. Mnemonic: 'Fat RV squeezes skinny LV → low output → shock.'</div><div class="rtt">⚠️ WRONG: 'Aggressively bolus large volumes of IV fluid in a hypotensive PE patient to raise the blood pressure.' Excess fluid further distends the failing RV, worsening septal bowing and LV filling — give cautious fluids (≤500 mL) and add vasopressors (norepinephrine) and definitive reperfusion; over-resuscitation can precipitate RV collapse.</div></div><div class="rt"><div class="rtl">9. Troponin elevation</div><div class="rte">Elevated troponin in PE reflects RV microinfarction/strain from supply-demand mismatch in the pressure-overloaded RV, not coronary plaque rupture. It is a risk-stratification marker: troponin positivity in a normotensive patient (with RV dysfunction) defines intermediate-HIGH-risk PE and predicts worse 30-day outcomes. Mnemonic: 'Troponin up in PE = the RV is hurting → higher risk.'</div><div class="rtt">⚠️ WRONG: 'Elevated troponin plus dyspnea means acute coronary syndrome — take the patient to the cath lab.' In PE, troponin rises from RV strain, not ACS — anchoring on ACS and giving antiplatelets/cath while missing the PE (and its anticoagulation/reperfusion needs) is a dangerous error; integrate the whole picture (Wells, ECG, imaging).</div></div><div class="rt"><div class="rtl">10. BNP / NT-proBNP</div><div class="rte">BNP/NT-proBNP rise from RV myocardial stretch under acute pressure overload and serve as risk-stratification (not diagnostic) markers in PE: elevation indicates RV dysfunction and intermediate/high-risk disease, while a low level supports low risk and possible outpatient management. Mnemonic: 'Stretched RV leaks BNP = higher-risk PE.'</div><div class="rtt">⚠️ WRONG: 'A normal BNP rules out PE.' BNP/NT-proBNP are prognostic, not diagnostic — a normal value does not exclude PE (it suggests low risk if PE is confirmed); use D-dimer and imaging to diagnose, BNP/troponin/echo to risk-stratify.</div></div><div class="rt"><div class="rtl">11. Sinus tachycardia (ECG)</div><div class="rte">Sinus tachycardia is the MOST COMMON ECG finding in PE. Other clues include new right bundle branch block, right-axis deviation, T-wave inversions in V1–V3 (RV strain), and atrial arrhythmias. The ECG mainly helps risk-stratify and exclude mimics (e.g., STEMI). Mnemonic: 'PE on ECG? Bet on plain old sinus tach.'</div><div class="rtt">⚠️ WRONG: 'The classic S1Q3T3 pattern is the most common ECG finding in PE.' S1Q3T3 is the 'classic' but uncommon and insensitive RV-strain pattern — sinus tachycardia is the most common ECG finding; a normal ECG also does not exclude PE.</div></div><div class="rt"><div class="rtl">12. S1Q3T3</div><div class="rte">S1Q3T3 (prominent S in lead I, Q wave and inverted T in lead III) reflects acute RV strain/cor pulmonale and is the textbook 'classic' PE pattern — but it is uncommon and insensitive, so its absence never rules out PE and its presence is not specific. Mnemonic: 'S1Q3T3 = famous but rare; a footnote, not a screen.'</div><div class="rtt">⚠️ WRONG: 'No S1Q3T3 on the ECG, so PE is unlikely.' S1Q3T3 appears in a minority of PEs — its absence has no rule-out value; pretest probability, D-dimer, and imaging determine the diagnosis, not this insensitive pattern.</div></div><div class="rt"><div class="rtl">13. Massive PE → shock</div><div class="rte">Massive (high-risk) PE is defined by hemodynamic instability: sustained hypotension (SBP &lt;90 mmHg for ≥15 min or requiring vasopressors) or obstructive shock, regardless of clot size on imaging. This is the indication for systemic thrombolysis (e.g., alteplase/tPA 100 mg over 2 h, or 0.6 mg/kg bolus in cardiac arrest), or catheter-directed therapy/surgical embolectomy if lysis is contraindicated or fails. Mnemonic: 'Hypotension = high-risk = give the clot-buster.'</div><div class="rtt">⚠️ WRONG: 'Hold thrombolytics in a hypotensive massive-PE patient until CTPA confirms the diagnosis.' In hemodynamically unstable suspected PE you don't delay for CTPA — bedside echo showing RV strain supports empiric thrombolysis; waiting for confirmatory imaging in shock risks death.</div></div><div class="rt"><div class="rtl">14. High-risk PE mortality</div><div class="rte">High-risk (massive) PE carries high short-term mortality (often &gt;15–25% at 30 days) driven by obstructive shock and acute RV failure. Management combines reperfusion (systemic thrombolysis, or catheter-directed/surgical embolectomy if lysis is contraindicated or fails) with vasopressor (norepinephrine) and cautious volume support; ECMO is a bridge in refractory collapse. Mnemonic: 'High-risk PE = RV failure + shock = race to reperfuse.'</div><div class="rtt">⚠️ WRONG: 'Treat a high-risk PE in shock with anticoagulation (heparin) alone and admit for monitoring.' Anticoagulation prevents new clot but does not rapidly relieve the existing obstruction — high-risk/massive PE requires reperfusion (thrombolysis or embolectomy) plus hemodynamic support; heparin alone is insufficient.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="vte_diagnosis_imaging.html" title="VTE — Diagnostic Imaging Algorithm (CTPA, V/Q, US, Echo)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="vte_pathophysiology.html" title="VTE — Pathophysiology: Virchow&#x27;s Triad, Thrombophilias &amp; Inflammation">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>

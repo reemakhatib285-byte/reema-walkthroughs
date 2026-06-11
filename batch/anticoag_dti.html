@@ -82,6 +82,19 @@
   .nav button.primary{background:var(--accent);border-color:var(--accent)}
   .nav button.primary:hover{background:#cf2f3c}
   .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:9px}
+  .autobar{display:flex;gap:10px;margin-top:14px}
+  .autobar button{flex:1;padding:11px;border-radius:10px;border:1px solid #2a3a52;
+    background:#16223a;color:var(--white);font-size:14px;font-weight:600;cursor:pointer;
+    transition:background .15s}
+  .autobar button:hover{background:#1d2c49}
+  .autobar button.on{background:var(--accent);border-color:var(--accent)}
+  .autobar button:disabled{opacity:.45;cursor:default}
+  .quizprompt{display:none;background:rgba(255,209,102,.08);
+    border:1px solid rgba(255,209,102,.32);border-radius:10px;padding:14px;margin:14px 0 0;
+    color:var(--yellow);font-size:14px;line-height:1.5}
+  .quizprompt button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;
+    background:var(--yellow);color:#3a2c00;font-weight:800;font-size:14px;cursor:pointer}
+  body.hide-ans h2.label,body.hide-ans .block{display:none}
   kbd{background:#26344a;border-radius:4px;padding:1px 6px;font-size:11px}
   /* edit mode */
   .editbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -140,6 +153,8 @@
     <h1 class="scene-title">Anticoagulation — DTIs (River Intruders: Argatroban vs Bivalirudin)</h1>
     <div class="count" id="count"></div>
     <div class="rule"></div>
+    <div class="quizprompt" id="quizprompt">&#127919; Look at the lit symbol — say out loud what it is and what it represents (and the trap). Then reveal.
+      <button id="reveal">Reveal answer</button></div>
     <h2 class="label" id="label"></h2>
     <div class="block see"><div class="h">What you see</div><div class="t" id="see"></div></div>
     <div class="block enc"><div class="h">What it encodes</div><div class="t" id="enc"></div></div>
@@ -148,7 +163,12 @@
       <button id="prev">&larr; Prev</button>
       <button id="next" class="primary">Next &rarr;</button>
     </div>
-    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump</div>
+    <div class="autobar">
+      <button id="play">&#9654; Auto-play</button>
+      <button id="voice">&#128266; Voice: on</button>
+      <button id="quiz">&#127919; Quiz</button>
+    </div>
+    <div class="hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys &middot; click a dot to jump &middot; &#9654; plays &amp; narrates the scene</div>
   </div>
 </div>
 <div class="panels"><details class="panel" open><summary>⚠️ Board traps <em>13</em></summary><ol class="traps"><li><b>Direct thrombin inhibitors</b> — Classic board contrast: heparin/LMWH/fondaparinux work INDIRECTLY by potentiating antithrombin, so they fail in antithrombin deficiency and in HIT (where heparin is the culprit). DTIs work independently of antithrombin, which is exactly why they are the agents of choice in HIT.</li><li><b>Inhibit free + clot-bound</b> — Board favorite: 'Which anticoagulant inactivates clot-bound thrombin?' → a DTI. Heparin/LMWH inactivate only free (fluid-phase) thrombin, allowing rebound thrombin generation from the clot surface.</li><li><b>Argatroban univalent</b> — Distinguish from bivalirudin (bivalent, binds active site + exosite 1). Hirudin-derived agents are bivalent; argatroban and dabigatran are univalent active-site binders.</li><li><b>Argatroban hepatic clearance</b> — REDUCE or avoid argatroban in significant hepatic impairment (start ~0.5 µg/kg/min in liver disease) — accumulation causes bleeding. Mirror trap: bivalirudin/dabigatran depend on renal clearance, so the rule is 'bad kidneys → argatroban, bad liver → not argatroban.'</li><li><b>Argatroban for HIT</b> — In HIT you must stop ALL heparin (including LMWH and heparin flushes) and start a non-heparin anticoagulant (DTI such as argatroban, or fondaparinux/DOAC per scenario). Do NOT start warfarin alone in acute HIT — give a parenteral agent first and overlap, because warfarin-induced protein C drop can precipitate venous limb gangrene.</li><li><b>Argatroban short half-life</b> — There is NO specific antidote for argatroban or bivalirudin — management of bleeding relies on stopping the drug and waiting out the short half-life (± supportive measures). Only dabigatran has a reversal agent (idarucizumab).</li><li><b>Bivalirudin bivalent</b> — Bivalent vs univalent is testable: bivalirudin and the hirudins are bivalent; argatroban and dabigatran are univalent active-site-only inhibitors.</li><li><b>Bivalirudin renal clearance</b> — Reverse of argatroban: in a HIT patient with renal failure choose argatroban (hepatic), not bivalirudin. Bivalirudin is favored in the cath lab/PCI setting rather than for renal-failure inpatients.</li><li><b>Bivalirudin shortest half-life</b> — Short half-life is an advantage, but remember there is still no specific reversal agent — you simply stop the infusion and wait.</li><li><b>Bivalirudin for PCI</b> — Board association: 'HIT patient who needs cardiac catheterization/PCI' → bivalirudin. 'HIT patient with renal failure on the ward' → argatroban.</li><li><b>Comparison scoreboard</b> — Don't confuse with dabigatran (oral DTI): dabigatran is renally cleared, dosed orally, and IS reversible with idarucizumab — the only DTI with a specific antidote.</li><li><b>INR trap with argatroban</b> — Practical board rule: during argatroban→warfarin overlap, target a HIGHER combined INR (often &gt;4) per protocol, then STOP the argatroban infusion and RE-CHECK the INR ~2 hours later; only continue warfarin alone once the off-argatroban INR is therapeutic (2–3).</li><li><b>Both monitored by aPTT</b> — Unlike heparin, DTIs require no antithrombin and are not reversed by protamine. Monitoring is aPTT/ACT — anti-Xa assays are for heparin/LMWH/fondaparinux, NOT for DTIs.</li></ol></details><details class="panel"><summary>📖 Read-through — all 13 symbols</summary><div class="rtwrap"><div class="rt"><div class="rtl">1. Direct thrombin inhibitors</div><div class="rte">Direct thrombin inhibitors (DTIs) bind and inactivate thrombin (factor IIa) DIRECTLY, with no need for the antithrombin cofactor that heparins require ('No Intruding' = no middleman). Because they act at the final common enzyme of coagulation, they block fibrinogen→fibrin conversion, thrombin-mediated activation of factors V/VIII/XI/XIII, and thrombin-driven platelet activation. The parenteral DTIs are argatroban and bivalirudin (also desirudin/lepirudin historically); the oral DTI is dabigatran.</div><div class="rtt">⚠️ Classic board contrast: heparin/LMWH/fondaparinux work INDIRECTLY by potentiating antithrombin, so they fail in antithrombin deficiency and in HIT (where heparin is the culprit). DTIs work independently of antithrombin, which is exactly why they are the agents of choice in HIT.</div></div><div class="rt"><div class="rtl">2. Inhibit free + clot-bound</div><div class="rte">DTIs inhibit BOTH circulating (free) thrombin AND thrombin already bound to fibrin within an existing clot. This is a key pharmacologic advantage: the heparin–antithrombin complex is too bulky to reach thrombin trapped in a clot, so heparin only neutralizes free thrombin and leaves clot-bound thrombin to keep propagating the thrombus.</div><div class="rtt">⚠️ Board favorite: 'Which anticoagulant inactivates clot-bound thrombin?' → a DTI. Heparin/LMWH inactivate only free (fluid-phase) thrombin, allowing rebound thrombin generation from the clot surface.</div></div><div class="rt"><div class="rtl">3. Argatroban univalent</div><div class="rte">Argatroban is a small synthetic UNIVALENT DTI ('one hand') that binds only the catalytic active site of thrombin. It is a reversible competitive inhibitor. Univalent binding means it does not occupy exosite 1.</div><div class="rtt">⚠️ Distinguish from bivalirudin (bivalent, binds active site + exosite 1). Hirudin-derived agents are bivalent; argatroban and dabigatran are univalent active-site binders.</div></div><div class="rt"><div class="rtl">4. Argatroban hepatic clearance</div><div class="rte">Argatroban is cleared HEPATICALLY (metabolized by the liver, minimal renal excretion). This makes it the DTI of choice in patients with renal failure/dialysis, because the dose does not need adjustment for kidney function. Standard infusion ~2 µg/kg/min, titrated to aPTT 1.5–3× baseline.</div><div class="rtt">⚠️ REDUCE or avoid argatroban in significant hepatic impairment (start ~0.5 µg/kg/min in liver disease) — accumulation causes bleeding. Mirror trap: bivalirudin/dabigatran depend on renal clearance, so the rule is 'bad kidneys → argatroban, bad liver → not argatroban.'</div></div><div class="rt"><div class="rtl">5. Argatroban for HIT</div><div class="rte">Argatroban is licensed for treatment and prophylaxis of thrombosis in heparin-induced thrombocytopenia (HIT), and is the preferred DTI when the HIT patient ALSO has renal failure (hepatic clearance is unaffected by kidneys).</div><div class="rtt">⚠️ In HIT you must stop ALL heparin (including LMWH and heparin flushes) and start a non-heparin anticoagulant (DTI such as argatroban, or fondaparinux/DOAC per scenario). Do NOT start warfarin alone in acute HIT — give a parenteral agent first and overlap, because warfarin-induced protein C drop can precipitate venous limb gangrene.</div></div><div class="rt"><div class="rtl">6. Argatroban short half-life</div><div class="rte">Argatroban has a short half-life of roughly 45 minutes, so anticoagulation reverses quickly on stopping the infusion. Monitored and titrated by aPTT (target 1.5–3× baseline; ACT used during PCI).</div><div class="rtt">⚠️ There is NO specific antidote for argatroban or bivalirudin — management of bleeding relies on stopping the drug and waiting out the short half-life (± supportive measures). Only dabigatran has a reversal agent (idarucizumab).</div></div><div class="rt"><div class="rtl">7. Bivalirudin bivalent</div><div class="rte">Bivalirudin is a synthetic BIVALENT DTI ('two hands') — a hirudin analog that simultaneously binds thrombin's catalytic active site AND exosite 1 (the fibrinogen-binding/substrate-recognition site). Its inhibition is potent but transient because thrombin slowly cleaves the bound bivalirudin, restoring some enzyme activity.</div><div class="rtt">⚠️ Bivalent vs univalent is testable: bivalirudin and the hirudins are bivalent; argatroban and dabigatran are univalent active-site-only inhibitors.</div></div><div class="rt"><div class="rtl">8. Bivalirudin renal clearance</div><div class="rte">Bivalirudin is cleared mostly by enzymatic proteolysis (thrombin-mediated cleavage), with a significant PARTIAL RENAL component (~20%). Dose reduction is required in renal impairment, and it accumulates in severe renal failure/dialysis.</div><div class="rtt">⚠️ Reverse of argatroban: in a HIT patient with renal failure choose argatroban (hepatic), not bivalirudin. Bivalirudin is favored in the cath lab/PCI setting rather than for renal-failure inpatients.</div></div><div class="rt"><div class="rtl">9. Bivalirudin shortest half-life</div><div class="rte">Bivalirudin has the shortest half-life of the DTIs (~25 minutes), driven mainly by enzymatic degradation. This rapid offset is ideal for procedural anticoagulation during PCI, where quick on/off control limits bleeding.</div><div class="rtt">⚠️ Short half-life is an advantage, but remember there is still no specific reversal agent — you simply stop the infusion and wait.</div></div><div class="rt"><div class="rtl">10. Bivalirudin for PCI</div><div class="rte">Bivalirudin is the DTI of choice for percutaneous coronary intervention (PCI), including PCI in patients with HIT or at high bleeding risk, given via IV during the procedure (ACT-guided). It is used as an alternative to heparin ± GP IIb/IIIa inhibitors.</div><div class="rtt">⚠️ Board association: 'HIT patient who needs cardiac catheterization/PCI' → bivalirudin. 'HIT patient with renal failure on the ward' → argatroban.</div></div><div class="rt"><div class="rtl">11. Comparison scoreboard</div><div class="rte">Scoreboard summary — Argatroban: univalent, MW ~527, hepatic clearance, t½ ~45 min, the bigger INR offender. Bivalirudin: bivalent, MW ~1980, partial renal/enzymatic clearance, t½ ~25 min (shortest), used in PCI. Both are parenteral, both monitored by aPTT (ACT in cath lab), both lack a reversal agent.</div><div class="rtt">⚠️ Don't confuse with dabigatran (oral DTI): dabigatran is renally cleared, dosed orally, and IS reversible with idarucizumab — the only DTI with a specific antidote.</div></div><div class="rt"><div class="rtl">12. INR trap with argatroban</div><div class="rte">Argatroban prolongs the PT/INR more than other DTIs because it inhibits thrombin in the PT reagent, FALSELY elevating the INR. This is a major pitfall when transitioning a HIT patient from argatroban to warfarin: the combined INR overestimates the true warfarin effect, and stopping argatroban too early leaves the patient under-anticoagulated.</div><div class="rtt">⚠️ Practical board rule: during argatroban→warfarin overlap, target a HIGHER combined INR (often &gt;4) per protocol, then STOP the argatroban infusion and RE-CHECK the INR ~2 hours later; only continue warfarin alone once the off-argatroban INR is therapeutic (2–3).</div></div><div class="rt"><div class="rtl">13. Both monitored by aPTT</div><div class="rte">Both argatroban and bivalirudin are titrated to the aPTT (typically 1.5–2.5× baseline) for systemic anticoagulation; during PCI the activated clotting time (ACT) is used instead because of the much higher doses and shorter time frame.</div><div class="rtt">⚠️ Unlike heparin, DTIs require no antithrombin and are not reversed by protamine. Monitoring is aPTT/ACT — anti-Xa assays are for heparin/LMWH/fondaparinux, NOT for DTIs.</div></div></div></details></div>
@@ -169,6 +189,8 @@ const bar = document.getElementById('bar');
 const dots = document.getElementById('dots');
 const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
+let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
+let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
   const b = document.createElement('button');
@@ -239,6 +261,7 @@ function applyView(){
 }
 
 function go(n){
+  if(auto && !autoNav) stopAuto();   // manual navigation cancels autoplay
   i = (n + DATA.length) % DATA.length;
   const e = DATA[i];
   preview = false;
@@ -253,6 +276,7 @@ function go(n){
   [...dots.children].forEach((d, idx) => d.classList.toggle('active', idx === i));
   ro.textContent = '#' + i + '  x:' + (+e.x).toFixed(1) + '  y:' + (+e.y).toFixed(1) + '  z:' + (+e.z).toFixed(1);
   paintMarkers();
+  if(quiz){ revealed = false; refreshQuiz(); }
 }
 
 function setXY(ev){
@@ -271,6 +295,75 @@ window.addEventListener('mouseup', () => dragging = false);
 document.getElementById('next').onclick = () => go(i + 1);
 document.getElementById('prev').onclick = () => go(i - 1);
 document.getElementById('save').onclick = downloadJSON;
+
+// ---- autoplay + spoken narration (browser Web Speech API) ----
+const playBtn = document.getElementById('play');
+const voiceBtn = document.getElementById('voice');
+const hasTTS = ('speechSynthesis' in window);
+if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
+function speakCurrent(done){
+  if(!voiceOn || !hasTTS){ done && done(); return; }
+  speechSynthesis.cancel();
+  const e = DATA[i];
+  // Bridge visual -> meaning: name the symbol, describe what you see, THEN what it represents.
+  const txt = (e.label ? e.label + '. ' : '')
+            + (e.see ? e.see + ' ' : '')
+            + (e.encodes ? 'This represents: ' + e.encodes : '')
+            + (e.trap ? '. Board trap: ' + e.trap : '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 1.02;
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
+  speechSynthesis.speak(u);
+}
+function autoStep(){
+  if(!auto) return;
+  const advance = () => {
+    if(!auto) return;
+    if(i >= DATA.length - 1){ stopAuto(); return; }
+    autoNav = true; go(i + 1); autoNav = false;
+    autoStep();
+  };
+  if(voiceOn && hasTTS) speakCurrent(advance);
+  else autoTimer = setTimeout(advance, 5500);
+}
+function startAuto(){
+  auto = true;
+  if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+  if(i === 0){ autoNav = true; go(1); autoNav = false; }
+  autoStep();
+}
+function stopAuto(){
+  auto = false;
+  if(playBtn){ playBtn.textContent = '▶ Auto-play'; playBtn.classList.remove('on'); }
+  clearTimeout(autoTimer);
+  if(hasTTS) speechSynthesis.cancel();
+}
+if(playBtn) playBtn.onclick = () => auto ? stopAuto() : startAuto();
+if(voiceBtn) voiceBtn.onclick = () => {
+  voiceOn = !voiceOn;
+  voiceBtn.textContent = '\u{1F50A} Voice: ' + (voiceOn ? 'on' : 'off');
+  voiceBtn.classList.toggle('on', voiceOn);
+  if(!voiceOn && hasTTS) speechSynthesis.cancel();
+  if(auto){ stopAuto(); startAuto(); }
+};
+
+// ---- quiz / active-recall mode: hide the answer until you reveal ----
+const quizBtn = document.getElementById('quiz');
+const quizPrompt = document.getElementById('quizprompt');
+const revealBtn = document.getElementById('reveal');
+function refreshQuiz(){
+  const hide = quiz && i !== 0 && !revealed;
+  document.body.classList.toggle('hide-ans', hide);
+  if(quizPrompt) quizPrompt.style.display = hide ? '' : 'none';
+}
+if(quizBtn) quizBtn.onclick = () => {
+  quiz = !quiz;
+  quizBtn.classList.toggle('on', quiz);
+  if(quiz){ stopAuto(); revealed = false; if(i === 0){ autoNav = true; go(1); autoNav = false; } }
+  refreshQuiz();
+};
+if(revealBtn) revealBtn.onclick = () => { revealed = true; refreshQuiz(); };
 
 function downloadJSON(){
   const out = {title: META.title, image: META.image, mode: MODE,
@@ -305,14 +398,6 @@ if(location.hash.replace('#','').toLowerCase() === 'edit'){
   go(Number.isFinite(h) ? h : 0);
 }
 </script>
-
-
-
-
-
-
-
-
 <!--XNAV--><style>.xnav{position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:8px;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}.xnav a{background:#16223a;border:1px solid #2a3a52;color:#d1d5db;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.45)}.xnav a:hover{border-color:#e63946;color:#fff}.xnav a.disabled{opacity:.3;pointer-events:none}</style><div class="xnav"><a class="xprev" href="coag_vitk1.html" title="Coagulation — Vitamin K Deficiency (mechanism &amp; labs)">‹ Prev sketch</a><a class="xall" href="../index.html" title="All sketches">☰ All</a><a class="xnext" href="plt_hit_1.html" title="Platelet disorders — Drug-induced thrombocytopenia &amp; HIT (part 1)">Next sketch ›</a></div><script>document.addEventListener('keydown',function(ev){if(ev.target&&ev.target.tagName==='INPUT')return;if(ev.key==='[' ){var p=document.querySelector('.xnav a.xprev');if(p&&p.href)location.href=p.href;}if(ev.key===']'){var n=document.querySelector('.xnav a.xnext');if(n&&n.href)location.href=n.href;}});</script><!--/XNAV-->
 </body>
 </html>
