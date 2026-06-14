@@ -14,6 +14,8 @@ h1{color:var(--white);font-size:22px;margin:0;font-weight:800}
 padding:12px 16px;color:#fff;font-size:16px;outline:none}
 #q:focus{border-color:var(--accent)}
 #count{flex:none;color:var(--muted);font-size:12px;white-space:nowrap}
+.skey{flex:none;background:#16223a;border:1px solid #2a3a52;border-radius:6px;padding:3px 9px;
+color:var(--muted);font-size:12px;font-family:ui-monospace,Menlo,monospace}
 .chips{max-width:1100px;margin:10px auto 0;display:flex;gap:6px;flex-wrap:wrap}
 .chip{background:#16223a;border:1px solid #2a3a52;color:var(--body);border-radius:20px;
 padding:6px 13px;font-size:13px;cursor:pointer;white-space:nowrap;font-weight:600}
@@ -99,6 +101,7 @@ body.hide-mode .card.ishidden{opacity:.4}
   <span class="sub">584 scenes · 8 specialties · click any to study</span></div>
   <div class="searchrow">
     <input id="q" type="search" placeholder="Search scenes…  (e.g. varicella, beta blocker, AKI, lupus)" autofocus>
+    <kbd class="skey" id="skey" title="Press / to search">/</kbd>
     <span id="count">584 shown</span>
   </div>
   <div class="chips"><button class="chip active" data-spec="*">All <i>584</i></button><button class="chip" data-spec="🫀 Cardiology">🫀 Cardiology <i>77</i></button><button class="chip" data-spec="🫁 Respiratory">🫁 Respiratory <i>44</i></button><button class="chip" data-spec="🚽 Nephrology / Electrolytes / Acid–Base">🚽 Nephrology / Electrolytes / Acid–Base <i>131</i></button><button class="chip" data-spec="🦋 Endocrine">🦋 Endocrine <i>93</i></button><button class="chip" data-spec="🩸 Hematology / Oncology">🩸 Hematology / Oncology <i>123</i></button><button class="chip" data-spec="🦴 Rheumatology">🦴 Rheumatology <i>44</i></button><button class="chip" data-spec="🦠 Infectious Disease">🦠 Infectious Disease <i>12</i></button><button class="chip" data-spec="🫆 Hepatology / GI">🫆 Hepatology / GI <i>60</i></button></div>
@@ -639,6 +642,14 @@ function apply(){
   empty.style.display = shown?'none':'block';
 }
 q.addEventListener('input', apply);
+// keyboard search shortcut: "/" or Cmd/Ctrl+K focuses search, Esc exits
+function isTyping(){var a=document.activeElement;return a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA'||a.isContentEditable);}
+document.addEventListener('keydown',function(e){
+  if((e.key==='k'||e.key==='K')&&(e.metaKey||e.ctrlKey)){e.preventDefault();q.focus();q.select();return;}
+  if(e.key==='/'&&!isTyping()){e.preventDefault();q.focus();q.select();return;}
+  if(e.key==='Escape'&&document.activeElement===q){if(q.value){q.value='';apply();}q.blur();}
+});
+var skey=document.getElementById('skey');if(skey)skey.onclick=function(){q.focus();q.select();};
 chips.forEach(ch=>ch.onclick=()=>{
   spec=ch.dataset.spec;
   chips.forEach(x=>x.classList.toggle('active', x===ch));
