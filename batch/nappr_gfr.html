@@ -192,7 +192,6 @@ const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
 let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
 let rate = parseFloat(localStorage.getItem('wt_rate')||'1') || 1;
-let keepAlive = null;
 let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
@@ -304,27 +303,6 @@ const playBtn = document.getElementById('play');
 const voiceBtn = document.getElementById('voice');
 const hasTTS = ('speechSynthesis' in window);
 if(!hasTTS){ voiceOn = false; if(voiceBtn){ voiceBtn.textContent = '\u{1F507} Voice: n/a'; voiceBtn.disabled = true; } }
-// pick the most natural-sounding English voice the device offers
-let pickedVoice = null;
-function pickVoice(){
-  const vs = (window.speechSynthesis && speechSynthesis.getVoices()) || [];
-  if(!vs.length) return null;
-  const pref = [/Google US English/i, /Samantha/i, /Microsoft (Aria|Jenny|Michelle|Ava|Emma)/i,
-    /Natural/i, /Google UK English Female/i, /\ben-US\b/i, /English/i];
-  for(const re of pref){ const v = vs.find(v => re.test(v.name) || re.test(v.lang)); if(v) return v; }
-  return vs.find(v => /^en/i.test(v.lang)) || vs[0];
-}
-if(hasTTS){ pickedVoice = pickVoice(); speechSynthesis.onvoiceschanged = () => { pickedVoice = pickVoice(); }; }
-// read medical shorthand the way a person would say it
-function spoken(t){
-  if(!t) return '';
-  return t.replace(/≥/g,' at least ').replace(/≤/g,' up to or equal to ')
-    .replace(/>/g,' greater than ').replace(/</g,' less than ')
-    .replace(/→/g,' leads to ').replace(/↑/g,' increased ').replace(/↓/g,' decreased ')
-    .replace(/±/g,' plus or minus ').replace(/&/g,' and ').replace(/%/g,' percent ')
-    .replace(/\bw\//gi,'with ').replace(/\bvs\.?\b/gi,' versus ').replace(/°/g,' degrees ')
-    .replace(/\s+/g,' ').trim();
-}
 function speakCurrent(done){
   if(!voiceOn || !hasTTS){ done && done(); return; }
   speechSynthesis.cancel();
@@ -334,16 +312,11 @@ function speakCurrent(done){
             + (e.see ? e.see + ' ' : '')
             + (e.encodes ? 'This represents: ' + e.encodes : '')
             + (e.trap ? '. Board trap: ' + e.trap : '');
-  const u = new SpeechSynthesisUtterance(spoken(txt));
-  if(pickedVoice) u.voice = pickedVoice;
-  u.lang = 'en-US'; u.rate = rate; u.pitch = 1.0;
-  const clearKA = () => { if(keepAlive){ clearInterval(keepAlive); keepAlive = null; } };
-  u.onend = () => { clearKA(); done && done(); };
-  u.onerror = () => { clearKA(); done && done(); };
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = rate;                 // only the speed is controllable; voice/reading unchanged from original
+  u.onend = () => done && done();
+  u.onerror = () => done && done();
   speechSynthesis.speak(u);
-  // gently keep long narration from stalling (Chrome) without chopping it into pieces
-  clearKA();
-  keepAlive = setInterval(() => { speechSynthesis.speaking ? speechSynthesis.resume() : clearKA(); }, 8000);
 }
 function autoStep(){
   if(!auto) return;
