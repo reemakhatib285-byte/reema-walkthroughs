@@ -192,6 +192,7 @@ const ro = document.getElementById('ro');
 let i = 0, editMode = false, preview = false;
 let auto = false, voiceOn = true, autoNav = false, autoTimer = null;
 let rate = parseFloat(localStorage.getItem('wt_rate')||'1') || 1;
+let keepAlive = null;
 let quiz = false, revealed = false;
 
 DATA.forEach((_, idx) => {
@@ -311,7 +312,7 @@ function pickVoice(){
   const pref = [/Google US English/i, /Samantha/i, /Microsoft (Aria|Jenny|Michelle|Ava|Emma)/i,
     /Natural/i, /Google UK English Female/i, /\ben-US\b/i, /English/i];
   for(const re of pref){ const v = vs.find(v => re.test(v.name) || re.test(v.lang)); if(v) return v; }
-  return vs[0];
+  return vs.find(v => /^en/i.test(v.lang)) || vs[0];
 }
 if(hasTTS){ pickedVoice = pickVoice(); speechSynthesis.onvoiceschanged = () => { pickedVoice = pickVoice(); }; }
 // read medical shorthand the way a person would say it
@@ -333,18 +334,16 @@ function speakCurrent(done){
             + (e.see ? e.see + ' ' : '')
             + (e.encodes ? 'This represents: ' + e.encodes : '')
             + (e.trap ? '. Board trap: ' + e.trap : '');
-  // chunk into sentences so long narration is not cut off mid-way (Chrome ~15s bug)
-  const parts = (spoken(txt).match(/[^.!?]+[.!?]*/g) || [spoken(txt)]).filter(s => s.trim());
-  let k = 0;
-  const next = () => {
-    if(!voiceOn || k >= parts.length){ done && done(); return; }
-    const u = new SpeechSynthesisUtterance(parts[k++].trim());
-    if(pickedVoice) u.voice = pickedVoice;
-    u.lang = 'en-US'; u.rate = rate; u.pitch = 1.0;
-    u.onend = next; u.onerror = next;
-    speechSynthesis.speak(u);
-  };
-  next();
+  const u = new SpeechSynthesisUtterance(spoken(txt));
+  if(pickedVoice) u.voice = pickedVoice;
+  u.lang = 'en-US'; u.rate = rate; u.pitch = 1.0;
+  const clearKA = () => { if(keepAlive){ clearInterval(keepAlive); keepAlive = null; } };
+  u.onend = () => { clearKA(); done && done(); };
+  u.onerror = () => { clearKA(); done && done(); };
+  speechSynthesis.speak(u);
+  // gently keep long narration from stalling (Chrome) without chopping it into pieces
+  clearKA();
+  keepAlive = setInterval(() => { speechSynthesis.speaking ? speechSynthesis.resume() : clearKA(); }, 8000);
 }
 function autoStep(){
   if(!auto) return;
